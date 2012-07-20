@@ -1,0 +1,32 @@
+//File: CurrentToDo
+//Author:   John Miner
+//Created:  02/10/12
+//Modified: 07/01/12
+//Purpose:  An agenda for your current task
+
+Documentation:  Started adding comments to methods. Left off on
+CoordinateLayout
+
+Left off on: Finishing Score and TextRendererElement. Testing layout subsystem
+
+General Task:
+Screen Layout Documentation
+
+Specific Steps:
+//Done - Complete feature list
+//Done - Decide whether to write more use cases and/or more detailed use cases
+//Done - Answer unanswered questions in the requirements
+//Done - Decide on UI: objects draw themselves or manager (look into Builder pattern)
+//Done - Write sequence diagrams
+- Rewrite rendering sequence diagram
+//Done - Write static class diagram (apart from the other classes)
+//Done - Create a sandbox program for this subsystem, using a copy of the Renderer
+and RendererElement classes (perhaps make an svn branch)
+//Done - In the sandbox program, write the layout interface(done), grid layout class,
+border layout class, layered layout class(done), and coordinate layout class (perhaps
+also a LayoutCell interface/class)
+//Done - Test
+//Done - Update Renderer and RendererElement classes in Bass Derby
+//Done - Merge layout subsystem with Bass Derby and make use of it
+- Test again
+
