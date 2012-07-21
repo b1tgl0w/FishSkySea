@@ -13,11 +13,13 @@
 #include <iostream>
 #include "../Header/Point.hpp"
 
+const bool ALPHA = true;
+const bool COLOR_KEY = false;
 const int FISH_WIDTH = 552;
 const int FISH_HEIGHT = 307;
 const int RECTANGLE_WIDTH = 600;
 const int RECTANGLE_HEIGHT = 400;
-const Point FISH_POSITION = { 0, 0 };
+const Point FISH_POSITION = { 50, 50 };
 void initializeSdl();
 void initializeScreen(SDL_Surface **screen);
 SDL_Surface *loadImage(std::string imagePath);
@@ -25,8 +27,9 @@ SDL_Surface *optimizeImage(SDL_Surface *unoptimizedImage);
 void drawGame(SDL_Surface *screen, SDL_Surface *image, SDL_Surface *fish);
 void handleInputQuit(bool &quit);
 void freeImages(SDL_Surface *screen, SDL_Surface *image, SDL_Surface *
-    filledRectangle);
-void inverseClipShape(SDL_Surface *source, SDL_Surface *destination);
+    filledRectangle, SDL_Surface *glow);
+void inverseClipShape(SDL_Surface *source, SDL_Surface *destination, bool 
+    alphaOrKey);
 void clearScreen(SDL_Surface *screen);
 void alphaSurface(SDL_Surface *surface, Uint8 newAlpha);
 
@@ -41,37 +44,41 @@ int main(int argc, char **argv)
     initializeScreen(&screen);
     fishImage = optimizeImage(loadImage("../../Media/Sloogie.png"));
     //Note: SDL_CreateRGBSurface cannot use screen->flags, etc
-    filledRectangle = SDL_CreateRGBSurface(fishImage->flags, 
-        RECTANGLE_WIDTH, RECTANGLE_HEIGHT, fishImage->format->BitsPerPixel,
-        fishImage->format->Rmask, fishImage->format->Gmask, 
-        fishImage->format->Bmask, fishImage->format->Amask);
-    glow = SDL_CreateRGBSurface(fishImage->flags, 
-        RECTANGLE_WIDTH, RECTANGLE_HEIGHT, fishImage->format->BitsPerPixel,
-        fishImage->format->Rmask, fishImage->format->Gmask, 
-        fishImage->format->Bmask, fishImage->format->Amask);
+    filledRectangle = SDL_CreateRGBSurface(fishImage->flags | SDL_SRCALPHA,
+        RECTANGLE_WIDTH, RECTANGLE_HEIGHT, 
+        fishImage->format->BitsPerPixel, fishImage->format->Rmask, 
+        fishImage->format->Gmask, fishImage->format->Bmask, 0x00);
+    glow = SDL_CreateRGBSurface(fishImage->flags | SDL_SRCALPHA,
+        RECTANGLE_WIDTH, RECTANGLE_HEIGHT, 
+        fishImage->format->BitsPerPixel, fishImage->format->Rmask, 
+        fishImage->format->Gmask, fishImage->format->Bmask, 0x00);
+    const Uint32 MAGENTA = SDL_MapRGB(glow->format, 0xFF, 0x00, 0xFF);
+    SDL_SetColorKey(glow, SDL_SRCCOLORKEY, MAGENTA);
+    SDL_SetColorKey(fishImage, SDL_SRCCOLORKEY, MAGENTA);
 
-    Uint32 yellow = SDL_MapRGBA( filledRectangle->format, 0xFF, 0xFF, 0x44,
-        0xFF);
+    Uint32 yellow = SDL_MapRGB( filledRectangle->format, 0xFF, 0xFF, 0x44);
     Uint8 alpha = 0x33;
     Uint8 alphaChange = 1;
     SDL_Rect rect = { 0, 0, RECTANGLE_WIDTH, RECTANGLE_HEIGHT };
     SDL_FillRect(filledRectangle, &rect, yellow);
-    inverseClipShape(fishImage, filledRectangle);
+    inverseClipShape(fishImage, filledRectangle, ALPHA);
+    SDL_FillRect(glow, &rect, yellow);
+    inverseClipShape(filledRectangle, glow, COLOR_KEY);
 
     while(quit == false)
     {
         handleInputQuit(quit);
-        if( alpha < 0x11 || alpha >= 0x99 )
-            alphaChange *= -1;
+        if( alpha < 0x11 )
+            alphaChange = 1;
+        if(  alpha >= 0x99 )
+            alphaChange = -1;
         alpha += alphaChange;
-        yellow = SDL_MapRGBA( glow->format, 0xFF, 0xFF, 0x44, 0xFF);
-        SDL_FillRect(glow, &rect, yellow);
-        inverseClipShape(filledRectangle, glow);
-        alphaSurface(glow, alpha);
+        //alphaSurface(glow, alpha);
+        SDL_SetAlpha(glow, SDL_SRCALPHA, alpha);
         drawGame(screen, glow, fishImage);
     }
 
-    freeImages(screen, fishImage, filledRectangle);
+    freeImages(screen, fishImage, filledRectangle, glow);
 
     return EXIT_SUCCESS;
 }
@@ -160,15 +167,17 @@ void handleInputQuit(bool &quit)
 }
 
 void freeImages(SDL_Surface *screen, SDL_Surface *image, SDL_Surface *
-    filledRectangle)
+    filledRectangle, SDL_Surface *glow)
 {
     SDL_FreeSurface(screen);
     SDL_FreeSurface(image);
     SDL_FreeSurface(filledRectangle);
+    SDL_FreeSurface(glow);
 }
 
 //Preconditions:    destination.size >= source.size
-void inverseClipShape(SDL_Surface *source, SDL_Surface *destination)
+void inverseClipShape(SDL_Surface *source, SDL_Surface *destination, bool
+    alphaOrKey)
 {
     int x = destination->w / 2 - source->w / 2;
     int y = destination->h / 2 - source->h / 2;
@@ -195,7 +204,23 @@ void inverseClipShape(SDL_Surface *source, SDL_Surface *destination)
                 destination->format, &destinationRed, &destinationGreen, 
                 &destinationBlue, &destinationAlpha);
 
-            destinationAlpha ^= sourceAlpha; 
+            //destinationAlpha ^= sourceAlpha; 
+            if( sourceRed == 0xFF && sourceBlue == 0xFF && sourceGreen == 0x00 )
+            {
+            }
+            else if( alphaOrKey == COLOR_KEY )
+            {
+                destinationRed = 0xFF;
+                destinationBlue = 0xFF;
+                destinationGreen = 0x00;
+            }
+                
+            if( sourceAlpha == 0xFF && alphaOrKey == ALPHA )
+            {
+                destinationRed = 0xFF;
+                destinationBlue = 0xFF;
+                destinationGreen = 0x00;
+            }
 
             ((Uint32 *) destination->pixels)[ (i + y) * destination->w + j + x]
                 = SDL_MapRGBA(destination->format, destinationRed,
@@ -206,6 +231,8 @@ void inverseClipShape(SDL_Surface *source, SDL_Surface *destination)
     SDL_UnlockSurface(destination);
 }
 
+//This is slow if called every frame, so try using per-surface alpha with
+//SDL_SetAlpha and maybe color keys
 void alphaSurface(SDL_Surface *surface, Uint8 newAlpha)
 {
     Uint8 red;
@@ -230,3 +257,4 @@ void alphaSurface(SDL_Surface *surface, Uint8 newAlpha)
     }
     SDL_UnlockSurface(surface);
 }
+

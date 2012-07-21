@@ -15,7 +15,12 @@ swim function of sea creatures. If
 collidable.isCollision, return the object that is collided with.
 What was it that wikipedia said about double dispatch in C++?
 
-Image glowing algorithm is slow on big images
+Valgrind and gprof Experiment/SdlClipShape.cpp (glowing images)
+
+Make sure there are no translucent pixels on any of the graphics except
+outside the outlinE
+
+Image glowing algorithm is slow on big images //Fixed
 
 Look up: shared_ptrs with SDL
 
