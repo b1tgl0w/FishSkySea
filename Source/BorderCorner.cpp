@@ -46,34 +46,21 @@ BorderCorner::~BorderCorner()
     dispose();
 }
 
-//Method:   None(...)
-//Purpose:  Essentially a constant
 BorderCorner BorderCorner::None()
 {
     return BorderCorner(0);
 }
 
-//Method:   TopBottom(...)
-//Purpose:  A constant used for allowing the top and bottom cells of a border
-//          layout to use the corners where the the sides and top/bottom
-//          overlap
 BorderCorner BorderCorner::TopBottom()
 {
     return BorderCorner(1);
 }
 
-//Method:   Sides(...)
-//Purpose:  A constant used for allowing the side cells of a border
-//          layout to use the corners where the the sides and top/bottom
-//          overlap
 BorderCorner BorderCorner::Sides()
 {
     return BorderCorner(2);
 }
 
-//Method:   operator<
-//Method:   operator<
-//Purpose:  Created so these objects can be sorted with an STL algorithm
 bool BorderCorner::operator<(const BorderCorner &rhs) const
 {
     return value < rhs.value;

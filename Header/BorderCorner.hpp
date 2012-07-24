@@ -10,24 +10,97 @@
 #ifndef BORDER_CORNER_HPP_
 #define BORDER_CORNER_HPP_
 
+//! Constrain values when talking with BorderLayout
+/*!
+    A value constraining class for communicating between BorderLayout
+    and the users of the class. This is essentially a constant representing
+    which edges of the border can use the corners (the overlapping area of
+    the cells)
+*/
 class BorderCorner
 {
 public:
+    //! Copy ctor
     BorderCorner(const BorderCorner &rhs);
+    //! Copy assignment
     BorderCorner &operator=(const BorderCorner &rhs);
+    //! dtor
     ~BorderCorner();
+    //! No BorderLayout use corners
+    /*! 
+        Essentially a constant representing that no edges will use the corners
+        where the cells overlap. Not the acutal corners but used as a value
+        constraining parameter.
+    */
     static BorderCorner None();
+    //! Top/Bottom BorderLayout use corners
+    /*! 
+        Essentially a constant representing that the Top/Bottom edges will use 
+        the corners where the cells overlap. Not the acutal corners but used as 
+        a value constraining parameter.
+    */
     static BorderCorner TopBottom();
+    //! Top/Bottom BorderLayout use corners
+    /*! 
+        Essentially a constant representing that the sides will use 
+        the corners where the cells overlap. Not the acutal corners but used as 
+        a value constraining parameter.
+    */
     static BorderCorner Sides();
+    //!< operator
+    /*
+        Used so STL sorting algorithm can be used when objects of this class
+        are stored in an STL container. Order of objects is somewhat arbitrary.
+        \param rhs the right operand.
+    */
     bool operator<(const BorderCorner &rhs) const;
+    //!!= operator
+    /*!
+        Checks for inequality
+        \param rhs the right operand.
+    */
     bool operator!=(const BorderCorner &rhs) const;
+    //!== operator
+    /*!
+        Checks for equality
+        \param rhs the right operand.
+    */
     bool operator==(const BorderCorner &rhs) const;
 protected:
+    //! Initialize class.
+    /*!
+        Called by ctors and copy assignment operator.
+        Initialize class.
+        Note: This is going to be removed and replaced by the ctor's
+        initialization list.
+        \param value what to assign to member value.
+    */
     void initialize(int value);
+    //! Free memory and destruct
+    /*!
+        Called by dtor and copy assignment operator to free memory, destruct
+        Note: This is going to be removed and put into body of dtor and
+        copy assignment operator.
+    */
     void dispose();
 private:
+    //! Default ctor.
+    /*!
+        Private so instances of this class cannot be created besides None,
+        TopBottom, or Sides.
+    */
     BorderCorner();
+    //! ctor.
+    /*!
+        Set the member value to param value.
+        \param value what to assign to member value.
+    */
     BorderCorner(int value);
+    //! Internal representation of None, TopBottom, Sides
+    /*!
+        An integer representation of allowed values to bass to BorderLayout
+        methods. Can represent the following edges: None, TopBottom, Sides.
+    */
     int value;
 };
 

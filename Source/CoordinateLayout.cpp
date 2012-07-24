@@ -53,6 +53,8 @@ void CoordinateLayout::dispose()
 {
 }
 
+//Method:   drawWhenReady(...)
+//Purpose:  Add renderer element (non-ptr) to be drawn next frame
 void CoordinateLayout::drawWhenReady(RendererElement &re)
 {
     boost::shared_ptr<RendererElement> sharedRe;
@@ -60,6 +62,7 @@ void CoordinateLayout::drawWhenReady(RendererElement &re)
     toDraw.push_back(sharedRe);
 }
 
+//Method:   drawWhenReady(...)
 void CoordinateLayout::drawWhenReady(boost::shared_ptr<RendererElement> &re,
     boost::shared_ptr<Layout> &callerLayout)
 {
