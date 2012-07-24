@@ -63,31 +63,35 @@ public:
     static BorderCell Center();
     //!< operator
     /*!
+        \param rhs the right operand.
+
         Used so STL sorting algorithm can be used when objects of this class
         are stored in an STL container. Order of objects is somewhat arbitrary.
-        \param rhs the right operand.
     */
     bool operator<(const BorderCell &rhs) const;
     //!!= operator
     /*!
-        Checks for inequality.
         \param rhs the right operand.
+
+        Checks for inequality.
     */
     bool operator!=(const BorderCell &rhs) const;
     //!== operator
     /*!
-        Checks for equality.
         \param rhs the right operand.
+
+        Checks for equality.
     */
     bool operator==(const BorderCell &rhs) const;
 protected:
     //! Initialize class.
     /*!
+        \param value what to assign to member value
+
         Called by ctors and copy assignment operator
         Initialize class
         Note: This is going to be removed and replaced by the ctor's
         initialization list.
-        \param value what to assign to member value
     */
     void initialize(int value);
     //! Free memory and destruct.
@@ -106,8 +110,9 @@ private:
     BorderCell();
     //! ctor
     /*! 
-        Set the member value to param value.
         \param value what to assign to member value.
+
+        Set the member value to param value.
     */
     BorderCell(int value);
     //! Internal representation of None, Top, Bottom, Left, Right, Center
