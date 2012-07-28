@@ -59,7 +59,7 @@ int main(int argc, char **argv)
         frameCleanupPublisher));
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
-    Point sharkPoint = { 290.0, 280.0 };
+    Point sharkPoint = { 290.0, 271.0 };
     Point backgroundPoint = { 0.0, 0.0 };
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point backgroundPoint = { 0.0, 0.0 };
-    Point sharkPoint = { 290.0, 280.0 };
+    Point sharkPoint = { 290.0, 271.0 };
     Point fishPoint = { 0.0, 0.0 };
     Point fishPoint2 = { 80.0, 0.0 };
     Dimension fishSize = { 70, 26 };
@@ -224,7 +224,7 @@ int main(int argc, char **argv)
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point backgroundPoint = { 0.0, 0.0 };
-    Point sharkPoint = { 290.0, 280.0 };
+    Point sharkPoint = { 290.0, 271.0 };
     Point fishPoint = { 0.0, 0.0 };
     Point fishPoint2 = { 80.0, 0.0 };
     Dimension fishSize = { 70, 26 };
@@ -342,7 +342,7 @@ int main(int argc, char **argv)
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point backgroundPoint = { 0.0, 0.0 };
-    Point sharkPoint = { 290.0, 280.0 };
+    Point sharkPoint = { 290.0, 271.0 };
     Dimension fishSize = { 70, 26 };
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();

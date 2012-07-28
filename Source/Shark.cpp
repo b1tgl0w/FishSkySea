@@ -31,7 +31,7 @@ const Layer &Shark::LAYER()
 const Dimension &Shark::SIZE()
 {   
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE = { 253, 52 };
+    static const Dimension TMP_SIZE = { 185, 68 };
     return TMP_SIZE;
 }
 
