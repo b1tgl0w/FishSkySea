@@ -39,7 +39,8 @@ int &Renderer::numberOfInstances()
 }
 
 Renderer::Renderer(const Dimension &screenResolution, int screenBpp,
-    Uint32 flags, const boost::shared_ptr<FrameCleanupPublisher> 
+    Uint32 flags, const std::string &fontPath, 
+    const boost::shared_ptr<FrameCleanupPublisher> 
     &frameCleanupPublisher)
 {
     initialize(screenResolution, screenBpp, flags, frameCleanupPublisher);
@@ -72,9 +73,12 @@ Renderer &Renderer::operator=(const Renderer &rhs)
 //Note:     It is important that any derived classes invoke this method from
 //          their initialize(...) method.
 void Renderer::initialize(const Dimension &screenResolution, int screenBpp,
-    Uint32 flags, const boost::shared_ptr<FrameCleanupPublisher> 
+    Uint32 flags, const std::string &fontPath,
+    const boost::shared_ptr<FrameCleanupPublisher> 
     &frameCleanupPublisher)
 {
+    const FONT_SIZE = 32; //Text surfaces will be scaled
+    const FONT_BORDER_SIZE = 3; //3 so even scaled text will have outline
     numberOfInstances()++;
     if( SDL_WasInit(SDL_INIT_VIDEO) == 0 )
         SDL_Init(SDL_INIT_VIDEO);
@@ -84,6 +88,7 @@ void Renderer::initialize(const Dimension &screenResolution, int screenBpp,
     //even though there is a performance cost, I'm going to allow multiple
     //calls to IMG_Init(IMG_INIT_PNG);
     IMG_Init(IMG_INIT_PNG);
+    TTF_Init();
 
     screen = SDL_GetVideoSurface();
     if( screen == NULL )
@@ -91,6 +96,8 @@ void Renderer::initialize(const Dimension &screenResolution, int screenBpp,
             screenBpp, flags);
 
     this->frameCleanupPublisher = frameCleanupPublisher;
+    font = TTF_OpenFont(fontPath.c_str(), FONT_SIZE);
+    TTF_SetFontOutline(font, FONT_BORDER_SIZE);
 
     //Should I call images.clear() and toDraw.clear() or is that a task for
     // void dispose(...)? At any rate, they don't need to be assigned to
@@ -110,6 +117,7 @@ Renderer::~Renderer()
     {
         SDL_Quit();
         IMG_Quit();
+        TTF_CloseFont(font);
     }
 }
 
@@ -157,6 +165,19 @@ void Renderer::loadImage(std::string key, SDL_Surface *image)
 
     images.insert(std::pair<std::string, SDL_Surface *>(key,
         image));
+}
+
+void Renderer::loadText(const std::string &text, const Uint32 color,
+    const int borderSize)
+{
+    if( TTF_GetFontOutline(font) != borderSize )
+        TTF_SetFontOutline(font, borderSize);
+
+    SDL_Surface *textSurface = TTF_RenderText_Blended(font, 
+        text.c_str(), color);
+
+    images.insert(std::pair<std::string, SDL_Surface *>(text,
+        textSurface);
 }
 
 void Renderer::manipulateImage(const std::string &path, const Transformation

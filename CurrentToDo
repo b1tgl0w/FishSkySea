@@ -7,7 +7,15 @@
 Documentation:  Started adding comments to methods. Left off on
 CoordinateLayout
 
-Left off on: Finishing Score and TextRendererElement. Testing layout subsystem
+Left off on: Text Rendering. Finishing Score and TextRendererElement. 
+Testing layout subsystem
+
+GeneralTask:
+Text Renderering
+
+Specific Steps:
+- Prune unused texts
+- Update calls to Renderer ctor
 
 General Task:
 Screen Layout Documentation

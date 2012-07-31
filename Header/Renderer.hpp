@@ -21,6 +21,7 @@
 #include "boost/shared_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include "Layout.hpp"
 #include "Layer.hpp"
 #include "RendererElement.hpp"
@@ -38,14 +39,19 @@ public:
     //don't shared ownership of screen. Does weak_ptr even work with SDL_Surface*?
     //Renderer(Dimension screenSize, int screenBPP, flags);
     explicit Renderer(const Dimension &screenResolution, int screenBpp, Uint32 flags,
+        const std::string &fontPath, 
         const boost::shared_ptr<FrameCleanupPublisher> &frameCleanupPublisher);
     Renderer(const Renderer &renderer);
     Renderer &operator=(const Renderer &rhs);
     virtual ~Renderer();
     void loadImage(std::string path);
     void loadImage(std::string key, SDL_Surface *image);
+    void loadText(const std::string &text, Uint32 color, const int borderSize);
     void manipulateImage(const std::string &path, const Transformation
         &transformation, Dimension size);
+    void manipulateImage(const std::string &text, const Uint32 color,
+        const int borderSize, const Transformation &transformation,
+        Dimension size);
     //Note: updateImage is unnecessary and could cause memory to be used after
     //      it's freed. Just have the sprite clear the image and redraw the
     //      updated graphic. The renderer's SDL_Surface * points to the same
@@ -70,9 +76,10 @@ public:
     Uint32 makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha);
 protected:
     Renderer();
+    //Must be called by derived classes
     void initialize(const Dimension &screenresolution, int screenBpp,
-        Uint32 flags, const boost::shared_ptr<FrameCleanupPublisher> 
-        &frameCleanupPublisher); //Must be called by derived classes
+        Uint32 flags, const std::string &fontPath, 
+        const boost::shared_ptr<FrameCleanupPublisher> &frameCleanupPublisher);
     void dispose();
 private:
     //Renderer()?
@@ -107,6 +114,7 @@ private:
     std::list<boost::shared_ptr<Layout> > layouts;
     SDL_Surface *screen;
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher;
+    TTF_Font *font;
     //Constants
     static const std::string &TRANSFORMATION_KEY();
     static const std::string &WIDTH_KEY();
