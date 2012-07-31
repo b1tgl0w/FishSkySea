@@ -46,7 +46,7 @@ public:
     virtual ~Renderer();
     void loadImage(std::string path);
     void loadImage(std::string key, SDL_Surface *image);
-    void loadText(const std::string &text, Uint32 color, const int borderSize);
+    void loadText(const std::string &text, const SDL_Color &color, const int borderSize);
     void manipulateImage(const std::string &path, const Transformation
         &transformation, Dimension size);
     void manipulateImage(const std::string &text, const Uint32 color,
@@ -115,6 +115,7 @@ private:
     SDL_Surface *screen;
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher;
     TTF_Font *font;
+    std::string fontPath;
     //Constants
     static const std::string &TRANSFORMATION_KEY();
     static const std::string &WIDTH_KEY();

@@ -18,7 +18,7 @@
 const std::string &Shark::IMAGE_PATH()
 {
     static const std::string TMP_IMAGE_PATH = 
-        "../../Media/Shark2.png";
+        "../Media/Shark2.png";
     return TMP_IMAGE_PATH;
 }
 

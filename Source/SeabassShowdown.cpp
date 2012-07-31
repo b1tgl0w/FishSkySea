@@ -56,7 +56,7 @@ int main(int argc, char **argv)
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
-        frameCleanupPublisher));
+        "../Media/Fonts/monof55.ttf", frameCleanupPublisher));
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point sharkPoint = { 290.0, 271.0 };
@@ -71,8 +71,8 @@ int main(int argc, char **argv)
     Dimension backgroundSize = { 800.0, 600.0 };
     boost::shared_ptr<Shark> shark(new Shark(ocean, sharkPoint));
     shark->initializeStates();
-    renderer->loadImage("../../Media/Scene3.png");
-    renderer->loadImage("../../Media/Fish.png");
+    renderer->loadImage("../Media/Scene3.png");
+    renderer->loadImage("../Media/Fish.png");
     player1->loadImage(*renderer);
     shark->loadImage(*renderer);
     bool quit = false;
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     boost::shared_ptr<Layout> regularGame(new CoordinateLayout(clipFit));
     renderer->addLayout(regularGame);
 
-    ImageRendererElement background("../../Media/Scene3.png", 0,
+    ImageRendererElement background("../Media/Scene3.png", 0,
         backgroundPoint, screenResolution);
 
     for( int i = 0; quit == false; ++i)
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
-        frameCleanupPublisher));
+        "../Media/Fonts/monof55.ttf", frameCleanupPublisher));
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point backgroundPoint = { 0.0, 0.0 };
@@ -150,8 +150,8 @@ int main(int argc, char **argv)
     Dimension backgroundSize = { 800.0, 600.0 };
     boost::shared_ptr<Shark> shark(new Shark(ocean, sharkPoint));
     shark->initializeStates();
-    renderer->loadImage("../../Media/Scene.png");
-    renderer->loadImage("../../Media/Fish.png");
+    renderer->loadImage("../Media/Scene.png");
+    renderer->loadImage("../Media/Fish.png");
     player1->loadImage(*renderer);
     shark->loadImage(*renderer);
     bool quit = false;
@@ -188,11 +188,11 @@ int main(int argc, char **argv)
     boost::shared_ptr<Layout> center5(new CenterLayout(
         clipFitStrategy));
     layeredLayout->addLayout(center5, 2);
-    ImageRendererElement background("../../Media/Scene.png", 3, backgroundPoint,
+    ImageRendererElement background("../Media/Scene.png", 3, backgroundPoint,
         backgroundSize);
-    ImageRendererElement sharkPlaceHolder("../../Media/SharkPlaceHolder.png", 2, fishPoint,
+    ImageRendererElement sharkPlaceHolder("../Media/SharkPlaceHolder.png", 2, fishPoint,
         sharkSize);
-    ImageRendererElement fish("../../Media/Fish.png", 1, fishPoint,
+    ImageRendererElement fish("../Media/Fish.png", 1, fishPoint,
         fishSize);
 
     for( int i = 0; quit == false; ++i)
@@ -220,7 +220,7 @@ int main(int argc, char **argv)
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
-        frameCleanupPublisher));
+        "../Media/Fonts/monof55.ttf", frameCleanupPublisher));
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point backgroundPoint = { 0.0, 0.0 };
@@ -239,8 +239,8 @@ int main(int argc, char **argv)
     Dimension backgroundSize = { 800.0, 600.0 };
     boost::shared_ptr<Shark> shark(new Shark(ocean, sharkPoint));
     shark->initializeStates();
-    renderer->loadImage("../../Media/Scene.png");
-    renderer->loadImage("../../Media/Fish.png");
+    renderer->loadImage("../Media/Scene.png");
+    renderer->loadImage("../Media/Fish.png");
     player1->loadImage(*renderer);
     shark->loadImage(*renderer);
     bool quit = false;
@@ -301,11 +301,11 @@ int main(int argc, char **argv)
         fillClipFit));
     borderLayout->addLayout(center7, BorderCell::Center());
     borderLayout->useCorners(BorderCorner::TopBottom());
-    ImageRendererElement background("../../Media/Scene.png", 3, backgroundPoint,
+    ImageRendererElement background("../Media/Scene.png", 3, backgroundPoint,
         backgroundSize);
-    ImageRendererElement fish("../../Media/SharkPlaceHolder.png", 2, fishPoint,
+    ImageRendererElement fish("../Media/SharkPlaceHolder.png", 2, fishPoint,
         sharkSize);
-    ImageRendererElement fish2("../../Media/Fish.png", 1, fishPoint,
+    ImageRendererElement fish2("../Media/Fish.png", 1, fishPoint,
         sharkSize);
 
     for( int i = 0; quit == false; ++i)
@@ -338,7 +338,7 @@ int main(int argc, char **argv)
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
-        frameCleanupPublisher));
+        "../Media/Fonts/monof55.ttf", frameCleanupPublisher));
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point backgroundPoint = { 0.0, 0.0 };
@@ -354,8 +354,8 @@ int main(int argc, char **argv)
     Dimension backgroundSize = { 800.0, 600.0 };
     boost::shared_ptr<Shark> shark(new Shark(ocean, sharkPoint));
     shark->initializeStates();
-    renderer->loadImage("../../Media/Scene.png");
-    renderer->loadImage("../../Media/Fish.png");
+    renderer->loadImage("../Media/Scene.png");
+    renderer->loadImage("../Media/Fish.png");
     player1->loadImage(*renderer);
     shark->loadImage(*renderer);
     bool quit = false;
@@ -433,7 +433,7 @@ int main(int argc, char **argv)
     mergeCells.push_back(p);
     gridLayout->merge(mergeCells);
 
-    ImageRendererElement background("../../Media/Scene.png", 0, backgroundPoint,
+    ImageRendererElement background("../Media/Scene.png", 0, backgroundPoint,
         backgroundSize);
     for( int i = 0; quit == false; ++i)
     {

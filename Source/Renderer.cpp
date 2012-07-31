@@ -43,7 +43,8 @@ Renderer::Renderer(const Dimension &screenResolution, int screenBpp,
     const boost::shared_ptr<FrameCleanupPublisher> 
     &frameCleanupPublisher)
 {
-    initialize(screenResolution, screenBpp, flags, frameCleanupPublisher);
+    initialize(screenResolution, screenBpp, flags, fontPath, 
+        frameCleanupPublisher);
 }
 
 Renderer::Renderer(const Renderer &rhs)
@@ -51,7 +52,7 @@ Renderer::Renderer(const Renderer &rhs)
     Dimension rhsScreenResolution = { rhs.screen->w, rhs.screen->h };
     //Cast Uint8 to int BitsPerPixel
     initialize(rhsScreenResolution, rhs.screen->format->BitsPerPixel,
-        rhs.screen->flags, rhs.frameCleanupPublisher);
+        rhs.screen->flags, rhs.fontPath, rhs.frameCleanupPublisher);
 }
 
 Renderer &Renderer::operator=(const Renderer &rhs)
@@ -63,7 +64,7 @@ Renderer &Renderer::operator=(const Renderer &rhs)
     Dimension rhsScreenResolution = { rhs.screen->w, rhs.screen->h };
     //Cast Uint8 to int BitsPerPixel
     initialize(rhsScreenResolution, rhs.screen->format->BitsPerPixel,
-        rhs.screen->flags, rhs.frameCleanupPublisher);
+        rhs.screen->flags, rhs.fontPath, rhs.frameCleanupPublisher);
 
     return *this;
 }
@@ -77,8 +78,8 @@ void Renderer::initialize(const Dimension &screenResolution, int screenBpp,
     const boost::shared_ptr<FrameCleanupPublisher> 
     &frameCleanupPublisher)
 {
-    const FONT_SIZE = 32; //Text surfaces will be scaled
-    const FONT_BORDER_SIZE = 3; //3 so even scaled text will have outline
+    const int FONT_SIZE = 32; //Text surfaces will be scaled
+    const int FONT_BORDER_SIZE = 3; //3 so even scaled text will have outline
     numberOfInstances()++;
     if( SDL_WasInit(SDL_INIT_VIDEO) == 0 )
         SDL_Init(SDL_INIT_VIDEO);
@@ -98,6 +99,7 @@ void Renderer::initialize(const Dimension &screenResolution, int screenBpp,
     this->frameCleanupPublisher = frameCleanupPublisher;
     font = TTF_OpenFont(fontPath.c_str(), FONT_SIZE);
     TTF_SetFontOutline(font, FONT_BORDER_SIZE);
+    this->fontPath = fontPath;
 
     //Should I call images.clear() and toDraw.clear() or is that a task for
     // void dispose(...)? At any rate, they don't need to be assigned to
@@ -167,7 +169,7 @@ void Renderer::loadImage(std::string key, SDL_Surface *image)
         image));
 }
 
-void Renderer::loadText(const std::string &text, const Uint32 color,
+void Renderer::loadText(const std::string &text, const SDL_Color &color,
     const int borderSize)
 {
     if( TTF_GetFontOutline(font) != borderSize )
@@ -177,7 +179,7 @@ void Renderer::loadText(const std::string &text, const Uint32 color,
         text.c_str(), color);
 
     images.insert(std::pair<std::string, SDL_Surface *>(text,
-        textSurface);
+        textSurface));
 }
 
 void Renderer::manipulateImage(const std::string &path, const Transformation

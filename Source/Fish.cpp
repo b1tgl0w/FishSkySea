@@ -21,7 +21,7 @@
 //Class-wide constants
 const std::string &Fish::IMAGE_PATH()
 {
-    static const std::string TMP_IMAGE_PATH = "../../Media/Fish.png";
+    static const std::string TMP_IMAGE_PATH = "../Media/Fish.png";
     return TMP_IMAGE_PATH;
 }
 

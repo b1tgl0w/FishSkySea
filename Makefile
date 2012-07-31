@@ -2,7 +2,7 @@ CC := g++
 CC_FLAGS := 
 CPP_FILES := $(wildcard Source/*.cpp)
 OBJ_FILES := $(patsubst Source/%.cpp,Object/%.o,$(CPP_FILES))
-LD_LIBS := -lSDL -lSDL_image
+LD_LIBS := -lSDL -lSDL_image -lSDL_ttf
 
 all : CC_FLAGS += -Wall -O2
 all : Object/SeabassShowdown
