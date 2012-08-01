@@ -34,6 +34,7 @@
 #include "../Header/LayeredLayout.hpp"
 #include "../Header/GridLayout.hpp"
 #include "../Header/ImageRendererElement.hpp"
+#include "../Header/TextRendererElement.hpp"
 #include "../Header/FrameCleanupPublisher.hpp"
 #include "../Header/FrameCleanupSubscriber.hpp"
 #include "../Header/BorderLayout.hpp"
@@ -73,6 +74,8 @@ int main(int argc, char **argv)
     shark->initializeStates();
     renderer->loadImage("../Media/Scene3.png");
     renderer->loadImage("../Media/Fish.png");
+    SDL_Color white = { 0x00, 0x00, 0x00, 0x00 };
+    renderer->loadText("Hey!", white, 1);
     player1->loadImage(*renderer);
     shark->loadImage(*renderer);
     bool quit = false;
@@ -100,6 +103,9 @@ int main(int argc, char **argv)
 
     ImageRendererElement background("../Media/Scene3.png", 0,
         backgroundPoint, screenResolution);
+    Point textPosition = { 300, 0 };
+    Dimension textSize = { 100, 50 };
+    TextRendererElement hey("Hey!", 1, textPosition, textSize);
 
     for( int i = 0; quit == false; ++i)
     {
@@ -109,6 +115,7 @@ int main(int argc, char **argv)
         ocean->draw(regularGame, *renderer);
         shark->draw(regularGame, *renderer);
         regularGame->drawWhenReady(background);
+        regularGame->drawWhenReady(hey);
         renderer->render();
 
         if( game->shouldQuit() )

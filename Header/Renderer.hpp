@@ -17,6 +17,7 @@
 #include <string>
 #include <map>
 #include <list>
+#include <set>
 #include <cmath>
 #include "boost/shared_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
@@ -106,11 +107,17 @@ private:
     void flipImage(SDL_Surface **image, const Transformation &flip);
     static int &numberOfInstances();
     void pruneUnusedManipulations();
+    void pruneUnusedTexts();
     void populateUnusedKeysList();
+    void populateUnusedTextsList();
     bool isKeyAManipulation(const std::string &key);
     std::map<std::string, SDL_Surface *> images;
     std::list<boost::shared_ptr<RendererElement> > toDraw;
+    std::set<std::string> texts;
+    std::map<std::string, SDL_Color> textColors;
+    std::map<std::string, int> textBorderSizes;
     std::list<std::string> unusedKeys;
+    std::list<std::string> unusedTexts;
     std::list<boost::shared_ptr<Layout> > layouts;
     SDL_Surface *screen;
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher;

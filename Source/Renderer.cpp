@@ -172,6 +172,9 @@ void Renderer::loadImage(std::string key, SDL_Surface *image)
 void Renderer::loadText(const std::string &text, const SDL_Color &color,
     const int borderSize)
 {
+    if( images.count(text) > 0 )
+        return;
+
     if( TTF_GetFontOutline(font) != borderSize )
         TTF_SetFontOutline(font, borderSize);
 
@@ -180,13 +183,25 @@ void Renderer::loadText(const std::string &text, const SDL_Color &color,
 
     images.insert(std::pair<std::string, SDL_Surface *>(text,
         textSurface));
+
+    if( texts.count(text) < 1 )
+    {
+        texts.insert(text);
+        textColors.insert(std::pair<std::string, SDL_Color>(text, color));
+        textBorderSizes.insert(std::pair<std::string, int>(text, borderSize));
+    }
 }
 
 void Renderer::manipulateImage(const std::string &path, const Transformation
         &transformation, Dimension size)
 {
     if( images.count(path) < 1 )
-        return;
+    {
+        if( texts.count(path) < 1 )
+            return;
+        else
+            loadText(path, textColors[path], textBorderSizes[path]);
+    }
 
     SDL_Surface *unmanipulatedImage = images.find(path)->second;
 
@@ -334,6 +349,7 @@ void Renderer::render()
        (*it)->render(*this, screen);
         
     pruneUnusedManipulations();
+    pruneUnusedTexts();
     toDraw.clear();
     SDL_Flip(screen);
     frameCleanupPublisher->frameCleanup();
@@ -422,13 +438,21 @@ SDL_Surface *Renderer::whatShouldIDraw(const std::string &path,
     const Transformation &transformation, const Dimension &size)
 {
     if( images.count(path) < 1 )
-        return NULL;
+    {
+        if( texts.count(path) < 1 ) 
+            return NULL;
+        else
+            loadText(path, textColors[path], textBorderSizes[path]);
+    }
 
     SDL_Surface *original = images.find(path)->second;
     Dimension originalSize = { original->w, original->h };
 
     std::string key = makeKey(path, transformation, size, originalSize);
     unusedKeys.remove(key);
+
+    if( texts.count(path) >= 1 )
+        unusedTexts.remove(path);
 
     if( images.count(key) < 1 )
         return NULL;
@@ -518,6 +542,31 @@ void Renderer::pruneUnusedManipulations()
     populateUnusedKeysList();
 }
 
+void Renderer::pruneUnusedTexts()
+{
+    std::map<std::string, SDL_Surface *>::iterator it2;
+
+    if( unusedTexts.empty() )
+    {
+        populateUnusedTextsList();
+        return;
+    }
+
+    for( std::list<std::string>::iterator it = unusedTexts.begin();
+        it != unusedTexts.end(); ++it )
+    {
+        it2 = images.find(*it);
+        if( it2 != images.end() )
+        {
+            SDL_FreeSurface(it2->second);
+            images.erase(it2);
+        }
+
+    }
+
+    populateUnusedTextsList();
+}
+
 void Renderer::populateUnusedKeysList()
 {
     unusedKeys.clear();
@@ -527,6 +576,14 @@ void Renderer::populateUnusedKeysList()
         unusedKeys.push_back(it->first);
 }
     
+void Renderer::populateUnusedTextsList()
+{
+    unusedTexts.clear();
+
+    for( std::set<std::string>::iterator it = texts.begin();
+        it != texts.end(); ++it )
+        unusedTexts.push_back(*it);
+}
 
 //This method needs checking
 bool Renderer::isKeyAManipulation(const std::string &key)

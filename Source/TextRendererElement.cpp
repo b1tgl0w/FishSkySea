@@ -9,15 +9,15 @@
 #include "../Header/TextRendererElement.hpp"
 #include "../Header/Renderer.hpp"
 
-/*explicit TextRendererElement(const std::string &path, int layer,
-    const Point &initialPosition, const Dimension &initialSize) : path(path),
-    position(initialPosition), originalLayer(layer), layer(layer),
+TextRendererElement::TextRendererElement(const std::string &text, int 
+    layer, const Point &initialPosition, const Dimension &initialSize) : 
+    text(text), position(initialPosition), originalLayer(layer), layer(layer),
     size(initialSize)
 {
 }
     
-TestRendererElement::TextRendererElement(const TextRendererElement &rhs)
-    : path(rhs.path), position(rhs.position), originalLayer(rhs.originalLayer),
+TextRendererElement::TextRendererElement(const TextRendererElement &rhs)
+    : text(rhs.text), position(rhs.position), originalLayer(rhs.originalLayer),
     size(rhs.size), transformation(rhs.transformation), 
     clipObject(rhs.clipObject)
 {
@@ -29,7 +29,7 @@ TextRendererElement &TextRendererElement::operator=(const TextRendererElement
     if( &rhs == this )
         return *this;
 
-    path = rhs.path;
+    text = rhs.text;
     position = rhs.position;
     originalLayer = rhs.originalLayer;
     layer = rhs.layer;
@@ -42,11 +42,38 @@ TextRendererElement &TextRendererElement::operator=(const TextRendererElement
 
 void TextRendererElement::render(Renderer &renderer, SDL_Surface *screen)
 {
+    renderer.manipulateImage(text, transformation, size);
+    SDL_Surface *textSurface = renderer.whatShouldIDraw(text,
+        transformation, size);
+
+    if( textSurface == NULL )
+        return;
+
+    applySurface(textSurface, screen, position);
+    layer = originalLayer;
+}
+
+void TextRendererElement::applySurface(SDL_Surface *source,
+    SDL_Surface *destination, const Point &position)
+{
+    SDL_Rect destinationRectangle;
+    SDL_Rect sourceRectangle = { 0, 0, ceil(size.width), ceil(size.height) };
+
+    sourceRectangle = clipObject.generateClipRectangle(position, size);
+    if( sourceRectangle.w <= 0 || sourceRectangle.h <= 0 ||
+        sourceRectangle.x >= ceil(size.width) || sourceRectangle.y >=
+        ceil(size.height) )
+        return;
+
+    destinationRectangle.x = position.x + sourceRectangle.x;
+    destinationRectangle.y = position.y + sourceRectangle.y;
+
+    SDL_BlitSurface(source, &sourceRectangle, destination, &destinationRectangle);
 }
 
 bool TextRendererElement::operator<(const RendererElement &rhs) const
 {
-    return path < rhs.getPath;
+    return text < rhs.getPath();
 }
 
 void TextRendererElement::moveBy(const Point &offset)
@@ -63,8 +90,8 @@ void TextRendererElement::moveBy(double xPercent, double yPercent)
 
 void TextRendererElement::center(const Point &centerPoint)
 {
-    positioin.x = centerPoint.x - size.width / 2.0;
-    position.y = centerPoint.y - size.height / 2.0
+    position.x = centerPoint.x - size.width / 2.0;
+    position.y = centerPoint.y - size.height / 2.0;
 }
 
 void TextRendererElement::layerBy(int offset)
@@ -100,20 +127,20 @@ int TextRendererElement::greatestZ(const
     int greatestZ = -10000;
 
     for( std::list<boost::shared_ptr<RendererElement> >::const_iterator it =
-        rendererElement.begin(); it != rendererElements.end(); ++it )
+        rendererElements.begin(); it != rendererElements.end(); ++it )
     {
         current = (*it)->getLayer();
 
-        if( current > greatest )
-            greatest = current;
+        if( current > greatestZ )
+            greatestZ = current;
     }
 
-    return greatest;
+    return greatestZ;
 }
 
 void TextRendererElement::clip(boost::shared_ptr<Clip> &clipObject)
 {
-    this->clipObject = clipObject;
+    this->clipObject.merge(*clipObject);
 }
 
 boost::shared_ptr<RendererElement> TextRendererElement::manufacture()
@@ -131,6 +158,6 @@ int TextRendererElement::getLayer() const
 
 std::string TextRendererElement::getPath() const
 {
-    return path;
+    return text;
 }
-*/
+
