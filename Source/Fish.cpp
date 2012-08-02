@@ -283,7 +283,7 @@ double Fish::calculatePixelsLeft(Uint32 elapsedTime)
 
 Weight Fish::calculateWeight()
 {
-    //See brick basher
+    return startingDepth.correspondingWeight();
 }
 
 void Fish::updateMouthPosition()
@@ -799,10 +799,13 @@ void Fish::HookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean
         boost::shared_ptr<Ocean> sharedOcean = sharedFishOwner->ocean.lock();
         boost::shared_ptr<Line> sharedHookedByLine =
             sharedFishOwner->hookedByLine.lock();
+        boost::shared_ptr<Player> sharedHookedByPlayer =
+            sharedFishOwner->hookedByPlayer.lock();
 
-        if( !sharedOcean || !sharedHookedByLine )
+        if( !sharedOcean || !sharedHookedByLine || !sharedHookedByPlayer)
             return;
 
+        sharedHookedByPlayer->caughtFish(sharedFishOwner->calculateWeight());
         sharedHookedByLine->offHook();
         sharedOcean->addFish(sharedFishOwner, sharedFishOwner->startingDepth);
     }

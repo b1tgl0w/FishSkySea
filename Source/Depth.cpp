@@ -8,6 +8,7 @@
 //This program is distributed under the terms of the GNU General Public License
 
 #include "../Header/Depth.hpp"
+#include "../Header/Math.hpp"
 
 const Depth Depth::SURFACE()
 {
@@ -107,5 +108,9 @@ Depth::Depth(int initialValue)
     initialize(initialValue);
 }
 
-
+Weight Depth::correspondingWeight()
+{
+    return Weight::percentageWeight(((double) value - ROW1().value) / 
+        ((double) ROW6().value - ROW1().value));
+}
 

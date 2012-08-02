@@ -29,9 +29,14 @@ const Layer Layer::SHARK()
     return Layer(4);
 }
 
-const Layer Layer::FOREGROUND()
+const Layer Layer::SCORE()
 {
     return Layer(5);
+}
+
+const Layer Layer::FOREGROUND()
+{
+    return Layer(6);
 }
 
 Layer::Layer(int initialValue)

@@ -25,7 +25,7 @@ class HumanPlayer : public Player, public KeyboardSubscriber,
 {
 public:
     HumanPlayer(const Point &polePoint, const Point &hookPoint,
-        boost::weak_ptr<Ocean> ocean);
+        boost::weak_ptr<Ocean> ocean, boost::weak_ptr<Score> score);
     HumanPlayer(const HumanPlayer &rhs);
     HumanPlayer &operator=(const HumanPlayer &rhs);
     ~HumanPlayer();
@@ -47,7 +47,8 @@ public:
     void loadImage(Renderer &renderer);
 protected:
     void initialize(const Point &polePoint, const Point &hookPoint,
-        boost::weak_ptr<Ocean> ocean, const boost::shared_ptr<Line> &line);
+        boost::weak_ptr<Ocean> ocean, const boost::shared_ptr<Line> &line,
+        boost::weak_ptr<Score> score);
     void dispose();
 private:
     PlayerKeyTranslater playerKeyTranslater;
@@ -55,6 +56,7 @@ private:
     boost::weak_ptr<Ocean> ocean;
     Point polePoint;
     Point hookPoint;
+    boost::weak_ptr<Score> score;
 };
 
 #endif

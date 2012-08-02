@@ -18,6 +18,7 @@ public:
     static const Layer FISH();
     static const Layer SHARK();
     static const Layer FOREGROUND();
+    static const Layer SCORE();
     Layer(const Layer &rhs); 
     bool operator<(const Layer &rhs) const;
     int integer() const;

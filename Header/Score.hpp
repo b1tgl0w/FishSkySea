@@ -10,6 +10,7 @@
 
 #include "boost/shared_ptr.hpp"
 #include "Graphic.hpp"
+#include "Dimension.hpp"
 
 class Renderer;
 class Layout;
@@ -17,15 +18,18 @@ class Layout;
 class Score : public Graphic
 {
 public:
-    Score();
+    Score(int initialScore);
     Score(const Score &rhs);
     Score &operator=(const Score &rhs);
-    void increase(int howMuch);
+    void increase(const Score &score);
     void reset();
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
 private:
+    Score();
     int score;
+    int renderedScore;
+    Dimension size;
 };
 
 #endif

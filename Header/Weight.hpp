@@ -9,6 +9,8 @@
 #ifndef WEIGHT_HPP_
 #define WEIGHT_HPP_
 
+#include "../Header/Score.hpp"
+
 class Weight
 {
 public:
@@ -17,9 +19,12 @@ public:
     static const Weight MEDIUM();
     static const Weight LARGE();
     static const Weight LUNKER();
+    static const Weight MYTHICAL();
     Weight();
     Weight &operator=(const Weight &rhs);
     Weight(const Weight &rhs);
+    static Weight percentageWeight(const double percent);
+    Score correspondingScore();
 private:
     explicit Weight(int initialValue);
     int value;

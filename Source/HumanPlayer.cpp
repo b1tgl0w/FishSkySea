@@ -15,15 +15,16 @@
 #include "../Header/Ocean.hpp"
 
 HumanPlayer::HumanPlayer(const Point &polePoint, const Point
-    &hookPoint, boost::weak_ptr<Ocean> ocean)
+    &hookPoint, boost::weak_ptr<Ocean> ocean, boost::weak_ptr<Score>
+    score)
 {
     boost::shared_ptr<Line> null;
-    initialize(polePoint, hookPoint, ocean, null);
+    initialize(polePoint, hookPoint, ocean, null, score);
 }
 
-HumanPlayer::HumanPlayer(const HumanPlayer &rhs)
+HumanPlayer::HumanPlayer(const HumanPlayer &rhs) 
 {
-    initialize(rhs.polePoint, rhs.hookPoint, rhs.ocean, rhs.line);
+    initialize(rhs.polePoint, rhs.hookPoint, rhs.ocean, rhs.line, rhs.score);
 }
 
 HumanPlayer &HumanPlayer::operator=(const HumanPlayer &rhs)
@@ -32,7 +33,7 @@ HumanPlayer &HumanPlayer::operator=(const HumanPlayer &rhs)
         return *this;
 
     dispose();
-    initialize(rhs.polePoint, rhs.hookPoint, rhs.ocean, rhs.line);
+    initialize(rhs.polePoint, rhs.hookPoint, rhs.ocean, rhs.line, rhs.score);
 
     return *this;
 }
@@ -43,7 +44,8 @@ HumanPlayer::~HumanPlayer()
 }
 
 void HumanPlayer::initialize(const Point &polePoint, const Point &hookPoint,
-    boost::weak_ptr<Ocean> ocean, const boost::shared_ptr<Line> &line)
+    boost::weak_ptr<Ocean> ocean, const boost::shared_ptr<Line> &line,
+    boost::weak_ptr<Score> score)
 {
     this->polePoint.x = polePoint.x;
     this->polePoint.y = polePoint.y;
@@ -51,6 +53,7 @@ void HumanPlayer::initialize(const Point &polePoint, const Point &hookPoint,
     this->hookPoint.y = hookPoint.y;
     this->ocean = ocean;
     this->line = line;
+    this->score = score;
 }
 
 //Must be called once immediately after ctor
@@ -114,6 +117,12 @@ bool HumanPlayer::filledBucket()
 
 void HumanPlayer::caughtFish(Weight weight)
 {
+    boost::shared_ptr<Score> sharedScore = score.lock();
+    
+    if( !sharedScore )
+        return;
+
+    sharedScore->increase(weight.correspondingScore());
 }
 
 void HumanPlayer::sendCollidable(boost::weak_ptr<Ocean> ocean)

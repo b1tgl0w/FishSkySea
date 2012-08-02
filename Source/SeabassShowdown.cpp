@@ -41,6 +41,7 @@
 #include "../Header/BorderSize.hpp"
 #include "../Header/BorderCell.hpp"
 #include "../Header/BorderCorner.hpp"
+#include "../Header/Score.hpp"
 
 void handleQuit( bool &quit );
 
@@ -65,8 +66,9 @@ int main(int argc, char **argv)
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();
     ocean->loadImage(*(renderer));
+    boost::shared_ptr<Score> score(new Score(0));
     boost::shared_ptr<HumanPlayer> player1(new HumanPlayer(polePoint,
-        hookPoint, ocean));
+        hookPoint, ocean, score));
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
@@ -98,24 +100,38 @@ int main(int argc, char **argv)
     boost::shared_ptr<KeyboardSubscriber> gameSubscriber(game);
     keyboardPublisher->subscribe(gameSubscriber);
     boost::shared_ptr<FitStrategy> clipFit(new ClipFit);
-    boost::shared_ptr<Layout> regularGame(new CoordinateLayout(clipFit));
-    renderer->addLayout(regularGame);
+    boost::shared_ptr<LayeredLayout> layeredLayout(new LayeredLayout(2, clipFit));
+    boost::shared_ptr<CoordinateLayout> oceanLayout(new CoordinateLayout(clipFit));
+    boost::shared_ptr<Layout> superOceanLayout(oceanLayout);
+    layeredLayout->addLayout(superOceanLayout, 0);
+    boost::shared_ptr<BorderLayout> borderLayout(new BorderLayout(
+        BorderSize::Thick()));
+    boost::shared_ptr<Layout> superBorderLayout(borderLayout);
+    layeredLayout->addLayout(superBorderLayout, 1);
+    boost::shared_ptr<GridLayout> gridLayout(new GridLayout(1, 3));
+    boost::shared_ptr<Layout> superGridLayout(gridLayout);
+    borderLayout->addLayout(superGridLayout, BorderCell::Top());
+    boost::shared_ptr<CenterLayout> score1CenterLayout(new CenterLayout(clipFit));
+    Point cell = { 0, 0 };
+    boost::shared_ptr<Layout> superScore1Layout(score1CenterLayout);
+    gridLayout->addLayout(superScore1Layout, cell);
+    boost::shared_ptr<Layout> superLayeredLayout(layeredLayout);
+    renderer->addLayout(superLayeredLayout);
 
     ImageRendererElement background("../Media/Scene3.png", 0,
         backgroundPoint, screenResolution);
     Point textPosition = { 300, 0 };
     Dimension textSize = { 100, 50 };
-    TextRendererElement hey("Hey!", 1, textPosition, textSize);
 
     for( int i = 0; quit == false; ++i)
     {
         masterInputPublisher->pollInput();
         masterClockPublisher->pollClock();
-        player1->draw(regularGame, *renderer);
-        ocean->draw(regularGame, *renderer);
-        shark->draw(regularGame, *renderer);
-        regularGame->drawWhenReady(background);
-        regularGame->drawWhenReady(hey);
+        player1->draw(superOceanLayout, *renderer);
+        ocean->draw(superOceanLayout, *renderer);
+        shark->draw(superOceanLayout, *renderer);
+        oceanLayout->drawWhenReady(background);
+        score->draw(superScore1Layout, *renderer);
         renderer->render();
 
         if( game->shouldQuit() )
@@ -150,8 +166,9 @@ int main(int argc, char **argv)
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();
     ocean->loadImage(*(renderer));
+    boost::shared_ptr<Score> score(new Score(0));
     boost::shared_ptr<HumanPlayer> player1(new HumanPlayer(polePoint,
-        hookPoint, ocean));
+        hookPoint, ocean, score));
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
@@ -239,8 +256,9 @@ int main(int argc, char **argv)
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();
     ocean->loadImage(*(renderer));
+    boost::shared_ptr<Score> score(new Score(0));
     boost::shared_ptr<HumanPlayer> player1(new HumanPlayer(polePoint,
-        hookPoint, ocean));
+        hookPoint, ocean, score));
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
@@ -354,8 +372,9 @@ int main(int argc, char **argv)
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();
     ocean->loadImage(*(renderer));
+    boost::shared_ptr<Score> score(new Score(0));
     boost::shared_ptr<HumanPlayer> player1(new HumanPlayer(polePoint,
-        hookPoint, ocean));
+        hookPoint, ocean, score));
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };

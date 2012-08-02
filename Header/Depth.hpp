@@ -10,6 +10,8 @@
 #ifndef DEPTH_HPP_
 #define DEPTH_HPP_
 
+#include "Weight.hpp"
+
 class Depth
 {
 public:
@@ -27,6 +29,7 @@ public:
     ~Depth();
     bool operator==(const Depth &rhs);
     bool operator<(const Depth &rhs) const;
+    Weight correspondingWeight();
 protected:
     void initialize(int value);
     void dispose();
