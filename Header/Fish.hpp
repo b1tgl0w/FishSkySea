@@ -139,7 +139,7 @@ public:
         Loads fish graphic, and stores in renderer.
     */
     void loadImage(Renderer &renderer);
-    //!Adds fish graphic to layout to be drawn next frame
+    //!Adds fish graphic to layout to be drawn next frame.
     /*!
         \param layout the segment of the screen to draw the fish to.
 
@@ -154,6 +154,18 @@ public:
     //! Called by dtor to do the destruction
     void dispose();
 //Collidable
+    //!Checks for collisions with another object.
+    /*!
+        \param otherObject the object that will react to a collision if there
+        is one.
+
+        \param otherBox bounding rectangle around other object. If fishBox
+        or mouthBox intersects the rectangle, then a collision is detected.
+
+        Checks for collisions with another object. Uses the Double Dispatch
+        pattern. If there is a collision with otherObject, that objects
+        collidesWithFish(...) method will be called.
+    */
     void collidesWith(boost::shared_ptr<Collidable> &otherObject,
         const BoundingBox &otherBox);
     void collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -209,6 +221,18 @@ private:
             const BoundingBox &yourBox);
         void collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox, const Direction &direction);
+        //!Responds to a collision with the surface of the ocean.
+        /*!
+            \param ocean the object that knows where the surface is.
+
+            \param yourBox The fish has two bounding boxes, one for the entire fish
+            body and one for the fish mouth. This tells us where the collision
+            occurred.
+
+            Called by the line when the fish is caught, this method is part of
+            the Double Dispatch pattern. The fish is caught, unregistered with
+            the player and his line, and respawned in the ocean.
+        */
         void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
         void collidesWithShark(boost::shared_ptr<Shark> &shark,
@@ -242,8 +266,32 @@ private:
         virtual ~FreeState();
         void collidesWith(boost::shared_ptr<Collidable> &otherObject,
             const BoundingBox &otherBox);
+        //!Responds to a collision with the hook
+        /*!
+            \param hook player1's or player2's line.
+
+            \param yourBox The fish has two bounding boxes, one for the entire fish
+            body and one for the fish mouth. This tells us where the collision
+            occurred.
+
+            Called by the line when the fish gets hooked, this method is part of
+            the Double Dispatch pattern. This method changes the fish's state
+            to HookedState and registers which line and player hooked the fish.
+        */
         void collidesWithHook(boost::shared_ptr<Line> &hook,
             const BoundingBox &yourBox);
+        //!Responds to a collision with the edge of the swimming area.
+        /*!
+            \param ocean where the fish is allowed to swim.
+
+            \param yourBox The fish has two bounding boxes, one for the entire fish
+            body and one for the fish mouth. This tells us where the collision
+            occurred.
+
+            Called by the ocean when the fish hits edge of screen, this method is 
+            part of the Double Dispatch pattern. When this method is called,
+            the fish will change direction and turn back into the allowed area.
+        */
         void collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox, const Direction &direction);
         void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
