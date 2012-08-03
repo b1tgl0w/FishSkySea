@@ -5,17 +5,11 @@
 //Purpose:  An agenda for your current task
 
 Documentation:  Started adding comments to methods. Left off on
-CoordinateLayout
+CoordinateLayout. Fish incomplete.
 
-Left off on: Text Rendering. Finishing Score and TextRendererElement. 
-Testing layout subsystem
-
-GeneralTask:
-Text Renderering
-
-Specific Steps:
-- Prune unused texts
-- Update calls to Renderer ctor
+Left off on: 
+Testing layout subsystem. Testing text rendering freeing images and reloading
+them.
 
 General Task:
 Screen Layout Documentation

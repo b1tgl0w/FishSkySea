@@ -34,6 +34,11 @@ class Player;
 class Shark;
 struct Point;
 
+//! Bass fish that swims in ocean and gets caught
+/*!
+    Simulates a real-life fish that swims back and forth in the ocean and can
+    be caught by a fisherman or eaten by a shark.
+*/
 class Fish : public SeaCreature, public Graphic, public Collidable,
     public boost::enable_shared_from_this<Fish>
 {
@@ -41,24 +46,112 @@ friend class FishState;
 friend class HookedState;
 friend class FreeState;
 public:
+    //!ctor
     explicit Fish(const Point &initialPosition,
         const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean);
+    //!Copy ctor
     Fish(const Fish &rhs);
+    //!Copy assignment operator
     Fish &operator=(const Fish &rhs);
+    //!dtor
     virtual ~Fish();
+    //! Creates shared_ptr<State> member variables
+    /*!
+        _MUST_ be called IMMEDIATELY after ctor because 
+        boost::shared_from_this() can't be called in the ctor and State
+        members need a shared_ptr to their fish owner or they can't be
+        constructed.
+    */
     void initializeStates(); //_MUST_ be called IMMEDIATELY after ctor
+    //!Swims forward
+    /*!
+        Calls state->swim(...), which varies depending on current state, but
+        essentially swims forward, checks for collisions, and randomly changes
+        direction.
+    */
     void swim(Uint32 elapsedTime);
+    //!Randomly changes direction
+    /*!
+        \param elapsedTime Time that past since last frame
+
+        Calls state->randomAboutFace(...), which varies depending on current
+        state, but essentially changes direction with a higher probability
+        as time goes on.
+    */
     void randomAboutFace(Uint32 elapsedTime);
+    //!Not currently implemented
+    /*!
+        This was in the UML, but it may have become obsolete. It will be
+        either implemented or taken out at a later date.
+    */
     bool isInView(const BoundingBox &visionBox);
+    //!Not currently implemented
+    /*!
+        This was in the UML, but it may have become obsolete. It will be
+        either implemented or taken out at a later date.
+    */
     bool isEaten(const BoundingBox &mouthBox);
+    //!Not currently implemented
+    /*!
+        This was in the UML, but it may have become obsolete. It will be
+        either implemented or taken out at a later date.
+    */
     bool isCaught(const BoundingBox &surfaceBox);
+    //!Register which player/line hooked this fish
+    /*!
+        \param hookedByLine which line hooked the fish.
+
+        \param hookedByPlayer which player hooked the fish.
+
+        Set hookedByLine and hookedByPlayer and change the current state
+        of the fish from FreeState to HookedState.
+    */
     void hookedBy(boost::weak_ptr<Line> hookedByLine,
         boost::weak_ptr<Player> hookedByPlayer);
+    //!Pull line when hooked
+    /*!
+        \param hookPoint the position of the hook before being pulled.
+
+        Calls state->pull(...), which varies depending on current state, but
+        essentailly keeps the hook attached to the mouth of this fish.
+    */
     void pull(const Point &hookPoint);
+    //!Add fish to ocean
+    /*!
+        \param newPosition the depth that the fish was originally at.
+
+        Brings new fish in from beyond the left or right side of screen.
+        Respawns at the depth it was originally at. Returns to FreeState.
+        Mouth position is placed on correct location on fish.
+    */
     void respawn(const Point &newPosition);
+    //!Positions fish on either right or left side of screen
+    /*!
+        Randomly puts fish just out side either the right or left side
+        of screen. Aligns mouth width edge.
+    */
     void positionFromSide();
+    //!Load fish graphic.
+    /*!
+        \param renderer the singleton responsible for drawing and transforming
+        images.
+
+        Loads fish graphic, and stores in renderer.
+    */
     void loadImage(Renderer &renderer);
+    //!Adds fish graphic to layout to be drawn next frame
+    /*!
+        \param layout the segment of the screen to draw the fish to.
+
+        \param renderer the singleton responsible for drawing and transforming
+        images.
+
+        Creates positions and sizes RendererElement for fish graphic, which is
+        sent to the layout and added to the renderer's list of graphics
+        to be drawn next frame.
+    */
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
+    //! Called by dtor to do the destruction
     void dispose();
 //Collidable
     void collidesWith(boost::shared_ptr<Collidable> &otherObject,
