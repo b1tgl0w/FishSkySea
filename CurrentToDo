@@ -4,31 +4,19 @@
 //Modified: 07/01/12
 //Purpose:  An agenda for your current task
 
-Documentation:  Started adding comments to methods. Left off on
-CoordinateLayout. Fish incomplete.
-
 Left off on: 
-Testing layout subsystem. Testing text rendering freeing images and reloading
-them.
 
-General Task:
-Screen Layout Documentation
+General Task: Importing clip shape and glow into main game.
 
 Specific Steps:
-//Done - Complete feature list
-//Done - Decide whether to write more use cases and/or more detailed use cases
-//Done - Answer unanswered questions in the requirements
-//Done - Decide on UI: objects draw themselves or manager (look into Builder pattern)
-//Done - Write sequence diagrams
-- Rewrite rendering sequence diagram
-//Done - Write static class diagram (apart from the other classes)
-//Done - Create a sandbox program for this subsystem, using a copy of the Renderer
-and RendererElement classes (perhaps make an svn branch)
-//Done - In the sandbox program, write the layout interface(done), grid layout class,
-border layout class, layered layout class(done), and coordinate layout class (perhaps
-also a LayoutCell interface/class)
-//Done - Test
-//Done - Update Renderer and RendererElement classes in Bass Derby
-//Done - Merge layout subsystem with Bass Derby and make use of it
-- Test again
+- Improving Experiment efficiency, modularization, etc
+- Design clip shape, glow, and renderer in context of game. (Clip shape and
+glow should be separate so that clip shape can be reused for other graphic
+effects on a sprite)
+- Implement
+- Test with fish.
+
+
+Documentation:  Started adding comments to methods. Left off on
+CoordinateLayout. Fish incomplete.
 

@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     bool quit = false;
     initializeSdl();
     initializeScreen(&screen);
-    fishImage = optimizeImage(loadImage("../../Media/Sloogie.png"));
+    fishImage = optimizeImage(loadImage("../Media/Sloogie.png"));
     //Note: SDL_CreateRGBSurface cannot use screen->flags, etc
     filledRectangle = SDL_CreateRGBSurface(fishImage->flags | SDL_SRCALPHA,
         RECTANGLE_WIDTH, RECTANGLE_HEIGHT, 
@@ -215,7 +215,7 @@ void inverseClipShape(SDL_Surface *source, SDL_Surface *destination, bool
                 destinationGreen = 0x00;
             }
                 
-            if( sourceAlpha == 0xFF && alphaOrKey == ALPHA )
+            if( sourceAlpha > 0x00 && alphaOrKey == ALPHA )
             {
                 destinationRed = 0xFF;
                 destinationBlue = 0xFF;

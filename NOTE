@@ -6,8 +6,21 @@ Left off on fixing bugs
 !!IMPORTANT:Renderer::loadImage(overloaded). Big performance improvement if
 check image has been added to images map before loading it
 
+Organize this list?
+
 When Done:  Make a list of general things you can improve, such as making sure
 public methods should be public.
+
+Test glow on laptop. It looked fine on desktop, but when used laptop, there
+were black dots throughout the sloogie image. Maybe fixed but still needs 
+testing.
+
+Fish should be sized according to their weight.
+
+Layout subsystem needs to be tested more thoroughly.
+
+Convert images with magenta to something similar, as magenta is used as the
+color key for glowing images.
 
 //Look up double dispatch:
 Passing container of "collidable" (working name) objects to the
@@ -290,6 +303,9 @@ about calculating elapsed time outside of class Line. The problem with this
 is that if line state is turned on just before new current ticks is calculated,
 it will still use the elapsed time calculated for the ENTIRE frame. Thus a player
 could hit a key to move the line and it would "jump" a little bit the first frame.
+
+//Done: Test that text surfaces get pruned when not used one frame. Test that
+memory doesn't keep increasing.
 
 DONE Make .h files .hpp, update #include directives, and update repository, using
 svn mv instead of mv.
