@@ -8,23 +8,30 @@
 #ifndef GLOW_RECTANGLE_HPP_
 #define GLOW_RECTANGLE_HPP_
 
+#include <SDL/SDL.h>
+#include "Dimension.hpp"
+
+class GraphicEffect;
+
 class GlowRectangle
 {
 public:
-    GlowRectangle();
+    GlowRectangle(SDL_Surface *baseOffOf, const Dimension &size);
     GlowRectangle(const GlowRectangle &rhs);
     GlowRectangle operator=(const GlowRectangle &rhs);
     void grow(const Dimension &size);
-    void glow(const GraphicEffect &graphicEffect);
+    void clip(GraphicEffect &graphicEffect, SDL_Surface *sprite);
     ~GlowRectangle(); //MUST Free Surface
 private:
+    GlowRectangle();
+    createRectangle();
     SDL_Surface *rectangle;
     Uint32 flags; //From some image, not screen
     Dimension size;
     int bitsPerPixel;
-    Uint32 Rmask; //From some image, not screen
-    Uint32 Gmask; //From some image, not screen
-    Uint32 Bmask; //From some image, not screen
+    Uint32 RMask; //From some image, not screen
+    Uint32 GMask; //From some image, not screen
+    Uint32 BMask; //From some image, not screen
     //Uint32 Amask; 0x00
 };
 
