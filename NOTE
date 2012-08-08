@@ -9,7 +9,7 @@ check image has been added to images map before loading it
 Organize this list?
 
 GraphicEffect:  Try to find another way than a deep copy. If not, make sure
-to always pass const &, but even so, try to avoid a deep copy.
+to always pass const &, but even so, try to avoid a deep copy. Also GlowRectangle
 
 When Done:  Make a list of general things you can improve, such as making sure
 public methods should be public.

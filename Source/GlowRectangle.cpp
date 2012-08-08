@@ -7,34 +7,41 @@
 
 #include "../Header/GlowRectangle.hpp"
 #include "../Header/GraphicEffect.hpp"
+#include "../Header/Renderer.hpp"
 
 //Note: baseOffOf should not be screen
-GlowRectangle::GlowRectangle(SDL_Surface *baseOffOf, const Dimension &size) : 
+GlowRectangle::GlowRectangle(SDL_Surface *baseOffOf, const Dimension &size,
+    const Renderer &renderer) : 
     flags(baseOffOf->flags), bitsPerPixel(baseOffOf->format->BitsPerPixel),
-    size(size), RMask(baseOffOf->RMask), GMask(baseOffOf->GMask), BMask(
-    baseOffOf->BMask)
+    size(size), RMask(baseOffOf->format->Rmask), 
+    GMask(baseOffOf->format->Gmask), BMask(baseOffOf->format->Bmask)
 {
+    glowColor = renderer.makeColor(0xFC, 0xE6, 0x97, 0xFF);
     createRectangle();
 }
 
+//Does a deep copy
 GlowRectangle::GlowRectangle(const GlowRectangle &rhs) : 
-    rectangle(rhs.rectangle), flags(rhs.flags), bitsPerPixel(rhs.bitsPerPixel), 
-    size(rhs.size), RMask(rhs.RMask), GMask(rhs.GMask), BMask(rhs.BMask)
+    rectangle(SDL_DisplayFormatAlpha(rhs.rectangle)), flags(rhs.flags), 
+    bitsPerPixel(rhs.bitsPerPixel), size(rhs.size), RMask(rhs.RMask), 
+    GMask(rhs.GMask), BMask(rhs.BMask), glowColor(rhs.glowColor)
 {
 }
 
-GlowRectangle::GlowRectangle operator=(const GlowRectangle &rhs)
+//Does a deep copy
+GlowRectangle GlowRectangle::operator=(const GlowRectangle &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    rectangle = rhs.rectangle;
+    rectangle = SDL_DisplayFormatAlpha(rhs.rectangle);
     flags = rhs.flags;
     bitsPerPixel = rhs.bitsPerPixel;
     size = rhs.size;
     RMask = rhs.RMask;
     GMask = rhs.GMask;
     BMask = rhs.BMask;
+    glowColor = rhs.glowColor;
 
     return *this;
 }
@@ -75,11 +82,10 @@ GlowRectangle::~GlowRectangle()
 //Note: Does NOT free surface first
 void GlowRectangle::createRectangle()
 {
-    const Uint32 GLOW_COLOR = SDL_MapRGBA(0xFC, 0xE6, 0x97, 0xFF);
     SDL_Rect surfaceRect = { 0, 0, size.width, size.height };
-    rectangle = SDL_CreateRGBSurface(flags | SDL_SRC_ALPHA, size.width, 
+    rectangle = SDL_CreateRGBSurface(flags | SDL_SRCALPHA, size.width, 
     size.height, bitsPerPixel, RMask, GMask, BMask, 0x00);
-    SDL_SetAlpha(SDL_SRC_ALPHA, rectangle, 0xFF);
-    SDL_FillRect(rectangle, &surfaceRect, GLOW_COLOR);
+    SDL_SetAlpha(rectangle, SDL_SRCALPHA, 0xFF);
+    SDL_FillRect(rectangle, &surfaceRect, glowColor);
 }
 

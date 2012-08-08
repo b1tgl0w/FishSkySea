@@ -31,6 +31,8 @@
 struct Point;
 struct Dimension;
 class Transformation;
+class GraphicEffect;
+class GlowRectangle;
 class Renderer : public Layout,
     public boost::enable_shared_from_this<Renderer>
 {
@@ -74,7 +76,7 @@ public:
     void moveBy(const Point &offset); //No-op
     void addLayout(boost::shared_ptr<Layout> &layout);
     void own(const boost::weak_ptr<Layout> &owner);
-    Uint32 makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha);
+    Uint32 makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha) const;
 protected:
     Renderer();
     //Must be called by derived classes
@@ -91,6 +93,7 @@ private:
     template <typename T>
     void scaleImage(SDL_Surface *image, SDL_Surface *scaled, const
         DimensionPercent &dimensionPercent);
+    void glowImage(std::string &key, SDL_Surface *image);
     std::string makeKey(const std::string &path, const Transformation 
         &transformation, const Dimension &size, const Dimension &originalSize);
     SDL_Surface *optimizeImage(SDL_Surface *unoptimizedImage);
@@ -116,6 +119,7 @@ private:
     std::set<std::string> texts;
     std::map<std::string, SDL_Color> textColors;
     std::map<std::string, int> textBorderSizes;
+    std::map<std::string, boost::shared_ptr<GraphicEffect> > graphicEffects;
     std::list<std::string> unusedKeys;
     std::list<std::string> unusedTexts;
     std::list<boost::shared_ptr<Layout> > layouts;
@@ -123,6 +127,7 @@ private:
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher;
     TTF_Font *font;
     std::string fontPath;
+    boost::shared_ptr<GlowRectangle> glowRectangle;
     //Constants
     static const std::string &TRANSFORMATION_KEY();
     static const std::string &WIDTH_KEY();

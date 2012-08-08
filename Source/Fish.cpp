@@ -73,7 +73,7 @@ const Uint32 &Fish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 Fish::Fish(const Point &initialPosition,
     const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean)
 {
-    initialize(initialPosition, initialDepth, ocean);
+    initialize(initialPosition, initialDepth, ocean, false);
 }
 
 Fish::Fish(const Fish &rhs)
@@ -82,7 +82,7 @@ Fish::Fish(const Fish &rhs)
 
     //Make sure if any shared_ptr's are added that they are also check in this if
     if( tmpOcean )
-        initialize(*(rhs.position), rhs.startingDepth, tmpOcean);
+        initialize(*(rhs.position), rhs.startingDepth, tmpOcean, rhs.glowing);
     //Else throw exception?
 }
 
@@ -97,7 +97,7 @@ Fish &Fish::operator=(const Fish &rhs)
     if( tmpOcean ) 
     {
         dispose();
-        initialize(*(rhs.position), rhs.startingDepth, tmpOcean);
+        initialize(*(rhs.position), rhs.startingDepth, tmpOcean, rhs.glowing);
     }
     //Else throw exception?
 
@@ -105,7 +105,7 @@ Fish &Fish::operator=(const Fish &rhs)
 }
 
 void Fish::initialize(const Point &newPosition,
-    const Depth &newDepth, boost::shared_ptr<Ocean> &ocean)
+    const Depth &newDepth, boost::shared_ptr<Ocean> &ocean, bool glowing)
 {
     //The below hack is used because the shared pointer is not initialized
     // in the initialization block of the ctor. The shared_ptr assignment
@@ -125,6 +125,7 @@ void Fish::initialize(const Point &newPosition,
     BoundingBox tmpMouthBox(mouthPosition, tmpMouthSize);
     fishBox = tmpFishBox;
     mouthBox = tmpMouthBox;
+    this->glowing = glowing;
     resetTimes(); //Also sets shouldResetTime
 }
 
@@ -222,24 +223,28 @@ void Fish::positionFromSide()
 
 void Fish::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
+    Transformation transformations;
+    ImageRendererElement re(IMAGE_PATH(),
+        LAYER().integer(), *(position), SIZE());
+
     if( facing == Direction::RIGHT() )
-    {
-        ImageRendererElement re(IMAGE_PATH(),
-            LAYER().integer(), *(position), SIZE());
-        re.transform(Transformation::FlipHorizontal());
-        layout->drawWhenReady(re);
-    }
-    else
-    {
-        ImageRendererElement re(IMAGE_PATH(),
-            LAYER().integer(), *(position), SIZE());
-        layout->drawWhenReady(re);
-    }
+        transformations = transformations | Transformation::FlipHorizontal();
+
+    if( glowing )
+        transformations = transformations | Transformation::Glow();
+
+    re.transform(transformations);
+    layout->drawWhenReady(re);
 }
 
 void Fish::loadImage(Renderer &renderer)
 {
     renderer.loadImage(IMAGE_PATH());
+}
+
+void Fish::glow()
+{
+    glowing = true;
 }
 
 void Fish::changeState(boost::shared_ptr<FishState> &newState)
@@ -326,6 +331,7 @@ void Fish::respawn(const Point &newPosition)
     positionFromSide();
     position->y = newPosition.y;
     updateMouthPosition();
+    glowing = false;
 }
 
 void Fish::hitEdge(const Direction &direction)

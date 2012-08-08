@@ -139,6 +139,7 @@ public:
         Loads fish graphic, and stores in renderer.
     */
     void loadImage(Renderer &renderer);
+    void glow();
     //!Adds fish graphic to layout to be drawn next frame.
     /*!
         \param layout the segment of the screen to draw the fish to.
@@ -189,7 +190,7 @@ public:
 protected:
     Fish();
     void initialize(const Point &newPosition,
-        const Depth &newDepth, boost::shared_ptr<Ocean> &ocean);
+        const Depth &newDepth, boost::shared_ptr<Ocean> &ocean, bool glowing);
 private:
     class FishState : public Collidable
     {
@@ -340,6 +341,7 @@ private:
     Uint32 timeSinceIsTightAboutFace;
     Depth startingDepth;
     bool shouldResetTimes;
+    bool glowing;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

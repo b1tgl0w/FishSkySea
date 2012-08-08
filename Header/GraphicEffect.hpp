@@ -25,22 +25,20 @@ public:
     void glow(SDL_Surface *originalSprite, SDL_Surface *glowingSprite);
     void clipGlowRectangle(SDL_Surface *glowRectangle, SDL_Surface *sprite);
     void clockTick(Uint32 elapsedTime);
-    static Uint32 &COLOR_KEY();
 private:
     GraphicEffect();
     void applySurface(SDL_Surface *source, SDL_Surface *destination);
     void inverseClipShape(SDL_Surface *source, SDL_Surface *destination,
         bool alphaOrKey);
-    clipShape(SDL_Surface *toClip);
     boost::shared_ptr<GlowRectangle> glowRectangle;
     SDL_Surface *inverseSprite;
     SDL_Surface *inverseGlowRectangle;
     Uint32 alpha;
     int alphaDirection;
-    const bool ALPHA = true;
-    const bool COLOR_KEY = false;
-    static short ALPHA_MIN = 0x11;
-    static short ALPHA_MAX = 0x99;
+    static const bool ALPHAD;
+    static const bool COLOR_KEYED;
+    static const int ALPHA_MIN;
+    static const int ALPHA_MAX;
 };
 
 #endif

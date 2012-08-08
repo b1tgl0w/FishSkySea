@@ -8,16 +8,18 @@
 #include "../Header/GraphicEffect.hpp"
 #include "../Header/GlowRectangle.hpp"
 
-static Uint32 &GraphicEffect::COLOR_KEY()
-{
-    static Uint32 TMP_COLOR_KEY = SDL_MapRGB(0xFF, 0x00, 0xFF);
-    return TMP_COLOR_KEY;
-}
+const bool GraphicEffect::ALPHAD = true;
+const bool GraphicEffect::COLOR_KEYED = false;
+const int GraphicEffect::ALPHA_MIN = 0x11;
+const int GraphicEffect::ALPHA_MAX = 0x99;
 
 GraphicEffect::GraphicEffect(boost::shared_ptr<GlowRectangle> &glowRectangle,
-    SDL_Surface *sprite) : glowRectangle(glowRectangle), alphaDirection(1)
+    SDL_Surface *sprite) : glowRectangle(glowRectangle), alpha(ALPHA_MIN),
+    alphaDirection(1)
 {
-    glowRectangle->glow(*this, sprite); //inits inverseSprite and inverseGlowRct
+    inverseGlowRectangle = 0x00;
+    inverseSprite = 0x00;
+    glowRectangle->clip(*this, sprite); //inits inverseSprite and inverseGlowRct
 }
 
 //Deep copy since not using shared_ptrs
@@ -62,10 +64,15 @@ void GraphicEffect::glow(SDL_Surface *originalSprite, SDL_Surface
 void GraphicEffect::clipGlowRectangle(SDL_Surface *glowRectangle,
     SDL_Surface *sprite)
 {
-    inverseClipShape(sprite, glowRectangle, ALPHA());
-    inverseGlowRectangle = SDL_DisplayFormatAlpha(glowRectangle);
-    SDL_SetColorKey(inverseGlowRectangle, SDL_SRCCOLORKEY, COlOR_KEY());
-    inverseClipShape(inverseSprite, inverseGlowRectangle);
+    const Uint32 COLOR_KEY = SDL_MapRGB(sprite->format, 0xFF, 0x00, 0xFF);
+    if( !inverseGlowRectangle )
+        inverseGlowRectangle = SDL_DisplayFormatAlpha(glowRectangle);
+    if( !inverseSprite )
+        inverseSprite = SDL_DisplayFormatAlpha(glowRectangle);
+    SDL_SetColorKey(inverseSprite, SDL_SRCCOLORKEY, COLOR_KEY);
+    SDL_SetColorKey(inverseGlowRectangle, SDL_SRCCOLORKEY, COLOR_KEY);
+    inverseClipShape(sprite, inverseSprite, ALPHAD);
+    inverseClipShape(inverseSprite, inverseGlowRectangle, COLOR_KEYED);
 }
 
 void GraphicEffect::clockTick(Uint32 elapsedTime)
@@ -122,14 +129,14 @@ void GraphicEffect::inverseClipShape(SDL_Surface *source,
             if( sourceRed == 0xFF && sourceBlue == 0xFF && sourceGreen == 0x00 )
             {
             }
-            else if( alphaOrKey == COLOR_KEY )
+            else if( alphaOrKey == COLOR_KEYED )
             {
                 destinationRed = 0xFF;
                 destinationBlue = 0xFF;
                 destinationGreen = 0x00;
             }
                 
-            if( sourceAlpha > 0x00 && alphaOrKey == ALPHA )
+            if( sourceAlpha > 0x00 && alphaOrKey == ALPHAD )
             {
                 destinationRed = 0xFF;
                 destinationBlue = 0xFF;
@@ -141,7 +148,7 @@ void GraphicEffect::inverseClipShape(SDL_Surface *source,
                 destinationGreen, destinationBlue, destinationAlpha);
         }
     }
-    :
+    
     SDL_UnlockSurface(source);
     SDL_UnlockSurface(destination);
 }

@@ -45,9 +45,19 @@ Transformation Transformation::FlipHorizontal()
     return Transformation(1 << 1);
 }
 
+Transformation Transformation::Glow()
+{
+    return Transformation(1 << 2);
+}
+
 Transformation Transformation::operator|(const Transformation &rhs) const
 {
     return Transformation(value | rhs.value);
+}
+
+Transformation Transformation::operator^(const Transformation &rhs) const
+{
+    return Transformation(value ^ rhs.value);
 }
 
 bool Transformation::has(const Transformation &rhs) const

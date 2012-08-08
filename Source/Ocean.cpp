@@ -125,6 +125,7 @@ void Ocean::initializeSharedFromThis()
     masterClockPublisher->subscribe(subscriber4);
     masterClockPublisher->subscribe(subscriber5);
     masterClockPublisher->subscribe(subscriber6);
+    fish6->glow(); //test. delete
     fishes.push_back(fish1);
     fishes.push_back(fish2);
     fishes.push_back(fish3);

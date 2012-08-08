@@ -12,11 +12,13 @@
 #include "Dimension.hpp"
 
 class GraphicEffect;
+class Renderer;
 
 class GlowRectangle
 {
 public:
-    GlowRectangle(SDL_Surface *baseOffOf, const Dimension &size);
+    GlowRectangle(SDL_Surface *baseOffOf, const Dimension &size,
+        const Renderer &renderer);
     GlowRectangle(const GlowRectangle &rhs);
     GlowRectangle operator=(const GlowRectangle &rhs);
     void grow(const Dimension &size);
@@ -24,7 +26,7 @@ public:
     ~GlowRectangle(); //MUST Free Surface
 private:
     GlowRectangle();
-    createRectangle();
+    void createRectangle();
     SDL_Surface *rectangle;
     Uint32 flags; //From some image, not screen
     Dimension size;
@@ -32,6 +34,7 @@ private:
     Uint32 RMask; //From some image, not screen
     Uint32 GMask; //From some image, not screen
     Uint32 BMask; //From some image, not screen
+    Uint32 glowColor;
     //Uint32 Amask; 0x00
 };
 

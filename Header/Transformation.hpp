@@ -21,7 +21,9 @@ public:
     static Transformation None();
     static Transformation FlipVertical();
     static Transformation FlipHorizontal();
+    static Transformation Glow();
     Transformation operator|(const Transformation &rhs) const;
+    Transformation operator^(const Transformation &rhs) const;
     bool has(const Transformation &rhs) const;
     std::string tellTransformations() const;
     bool operator==(const Transformation &rhs) const;

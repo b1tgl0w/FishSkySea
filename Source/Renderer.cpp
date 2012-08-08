@@ -13,6 +13,8 @@
 #include "../Header/Renderer.hpp"
 #include "../Header/Transformation.hpp"
 #include "../Header/StringUtility.hpp"
+#include "../Header/GraphicEffect.hpp"
+#include "../Header/GlowRectangle.hpp"
 
 const std::string &Renderer::TRANSFORMATION_KEY()
 {
@@ -238,6 +240,9 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
             manipulatedImage = SDL_DisplayFormatAlpha(unmanipulatedImage);
 
         transformImage(manipulatedImage, transformation);
+
+        if( transformation.has(Transformation::Glow()) )
+            glowImage(key, manipulatedImage);
     }
 
     loadImage(key, manipulatedImage);
@@ -398,6 +403,7 @@ void Renderer::own(const boost::weak_ptr<Layout> &owner)
 }
 
 Uint32 Renderer::makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
+    const
 {
     return SDL_MapRGBA(screen->format, red, green, blue, alpha);
 }
@@ -413,7 +419,7 @@ std::string Renderer::makeKey(const std::string &path, const Transformation
         key += TRANSFORMATION_KEY();
         key += t;
     }
-
+    
     if( ceil(size.width) != ceil(originalSize.width) )
     {
         key += WIDTH_KEY();
@@ -456,6 +462,17 @@ SDL_Surface *Renderer::whatShouldIDraw(const std::string &path,
 
     if( images.count(key) < 1 )
         return NULL;
+
+    if( transformation.has(Transformation::Glow()) )
+    {
+        Transformation nonGlowingTransformation = 
+            transformation ^ Transformation::Glow();
+        std::string nonGlowingKey = makeKey(path, nonGlowingTransformation,
+            size, originalSize);
+        graphicEffects.find(key)->second->glow(images.find(
+            nonGlowingKey)->second, images.find(key)->second);
+        return images.find(key)->second;
+    }
 
     return images.find(key)->second;
 }
@@ -513,6 +530,28 @@ void Renderer::scaleImagePercent(SDL_Surface *image,
         scaleImage<Uint16>(image, scaled, dimensionPercent);
     else if( bitsPerPixel == 8 )
         scaleImage<Uint8>(image, scaled, dimensionPercent);
+}
+
+void Renderer::glowImage(std::string &key, SDL_Surface *image)
+{
+    if( graphicEffects.count(key) >= 1 )
+        return;
+
+    if( !glowRectangle )
+    {
+        Dimension imageSize = { image->w, image->h };
+        boost::shared_ptr<GlowRectangle> tmpGlowRectangle(new GlowRectangle(
+            image, imageSize, *this));
+        glowRectangle = tmpGlowRectangle;
+    }
+
+    Dimension growTo = { image->w, image->h };
+
+    glowRectangle->grow(growTo);
+    boost::shared_ptr<GraphicEffect> tmpGraphicEffect(new GraphicEffect(
+        glowRectangle, image));
+    graphicEffects.insert(std::pair<std::string, boost::shared_ptr<
+        GraphicEffect> >(key, tmpGraphicEffect));
 }
 
 void Renderer::pruneUnusedManipulations()
