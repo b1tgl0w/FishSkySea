@@ -8,8 +8,15 @@ check image has been added to images map before loading it
 
 Organize this list?
 
+GlowRectangle is useless.
+
+Bug: GlowAlpha value is per image, not per object
+
 GraphicEffect:  Try to find another way than a deep copy. If not, make sure
 to always pass const &, but even so, try to avoid a deep copy. Also GlowRectangle
+
+BUG: All images are manipulated. Instead, some should only be loaded and not
+scaled.
 
 When Done:  Make a list of general things you can improve, such as making sure
 public methods should be public.

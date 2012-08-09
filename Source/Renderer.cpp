@@ -15,6 +15,8 @@
 #include "../Header/StringUtility.hpp"
 #include "../Header/GraphicEffect.hpp"
 #include "../Header/GlowRectangle.hpp"
+#include "../Header/MasterClockPublisher.hpp"
+#include "../Header/MasterClockSubscriber.hpp"
 
 const std::string &Renderer::TRANSFORMATION_KEY()
 {
@@ -550,6 +552,10 @@ void Renderer::glowImage(std::string &key, SDL_Surface *image)
     glowRectangle->grow(growTo);
     boost::shared_ptr<GraphicEffect> tmpGraphicEffect(new GraphicEffect(
         glowRectangle, image));
+    MasterClockPublisher *masterClockPublisher = 
+        MasterClockPublisher::getInstance();
+    boost::shared_ptr<MasterClockSubscriber> graphicEffectSubscriber(tmpGraphicEffect);
+    masterClockPublisher->subscribe(graphicEffectSubscriber);
     graphicEffects.insert(std::pair<std::string, boost::shared_ptr<
         GraphicEffect> >(key, tmpGraphicEffect));
 }

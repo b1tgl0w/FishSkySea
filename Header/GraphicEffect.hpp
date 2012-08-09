@@ -14,7 +14,7 @@
 
 class GlowRectangle;
 
-class GraphicEffect : MasterClockSubscriber
+class GraphicEffect : public MasterClockSubscriber
 {
 public:
     GraphicEffect(boost::shared_ptr<GlowRectangle> &glowRectangle,
@@ -33,8 +33,8 @@ private:
     boost::shared_ptr<GlowRectangle> glowRectangle;
     SDL_Surface *inverseSprite;
     SDL_Surface *inverseGlowRectangle;
-    Uint32 alpha;
-    int alphaDirection;
+    double alpha;
+    double alphaDirection;
     static const bool ALPHAD;
     static const bool COLOR_KEYED;
     static const int ALPHA_MIN;
