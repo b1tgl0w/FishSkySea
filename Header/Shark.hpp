@@ -45,6 +45,7 @@ public:
     void randomAboutFace(Uint32 elapsedTime);
     bool shouldEatFish(BoundingBox fishBox);
     void seeFish();
+    void eat(bool glowing);
     void loadImage(Renderer &renderer);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
 //Collidable
@@ -115,6 +116,41 @@ private:
         boost::weak_ptr<Shark> sharkOwner; //Beware of cyclic ptrs
     };
 
+    /*class GlowState : public SharkState
+    {
+    friend class Shark;
+    public:
+        GlowState();
+        GlowState(boost::weak_ptr<Shark> sharkOwner);
+        GlowState(const GlowState &rhs);
+        GlowState &operator=(const GlowState &rhs);
+        void swim(Uint32 elapsedTime);
+        virtual ~GlowState();
+        //Collidable
+        void collidesWith(boost::shared_ptr<Collidable> &object,
+            const BoundingBox &otherBox);
+        void collidesWithHook(boost::shared_ptr<Line> &hook,
+            const BoundingBox &yourBox);
+        void collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
+            const BoundingBox &yourBox, const Direction &direction);
+        void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
+            const BoundingBox &yourBox);
+        void collidesWithShark(boost::shared_ptr<Shark> &shark,
+            const BoundingBox &yourBox);
+        void collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
+            const BoundingBox &yourBox);
+        void collidesWithFish(boost::shared_ptr<Fish> &fish,
+            const BoundingBox &yourBox);
+        void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
+            const BoundingBox &yourBox);
+    protected:
+        void initialize(boost::weak_ptr<Shark> sharkOwner);
+        void dispose();
+    private:
+        double calculatePixelsLeft(Uint32 elapsedTime);
+        boost::weak_ptr<Shark> sharkOwner; //Beware of cyclic ptrs
+    };*/
+
     class PatrolState : public SharkState
     {
     friend class Shark;
@@ -160,6 +196,7 @@ private:
     void calmDown();
     boost::shared_ptr<SharkState> state;
     boost::shared_ptr<AttackState> attackState;
+    //boost::shared_ptr<GlowState> glowState;
     boost::shared_ptr<PatrolState> patrolState;
     boost::weak_ptr<Ocean> ocean;
     boost::shared_ptr<Point> position;

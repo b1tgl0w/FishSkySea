@@ -99,13 +99,16 @@ void Shark::initializeStates()
 {
     boost::shared_ptr<AttackState> tmpAttackState(
         new AttackState(shared_from_this()));
+    //boost::shared_ptr<GlowState> tmpGlowState(
+        //new GlowState(shared_from_this()));
     boost::shared_ptr<PatrolState> tmpPatrolState(
         new PatrolState(shared_from_this()));
 
-    if( !tmpAttackState || !tmpPatrolState )
+    if( !tmpAttackState /*|| !tmpGlowState*/ || !tmpPatrolState )
         return; //Throw exception
         
     attackState = tmpAttackState;
+    //glowState = tmpGlowState;
     patrolState = tmpPatrolState;
     state = patrolState;
 }
@@ -165,6 +168,15 @@ void Shark::seeFish()
     continueAttack = true;
     boost::shared_ptr<SharkState> sharkState(attackState);
     changeState(sharkState);
+}
+
+void Shark::eat(bool glowing)
+{
+    if( glowing == true )
+    {
+        //boost::shared_ptr<SharkState> sharkState(glowState);
+        //changeState(sharkState);
+    }
 }
 
 void Shark::loadImage(Renderer &renderer)
@@ -606,4 +618,81 @@ void Shark::PatrolState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
 {
     //No-op
 }
+
+/*Shark::GlowState::GlowState()
+{
+}
+
+Shark::GlowState::GlowState(boost::weak_ptr<Shark> sharkOwner)
+{
+}
+
+Shark::GlowState::GlowState(const GlowState &rhs)
+{
+}
+
+Shark::GlowState &Shark::GlowState::operator=(const GlowState &rhs)
+{
+}
+
+void Shark::GlowState::swim(Uint32 elapsedTime)
+{
+}
+
+Shark::GlowState::~GlowState()
+{
+}
+
+//Collidable
+void Shark::GlowState::collidesWith(boost::shared_ptr<Collidable> &object,
+    const BoundingBox &otherBox)
+{
+}
+
+void Shark::GlowState::collidesWithHook(boost::shared_ptr<Line> &hook,
+    const BoundingBox &yourBox)
+{
+}
+
+void Shark::GlowState::collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox, const Direction &direction)
+{
+}
+
+void Shark::GlowState::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+}
+
+void Shark::GlowState::collidesWithShark(boost::shared_ptr<Shark> &shark,
+    const BoundingBox &yourBox)
+{
+}
+
+void Shark::GlowState::collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
+    const BoundingBox &yourBox)
+{
+}
+
+void Shark::GlowState::collidesWithFish(boost::shared_ptr<Fish> &fish,
+    const BoundingBox &yourBox)
+{
+}
+
+void Shark::GlowState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
+    const BoundingBox &yourBox)
+{
+}
+
+void Shark::GlowState::initialize(boost::weak_ptr<Shark> sharkOwner)
+{
+}
+
+void Shark::GlowState::dispose()
+{
+}
+
+double Shark::GlowState::calculatePixelsLeft(Uint32 elapsedTime)
+{
+}*/
 

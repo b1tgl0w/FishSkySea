@@ -4,18 +4,12 @@
 //Modified: 07/01/12
 //Purpose:  An agenda for your current task
 
-Left off on: Testing glowing.
+Left off on: Implementing Shark::GlowState. Uncomment areas where GlowState
+is used.
 
-General Task: Importing clip shape and glow into main game.
+General Task: Shark Glow.
 
-Specific Steps:
-//Done? - Improving Experiment efficiency, modularization, etc
-//Done - Design clip shape, glow, and renderer in context of game. (Clip shape and
-glow should be separate so that clip shape can be reused for other graphic
-effects on a sprite)
-//Done - Implement
-- Test with fish.
-
+Side Note: Test Glowing
 
 Documentation:  Started adding comments to methods. Left off on
 CoordinateLayout. Fish incomplete.
