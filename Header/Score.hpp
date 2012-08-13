@@ -21,7 +21,7 @@ public:
     Score(int initialScore);
     Score(const Score &rhs);
     Score &operator=(const Score &rhs);
-    void increase(const Score &score);
+    void increase(const Score &score, bool glowing);
     void reset();
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);

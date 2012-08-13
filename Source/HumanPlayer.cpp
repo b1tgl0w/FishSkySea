@@ -115,14 +115,14 @@ bool HumanPlayer::filledBucket()
 {
 }
 
-void HumanPlayer::caughtFish(Weight weight)
+void HumanPlayer::caughtFish(Weight weight, bool glowing)
 {
     boost::shared_ptr<Score> sharedScore = score.lock();
     
     if( !sharedScore )
         return;
 
-    sharedScore->increase(weight.correspondingScore());
+    sharedScore->increase(weight.correspondingScore(), glowing);
 }
 
 void HumanPlayer::sendCollidable(boost::weak_ptr<Ocean> ocean)

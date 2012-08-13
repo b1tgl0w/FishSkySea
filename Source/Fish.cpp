@@ -811,7 +811,8 @@ void Fish::HookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean
         if( !sharedOcean || !sharedHookedByLine || !sharedHookedByPlayer)
             return;
 
-        sharedHookedByPlayer->caughtFish(sharedFishOwner->calculateWeight());
+        sharedHookedByPlayer->caughtFish(sharedFishOwner->calculateWeight(),
+            sharedFishOwner->glowing);
         sharedHookedByLine->offHook();
         sharedOcean->addFish(sharedFishOwner, sharedFishOwner->startingDepth);
     }

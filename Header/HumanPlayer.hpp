@@ -37,7 +37,7 @@ public:
     void lengthenPole(bool on);
     void shortenPole(bool on);
     bool filledBucket();
-    void caughtFish(Weight weight);
+    void caughtFish(Weight weight, bool glowing);
     void sendCollidable(boost::weak_ptr<Ocean> ocean);
     //KeyboardSubscriber
     void keyPressed(const SDLKey &key);

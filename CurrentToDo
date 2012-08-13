@@ -4,17 +4,16 @@
 //Modified: 07/01/12
 //Purpose:  An agenda for your current task
 
-Left off on: Fixing bug that causes a different glow alpha per image, not 
-per object. Removing GlowRectangle from code because it's useless.
+Left off on: Testing glowing.
 
 General Task: Importing clip shape and glow into main game.
 
 Specific Steps:
-- Improving Experiment efficiency, modularization, etc
+//Done? - Improving Experiment efficiency, modularization, etc
 //Done - Design clip shape, glow, and renderer in context of game. (Clip shape and
 glow should be separate so that clip shape can be reused for other graphic
 effects on a sprite)
-- Implement
+//Done - Implement
 - Test with fish.
 
 

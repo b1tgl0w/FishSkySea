@@ -30,6 +30,7 @@ private:
     void applySurface(SDL_Surface *source, SDL_Surface *destination);
     void inverseClipShape(SDL_Surface *source, SDL_Surface *destination,
         bool alphaOrKey);
+    double syncAlpha();
     boost::shared_ptr<GlowRectangle> glowRectangle;
     SDL_Surface *inverseSprite;
     SDL_Surface *inverseGlowRectangle;

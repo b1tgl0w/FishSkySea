@@ -6,8 +6,10 @@
 //This program is distributed under the terms of the GNU General Public License
 
 #include <iostream> //delete
+#include <cmath>
 #include "../Header/GraphicEffect.hpp"
 #include "../Header/GlowRectangle.hpp"
+#include "../Header/MasterClockPublisher.hpp"
 
 const bool GraphicEffect::ALPHAD = true;
 const bool GraphicEffect::COLOR_KEYED = false;
@@ -15,8 +17,8 @@ const int GraphicEffect::ALPHA_MIN = 0x11;
 const int GraphicEffect::ALPHA_MAX = 0x99;
 
 GraphicEffect::GraphicEffect(boost::shared_ptr<GlowRectangle> &glowRectangle,
-    SDL_Surface *sprite) : glowRectangle(glowRectangle), alpha(ALPHA_MIN),
-    alphaDirection(.1)
+    SDL_Surface *sprite) : glowRectangle(glowRectangle), alpha(syncAlpha()),
+    alphaDirection(.15)
 {
     inverseGlowRectangle = 0x00;
     inverseSprite = 0x00;
@@ -159,5 +161,14 @@ void GraphicEffect::inverseClipShape(SDL_Surface *source,
     
     SDL_UnlockSurface(source);
     SDL_UnlockSurface(destination);
+}
+
+double GraphicEffect::syncAlpha()
+{
+    MasterClockPublisher *masterClockPublisher =
+        MasterClockPublisher::getInstance();
+    Uint32 age = masterClockPublisher->age();
+    return ((int) round(age * alphaDirection)) % (ALPHA_MAX - ALPHA_MIN) + 
+        ALPHA_MIN;
 }
 

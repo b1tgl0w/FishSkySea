@@ -98,3 +98,8 @@ Uint32 MasterClockPublisher::calculateElapsedTime()
     return currentTicks - lastTicks;
 }
 
+Uint32 MasterClockPublisher::age()
+{
+    return currentTicks;
+}
+

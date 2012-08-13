@@ -24,6 +24,7 @@ public:
     void pollClock(); //Shall be called every frame
     void subscribe(boost::shared_ptr<MasterClockSubscriber> &subscriber);
     void unsubscribe(boost::shared_ptr<MasterClockSubscriber> &subscriber);
+    Uint32 age();
     ~MasterClockPublisher();
 private:
     MasterClockPublisher();
