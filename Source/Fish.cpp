@@ -835,6 +835,7 @@ void Fish::HookedState::collidesWithShark(boost::shared_ptr<Shark> &shark,
         if( !sharedOcean || !sharedHookedByLine)
             return;
 
+        shark->eat(sharedFishOwner->glowing);
         sharedHookedByLine->offHook();
         sharedOcean->addFish(sharedFishOwner, sharedFishOwner->startingDepth);
     }

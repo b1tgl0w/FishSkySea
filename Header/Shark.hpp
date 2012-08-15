@@ -116,7 +116,7 @@ private:
         boost::weak_ptr<Shark> sharkOwner; //Beware of cyclic ptrs
     };
 
-    /*class GlowState : public SharkState
+    class GlowState : public SharkState
     {
     friend class Shark;
     public:
@@ -149,7 +149,7 @@ private:
     private:
         double calculatePixelsLeft(Uint32 elapsedTime);
         boost::weak_ptr<Shark> sharkOwner; //Beware of cyclic ptrs
-    };*/
+    };
 
     class PatrolState : public SharkState
     {
@@ -196,7 +196,7 @@ private:
     void calmDown();
     boost::shared_ptr<SharkState> state;
     boost::shared_ptr<AttackState> attackState;
-    //boost::shared_ptr<GlowState> glowState;
+    boost::shared_ptr<GlowState> glowState;
     boost::shared_ptr<PatrolState> patrolState;
     boost::weak_ptr<Ocean> ocean;
     boost::shared_ptr<Point> position;

@@ -69,19 +69,19 @@ void GraphicEffect::clipGlowRectangle(SDL_Surface *glowRectangle,
 {
     if( !inverseSprite )
         inverseSprite = SDL_CreateRGBSurface(sprite->flags | SDL_SRCALPHA,
-        glowRectangle->w, glowRectangle->h, sprite->format->BitsPerPixel,
+        sprite->w, sprite->h, sprite->format->BitsPerPixel,
         sprite->format->Rmask, sprite->format->Gmask, sprite->format->Bmask,
         0x00);
     if( !inverseGlowRectangle )
         inverseGlowRectangle = SDL_CreateRGBSurface(sprite->flags | SDL_SRCALPHA,
-        glowRectangle->w, glowRectangle->h, sprite->format->BitsPerPixel,
+        sprite->w, sprite->h, sprite->format->BitsPerPixel,
         sprite->format->Rmask, sprite->format->Gmask, sprite->format->Bmask,
         0x00);
     const Uint32 COLOR_KEY = SDL_MapRGB(inverseSprite->format, 0xFF, 0x00, 0xFF);
     Uint32 yellow = SDL_MapRGB(inverseSprite->format, 0xFC, 0xE6, 0x97);
     SDL_SetColorKey(inverseSprite, SDL_SRCCOLORKEY, COLOR_KEY);
     SDL_SetColorKey(inverseGlowRectangle, SDL_SRCCOLORKEY, COLOR_KEY);
-    SDL_Rect rect = { 0, 0, glowRectangle->w, glowRectangle->h };
+    SDL_Rect rect = { 0, 0, sprite->w, sprite->h };
     SDL_FillRect(inverseSprite, &rect, yellow);
     inverseClipShape(sprite, inverseSprite, ALPHAD);
     SDL_FillRect(inverseGlowRectangle, &rect, yellow);
