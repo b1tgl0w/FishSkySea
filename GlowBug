@@ -1,0 +1,17 @@
+BUG: When the shark face right while glowing, the glow surface is not translucent
+
+Here's what you've tried in order to fix it:
+- Using SDL_Get/MapRGBA in Renderer::scale and Renderer::flip
+- Removing the color key from inverseSprite and inverseGlowRectangle
+- Not setting an alpha mask when creating a manipulatedImage surface then using
+SDL_SetAlpha
+- Checking that the alpha using SDL_SetAlpha is normal. It is.
+- Calling inverse with Alphad in both places.
+- Using MapRGBA with yellow and COLOR_KEY
+- Creating yellow2 with SDL_MAPRGB(inverseGlowRectangle->format.
+
+More info:
+- This bug can be avoided by setting the width and height of the Shark to the
+width and height of the image.
+- Since there's only one shark, the image is pruned when flipped.
+
