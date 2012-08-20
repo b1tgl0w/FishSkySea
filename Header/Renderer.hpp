@@ -32,7 +32,6 @@ struct Point;
 struct Dimension;
 class Transformation;
 class GraphicEffect;
-class GlowRectangle;
 class Renderer : public Layout,
     public boost::enable_shared_from_this<Renderer>
 {
@@ -127,7 +126,6 @@ private:
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher;
     TTF_Font *font;
     std::string fontPath;
-    boost::shared_ptr<GlowRectangle> glowRectangle;
     //Constants
     static const std::string &TRANSFORMATION_KEY();
     static const std::string &WIDTH_KEY();
