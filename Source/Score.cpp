@@ -11,6 +11,7 @@
 #include "../Header/StringUtility.hpp"
 #include "../Header/TextRendererElement.hpp"
 #include <cmath>
+#include "../Header/Math.hpp"
 
 Score::Score(int initialScore) : score(initialScore), 
     renderedScore(-1)
@@ -40,7 +41,7 @@ void Score::increase(const Score &score, bool glowing)
     this->score += score.score;
 
     if( glowing )
-        this->score += round((double) score.score * GLOWING_MODIFIER);
+        this->score += Math::round((double) score.score * GLOWING_MODIFIER);
 }
 
 void Score::reset()

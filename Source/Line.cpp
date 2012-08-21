@@ -582,8 +582,9 @@ void Line::NotHookedState::settle(Uint32 elapsedTime)
 boost::weak_ptr<Player> Line::NotHookedState::hooked(boost::weak_ptr<Fish>
     hookedFish)
 {
-	boost::weak_ptr<Player> p;
-	return p;
+    //Fix a visual studio error. Just a placeholder!
+    boost::weak_ptr<Player> p; //Just a placeholder!
+    return p; //Just a placeholder!
 }
 
 void Line::NotHookedState::offHook()
@@ -613,7 +614,8 @@ Direction Line::NotHookedState::isTight()
 
 double Line::NotHookedState::calculateMaxLineLength()
 {
-	return 0.0;
+    //Fix an error in visual studio. Just a placeholder!
+    return 0.0; //Fix an error in visual studio. Just a placeholder!
 }
 
 void Line::NotHookedState::collidesWith(boost::shared_ptr<Collidable>
@@ -801,8 +803,10 @@ void Line::HookedState::settle(Uint32 elapsedTime)
 boost::weak_ptr<Player> Line::HookedState::hooked(boost::weak_ptr<Fish>
     hookedFish)
 {
-	boost::weak_ptr<Player> p;
-	return p;
+    
+    //Fix an error in visual studio. Just a placeholder!
+    boost::weak_ptr<Player> p; //Just a placeholder!
+    return p; //Just a placeholder!
 }
 
 void Line::HookedState::offHook()
@@ -878,7 +882,8 @@ Direction Line::HookedState::isTight()
 
 double Line::HookedState::calculateMaxLineLength()
 {
-	return 0.0;
+    //Fix an error in Visual Studio. Just a placeholder!
+    return 0.0; //Fix an error in visual studio. Just a placeholder!
 }
 
 void Line::HookedState::collidesWith(boost::shared_ptr<Collidable> &otherObject,

@@ -45,7 +45,7 @@ int Math::getSign(int number)
 //Note:     There may be cases where this does not work correctly.
 bool Math::almostEquals(double number1, double number2)
 {
-    return fabs(number1 - number2) < std::numeric_limits<double>::epsilon();
+    return std::fabs(number1 - number2) < std::numeric_limits<double>::epsilon();
 }
 
 //Method:   Math::greater(...)
@@ -131,20 +131,34 @@ double Math::power(double number, int exponent)
 
 int Math::oppositeRound(double number)
 {
-	/*
     int rounded = round(number);
 
     if( number < rounded )
         return rounded - 1;
 
     return rounded + 1;
-	*/
-	int rounded = number;
+}
 
-    if( number < rounded )
-        return rounded - 1;
+double Math::round(double number)
+{
+    return (int) (number + 0.5);
+}
 
-    return rounded + 1;
+double Math::ceil(double number)
+{
+    int intNumber = (int) number;
+    if( number > intNumber )
+        return intNumber + 1.0;
+
+    return intNumber;
+}
+
+double Math::abs(double number)
+{
+    if( number < 0 )
+        return -number;
+
+    return number;
 }
 
 //Method:   Math::calculateSlope(...)

@@ -12,7 +12,11 @@
 #define MASTER_CLOCK_PUBLISHER_HPP_
 
 #include <list>
-#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
 #include "boost/weak_ptr.hpp"
 
 class MasterClockSubscriber;

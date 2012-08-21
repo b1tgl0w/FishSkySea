@@ -19,10 +19,19 @@
 #include <list>
 #include <set>
 #include <cmath>
+#include "Math.hpp"
 #include "boost/shared_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
-#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
+#ifdef linux
+#include <SDL/SDL_ttf.h> 
+#else
+#include <SDL_ttf.h>
+#endif
 #include "Layout.hpp"
 #include "Layer.hpp"
 #include "RendererElement.hpp"
@@ -182,8 +191,8 @@ void Renderer::scaleImage(SDL_Surface *image, SDL_Surface *scaled, const
     int scaledBothH = scaled->h;
     int lastI2 = -1;
     int lastJ2 = -1;
-    SDL_Rect scaledPortion = { 0, 0, ceil(dimensionPercent.widthPercent), 
-        ceil(dimensionPercent.heightPercent) };
+    SDL_Rect scaledPortion = { 0, 0, Math::ceil(dimensionPercent.widthPercent), 
+        Math::ceil(dimensionPercent.heightPercent) };
     
     SDL_LockSurface(image);
 
@@ -204,13 +213,8 @@ void Renderer::scaleImage(SDL_Surface *image, SDL_Surface *scaled, const
             lastJ2 = (int) j2;
             scaledPortion.x = j2;
             scaledPortion.y = i2;
-
-			/*
             SDL_FillRect(scaled, &scaledPortion, 
-                ((T *) image->pixels)[(int) round(imageW * i + j)]);
-			*/
-			SDL_FillRect(scaled, &scaledPortion, 
-                ((T *) image->pixels)[(int) imageW * i + j]);
+                ((T *) image->pixels)[(int) Math::round(imageW * i + j)]);
         }
 
         lastJ2 = -1;

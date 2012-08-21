@@ -33,6 +33,9 @@ public:
     //Does not work with negative or decimal exponents
     static double power(double number, int exponent);
     static int oppositeRound(double number); 
+    static double round(double number);
+    static double ceil(double number);
+    static double abs(double number);
     static double calculateSlope(const Point &p1, const Point &p2);
     static double calculateRise(const Point &p1, const Point &p2);
     static double calculateRun(const Point &p1, const Point &p2);

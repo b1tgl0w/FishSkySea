@@ -10,7 +10,11 @@
 #define TEXT_RENDERER_ELEMENT_HPP_
 #include <string>
 #include <list>
-#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
 #include "boost/shared_ptr.hpp"
 #include "RendererElement.hpp"
 #include "DimensionPercent.hpp"

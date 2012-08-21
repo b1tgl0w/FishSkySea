@@ -7,9 +7,18 @@
 //This program is distributed under the terms of the GNU General Public License
 
 #include <iostream>
-#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
+#ifdef linux
+#include <SDL/SDL_image.h> 
+#else
+#include <SDL_image.h>
+#endif
 #include <cmath>
+#include "../Header/Math.hpp"
 #include "../Header/Renderer.hpp"
 #include "../Header/Transformation.hpp"
 #include "../Header/StringUtility.hpp"
@@ -207,17 +216,10 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
     }
 
     SDL_Surface *unmanipulatedImage = images.find(path)->second;
-	/*
-    if( (ceil(size.width) == ceil(unmanipulatedImage->w) &&
-        ceil(size.height) == ceil(unmanipulatedImage->h)) &&
+    if( (Math::ceil(size.width) == Math::ceil(unmanipulatedImage->w) &&
+        Math::ceil(size.height) == Math::ceil(unmanipulatedImage->h)) &&
         transformation == Transformation::None() )
         return;
-	*/
-	int uIW = ((unmanipulatedImage->w - (int)unmanipulatedImage->w) > 0.0)?unmanipulatedImage->w+1:unmanipulatedImage->w;
-	int uIH = ((unmanipulatedImage->h - (int)unmanipulatedImage->h) > 0.0)?unmanipulatedImage->h+1:unmanipulatedImage->h;
-
-	if( (ceil(size.width) == uIW && ceil(size.height) == uIH) && transformation == Transformation::None() )
-		return;
 
     Dimension originalSize = { unmanipulatedImage->w, unmanipulatedImage->h };
     std::string key = makeKey(path, transformation, size, originalSize);

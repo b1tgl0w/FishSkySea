@@ -9,6 +9,7 @@
 #include <iostream> //delete
 #include <cmath>
 #include "../Header/Clip.hpp"
+#include "../Header/Math.hpp"
 
 Clip::Clip()
 {
@@ -43,56 +44,52 @@ Clip::~Clip()
 //          image.
 SDL_Rect Clip::generateClipRectangle(const Point &clipPosition, const Dimension &clipSize)
 {
-    SDL_Rect clipRectangle = { 0, 0, ceil(clipSize.width), ceil(clipSize.height) };
-    int tmpWidth = ceil(clipSize.width); //Need a signed int
-    int tmpHeight = ceil(clipSize.height); 
+    SDL_Rect clipRectangle = { 0, 0, Math::ceil(clipSize.width), Math::ceil(clipSize.height) };
+    int tmpWidth = Math::ceil(clipSize.width); //Need a signed int
+    int tmpHeight = Math::ceil(clipSize.height); 
 
     if( hasBoundary == false )
     {
-        SDL_Rect noClip = { 0, 0, ceil(clipSize.width), ceil(clipSize.height) };
+        SDL_Rect noClip = { 0, 0, Math::ceil(clipSize.width), Math::ceil(clipSize.height) };
         return noClip;
     }
 
     //Casts to int make the "animation" smoother
-    if( ceil(clipPosition.x) < ceil(position.x) )
-        clipRectangle.x = ceil(position.x - abs(clipPosition.x));
+    if( Math::ceil(clipPosition.x) < Math::ceil(position.x) )
+        clipRectangle.x = Math::ceil(position.x - Math::abs(clipPosition.x));
 
-    if( ceil(clipPosition.y) < ceil(position.y) )
-        clipRectangle.y = ceil(position.y - abs(clipPosition.y));
-
-    //adjust for zero-based coordinate system?
-    if( ceil(clipPosition.x + clipSize.width) > ceil(size.width) )
-        tmpWidth = ceil(size.width + position.x - abs(clipPosition.x));
+    if( Math::ceil(clipPosition.y) < Math::ceil(position.y) )
+        clipRectangle.y = Math::ceil(position.y - Math::abs(clipPosition.y));
 
     //adjust for zero-based coordinate system?
-    if( ceil(clipPosition.y + clipSize.height) > ceil(size.height) )
-        tmpHeight = ceil(size.height + position.y - abs(clipPosition.y));
+    if( Math::ceil(clipPosition.x + clipSize.width) > Math::ceil(size.width) )
+        tmpWidth = Math::ceil(size.width + position.x - Math::abs(clipPosition.x));
+
+    //adjust for zero-based coordinate system?
+    if( Math::ceil(clipPosition.y + clipSize.height) > Math::ceil(size.height) )
+        tmpHeight = Math::ceil(size.height + position.y - Math::abs(clipPosition.y));
 
     if( clipRectangle.x < 0 )
         clipRectangle.x = 0;
-    else if( clipRectangle.x > ceil(clipSize.width) )
-        clipRectangle.x = ceil(clipSize.width);
+    else if( clipRectangle.x > Math::ceil(clipSize.width) )
+        clipRectangle.x = Math::ceil(clipSize.width);
 
     if( clipRectangle.y < 0 )
         clipRectangle.y = 0;
-    else if( clipRectangle.y > ceil(clipSize.height) )
-        clipRectangle.y = ceil(clipSize.height);
+    else if( clipRectangle.y > Math::ceil(clipSize.height) )
+        clipRectangle.y = Math::ceil(clipSize.height);
 
-    if( tmpWidth > ceil(clipSize.width) )
-        tmpWidth = ceil(clipSize.width);
+    if( tmpWidth > Math::ceil(clipSize.width) )
+        tmpWidth = Math::ceil(clipSize.width);
     else if( tmpWidth < 0 )
         tmpWidth = 0;
 
-    if( tmpHeight > ceil(clipSize.height))
-        tmpHeight = ceil(clipSize.height);
+    if( tmpHeight > Math::ceil(clipSize.height))
+        tmpHeight = Math::ceil(clipSize.height);
     else if( tmpHeight < 0 )
         tmpHeight = 0;
-	/*
-    clipRectangle.w = ceil(tmpWidth);
-    clipRectangle.h = ceil(tmpHeight);
-	*/
-	clipRectangle.w = tmpWidth;
-    clipRectangle.h = tmpHeight;
+    clipRectangle.w = Math::ceil(tmpWidth);
+    clipRectangle.h = Math::ceil(tmpHeight);
 
     return clipRectangle;
 }

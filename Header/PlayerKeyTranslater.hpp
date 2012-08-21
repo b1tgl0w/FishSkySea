@@ -13,7 +13,11 @@
 #include <map>
 //#include "boost/bimap.hpp"
 #include "boost/shared_ptr.hpp"
-#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
 
 class Player;
 class PlayerAction;

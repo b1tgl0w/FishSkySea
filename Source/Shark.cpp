@@ -161,7 +161,8 @@ void Shark::randomAboutFace(Uint32 elapsedTime)
 
 bool Shark::shouldEatFish(BoundingBox fishBox)
 {
-	return true;
+    //Get rid of error in Visual Studio. Just a placeholder!
+    return true; //Just a placeholder!
 }
 
 void Shark::seeFish()

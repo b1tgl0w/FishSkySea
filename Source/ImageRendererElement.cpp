@@ -11,6 +11,7 @@
 #include <iostream> //delete
 #include "../Header/ImageRendererElement.hpp"
 #include "../Header/Renderer.hpp"
+#include "../Header/Math.hpp"
 
 ImageRendererElement::ImageRendererElement(const std::string &path, int layer,
     const Point &initialPosition, const Dimension &initialSize)
@@ -82,12 +83,12 @@ void ImageRendererElement::applySurface(SDL_Surface *source,
     SDL_Surface *destination, const Point &position)
 {
     SDL_Rect destinationRectangle;
-    SDL_Rect sourceRectangle = { 0, 0, ceil(size.width), ceil(size.height) };
+    SDL_Rect sourceRectangle = { 0, 0, Math::ceil(size.width), Math::ceil(size.height) };
 
     sourceRectangle = clipObject.generateClipRectangle(position, size);
     if( sourceRectangle.w <= 0 || sourceRectangle.h <= 0 ||
-        sourceRectangle.x >= ceil(size.width) || sourceRectangle.y >= 
-        ceil(size.height) )
+        sourceRectangle.x >= Math::ceil(size.width) || sourceRectangle.y >= 
+        Math::ceil(size.height) )
         return;
 
     destinationRectangle.x = position.x + sourceRectangle.x;

@@ -7,6 +7,7 @@
 
 #include <iostream> //delete
 #include <cmath>
+#include "../Header/Math.hpp"
 #include "../Header/GraphicEffect.hpp"
 #include "../Header/MasterClockPublisher.hpp"
 
@@ -164,7 +165,7 @@ double GraphicEffect::syncAlpha()
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
     Uint32 age = masterClockPublisher->age();
-    return ((int) round(age * alphaDirection)) % (ALPHA_MAX - ALPHA_MIN) + 
+    return ((int) Math::round(age * alphaDirection)) % (ALPHA_MAX - ALPHA_MIN) + 
         ALPHA_MIN;
 }
 

@@ -8,7 +8,11 @@
 #ifndef GRAPHIC_EFFECT_HPP_
 #define GRAPHIC_EFFECT_HPP_
 
-#include <SDL/SDL.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
 #include "boost/shared_ptr.hpp"
 #include "MasterClockSubscriber.hpp"
 

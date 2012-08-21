@@ -9,7 +9,11 @@
 #ifndef DIRECT_LINE_GRAPHIC_H_
 #define DIRECT_LINE_GRAPHIC_H_
 
-#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
 #include "DirectGraphicStrategy.hpp"
 #include "Point.hpp"
 #include "Dimension.hpp"

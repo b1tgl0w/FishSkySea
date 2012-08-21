@@ -10,7 +10,11 @@
 #ifndef MASTER_INPUT_SUBSCRIBER_HPP_
 #define MASTER_INPUT_SUBSCRIBER_HPP_
 
-#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
 
 class MasterInputSubscriber
 {

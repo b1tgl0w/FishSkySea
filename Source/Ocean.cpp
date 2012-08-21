@@ -186,7 +186,8 @@ void Ocean::dispose()
 
 bool Ocean::isAboveSurface(const BoundingBox &fishBox, const Fish &fish)
 {
-	return true;
+    //Get rid of error on Visual Studio. Just a placeholder!
+    return true; //Just a placeholder!
 }
 
 Direction Ocean::hitEdge(const BoundingBox &fishBox)

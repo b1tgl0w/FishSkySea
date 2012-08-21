@@ -113,7 +113,8 @@ void HumanPlayer::shortenPole(bool on)
 
 bool HumanPlayer::filledBucket()
 {
-	return true;
+    //Get rid of error on visual studio. Just a placeholder!
+    return true; //Just a placeholder!
 }
 
 void HumanPlayer::caughtFish(Weight weight, bool glowing)

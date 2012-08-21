@@ -9,7 +9,11 @@
 #ifndef DIRECT_GRAPHIC_STRATEGY_H_
 #define DIRECT_GRAPHIC_STRATEGY_H_
 
-#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
 #include "boost/shared_ptr.hpp"
 #include "Point.hpp"
 #include "Dimension.hpp"

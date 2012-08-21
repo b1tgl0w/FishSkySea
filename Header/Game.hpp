@@ -9,7 +9,11 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
-#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
 #include "KeyboardSubscriber.hpp"
 
 class Game : public KeyboardSubscriber

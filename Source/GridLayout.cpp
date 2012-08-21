@@ -8,6 +8,7 @@
 
 #include <iostream> //remove
 #include "../Header/GridLayout.hpp"
+#include "../Header/Math.hpp"
 
 GridLayout::GridLayout(int rows, int cols)
 {
@@ -168,8 +169,8 @@ void GridLayout::adjustCells()
         return;
 
     Point cellPosition;
-    Dimension cellSize = { ceil(size.width / (double) cells[0].size()),
-        ceil(size.height / (double) cells.size()) };
+    Dimension cellSize = { Math::ceil(size.width / (double) cells[0].size()),
+        Math::ceil(size.height / (double) cells.size()) };
     int i = 0;
     int j = 0;
 

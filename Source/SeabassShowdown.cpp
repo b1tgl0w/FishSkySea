@@ -8,7 +8,11 @@
 
 #include <cstdlib>
 #include <vector>
-#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
+#ifdef linux
+#include <SDL/SDL.h> 
+#else
+#include <SDL.h>
+#endif
 #include <ctime>
 #include "boost/shared_ptr.hpp"
 #include "../Header/Renderer.hpp"
