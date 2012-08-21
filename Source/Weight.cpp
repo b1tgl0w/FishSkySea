@@ -67,8 +67,12 @@ Weight &Weight::operator=(const Weight &rhs)
 
 Weight Weight::percentageWeight(const double percent)
 {
+	/*
     int weightValue = round(Math::calculateLinearPositionValue(0.0, 1.0, 
         BABY().value, MYTHICAL().value, percent));
+	*/
+	int weightValue = Math::calculateLinearPositionValue(0.0, 1.0, 
+        BABY().value, MYTHICAL().value, percent);
 
     if( BABY().value == weightValue )
         return BABY();

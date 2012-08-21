@@ -10,7 +10,7 @@
 #define MOUSE_PUBLISHER_HPP_
 
 #include <list>
-#include <SDL/SDL.h>
+#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
 #include "boost/weak_ptr.hpp"
 #include "MasterInputSubscriber.hpp"
 #include "MouseSubscriber.hpp"

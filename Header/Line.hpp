@@ -9,7 +9,7 @@
 #ifndef LINE_HPP_
 #define LINE_HPP_
 
-#include <SDL/SDL.h>
+#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
 #include <string>
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"

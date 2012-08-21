@@ -113,6 +113,7 @@ void HumanPlayer::shortenPole(bool on)
 
 bool HumanPlayer::filledBucket()
 {
+	return true;
 }
 
 void HumanPlayer::caughtFish(Weight weight, bool glowing)

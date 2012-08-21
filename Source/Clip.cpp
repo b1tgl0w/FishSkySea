@@ -87,9 +87,12 @@ SDL_Rect Clip::generateClipRectangle(const Point &clipPosition, const Dimension 
         tmpHeight = ceil(clipSize.height);
     else if( tmpHeight < 0 )
         tmpHeight = 0;
-
+	/*
     clipRectangle.w = ceil(tmpWidth);
     clipRectangle.h = ceil(tmpHeight);
+	*/
+	clipRectangle.w = tmpWidth;
+    clipRectangle.h = tmpHeight;
 
     return clipRectangle;
 }

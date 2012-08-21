@@ -8,7 +8,8 @@
 
 #include <cstdlib>
 #include <vector>
-#include <SDL/SDL.h>
+#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
+#include <ctime>
 #include "boost/shared_ptr.hpp"
 #include "../Header/Renderer.hpp"
 #include "../Header/Point.hpp"
@@ -58,7 +59,7 @@ int main(int argc, char **argv)
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
-        "../Media/Fonts/monof55.ttf", frameCleanupPublisher));
+        "../Media/Fonts/monof55.ttf", frameCleanupPublisher)); // changed back to "../Media"
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point sharkPoint = { 290.0, 271.0 };
@@ -74,8 +75,8 @@ int main(int argc, char **argv)
     Dimension backgroundSize = { 800.0, 600.0 };
     boost::shared_ptr<Shark> shark(new Shark(ocean, sharkPoint));
     shark->initializeStates();
-    renderer->loadImage("../Media/Scene3.png");
-    renderer->loadImage("../Media/Fish.png");
+    renderer->loadImage("../Media/Scene3.png"); // changed back to "../Media"
+    renderer->loadImage("../Media/Fish.png"); // changed back to "../Media"
     SDL_Color white = { 0x00, 0x00, 0x00, 0x00 };
     renderer->loadText("Hey!", white, 1);
     player1->loadImage(*renderer);
@@ -119,7 +120,7 @@ int main(int argc, char **argv)
     renderer->addLayout(superLayeredLayout);
 
     ImageRendererElement background("../Media/Scene3.png", 0,
-        backgroundPoint, screenResolution);
+        backgroundPoint, screenResolution); // changed back to "../Media"
     Point textPosition = { 300, 0 };
     Dimension textSize = { 100, 50 };
 

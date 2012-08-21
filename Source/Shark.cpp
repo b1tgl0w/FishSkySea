@@ -18,7 +18,7 @@
 const std::string &Shark::IMAGE_PATH()
 {
     static const std::string TMP_IMAGE_PATH = 
-        "../Media/Shark2.png";
+        "../Media/Shark2.png"; // changed back to "../Media"
     return TMP_IMAGE_PATH;
 }
 
@@ -161,6 +161,7 @@ void Shark::randomAboutFace(Uint32 elapsedTime)
 
 bool Shark::shouldEatFish(BoundingBox fishBox)
 {
+	return true;
 }
 
 void Shark::seeFish()

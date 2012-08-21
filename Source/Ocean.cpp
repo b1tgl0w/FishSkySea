@@ -186,6 +186,7 @@ void Ocean::dispose()
 
 bool Ocean::isAboveSurface(const BoundingBox &fishBox, const Fish &fish)
 {
+	return true;
 }
 
 Direction Ocean::hitEdge(const BoundingBox &fishBox)

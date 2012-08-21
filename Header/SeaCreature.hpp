@@ -12,7 +12,7 @@
 #define SEA_CREATURE_HPP_
 
 #include <vector>
-#include <SDL/SDL.h>
+#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
 #include "boost/shared_ptr.hpp"
 #include "Depth.hpp"
 #include "MasterClockSubscriber.hpp"

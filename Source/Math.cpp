@@ -131,7 +131,15 @@ double Math::power(double number, int exponent)
 
 int Math::oppositeRound(double number)
 {
+	/*
     int rounded = round(number);
+
+    if( number < rounded )
+        return rounded - 1;
+
+    return rounded + 1;
+	*/
+	int rounded = number;
 
     if( number < rounded )
         return rounded - 1;

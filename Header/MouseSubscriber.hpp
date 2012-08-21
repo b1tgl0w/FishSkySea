@@ -9,7 +9,7 @@
 #ifndef MOUSE_SUBSCRIBER_HPP_
 #define MOUSE_SUBSCRIBER_HPP_
 
-#include <SDL/SDL.h>
+#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
 #include "Point.hpp"
 
 class MouseSubscriber

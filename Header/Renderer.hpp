@@ -21,7 +21,7 @@
 #include <cmath>
 #include "boost/shared_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
-#include <SDL/SDL.h>
+#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 #include "Layout.hpp"
 #include "Layer.hpp"
@@ -32,6 +32,7 @@ struct Point;
 struct Dimension;
 class Transformation;
 class GraphicEffect;
+class GlowRectangle;
 class Renderer : public Layout,
     public boost::enable_shared_from_this<Renderer>
 {
@@ -126,6 +127,7 @@ private:
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher;
     TTF_Font *font;
     std::string fontPath;
+    boost::shared_ptr<GlowRectangle> glowRectangle;
     //Constants
     static const std::string &TRANSFORMATION_KEY();
     static const std::string &WIDTH_KEY();
@@ -204,8 +206,13 @@ void Renderer::scaleImage(SDL_Surface *image, SDL_Surface *scaled, const
             lastJ2 = (int) j2;
             scaledPortion.x = j2;
             scaledPortion.y = i2;
+
+			/*
             SDL_FillRect(scaled, &scaledPortion, 
                 ((T *) image->pixels)[(int) round(imageW * i + j)]);
+			*/
+			SDL_FillRect(scaled, &scaledPortion, 
+                ((T *) image->pixels)[(int) imageW * i + j]);
         }
 
         lastJ2 = -1;

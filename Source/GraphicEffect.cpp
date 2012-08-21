@@ -8,6 +8,7 @@
 #include <iostream> //delete
 #include <cmath>
 #include "../Header/GraphicEffect.hpp"
+#include "../Header/GlowRectangle.hpp"
 #include "../Header/MasterClockPublisher.hpp"
 
 const bool GraphicEffect::ALPHAD = true;
@@ -15,18 +16,19 @@ const bool GraphicEffect::COLOR_KEYED = false;
 const int GraphicEffect::ALPHA_MIN = 0x11;
 const int GraphicEffect::ALPHA_MAX = 0x99;
 
-GraphicEffect::GraphicEffect(SDL_Surface *sprite) : alpha(syncAlpha()),
+GraphicEffect::GraphicEffect(boost::shared_ptr<GlowRectangle> &glowRectangle,
+    SDL_Surface *sprite) : glowRectangle(glowRectangle), alpha(syncAlpha()),
     alphaDirection(.15)
 {
     inverseGlowRectangle = 0x00;
     inverseSprite = 0x00;
-    this->clipGlowRectangle(sprite);
+    glowRectangle->clip(*this, sprite); //inits inverseSprite and inverseGlowRct
 }
 
 //Deep copy since not using shared_ptrs
 //A better way?
-GraphicEffect::GraphicEffect(const GraphicEffect &rhs) : 
-    inverseSprite(SDL_DisplayFormatAlpha(rhs.inverseSprite)), 
+GraphicEffect::GraphicEffect(const GraphicEffect &rhs) : glowRectangle(
+    rhs.glowRectangle), inverseSprite(SDL_DisplayFormatAlpha(rhs.inverseSprite)), 
     inverseGlowRectangle(SDL_DisplayFormatAlpha(rhs.inverseGlowRectangle)),
     alpha(rhs.alpha), alphaDirection(rhs.alphaDirection)
 {
@@ -39,6 +41,7 @@ GraphicEffect GraphicEffect::operator=(const GraphicEffect &rhs)
     if( &rhs == this )
         return *this;
 
+    glowRectangle = rhs.glowRectangle;
     inverseSprite = SDL_DisplayFormatAlpha(rhs.inverseSprite);
     inverseGlowRectangle = SDL_DisplayFormatAlpha(rhs.inverseGlowRectangle);
     alpha = rhs.alpha;
@@ -61,7 +64,8 @@ void GraphicEffect::glow(SDL_Surface *originalSprite, SDL_Surface
     applySurface(inverseGlowRectangle, glowingSprite);
 }
 
-void GraphicEffect::clipGlowRectangle(SDL_Surface *sprite)
+void GraphicEffect::clipGlowRectangle(SDL_Surface *glowRectangle,
+    SDL_Surface *sprite)
 {
     if( !inverseSprite )
         inverseSprite = SDL_CreateRGBSurface(sprite->flags | SDL_SRCALPHA,
@@ -73,7 +77,6 @@ void GraphicEffect::clipGlowRectangle(SDL_Surface *sprite)
         sprite->w, sprite->h, sprite->format->BitsPerPixel,
         sprite->format->Rmask, sprite->format->Gmask, sprite->format->Bmask,
         0x00);
-
     const Uint32 COLOR_KEY = SDL_MapRGB(inverseSprite->format, 0xFF, 0x00, 0xFF);
     Uint32 yellow = SDL_MapRGB(inverseSprite->format, 0xFC, 0xE6, 0x97);
     SDL_SetColorKey(inverseSprite, SDL_SRCCOLORKEY, COLOR_KEY);

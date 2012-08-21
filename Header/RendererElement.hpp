@@ -11,7 +11,7 @@
 
 #include <string>
 #include <list>
-#include <SDL/SDL.h>
+#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
 #include "boost/shared_ptr.hpp"
 #include "DimensionPercent.hpp"
 

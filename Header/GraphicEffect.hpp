@@ -12,15 +12,18 @@
 #include "boost/shared_ptr.hpp"
 #include "MasterClockSubscriber.hpp"
 
+class GlowRectangle;
+
 class GraphicEffect : public MasterClockSubscriber
 {
 public:
-    GraphicEffect(SDL_Surface *sprite);
+    GraphicEffect(boost::shared_ptr<GlowRectangle> &glowRectangle,
+        SDL_Surface *sprite);
     GraphicEffect(const GraphicEffect &rhs);
     GraphicEffect operator=(const GraphicEffect &rhs);
     ~GraphicEffect();
     void glow(SDL_Surface *originalSprite, SDL_Surface *glowingSprite);
-    void clipGlowRectangle(SDL_Surface *sprite);
+    void clipGlowRectangle(SDL_Surface *glowRectangle, SDL_Surface *sprite);
     void clockTick(Uint32 elapsedTime);
 private:
     GraphicEffect();
@@ -28,6 +31,7 @@ private:
     void inverseClipShape(SDL_Surface *source, SDL_Surface *destination,
         bool alphaOrKey);
     double syncAlpha();
+    boost::shared_ptr<GlowRectangle> glowRectangle;
     SDL_Surface *inverseSprite;
     SDL_Surface *inverseGlowRectangle;
     double alpha;

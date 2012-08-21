@@ -7,13 +7,14 @@
 //This program is distributed under the terms of the GNU General Public License
 
 #include <iostream>
-#include <SDL/SDL.h>
+#include <SDL/SDL.h> // changed back to <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <cmath>
 #include "../Header/Renderer.hpp"
 #include "../Header/Transformation.hpp"
 #include "../Header/StringUtility.hpp"
 #include "../Header/GraphicEffect.hpp"
+#include "../Header/GlowRectangle.hpp"
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/MasterClockSubscriber.hpp"
 
@@ -207,11 +208,17 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
     }
 
     SDL_Surface *unmanipulatedImage = images.find(path)->second;
-
+	/*
     if( (ceil(size.width) == ceil(unmanipulatedImage->w) &&
         ceil(size.height) == ceil(unmanipulatedImage->h)) &&
         transformation == Transformation::None() )
         return;
+	*/
+	int uIW = ((unmanipulatedImage->w - (int)unmanipulatedImage->w) > 0.0)?unmanipulatedImage->w+1:unmanipulatedImage->w;
+	int uIH = ((unmanipulatedImage->h - (int)unmanipulatedImage->h) > 0.0)?unmanipulatedImage->h+1:unmanipulatedImage->h;
+
+	if( (ceil(size.width) == uIW && ceil(size.height) == uIH) && transformation == Transformation::None() )
+		return;
 
     Dimension originalSize = { unmanipulatedImage->w, unmanipulatedImage->h };
     std::string key = makeKey(path, transformation, size, originalSize);
@@ -538,10 +545,19 @@ void Renderer::glowImage(std::string &key, SDL_Surface *image)
     if( graphicEffects.count(key) >= 1 )
         return;
 
+    if( !glowRectangle )
+    {
+        Dimension imageSize = { image->w, image->h };
+        boost::shared_ptr<GlowRectangle> tmpGlowRectangle(new GlowRectangle(
+            image, imageSize, *this));
+        glowRectangle = tmpGlowRectangle;
+    }
+
     Dimension growTo = { image->w, image->h };
 
+    glowRectangle->grow(growTo);
     boost::shared_ptr<GraphicEffect> tmpGraphicEffect(new GraphicEffect(
-        image));
+        glowRectangle, image));
     MasterClockPublisher *masterClockPublisher = 
         MasterClockPublisher::getInstance();
     boost::shared_ptr<MasterClockSubscriber> graphicEffectSubscriber(tmpGraphicEffect);
