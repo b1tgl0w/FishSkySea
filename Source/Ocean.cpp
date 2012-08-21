@@ -43,7 +43,7 @@ const double &Ocean::OCEAN_SURFACE_HEIGHT()
 
 const Point &Ocean::SEA_SNAIL_POSITION()
 {
-    const static Point TMP_SEA_SNAIL_POSITION = { 100 , 550 };
+    const static Point TMP_SEA_SNAIL_POSITION = { 100 , 512 };
     return TMP_SEA_SNAIL_POSITION;
 }
 

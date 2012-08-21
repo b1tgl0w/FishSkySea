@@ -46,6 +46,7 @@ public:
     void loadImage(Renderer &renderer);
     void glow();
     void randomAboutFace(Uint32 elapsedTime);
+    void readyToProceed(Uint32 elapsedTime);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void collidesWith(boost::shared_ptr<Collidable> &otherObject,
         const BoundingBox &otherBox);
@@ -80,8 +81,12 @@ private:
     boost::weak_ptr<Ocean> ocean;
     bool shouldResetTimes;
     bool glowing;
+    bool proceed;
+    Uint32 timeSinceOffScreen;
     static const std::string &IMAGE_PATH();
     static const Layer &LAYER();
+    static const Uint32 &MINIMUM_TIME_TO_PROCEED();
+    static const Uint32 &READY_PROBABILITY();
 };
 
 #endif

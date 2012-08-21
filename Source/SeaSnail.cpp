@@ -16,7 +16,7 @@
 
 const Dimension &SeaSnail::SIZE()
 {
-    static const Dimension TMP_SIZE = { 100.0, 50.0 };
+    static const Dimension TMP_SIZE = { 180.0, 90.0 };
     return TMP_SIZE;
 }
 
@@ -32,17 +32,32 @@ const Layer &SeaSnail::LAYER()
     return TMP_LAYER;
 }
 
+const Uint32 &SeaSnail::MINIMUM_TIME_TO_PROCEED()
+{
+    static const Uint32 TMP_MINIMUM_TIME_TO_PROCEED = 1000;
+    return TMP_MINIMUM_TIME_TO_PROCEED;
+}
+
+const Uint32 &SeaSnail::READY_PROBABILITY()
+{
+    static const Uint32 TMP_READY_PROBABILITY = 30000;
+    return TMP_READY_PROBABILITY;
+}
+
 SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
     &ocean) : position(new Point(initialPosition)), ocean(ocean),
-    glowing(false)
+    shouldResetTimes(false), glowing(false), proceed(false), 
+    timeSinceOffScreen(0)
 {
+    glow();
     positionFromSide();
     aboutFace();
 }
 
 SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position),
     seaSnailBox(rhs.seaSnailBox), facing(rhs.facing), ocean(rhs.ocean),
-    shouldResetTimes(rhs.shouldResetTimes), glowing(rhs.glowing)
+    shouldResetTimes(rhs.shouldResetTimes), glowing(rhs.glowing),
+    proceed(rhs.proceed), timeSinceOffScreen(rhs.timeSinceOffScreen)
 {
 }
 
@@ -57,6 +72,8 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
     ocean = rhs.ocean;
     shouldResetTimes = rhs.shouldResetTimes;
     glowing = rhs.glowing;
+    proceed = rhs.proceed;
+    timeSinceOffScreen = rhs.timeSinceOffScreen;
     
     return *this;
 }
@@ -113,6 +130,22 @@ void SeaSnail::glow()
 void SeaSnail::randomAboutFace(Uint32 elapsedTime)
 {
     //No-op
+}
+
+void SeaSnail::readyToProceed(Uint32 elapsedTime)
+{
+    if( timeSinceOffScreen < MINIMUM_TIME_TO_PROCEED() ||
+        shouldResetTimes )
+        return;
+
+    const int PROBABILITY_OVER_TIME = READY_PROBABILITY() / elapsedTime;
+
+    if( PROBABILITY_OVER_TIME == 0 )
+        return;
+
+    if( Math::random(1, PROBABILITY_OVER_TIME) %
+        PROBABILITY_OVER_TIME == 0 )
+        proceed = true;
 }
 
 void SeaSnail::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
@@ -173,7 +206,11 @@ void SeaSnail::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
 
 void SeaSnail::clockTick(Uint32 elapsedTime)
 {
-    swim(elapsedTime);
+    readyToProceed(elapsedTime);
+
+    if( proceed )
+        swim(elapsedTime);
+
     updateTimes(elapsedTime);
 
     if( shouldResetTimes )
@@ -212,10 +249,12 @@ void SeaSnail::faceRandomDirection()
 
 void SeaSnail::resetTimes()
 {
+    timeSinceOffScreen = 0;
     shouldResetTimes = false;
 }
 
 void SeaSnail::updateTimes(Uint32 elapsedTime)
 {
+    timeSinceOffScreen += elapsedTime;
 }
 
