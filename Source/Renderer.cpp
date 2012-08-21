@@ -14,7 +14,6 @@
 #include "../Header/Transformation.hpp"
 #include "../Header/StringUtility.hpp"
 #include "../Header/GraphicEffect.hpp"
-#include "../Header/GlowRectangle.hpp"
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/MasterClockSubscriber.hpp"
 
@@ -545,19 +544,10 @@ void Renderer::glowImage(std::string &key, SDL_Surface *image)
     if( graphicEffects.count(key) >= 1 )
         return;
 
-    if( !glowRectangle )
-    {
-        Dimension imageSize = { image->w, image->h };
-        boost::shared_ptr<GlowRectangle> tmpGlowRectangle(new GlowRectangle(
-            image, imageSize, *this));
-        glowRectangle = tmpGlowRectangle;
-    }
-
     Dimension growTo = { image->w, image->h };
 
-    glowRectangle->grow(growTo);
     boost::shared_ptr<GraphicEffect> tmpGraphicEffect(new GraphicEffect(
-        glowRectangle, image));
+        image));
     MasterClockPublisher *masterClockPublisher = 
         MasterClockPublisher::getInstance();
     boost::shared_ptr<MasterClockSubscriber> graphicEffectSubscriber(tmpGraphicEffect);
