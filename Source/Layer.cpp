@@ -29,14 +29,19 @@ const Layer Layer::SHARK()
     return Layer(4);
 }
 
-const Layer Layer::SCORE()
+const Layer Layer::SEA_SNAIL()
 {
     return Layer(5);
 }
 
-const Layer Layer::FOREGROUND()
+const Layer Layer::SCORE()
 {
     return Layer(6);
+}
+
+const Layer Layer::FOREGROUND()
+{
+    return Layer(7);
 }
 
 Layer::Layer(int initialValue)

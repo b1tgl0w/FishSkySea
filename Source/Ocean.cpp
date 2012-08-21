@@ -8,6 +8,7 @@
 
 #include "../Header/Ocean.hpp"
 #include "../Header/Fish.hpp"
+#include "../Header/SeaSnail.hpp"
 #include "../Header/Shark.hpp"
 #include "../Header/Line.hpp"
 #include "../Header/Point.hpp"
@@ -40,6 +41,11 @@ const double &Ocean::OCEAN_SURFACE_HEIGHT()
     return TMP_OCEAN_SURFACE_HEIGHT;
 }
 
+const Point &Ocean::SEA_SNAIL_POSITION()
+{
+    const static Point TMP_SEA_SNAIL_POSITION = { 100 , 550 };
+    return TMP_SEA_SNAIL_POSITION;
+}
 
 Ocean::Ocean(const Dimension &screenSize)
 {
@@ -99,6 +105,8 @@ void Ocean::initializeSharedFromThis()
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish6(new Fish(fishStartingPoint,
         fishStartingDepth, sharedThis));
+    boost::shared_ptr<SeaSnail> tmpSeaSnail(new SeaSnail(SEA_SNAIL_POSITION(),
+        sharedThis));
     fish1->initializeStates();
     fish2->initializeStates();
     fish3->initializeStates();
@@ -111,6 +119,7 @@ void Ocean::initializeSharedFromThis()
     addCollidable(fish4);
     addCollidable(fish5);
     addCollidable(fish6);
+    //addCollidable(tmpSeaSnail);
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
     boost::shared_ptr<MasterClockSubscriber> subscriber1(fish1);
@@ -119,12 +128,14 @@ void Ocean::initializeSharedFromThis()
     boost::shared_ptr<MasterClockSubscriber> subscriber4(fish4);
     boost::shared_ptr<MasterClockSubscriber> subscriber5(fish5);
     boost::shared_ptr<MasterClockSubscriber> subscriber6(fish6);
+    boost::shared_ptr<MasterClockSubscriber> subscriber7(tmpSeaSnail);
     masterClockPublisher->subscribe(subscriber1);
     masterClockPublisher->subscribe(subscriber2);
     masterClockPublisher->subscribe(subscriber3);
     masterClockPublisher->subscribe(subscriber4);
     masterClockPublisher->subscribe(subscriber5);
     masterClockPublisher->subscribe(subscriber6);
+    masterClockPublisher->subscribe(subscriber7);
     fish6->glow(); //test. delete
     fishes.push_back(fish1);
     fishes.push_back(fish2);
@@ -132,6 +143,7 @@ void Ocean::initializeSharedFromThis()
     fishes.push_back(fish4);
     fishes.push_back(fish5);
     fishes.push_back(fish6);
+    seaSnail = tmpSeaSnail;
 }
 
 double Ocean::getDepthY(const Depth &depth)
@@ -247,6 +259,8 @@ void Ocean::loadImage(Renderer &renderer)
             it != fishes.end(); ++it )
             (*it)->loadImage(renderer);
     }
+    //SeaSnail
+    seaSnail->loadImage(renderer);
     //Shark
 }
 
@@ -258,6 +272,8 @@ void Ocean::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
             it != fishes.end(); ++it)
             (*it)->draw(layout, renderer);
     }
+    //SeaSnail
+    seaSnail->draw(layout, renderer);
     //Shark
 }
 

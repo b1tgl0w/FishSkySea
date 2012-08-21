@@ -17,6 +17,7 @@ public:
     static const Layer PLAYER();
     static const Layer FISH();
     static const Layer SHARK();
+    static const Layer SEA_SNAIL();
     static const Layer FOREGROUND();
     static const Layer SCORE();
     Layer(const Layer &rhs); 

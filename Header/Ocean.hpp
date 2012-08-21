@@ -22,6 +22,7 @@
 #include "Depth.hpp"
 
 class Fish;
+class SeaSnail;
 class Shark;
 class Line;
 class Point;
@@ -77,11 +78,13 @@ private:
     double getFishStartingX();
     std::set<boost::weak_ptr<Collidable> > collidables;
     std::vector<boost::shared_ptr<Fish> > fishes;
+    boost::shared_ptr<SeaSnail> seaSnail;
     std::map<Depth, double> depthCoordinates;
     static double &OCEAN_EDGE_X();
     static double &OCEAN_EDGE_Y();
     const static double &OCEAN_SURFACE_WIDTH();
     const static double &OCEAN_SURFACE_HEIGHT();
+    const static Point &SEA_SNAIL_POSITION();
     Dimension screenSize;
     boost::shared_ptr<Point> oceanEdgePosition;
     boost::shared_ptr<Dimension> oceanEdgeSize;
