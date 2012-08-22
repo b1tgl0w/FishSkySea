@@ -197,8 +197,8 @@ void Shark::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     if( facing == Direction::RIGHT() )
         transformations = transformations | Transformation::FlipHorizontal();
 
-    if( state == glowState )
-        transformations = transformations | Transformation::Glow();
+    //if( state == glowState )
+        //transformations = transformations | Transformation::Glow();
 
     re.transform(transformations);
     layout->drawWhenReady(re);
