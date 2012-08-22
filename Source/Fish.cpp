@@ -17,6 +17,7 @@
 #include "../Header/Player.hpp"
 #include "../Header/Transformation.hpp"
 #include "../Header/ImageRendererElement.hpp"
+#include "../Header/SeaSnail.hpp"
 
 //Class-wide constants
 const std::string &Fish::IMAGE_PATH()
@@ -419,6 +420,12 @@ void Fish::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     state->collidesWithFishMouth(fish, yourBox);
 }
 
+void Fish::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+    const BoundingBox &yourBox)
+{
+    state->collidesWithSeaSnail(seaSnail, yourBox);
+}
+
 void Fish::clockTick(Uint32 elapsedTime)
 {
     swim(elapsedTime);
@@ -624,6 +631,18 @@ void Fish::FreeState::collidesWithFish(boost::shared_ptr<Fish> &fish,
 void Fish::FreeState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     const BoundingBox &yourBox)
 {
+}
+
+void Fish::FreeState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> 
+    &seaSnail, const BoundingBox &yourBox)
+{
+    boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
+
+    if( !sharedFishOwner )
+        return;
+
+    if( seaSnail->isGlowing() )
+        sharedFishOwner->glowing = true;
 }
 
 //Inner class HookedState
@@ -863,3 +882,14 @@ void Fish::HookedState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
 {
 }
 
+void Fish::HookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &
+    seaSnail, const BoundingBox &yourBox)
+{
+    boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
+
+    if( !sharedFishOwner )
+        return;
+
+    if( seaSnail->isGlowing() )
+        sharedFishOwner->glowing = true;
+}

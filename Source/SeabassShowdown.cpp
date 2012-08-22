@@ -98,6 +98,9 @@ int main(int argc, char **argv)
     masterClockPublisher->subscribe(sharkSubscriber);
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
         KeyboardPublisher);
+    boost::shared_ptr<KeyboardSubscriber> clockSubscriber(masterClockPublisher,
+        MasterClockPublisher::customDeleter);
+    keyboardPublisher->subscribe(clockSubscriber);
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber(keyboardPublisher);
     masterInputPublisher->subscribe(MiSubscriber);
     boost::shared_ptr<KeyboardSubscriber> playerSubscriber(player1);

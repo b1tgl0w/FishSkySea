@@ -69,6 +69,8 @@ public:
         const BoundingBox &yourBox);
     void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
         const BoundingBox &yourBox);
+    void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+        const BoundingBox &yourBox);
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
 protected:
@@ -112,6 +114,8 @@ private:
             const BoundingBox &yourBox);
         void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
             const BoundingBox &yourBox);
+        void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+            const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Shark> sharkOwner);
         void dispose();
@@ -147,6 +151,8 @@ private:
             const BoundingBox &yourBox);
         void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
             const BoundingBox &yourBox);
+        void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+            const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Shark> sharkOwner);
         void dispose();
@@ -181,6 +187,8 @@ private:
         void collidesWithFish(boost::shared_ptr<Fish> &fish,
             const BoundingBox &yourBox);
         void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
+            const BoundingBox &yourBox);
+        void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
             const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Shark> sharkOwner);

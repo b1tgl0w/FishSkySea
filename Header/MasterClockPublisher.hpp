@@ -18,10 +18,11 @@
 #include <SDL.h>
 #endif
 #include "boost/weak_ptr.hpp"
+#include "KeyboardSubscriber.hpp"
 
 class MasterClockSubscriber;
 
-class MasterClockPublisher
+class MasterClockPublisher : public KeyboardSubscriber
 {
 public: 
     static MasterClockPublisher *getInstance();
@@ -29,19 +30,24 @@ public:
     void subscribe(boost::shared_ptr<MasterClockSubscriber> &subscriber);
     void unsubscribe(boost::shared_ptr<MasterClockSubscriber> &subscriber);
     Uint32 age();
-    ~MasterClockPublisher();
+    void keyPressed(const SDLKey &key);
+    void keyReleased(const SDLKey &key);
+    static void customDeleter(MasterClockPublisher *unused);
+    virtual ~MasterClockPublisher();
 private:
+    void dispose();
     MasterClockPublisher();
     MasterClockPublisher(const MasterClockPublisher &rhs);
     MasterClockPublisher &operator=(const MasterClockPublisher &rhs);
     void initialize();
-    void dispose();
     static MasterClockPublisher *instance;
     static bool instantiated;
     Uint32 calculateElapsedTime();
     std::list<boost::weak_ptr<MasterClockSubscriber> > subscribers;
     Uint32 lastTicks;
     Uint32 currentTicks;
+    double fastForward;
+    Uint32 fastForwardCompensation;
 };
 
 #endif

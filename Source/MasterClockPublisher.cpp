@@ -8,6 +8,7 @@
 
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/MasterClockSubscriber.hpp"
+#include "../Header/Math.hpp"
 
 bool MasterClockPublisher::instantiated = false;
 MasterClockPublisher *MasterClockPublisher::instance;
@@ -70,6 +71,13 @@ void MasterClockPublisher::initialize()
 {
     lastTicks = SDL_GetTicks();
     currentTicks = lastTicks;
+    fastForward = 1.0;
+    fastForwardCompensation = 0;
+}
+
+void MasterClockPublisher::customDeleter(MasterClockPublisher *unused)
+{
+    //Do nothing, singleton. Will delete the only instance of itself
 }
 
 MasterClockPublisher::~MasterClockPublisher()
@@ -94,12 +102,29 @@ Uint32 MasterClockPublisher::calculateElapsedTime()
 {
     lastTicks = currentTicks;
     currentTicks = SDL_GetTicks();
+    Uint32 elapsedTime = (currentTicks - lastTicks) * fastForward;
+    
+    if( !Math::almostEquals(fastForward, 1.0 ) )
+        fastForwardCompensation += elapsedTime - (currentTicks - lastTicks);
 
-    return currentTicks - lastTicks;
+    return elapsedTime;
 }
 
 Uint32 MasterClockPublisher::age()
 {
-    return currentTicks;
+    return currentTicks + fastForwardCompensation;
 }
 
+void MasterClockPublisher::keyPressed(const SDLKey &key)
+{
+    if( key == SDLK_RIGHT )
+        fastForward = 4.0;
+    if( key == SDLK_LEFT )
+        fastForward = .5;
+}
+
+void MasterClockPublisher::keyReleased(const SDLKey &key)
+{
+    if( key == SDLK_RIGHT || key == SDLK_LEFT )
+        fastForward = 1.0;
+}

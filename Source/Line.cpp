@@ -21,6 +21,7 @@
 #include "../Header/DirectRendererElement.hpp"
 #include "../Header/DirectLineGraphic.hpp"
 #include "../Header/DirectGraphicStrategy.hpp"
+#include "../Header/SeaSnail.hpp"
 
 //Private static variable initialization
 int &Line::highestIdNumberGiven()
@@ -482,6 +483,12 @@ void Line::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     state->collidesWithFishMouth(fish, yourBox);
 }
 
+void Line::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+    const BoundingBox &yourBox)
+{
+    state->collidesWithSeaSnail(seaSnail, yourBox);
+}
+
 //MasterClockSubscriber
 void Line::clockTick(Uint32 elapsedTime)
 {
@@ -732,6 +739,12 @@ void Line::NotHookedState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
 
     fish->hookedBy(sharedLineOwner, sharedLineOwner->owner);
     sharedLineOwner->hooked(fish);
+}
+
+void Line::NotHookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> 
+    &seaSnail, const BoundingBox &yourBox)
+{
+    //No-op
 }
 
 Line::HookedState::HookedState(boost::weak_ptr<Line> owner)
@@ -990,4 +1003,11 @@ void Line::HookedState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     //Fish already hooked, cannot hook multiple
     //No-op
 }
+
+void Line::HookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> 
+    &seaSnail, const BoundingBox &yourBox)
+{
+    //No-op
+}
+
 

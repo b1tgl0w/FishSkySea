@@ -69,6 +69,8 @@ public:
         const BoundingBox &yourBox);
     void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
         const BoundingBox &yourBox);
+    void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+        const BoundingBox &yourBox);
 protected:
     void initialize(const Dimension &screenSize);
     void dispose();

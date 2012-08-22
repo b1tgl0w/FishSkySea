@@ -19,6 +19,7 @@ class Shark;
 class BoundingBox;
 class Fish;
 class Direction;
+class SeaSnail;
 
 class Collidable
 {
@@ -38,6 +39,8 @@ public:
     virtual void collidesWithFish(boost::shared_ptr<Fish> &fish,
         const BoundingBox &yourBox) = 0;
     virtual void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
+        const BoundingBox &yourBox) = 0;
+    virtual void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
         const BoundingBox &yourBox) = 0;
 };
 

@@ -48,6 +48,7 @@ public:
     void randomAboutFace(Uint32 elapsedTime);
     void readyToProceed(Uint32 elapsedTime);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
+    bool isGlowing();
     void collidesWith(boost::shared_ptr<Collidable> &otherObject,
         const BoundingBox &otherBox);
     void collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -63,6 +64,8 @@ public:
     void collidesWithFish(boost::shared_ptr<Fish> &fish,
         const BoundingBox &yourBox);
     void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
+        const BoundingBox &yourBox);
+    void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
         const BoundingBox &yourBox);
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE();
@@ -82,6 +85,7 @@ private:
     bool shouldResetTimes;
     bool glowing;
     bool proceed;
+    bool retreat;
     Uint32 timeSinceOffScreen;
     static const std::string &IMAGE_PATH();
     static const Layer &LAYER();

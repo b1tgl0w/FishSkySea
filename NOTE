@@ -6,6 +6,8 @@ Left off on fixing bugs
 !!IMPORTANT:Renderer::loadImage(overloaded). Big performance improvement if
 check image has been added to images map before loading it
 
+BUG: Sometimes fish doesn't glow after touching snail.
+
 Bug:    All images have "synchronized" glowing. This is okay in this game,
 but not if multiple images are glowing at the same time.
 

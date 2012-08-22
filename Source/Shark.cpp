@@ -14,6 +14,7 @@
 #include "../Header/Transformation.hpp"
 #include "../Header/Ocean.hpp"
 #include "../Header/ImageRendererElement.hpp"
+#include "../Header/SeaSnail.hpp"
 
 const std::string &Shark::IMAGE_PATH()
 {
@@ -316,6 +317,12 @@ void Shark::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     //No-op
 }
 
+void Shark::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+    const BoundingBox &yourBox)
+{
+    state->collidesWithSeaSnail(seaSnail, yourBox);
+}
+
 void Shark::clockTick(Uint32 elapsedTime)
 {
     swim(elapsedTime);
@@ -465,6 +472,12 @@ void Shark::AttackState::collidesWithFish(boost::shared_ptr<Fish> &fish,
 
 void Shark::AttackState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     const BoundingBox &yourBox)
+{
+    //No-op
+}
+
+void Shark::AttackState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> 
+    &seaSnail, const BoundingBox &yourBox)
 {
     //No-op
 }
@@ -622,6 +635,12 @@ void Shark::PatrolState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     //No-op
 }
 
+void Shark::PatrolState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> 
+    &seaSnail, const BoundingBox &yourBox)
+{
+    //No-op
+}
+
 //Attack State
 Shark::GlowState::GlowState()
 {
@@ -759,6 +778,12 @@ void Shark::GlowState::collidesWithFish(boost::shared_ptr<Fish> &fish,
 
 void Shark::GlowState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     const BoundingBox &yourBox)
+{
+    //No-op
+}
+
+void Shark::GlowState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
+    &seaSnail, const BoundingBox &yourBox)
 {
     //No-op
 }

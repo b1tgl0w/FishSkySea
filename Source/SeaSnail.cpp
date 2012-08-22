@@ -13,6 +13,7 @@
 #include "../Header/Transformation.hpp"
 #include "../Header/ImageRendererElement.hpp"
 #include "../Header/Math.hpp"
+#include "../Header/SeaSnail.hpp"
 
 const Dimension &SeaSnail::SIZE()
 {
@@ -46,9 +47,12 @@ const Uint32 &SeaSnail::READY_PROBABILITY()
 
 SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
     &ocean) : position(new Point(initialPosition)), ocean(ocean),
-    shouldResetTimes(false), glowing(false), proceed(false), 
+    shouldResetTimes(false), glowing(false), proceed(false), retreat(false),
     timeSinceOffScreen(0)
 {
+    boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
+    BoundingBox tmpBox(position, tmpSize);
+    seaSnailBox = tmpBox;
     glow();
     positionFromSide();
     aboutFace();
@@ -57,7 +61,8 @@ SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
 SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position),
     seaSnailBox(rhs.seaSnailBox), facing(rhs.facing), ocean(rhs.ocean),
     shouldResetTimes(rhs.shouldResetTimes), glowing(rhs.glowing),
-    proceed(rhs.proceed), timeSinceOffScreen(rhs.timeSinceOffScreen)
+    proceed(rhs.proceed), retreat(rhs.retreat),
+    timeSinceOffScreen(rhs.timeSinceOffScreen)
 {
 }
 
@@ -73,6 +78,7 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
     shouldResetTimes = rhs.shouldResetTimes;
     glowing = rhs.glowing;
     proceed = rhs.proceed;
+    retreat = rhs.retreat;
     timeSinceOffScreen = rhs.timeSinceOffScreen;
     
     return *this;
@@ -101,7 +107,7 @@ void SeaSnail::swim(Uint32 elapsedTime)
         pixelsThisIteration = Math::lesser(MAXIMUM_PIXELS, pixelsLeft);
         moveForward(pixelsThisIteration);
         pixelsLeft -= pixelsThisIteration;
-        //sharedOcean->checkCollisions(collidable, seaSnailBox);
+        sharedOcean->checkCollisions(collidable, seaSnailBox);
     }
 }
 
@@ -164,9 +170,24 @@ void SeaSnail::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     layout->drawWhenReady(re);
 }
 
+bool SeaSnail::isGlowing()
+{
+    return glowing;
+}
+
 void SeaSnail::collidesWith(boost::shared_ptr<Collidable> &otherObject,
     const BoundingBox &otherBox)
 {
+    if( !proceed )
+        return;
+
+    boost::shared_ptr<SeaSnail> sharedThis = shared_from_this();
+    
+    if( !sharedThis )
+        return;
+
+    if( seaSnailBox.isCollision(otherBox) )
+        otherObject->collidesWithSeaSnail(sharedThis, otherBox);
 }
 
 void SeaSnail::collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -197,11 +218,23 @@ void SeaSnail::collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
 void SeaSnail::collidesWithFish(boost::shared_ptr<Fish> &fish,
     const BoundingBox &yourBox)
 {
+    if( !proceed || retreat )
+        return;
+
+    glowing = false;
+    retreat = true;
+    aboutFace();
 }
 
 void SeaSnail::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     const BoundingBox &yourBox)
 {
+}
+
+void SeaSnail::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+    const BoundingBox &yourBox)
+{
+    //No-op
 }
 
 void SeaSnail::clockTick(Uint32 elapsedTime)

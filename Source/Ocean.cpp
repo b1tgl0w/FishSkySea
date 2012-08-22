@@ -14,6 +14,7 @@
 #include "../Header/Point.hpp"
 #include "../Header/Renderer.hpp"
 #include "../Header/MasterClockPublisher.hpp"
+#include "../Header/SeaSnail.hpp"
 
 double &Ocean::OCEAN_EDGE_X()
 {
@@ -119,7 +120,7 @@ void Ocean::initializeSharedFromThis()
     addCollidable(fish4);
     addCollidable(fish5);
     addCollidable(fish6);
-    //addCollidable(tmpSeaSnail);
+    addCollidable(tmpSeaSnail);
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
     boost::shared_ptr<MasterClockSubscriber> subscriber1(fish1);
@@ -136,7 +137,6 @@ void Ocean::initializeSharedFromThis()
     masterClockPublisher->subscribe(subscriber5);
     masterClockPublisher->subscribe(subscriber6);
     masterClockPublisher->subscribe(subscriber7);
-    fish6->glow(); //test. delete
     fishes.push_back(fish1);
     fishes.push_back(fish2);
     fishes.push_back(fish3);
@@ -347,4 +347,9 @@ void Ocean::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
 {
 }
 
+void Ocean::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+    const BoundingBox &yourBox)
+{
+    //No-op
+}
 
