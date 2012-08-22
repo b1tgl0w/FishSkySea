@@ -6,7 +6,10 @@ Left off on fixing bugs
 !!IMPORTANT:Renderer::loadImage(overloaded). Big performance improvement if
 check image has been added to images map before loading it
 
-BUG: Sometimes fish doesn't glow after touching snail.
+When done: Make sure SeaSnail::RETREAT_PROBABILITY is  (SCREEN_WIDTH / 2) / 
+VELOCITY. Also see SeaSnail::MINIMUM_TIME_TO_RETREAT()
+
+BUG: Sometimes fish doesn't glow after touching snail. (maybe fixed?)
 
 Bug:    All images have "synchronized" glowing. This is okay in this game,
 but not if multiple images are glowing at the same time.

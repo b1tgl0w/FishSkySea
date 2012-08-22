@@ -326,13 +326,13 @@ void Fish::respawn(const Point &newPosition)
 
     sharedHookedByLine->offHook();
     hookedByLine.reset();
+    glowing = false;
 
     boost::shared_ptr<FishState> fishState(freeState);
     changeState(fishState);
     positionFromSide();
     position->y = newPosition.y;
     updateMouthPosition();
-    glowing = false;
 }
 
 void Fish::hitEdge(const Direction &direction)

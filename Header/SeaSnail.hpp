@@ -46,7 +46,6 @@ public:
     void loadImage(Renderer &renderer);
     void glow();
     void randomAboutFace(Uint32 elapsedTime);
-    void readyToProceed(Uint32 elapsedTime);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     bool isGlowing();
     void collidesWith(boost::shared_ptr<Collidable> &otherObject,
@@ -78,6 +77,8 @@ private:
     void faceRandomDirection();
     void resetTimes();
     void updateTimes(Uint32 elapsedTime);
+    void readyToProceed(Uint32 elapsedTime);
+    void readyToRetreat(Uint32 elapsedTime);
     boost::shared_ptr<Point> position;
     BoundingBox seaSnailBox;
     Direction facing;
@@ -87,10 +88,13 @@ private:
     bool proceed;
     bool retreat;
     Uint32 timeSinceOffScreen;
+    Uint32 timeSinceProceed;
     static const std::string &IMAGE_PATH();
     static const Layer &LAYER();
     static const Uint32 &MINIMUM_TIME_TO_PROCEED();
+    static const Uint32 &MINIMUM_TIME_TO_RETREAT();
     static const Uint32 &READY_PROBABILITY();
+    static const Uint32 &RETREAT_PROBABILITY();
 };
 
 #endif
