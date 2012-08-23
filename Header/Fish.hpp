@@ -144,6 +144,7 @@ public:
     */
     void loadImage(Renderer &renderer);
     void glow();
+    bool isGlowing();
     //!Adds fish graphic to layout to be drawn next frame.
     /*!
         \param layout the segment of the screen to draw the fish to.
@@ -178,6 +179,8 @@ public:
     void collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean, 
         const BoundingBox &yourBox, const Direction &direction);
     void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
+    void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
     void collidesWithShark(boost::shared_ptr<Shark> &shark,
         const BoundingBox &yourBox);
@@ -242,6 +245,8 @@ private:
         */
         void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
+        void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+            const BoundingBox &yourBox);
         void collidesWithShark(boost::shared_ptr<Shark> &shark,
             const BoundingBox &yourBox);
         void collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
@@ -303,6 +308,8 @@ private:
         */
         void collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox, const Direction &direction);
+        void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+            const BoundingBox &yourBox);
         void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
         void collidesWithShark(boost::shared_ptr<Shark> &shark,

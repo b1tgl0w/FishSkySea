@@ -61,6 +61,8 @@ public:
         const BoundingBox &yourBox, const Direction &direction);
     void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
+    void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
     void collidesWithShark(boost::shared_ptr<Shark> &shark,
         const BoundingBox &yourBox);
     void collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
@@ -106,6 +108,8 @@ private:
             const BoundingBox &yourBox, const Direction &direction);
         void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
+        void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+            const BoundingBox &yourBox);
         void collidesWithShark(boost::shared_ptr<Shark> &shark,
             const BoundingBox &yourBox);
         void collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
@@ -143,6 +147,8 @@ private:
             const BoundingBox &yourBox, const Direction &direction);
         void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
+        void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+            const BoundingBox &yourBox);
         void collidesWithShark(boost::shared_ptr<Shark> &shark,
             const BoundingBox &yourBox);
         void collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
@@ -179,6 +185,8 @@ private:
         void collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox, const Direction &direction);
         void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
+            const BoundingBox &yourBox);
+        void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
         void collidesWithShark(boost::shared_ptr<Shark> &shark,
             const BoundingBox &yourBox);

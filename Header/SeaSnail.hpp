@@ -56,6 +56,8 @@ public:
         const BoundingBox &yourBox, const Direction &direction);
     void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
+    void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
     void collidesWithShark(boost::shared_ptr<Shark> &shark,
         const BoundingBox &yourBox);
     void collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
@@ -79,6 +81,7 @@ private:
     void updateTimes(Uint32 elapsedTime);
     void readyToProceed(Uint32 elapsedTime);
     void readyToRetreat(Uint32 elapsedTime);
+    void restartCycle();
     boost::shared_ptr<Point> position;
     BoundingBox seaSnailBox;
     Direction facing;
@@ -87,6 +90,7 @@ private:
     bool glowing;
     bool proceed;
     bool retreat;
+    bool offScreen;
     Uint32 timeSinceOffScreen;
     Uint32 timeSinceProceed;
     static const std::string &IMAGE_PATH();

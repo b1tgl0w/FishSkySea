@@ -32,6 +32,8 @@ public:
         const BoundingBox &yourBox, const Direction &direction) = 0;
     virtual void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox) = 0;
+    virtual void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox) = 0;
     virtual void collidesWithShark(boost::shared_ptr<Shark> &shark,
         const BoundingBox &yourBox) = 0;
     virtual void collidesWithSharkVision(boost::shared_ptr<Shark> &shark,

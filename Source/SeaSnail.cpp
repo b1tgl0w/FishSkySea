@@ -9,6 +9,7 @@
 #include "../Header/Renderer.hpp"
 #include "../Header/Ocean.hpp"
 #include "../Header/Shark.hpp"
+#include "../Header/Fish.hpp"
 #include "../Header/Point.hpp"
 #include "../Header/Transformation.hpp"
 #include "../Header/ImageRendererElement.hpp"
@@ -64,7 +65,7 @@ const Uint32 &SeaSnail::RETREAT_PROBABILITY()
 SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
     &ocean) : position(new Point(initialPosition)), ocean(ocean),
     shouldResetTimes(false), glowing(false), proceed(false), retreat(false),
-    timeSinceOffScreen(0)
+    offScreen(false), timeSinceOffScreen(0)
 {
     boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
     BoundingBox tmpBox(position, tmpSize);
@@ -237,6 +238,12 @@ void SeaSnail::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
 {
 }
 
+void SeaSnail::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    offScreen = false;
+}
+
 void SeaSnail::collidesWithShark(boost::shared_ptr<Shark> &shark,
     const BoundingBox &yourBox)
 {
@@ -253,6 +260,7 @@ void SeaSnail::collidesWithFish(boost::shared_ptr<Fish> &fish,
     if( !proceed || !glowing )
         return;
 
+    fish->glow();
     glowing = false;
     retreat = true;
 }
@@ -270,11 +278,16 @@ void SeaSnail::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
 
 void SeaSnail::clockTick(Uint32 elapsedTime)
 {
+    offScreen = true;
+
     readyToProceed(elapsedTime);
     readyToRetreat(elapsedTime);
 
     if( proceed || retreat )
         swim(elapsedTime);
+
+    if( offScreen && retreat)
+        restartCycle();
 
     if( retreat && proceed )
     {
@@ -333,3 +346,12 @@ void SeaSnail::updateTimes(Uint32 elapsedTime)
         timeSinceProceed += elapsedTime;
 }
 
+void SeaSnail::restartCycle()
+{
+    shouldResetTimes = true;
+    proceed = false;
+    retreat = false;
+    positionFromSide();
+    aboutFace();
+    glow();
+}

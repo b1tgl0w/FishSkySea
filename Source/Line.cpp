@@ -459,6 +459,12 @@ void Line::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
     state->collidesWithOceanSurface(ocean, yourBox);
 }
 
+void Line::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    state->collidesWithInnerOcean(ocean, yourBox);
+}
+
 void Line::collidesWithShark(boost::shared_ptr<Shark> &shark,
     const BoundingBox &yourBox)
 {
@@ -709,6 +715,12 @@ void Line::NotHookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean>
 
     if( &yourBox == &(sharedLineOwner->hookBox) )
         ocean->alignWithSurface(sharedLineOwner->hookPoint->y, 1.0);
+}
+
+void Line::NotHookedState::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    //No-op
 }
 
 void Line::NotHookedState::collidesWithShark(boost::shared_ptr<Shark> &shark,
@@ -977,6 +989,12 @@ void Line::HookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean
     const BoundingBox &yourBox)
 {
     //Don't let hook above surface
+}
+
+void Line::HookedState::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    //No-op
 }
 
 void Line::HookedState::collidesWithShark(boost::shared_ptr<Shark> &shark,

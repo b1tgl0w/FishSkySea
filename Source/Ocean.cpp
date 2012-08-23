@@ -310,6 +310,12 @@ void Ocean::collidesWith(boost::shared_ptr<Collidable> &otherObject,
         otherObject->collidesWithOceanSurface(sharedThis,
             otherBox);
     }
+    if( oceanBox.isCollision(otherBox) )
+    {
+        boost::shared_ptr<Ocean> sharedThis(shared_from_this());
+        otherObject->collidesWithInnerOcean(sharedThis,
+            otherBox);
+    }
 }
 
 void Ocean::collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -325,6 +331,12 @@ void Ocean::collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
 void Ocean::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox)
 {
+}
+
+void Ocean::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    //No-op
 }
 
 void Ocean::collidesWithShark(boost::shared_ptr<Shark> &shark,

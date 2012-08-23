@@ -248,6 +248,11 @@ void Fish::glow()
     glowing = true;
 }
 
+bool Fish::isGlowing()
+{
+    return glowing;
+}
+
 void Fish::changeState(boost::shared_ptr<FishState> &newState)
 {
     state = newState;
@@ -394,6 +399,12 @@ void Fish::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox)
 {
     state->collidesWithOceanSurface(ocean, yourBox);
+}
+
+void Fish::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    state->collidesWithInnerOcean(ocean, yourBox);
 }
 
 void Fish::collidesWithShark(boost::shared_ptr<Shark> &shark,
@@ -604,6 +615,12 @@ void Fish::FreeState::collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
 void Fish::FreeState::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox)
 {
+}
+
+void Fish::FreeState::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    //No-op
 }
 
 void Fish::FreeState::collidesWithShark(boost::shared_ptr<Shark> &shark,
@@ -837,6 +854,12 @@ void Fish::HookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean
     }
 }
 
+void Fish::HookedState::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    //No-op
+}
+
 void Fish::HookedState::collidesWithShark(boost::shared_ptr<Shark> &shark,
     const BoundingBox &yourBox)
 {
@@ -893,3 +916,4 @@ void Fish::HookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &
     if( seaSnail->isGlowing() )
         sharedFishOwner->glowing = true;
 }
+
