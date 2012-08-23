@@ -36,8 +36,14 @@ const Layer &SeaSnail::LAYER()
 
 const Uint32 &SeaSnail::MINIMUM_TIME_TO_PROCEED()
 {
-    static const Uint32 TMP_MINIMUM_TIME_TO_PROCEED = 3000;
+    static const Uint32 TMP_MINIMUM_TIME_TO_PROCEED = 9000;
     return TMP_MINIMUM_TIME_TO_PROCEED;
+}
+
+const Uint32 &SeaSnail::MAXIMUM_TIME_TO_PROCEED()
+{
+    static const Uint32 TMP_MAXIMUM_TIME_TO_PROCEED = 90000;
+    return TMP_MAXIMUM_TIME_TO_PROCEED;
 }
 
 const Uint32 &SeaSnail::MINIMUM_TIME_TO_RETREAT()
@@ -50,7 +56,7 @@ const Uint32 &SeaSnail::MINIMUM_TIME_TO_RETREAT()
 
 const Uint32 &SeaSnail::READY_PROBABILITY()
 {
-    static const Uint32 TMP_READY_PROBABILITY = 30000 - 3000;
+    static const Uint32 TMP_READY_PROBABILITY = 30000 - 9000;
     return TMP_READY_PROBABILITY;
 }
 
@@ -161,6 +167,15 @@ void SeaSnail::readyToProceed(Uint32 elapsedTime)
         shouldResetTimes || retreat )
         return;
 
+    if( timeSinceOffScreen >= MAXIMUM_TIME_TO_PROCEED() )
+    {
+        proceed = true;
+        return;
+    }
+
+    if( elapsedTime == 0 )
+        return;
+
     const int PROBABILITY_OVER_TIME = READY_PROBABILITY() / elapsedTime;
 
     if( PROBABILITY_OVER_TIME == 0 )
@@ -175,6 +190,9 @@ void SeaSnail::readyToRetreat(Uint32 elapsedTime)
 {
     if( timeSinceProceed < MINIMUM_TIME_TO_RETREAT() ||
         shouldResetTimes )
+        return;
+
+    if( elapsedTime == 0 )
         return;
 
     const int PROBABILITY_OVER_TIME = RETREAT_PROBABILITY() / elapsedTime;

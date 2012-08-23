@@ -184,6 +184,9 @@ void Fish::doRandomAboutFace(Uint32 elapsedTime, Uint32 probability)
         shouldResetTimes )
         return;
 
+    if( elapsedTime == 0 )
+        return;
+
     const int PROBABILITY_OVER_TIME = probability / elapsedTime;
 
     //Don't want floating point exception if PROBABILTY == 0

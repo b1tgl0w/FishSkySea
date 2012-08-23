@@ -77,7 +77,7 @@ void MasterClockPublisher::initialize()
 
 void MasterClockPublisher::customDeleter(MasterClockPublisher *unused)
 {
-    //Do nothing, singleton. Will delete the only instance of itself
+    //Do nothing, singleton. Will delete the only instance of itself in dtor
 }
 
 MasterClockPublisher::~MasterClockPublisher()
@@ -100,6 +100,9 @@ void MasterClockPublisher::dispose()
 //Note:     This method should be called once and only once each frame.
 Uint32 MasterClockPublisher::calculateElapsedTime()
 {
+    if( pause )
+        fastForward = 0.0;
+
     lastTicks = currentTicks;
     currentTicks = SDL_GetTicks();
     Uint32 elapsedTime = (currentTicks - lastTicks) * fastForward;
@@ -121,6 +124,13 @@ void MasterClockPublisher::keyPressed(const SDLKey &key)
         fastForward = 4.0;
     if( key == SDLK_LEFT )
         fastForward = .5;
+    if( key == SDLK_RETURN )
+    {
+        pause = !pause;
+        if( !pause )
+            fastForward = 1.0;
+    }
+    
 }
 
 void MasterClockPublisher::keyReleased(const SDLKey &key)

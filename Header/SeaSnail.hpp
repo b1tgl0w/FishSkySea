@@ -96,6 +96,7 @@ private:
     static const std::string &IMAGE_PATH();
     static const Layer &LAYER();
     static const Uint32 &MINIMUM_TIME_TO_PROCEED();
+    static const Uint32 &MAXIMUM_TIME_TO_PROCEED();
     static const Uint32 &MINIMUM_TIME_TO_RETREAT();
     static const Uint32 &READY_PROBABILITY();
     static const Uint32 &RETREAT_PROBABILITY();

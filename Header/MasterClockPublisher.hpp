@@ -48,6 +48,7 @@ private:
     Uint32 currentTicks;
     double fastForward;
     Uint32 fastForwardCompensation;
+    bool pause;
 };
 
 #endif

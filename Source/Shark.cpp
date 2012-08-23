@@ -149,6 +149,9 @@ void Shark::randomAboutFace(Uint32 elapsedTime)
         return;
     }
     
+    if( elapsedTime == 0 )
+        return;
+
     const int PROBABILITY = ABOUT_FACE_TICK_PROBABILITY() / elapsedTime;
 
     if( PROBABILITY == 0 )
@@ -802,7 +805,7 @@ void Shark::GlowState::collidesWithFish(boost::shared_ptr<Fish> &fish,
     if( !sharedSharkOwner )
         return;
 
-    if( !fish->isGlowing() )
+    if( &yourBox == &(sharedSharkOwner->sharkBox) && !fish->isGlowing() )
         sharedSharkOwner->continueAttack = false;
 }
 
