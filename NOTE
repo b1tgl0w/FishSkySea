@@ -9,6 +9,8 @@ check image has been added to images map before loading it
 When done: Make sure SeaSnail::RETREAT_PROBABILITY is  (SCREEN_WIDTH / 2) / 
 VELOCITY. Also see SeaSnail::MINIMUM_TIME_TO_RETREAT()
 
+Don't forget about sound effects
+
 BUG: Shark never leaves the glow state. (Maybe fixed)
 
 BUG: Sometimes fish doesn't glow after touching snail. (maybe fixed?)

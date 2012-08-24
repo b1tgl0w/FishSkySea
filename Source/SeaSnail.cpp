@@ -275,7 +275,7 @@ void SeaSnail::collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
 void SeaSnail::collidesWithFish(boost::shared_ptr<Fish> &fish,
     const BoundingBox &yourBox)
 {
-    if( !proceed || !glowing )
+    if( !glowing )
         return;
 
     fish->glow();

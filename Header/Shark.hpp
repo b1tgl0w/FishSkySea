@@ -228,6 +228,7 @@ private:
     BoundingBox sharkBox;
     BoundingBox visionBox;
     bool continueAttack;
+    bool justAte;
 
     static const std::string &IMAGE_PATH();
     static const Layer &LAYER();

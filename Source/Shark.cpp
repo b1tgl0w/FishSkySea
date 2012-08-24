@@ -94,6 +94,7 @@ void Shark::initialize(boost::weak_ptr<Ocean> ocean, const Point &position)
     BoundingBox tmpVisionBox(visionPosition, visionSize);
     visionBox = tmpVisionBox;
     continueAttack = false;
+    justAte = false;
 }
 
 //Note:_MUST_ be called IMMEDIATELY after ctor
@@ -185,7 +186,7 @@ void Shark::eat(bool glowing)
         changeState(sharkState);
     }
     else
-        continueAttack = false;
+        justAte = true;
 }
 
 void Shark::loadImage(Renderer &renderer)
@@ -260,11 +261,20 @@ void Shark::calmDown()
 {
     if( continueAttack )
         continueAttack = false;
-    else
+    else 
     {
+        justAte = false;
         boost::shared_ptr<SharkState> sharkState(patrolState);
         changeState(sharkState);
     }
+    
+    if( justAte )
+    {
+        justAte = false;
+        boost::shared_ptr<SharkState> sharkState(patrolState);
+        changeState(sharkState);
+    }
+        
 }
 
 double Shark::calculatePixelsLeft(Uint32 elapsedTime)
@@ -719,7 +729,6 @@ void Shark::GlowState::swim(Uint32 elapsedTime)
     
     sharedSharkOwner->adjustVisionBox();
     boost::shared_ptr<Collidable> collidable(sharedSharkOwner);
-    sharedSharkOwner->continueAttack = true;
 
     while( pixelsLeft > 0 )
     {
@@ -731,6 +740,7 @@ void Shark::GlowState::swim(Uint32 elapsedTime)
         sharedOcean->checkCollisions(collidable, sharedSharkOwner->visionBox);
     }
 
+    sharedSharkOwner->continueAttack = true;
     //No random about face when glowing
 }
         
@@ -806,7 +816,7 @@ void Shark::GlowState::collidesWithFish(boost::shared_ptr<Fish> &fish,
         return;
 
     if( &yourBox == &(sharedSharkOwner->sharkBox) && !fish->isGlowing() )
-        sharedSharkOwner->continueAttack = false;
+        sharedSharkOwner->justAte = true;
 }
 
 void Shark::GlowState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
