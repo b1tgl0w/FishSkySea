@@ -111,28 +111,40 @@ void drawPole(SDL_Surface **screen, SDL_Surface **pole, const Point &polePoint,
     double curY = polePoint.y;
     double nextX = polePoint.x;
     double nextY = polePoint.y;
-    //double a = -.007;
-    double a = howBowed(polePoint, hookPoint);
-    //double b = -.01;
-    double b = 0.0;
-    double c = 0.0;
+    double shiftX = hookPoint.x;
     bool firstIteration = true;
-    double offsetY = calculateQuadratic(a, b, c) - 
-        calculateQuadratic(a, b, polePoint.x - 10.0);
-    double startingX = polePoint.x - offsetY;
-    offsetY = calculateQuadratic(a, b, c) -
-        calculateQuadratic(a, b, startingX - 10.0);
 
-    while(curX > 10.0 )
+    double height = 0;
+    double firstY = 400 - sqrt(pow(polePoint.x - hookPoint.x, 2.0) / 300 * (
+            polePoint.x - curX));
+    while( shiftX > 10.0 )
     {
+        --shiftX;
         curX = nextX;
         curY = nextY;
         --nextX;
-        c = startingX - curX;
-        nextY = offsetY + polePoint.y + calculateQuadratic(a, b, c);
-        currentRectangle.x = lesser(nextX, curX);
-        currentRectangle.y = lesser(nextY, curY);
-        currentRectangle.w = ceil(greater(nextX, curX) - lesser(nextX, curX));
+        nextY = 200 - sqrt(pow(polePoint.x - hookPoint.x, 2.0) / 300 * (
+            polePoint.x - curX));
+        height = firstY - curY ;
+    }
+
+    curX = polePoint.x;
+    curY = polePoint.y;
+    nextX = polePoint.x;
+    nextY = polePoint.y;
+    shiftX = hookPoint.x;
+
+    while(shiftX > 10.0 )
+    {
+        --shiftX;
+        curX = nextX;
+        curY = nextY;
+        --nextX;
+        nextY = 200 - sqrt(pow(polePoint.x - hookPoint.x, 2.0) / 300 * (
+            polePoint.x - curX));
+        currentRectangle.x = shiftX;
+        currentRectangle.y = lesser(nextY, curY) + height;
+        currentRectangle.w = curX - nextX;
         currentRectangle.h = ceil(greater(nextY, curY) - lesser(nextY, curY));
         if( currentRectangle.w < 1.0)
             currentRectangle.w = 1.0;
