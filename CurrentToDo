@@ -4,11 +4,9 @@
 //Modified: 07/01/12
 //Purpose:  An agenda for your current task
 
-Left off on: Fixing shark glow bug.
+Left off on: MainGameScene::exit(). Compiling. Testing.
 
-General Task: Shark Glow.
-
-Side Note: Test Glowing in General.
+General Task: MainGameScene.
 
 Documentation:  Started adding comments to methods. Left off on
 CoordinateLayout. Fish incomplete.
