@@ -43,6 +43,7 @@ public:
     void moveBy(const Point &offset);
     bool isHere(const Point &position);
     void addLayout(boost::shared_ptr<Layout> &layout, int layer);
+    void removeLayout(boost::shared_ptr<Layout> &layout, int layer);
     boost::shared_ptr<Layout> operator[](int layer);
     void own(const boost::weak_ptr<Layout> &owner);
 protected:

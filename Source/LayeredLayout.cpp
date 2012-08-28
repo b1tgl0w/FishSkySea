@@ -199,6 +199,24 @@ void LayeredLayout::addLayout(boost::shared_ptr<Layout> &layout, int layer)
     layout->own(sharedThis);
 }
 
+void LayeredLayout::removeLayout(boost::shared_ptr<Layout> &layout, int layer)
+{
+    if(layer - (int) layers.size() > 0 )
+    {
+    }
+    else if( layer - (int) layers.size() == 0 )
+    {
+    }
+    else
+    {
+        if( layers[layer] == layout )
+        {
+            boost::shared_ptr<Layout> emptyLayout(new EmptyLayout);
+            layers[layer] = emptyLayout;
+        }
+    }
+}
+
 void LayeredLayout::own(const boost::weak_ptr<Layout> &owner)
 {
     this->owner = owner;

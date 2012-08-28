@@ -79,7 +79,13 @@ void MasterInputPublisher::unsubscribe(boost::shared_ptr<MasterInputSubscriber>
     &subscriber)
 {
     boost::weak_ptr<MasterInputSubscriber> weakSubscriber = subscriber;
-    //subscribers.remove(subscriber);
+
+    for( std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator it =
+        subscribers.begin(); it != subscribers.end(); ++it )
+    {
+        if( !( *it < weakSubscriber ) && !( weakSubscriber < *it ) )
+            subscribers.erase(it);
+    }
 }
 
 MasterInputPublisher::~MasterInputPublisher()

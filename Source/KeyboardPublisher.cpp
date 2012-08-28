@@ -66,8 +66,14 @@ void KeyboardPublisher::subscribe(boost::shared_ptr<KeyboardSubscriber> &subscri
 
 void KeyboardPublisher::unsubscribe(boost::shared_ptr<KeyboardSubscriber> &subscriber)
 {
-    boost::weak_ptr<KeyboardSubscriber> tmpSubscriber = subscriber;
-    //subscribers.remove(tmpSubscriber);
+    boost::weak_ptr<KeyboardSubscriber> weakSubscriber = subscriber;
+
+    for( std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator it =
+        subscribers.begin(); it != subscribers.end(); ++it )
+    {
+        if( !(*it < weakSubscriber) && !(weakSubscriber < *it) )
+            subscribers.erase(it);
+    }
 }
 
 void KeyboardPublisher::inputEvent(const SDL_Event &e) 

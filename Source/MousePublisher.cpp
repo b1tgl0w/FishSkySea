@@ -113,7 +113,14 @@ void MousePublisher::subscribe(boost::weak_ptr<MouseSubscriber> &subscriber)
 
 void MousePublisher::unsubscribe(boost::weak_ptr<MouseSubscriber> &subscriber)
 {
-    //subscribers.remove(subscriber);
+    boost::weak_ptr<MouseSubscriber> weakSubscriber = subscriber;
+
+    for( std::list<boost::weak_ptr<MouseSubscriber> >::iterator it =
+        subscribers.begin(); it != subscribers.end(); ++it )
+    {
+        if( !( *it < weakSubscriber ) && !( weakSubscriber < *it ) )
+            subscribers.erase(it);
+    }
 }
 
 void MousePublisher::notifyClick(Uint8 button, bool pressed, Point &position)

@@ -42,6 +42,7 @@ public:
     bool isHere(const Point &position);
     void merge(std::list<Point> indexes); //Add an unmerge method?
     void addLayout(boost::shared_ptr<Layout> &layout, const Point &index);
+    void removeLayout(boost::shared_ptr<Layout> &layout, const Point &index);
     boost::weak_ptr<Layout> getElement(int row, int col);
     void own(const boost::weak_ptr<Layout> &owner);
 protected:
@@ -71,6 +72,7 @@ private:
         void markMerged();
         bool isYoursAndMerged(boost::shared_ptr<Layout> &callerLayout);
         void addLayout(boost::shared_ptr<Layout> &layout);
+        void removeLayout(boost::shared_ptr<Layout> &layout);
         void own(const boost::weak_ptr<Layout> &owner);
     protected:
         void initialize();

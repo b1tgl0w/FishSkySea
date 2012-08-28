@@ -136,6 +136,13 @@ void BorderLayout::addLayout(boost::shared_ptr<Layout> &layout, const BorderCell
     layout->own(sharedThis);
 }
 
+void BorderLayout::removeLayout(boost::shared_ptr<Layout> &layout, const 
+    BorderCell &whichCell)
+{
+    if( cells[whichCell] == layout )
+        cells.erase(whichCell);
+}
+
 void BorderLayout::adjustCells()
 {
     for( std::map<BorderCell, boost::shared_ptr<Layout> >::iterator it =

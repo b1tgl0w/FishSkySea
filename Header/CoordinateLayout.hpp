@@ -41,6 +41,7 @@ public:
     void moveTo(const Point &newPosition);
     bool isHere(const Point &position);
     void addLayout(boost::shared_ptr<Layout> &LAYOUT, const Point &position);
+    void removeLayout(boost::shared_ptr<Layout> &layout, const Point &position);
     std::list<boost::shared_ptr<Layout> > operator[](const Point &position);
     void own(const boost::weak_ptr<Layout> &owner);
 protected:

@@ -66,7 +66,6 @@ int main(int argc, char **argv)
         "../Media/Fonts/monof55.ttf", frameCleanupPublisher)); // changed back to "../Media"
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
-    Point sharkPoint = { 290.0, 271.0 };
     Point backgroundPoint = { 0.0, 0.0 };
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();
@@ -77,25 +76,19 @@ int main(int argc, char **argv)
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
-    boost::shared_ptr<Shark> shark(new Shark(ocean, sharkPoint));
-    shark->initializeStates();
     renderer->loadImage("../Media/Scene3.png"); // changed back to "../Media"
     renderer->loadImage("../Media/Fish.png"); // changed back to "../Media"
     SDL_Color white = { 0x00, 0x00, 0x00, 0x00 };
     renderer->loadText("Hey!", white, 1);
     player1->loadImage(*renderer);
-    shark->loadImage(*renderer);
     bool quit = false;
     ocean->addCollidable(ocean);
-    ocean->addCollidable(shark);
     player1->sendCollidable(ocean);
 
     MasterInputPublisher *masterInputPublisher =
         MasterInputPublisher::getInstance();
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
-    boost::shared_ptr<MasterClockSubscriber> sharkSubscriber(shark);
-    masterClockPublisher->subscribe(sharkSubscriber);
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
         KeyboardPublisher);
     boost::shared_ptr<KeyboardSubscriber> clockSubscriber(masterClockPublisher,
@@ -137,7 +130,6 @@ int main(int argc, char **argv)
         masterClockPublisher->pollClock();
         player1->draw(superOceanLayout, *renderer);
         ocean->draw(superOceanLayout, *renderer);
-        shark->draw(superOceanLayout, *renderer);
         oceanLayout->drawWhenReady(background);
         score->draw(superScore1Layout, *renderer);
         renderer->render();
@@ -166,11 +158,9 @@ int main(int argc, char **argv)
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point backgroundPoint = { 0.0, 0.0 };
-    Point sharkPoint = { 290.0, 271.0 };
     Point fishPoint = { 0.0, 0.0 };
     Point fishPoint2 = { 80.0, 0.0 };
     Dimension fishSize = { 70, 26 };
-    Dimension sharkSize = { 253, 52 };
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();
     ocean->loadImage(*(renderer));
@@ -180,23 +170,18 @@ int main(int argc, char **argv)
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
-    boost::shared_ptr<Shark> shark(new Shark(ocean, sharkPoint));
     shark->initializeStates();
     renderer->loadImage("../Media/Scene.png");
     renderer->loadImage("../Media/Fish.png");
     player1->loadImage(*renderer);
-    shark->loadImage(*renderer);
     bool quit = false;
     ocean->addCollidable(ocean);
-    ocean->addCollidable(shark);
     player1->sendCollidable(ocean);
 
     MasterInputPublisher *masterInputPublisher =
         MasterInputPublisher::getInstance();
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
-    boost::shared_ptr<MasterClockSubscriber> sharkSubscriber(shark);
-    masterClockPublisher->subscribe(sharkSubscriber);
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
         KeyboardPublisher);
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber(keyboardPublisher);
@@ -222,8 +207,6 @@ int main(int argc, char **argv)
     layeredLayout->addLayout(center5, 2);
     ImageRendererElement background("../Media/Scene.png", 3, backgroundPoint,
         backgroundSize);
-    ImageRendererElement sharkPlaceHolder("../Media/SharkPlaceHolder.png", 2, fishPoint,
-        sharkSize);
     ImageRendererElement fish("../Media/Fish.png", 1, fishPoint,
         fishSize);
 
@@ -231,7 +214,6 @@ int main(int argc, char **argv)
     {
         handleQuit(quit);
         center3->drawWhenReady(background);
-        center4->drawWhenReady(sharkPlaceHolder);
         center5->drawWhenReady(fish);
         renderer->render();
     }
@@ -256,11 +238,9 @@ int main(int argc, char **argv)
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point backgroundPoint = { 0.0, 0.0 };
-    Point sharkPoint = { 290.0, 271.0 };
     Point fishPoint = { 0.0, 0.0 };
     Point fishPoint2 = { 80.0, 0.0 };
     Dimension fishSize = { 70, 26 };
-    Dimension sharkSize = { 253, 52 };
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();
     ocean->loadImage(*(renderer));
@@ -270,23 +250,18 @@ int main(int argc, char **argv)
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
-    boost::shared_ptr<Shark> shark(new Shark(ocean, sharkPoint));
     shark->initializeStates();
     renderer->loadImage("../Media/Scene.png");
     renderer->loadImage("../Media/Fish.png");
     player1->loadImage(*renderer);
-    shark->loadImage(*renderer);
     bool quit = false;
     ocean->addCollidable(ocean);
-    ocean->addCollidable(shark);
     player1->sendCollidable(ocean);
 
     MasterInputPublisher *masterInputPublisher =
         MasterInputPublisher::getInstance();
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
-    boost::shared_ptr<MasterClockSubscriber> sharkSubscriber(shark);
-    masterClockPublisher->subscribe(sharkSubscriber);
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
         KeyboardPublisher);
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber(keyboardPublisher);
@@ -336,8 +311,6 @@ int main(int argc, char **argv)
     borderLayout->useCorners(BorderCorner::TopBottom());
     ImageRendererElement background("../Media/Scene.png", 3, backgroundPoint,
         backgroundSize);
-    ImageRendererElement fish("../Media/SharkPlaceHolder.png", 2, fishPoint,
-        sharkSize);
     ImageRendererElement fish2("../Media/Fish.png", 1, fishPoint,
         sharkSize);
 
@@ -375,7 +348,6 @@ int main(int argc, char **argv)
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point backgroundPoint = { 0.0, 0.0 };
-    Point sharkPoint = { 290.0, 271.0 };
     Dimension fishSize = { 70, 26 };
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();
@@ -386,23 +358,17 @@ int main(int argc, char **argv)
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
-    boost::shared_ptr<Shark> shark(new Shark(ocean, sharkPoint));
-    shark->initializeStates();
     renderer->loadImage("../Media/Scene.png");
     renderer->loadImage("../Media/Fish.png");
     player1->loadImage(*renderer);
-    shark->loadImage(*renderer);
     bool quit = false;
     ocean->addCollidable(ocean);
-    ocean->addCollidable(shark);
     player1->sendCollidable(ocean);
 
     MasterInputPublisher *masterInputPublisher =
         MasterInputPublisher::getInstance();
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
-    boost::shared_ptr<MasterClockSubscriber> sharkSubscriber(shark);
-    masterClockPublisher->subscribe(sharkSubscriber);
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
         KeyboardPublisher);
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber(keyboardPublisher);
@@ -475,39 +441,30 @@ int main(int argc, char **argv)
         masterClockPublisher->pollClock();
         player1->draw(coord1, *renderer);
         ocean->draw(coord1, *renderer);
-        shark->draw(coord1, *renderer);
         coord1->drawWhenReady(background);
         player1->draw(coord2, *renderer);
         ocean->draw(coord2, *renderer);
-        shark->draw(coord2, *renderer);
         coord2->drawWhenReady(background);
         player1->draw(coord3, *renderer);
         ocean->draw(coord3, *renderer);
-        shark->draw(coord3, *renderer);
         coord3->drawWhenReady(background);
         player1->draw(coord4, *renderer);
         ocean->draw(coord4, *renderer);
-        shark->draw(coord4, *renderer);
         coord4->drawWhenReady(background);
         player1->draw(coord5, *renderer);
         ocean->draw(coord5, *renderer);
-        shark->draw(coord5, *renderer);
         coord5->drawWhenReady(background);
         player1->draw(coord6, *renderer);
         ocean->draw(coord6, *renderer);
-        shark->draw(coord6, *renderer);
         coord6->drawWhenReady(background);
         player1->draw(coord7, *renderer);
         ocean->draw(coord7, *renderer);
-        shark->draw(coord7, *renderer);
         coord7->drawWhenReady(background);
         player1->draw(coord8, *renderer);
         ocean->draw(coord8, *renderer);
-        shark->draw(coord8, *renderer);
         coord8->drawWhenReady(background);
         player1->draw(coord9, *renderer);
         ocean->draw(coord9, *renderer);
-        shark->draw(coord9, *renderer);
         coord9->drawWhenReady(background);
         renderer->render();
 

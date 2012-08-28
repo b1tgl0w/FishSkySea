@@ -337,6 +337,16 @@ void GridLayout::addLayout(boost::shared_ptr<Layout> &layout, const Point &index
     layout->own(sharedThis);
 }
 
+void GridLayout::removeLayout(boost::shared_ptr<Layout> &layout, const Point 
+    &index)
+{
+    if( (int) index.y > -1 && (int) index.y < cells.size() )
+    {
+        if( (int) index.x > -1 && (int) index.x < cells[(int) index.y].size() )
+            cells[(int) index.y][(int) index.x]->removeLayout(layout);
+    }
+}
+
 boost::weak_ptr<Layout> GridLayout::getElement(int row, int col)
 {
     if( row >= 0 && row < cells.size() )
@@ -511,6 +521,17 @@ void GridLayout::GridCell::addLayout(boost::shared_ptr<Layout> &layout)
     layout->scale(size);
     boost::shared_ptr<Layout> sharedThis(shared_from_this());
     layout->own(sharedThis);
+}
+
+void GridLayout::GridCell::removeLayout(boost::shared_ptr<Layout> &layout)
+{
+    if( layout == this->layout )
+    {
+        this->layout.reset();
+        initialize();
+        //merged = false; should this be done?
+    }
+
 }
 
 void GridLayout::GridCell::own(const boost::weak_ptr<Layout> &owner)

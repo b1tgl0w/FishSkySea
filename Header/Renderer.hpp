@@ -83,6 +83,7 @@ public:
     void moveTo(const Point &newPosition); //No-op
     void moveBy(const Point &offset); //No-op
     void addLayout(boost::shared_ptr<Layout> &layout);
+    void removeLayout(boost::shared_ptr<Layout> &layout);
     void own(const boost::weak_ptr<Layout> &owner);
     Uint32 makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha) const;
 protected:

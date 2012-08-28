@@ -406,6 +406,16 @@ void Renderer::addLayout(boost::shared_ptr<Layout> &layout)
     layout->own(sharedThis);
 }
 
+void Renderer::removeLayout(boost::shared_ptr<Layout> &layout)
+{
+    for( std::list<boost::shared_ptr<Layout> >::iterator it = layouts.begin();
+        it != layouts.end(); ++it )
+    {
+        if( *it == layout )
+            layouts.erase(it);
+    }
+}
+
 void Renderer::own(const boost::weak_ptr<Layout> &owner)
 {
     //No-op

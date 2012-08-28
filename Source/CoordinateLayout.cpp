@@ -155,6 +155,17 @@ void CoordinateLayout::addLayout(boost::shared_ptr<Layout> &layout,
     layout->own(sharedThis);
 }
 
+void CoordinateLayout::removeLayout(boost::shared_ptr<Layout> &layout,
+    const Point &position)
+{
+    for( std::list<boost::shared_ptr<Layout> >::iterator it = 
+        sublayouts.begin(); it != sublayouts.end(); ++it )
+    {
+        if( (*it)->isHere(position) && layout == *it )
+            sublayouts.erase(it);
+    }
+}
+
 std::list<boost::shared_ptr<Layout> > CoordinateLayout::operator[](const
     Point &position)
 {

@@ -36,7 +36,13 @@ void MasterClockPublisher::unsubscribe(boost::shared_ptr<MasterClockSubscriber>
     &subscriber)
 {
     boost::weak_ptr<MasterClockSubscriber> weakSubscriber = subscriber;
-    //subscribers.remove(subscriber);
+    
+    for( std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator it =
+        subscribers.begin(); it != subscribers.end(); ++it )
+    {
+        if( !( *it < weakSubscriber ) && ! ( weakSubscriber < *it ) )
+            subscribers.erase(it);
+    }
 }
 
 void MasterClockPublisher::pollClock()

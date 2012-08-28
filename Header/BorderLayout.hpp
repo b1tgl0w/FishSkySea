@@ -131,6 +131,8 @@ public:
     */
     void addLayout(boost::shared_ptr<Layout> &layout, const BorderCell
         &whichCell);
+    void removeLayout(boost::shared_ptr<Layout> &layout, const BorderCell &
+        whichCell);
     //! Provide access to contained layouts
     /*!
         \param whichCell The cell to work on. Either Top, Bottom, Left, Right, Center.

@@ -130,7 +130,21 @@ void HumanPlayer::caughtFish(Weight weight, bool glowing)
 void HumanPlayer::sendCollidable(boost::weak_ptr<Ocean> ocean)
 {
     boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+    
+    if( !sharedOcean )
+        return;
+
     sharedOcean->addCollidable(line);
+}
+
+void HumanPlayer::sendCollidableRemove(boost::weak_ptr<Ocean> ocean)
+{
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+
+    if( !sharedOcean )
+        return;
+
+    sharedOcean->removeCollidable(line);
 }
 
 //KeyboardSubscriber
