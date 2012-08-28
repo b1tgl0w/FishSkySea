@@ -71,6 +71,12 @@ int main(int argc, char **argv)
 
     superScene->enter();
 
+    //SEGFAULT
+    //superScene->exit(); 
+    //superScene->enter();
+    //superScene->exit();
+    //superScene->enter();
+
     while( superScene->run() != SceneLabel::QUIT() )
     {
     }
