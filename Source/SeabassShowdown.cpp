@@ -47,11 +47,39 @@
 #include "../Header/BorderCell.hpp"
 #include "../Header/BorderCorner.hpp"
 #include "../Header/Score.hpp"
+#include "../Header/MainGameScene.hpp"
+#include "../Header/SceneLabel.hpp"
+#include "../Header/Scene.hpp"
 
 void handleQuit( bool &quit );
 
+int main(int argc, char **argv)
+{
+    srand((unsigned) time(0)); //Move to class Game
+    boost::shared_ptr<Game> game(new Game);
+    Dimension screenResolution = { 800, 600 };
+    boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher(new
+        FrameCleanupPublisher);
+    boost::shared_ptr<Renderer> renderer(
+        new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
+        "../Media/Fonts/monof55.ttf", frameCleanupPublisher)); // changed back to "../Media"
+    boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
+        KeyboardPublisher);
+    boost::shared_ptr<MainGameScene> mainGameScene(new MainGameScene(
+        renderer, keyboardPublisher, screenResolution, game));
+    boost::shared_ptr<Scene> superScene(mainGameScene);
 
+    superScene->enter();
 
+    while( superScene->run() != SceneLabel::QUIT() )
+    {
+    }
+
+    SDL_Quit();
+    return EXIT_SUCCESS;
+}
+
+/*
 //Regular game
 //Throw-away code
 int main(int argc, char **argv)
@@ -141,6 +169,7 @@ int main(int argc, char **argv)
     SDL_Quit();
     return EXIT_SUCCESS;
 }
+*/
 
 /*
 //Layered layout (three layered)

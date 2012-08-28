@@ -55,7 +55,7 @@ MainGameScene::MainGameScene(boost::shared_ptr<Renderer> &renderer,
     boost::shared_ptr<KeyboardPublisher> &keyboardPublisher,
     const Dimension &screenResolution, boost::shared_ptr<Game> &game) : 
     renderer(renderer), keyboardPublisher(keyboardPublisher),
-    screenResolution(screenResolution),
+    screenResolution(screenResolution), game(game),
     masterInputPublisher(MasterInputPublisher::getInstance()),
     masterClockPublisher(MasterClockPublisher::getInstance()),
     ocean(new Ocean(screenResolution)), score1(new Score(0)),
@@ -150,7 +150,7 @@ void MainGameScene::enter()
     renderer->addLayout(superLayeredLayout);
 }
 
-void MainGameScene::run()
+SceneLabel MainGameScene::run()
 {
     masterInputPublisher->pollInput();
     masterClockPublisher->pollClock();
@@ -161,7 +161,9 @@ void MainGameScene::run()
     renderer->render();
 
     if( game->shouldQuit() )
-        quit = true;
+        return SceneLabel::QUIT();
+
+    return SceneLabel::NO_CHANGE();
 }
 
 //Note: Should we tell renderer to free images here or flag them for free if

@@ -13,6 +13,7 @@
 #include "Scene.hpp"
 #include "Dimension.hpp"
 #include "ImageRendererElement.hpp"
+#include "SceneLabel.hpp"
 
 struct Point;
 class Renderer;
@@ -42,7 +43,7 @@ public:
     MainGameScene(const MainGameScene &rhs);
     MainGameScene &operator=(const MainGameScene &rhs);
     void enter();
-    void run();
+    SceneLabel run();
     void exit();
 private:
     MainGameScene();
