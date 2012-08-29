@@ -523,15 +523,11 @@ void GridLayout::GridCell::addLayout(boost::shared_ptr<Layout> &layout)
     layout->own(sharedThis);
 }
 
+//Note: Don't initialize(...) or set merged = false
 void GridLayout::GridCell::removeLayout(boost::shared_ptr<Layout> &layout)
 {
     if( layout == this->layout )
-    {
         this->layout.reset();
-        initialize();
-        //merged = false; should this be done?
-    }
-
 }
 
 void GridLayout::GridCell::own(const boost::weak_ptr<Layout> &owner)

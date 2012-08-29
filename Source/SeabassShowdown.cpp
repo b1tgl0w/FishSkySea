@@ -70,10 +70,13 @@ int main(int argc, char **argv)
     boost::shared_ptr<Scene> superScene(mainGameScene);
 
     superScene->enter();
+    //Test exiting and reentering
+    /*
     superScene->exit(); 
     superScene->enter();
     superScene->exit();
     superScene->enter();
+    */
 
     while( superScene->run() != SceneLabel::QUIT() )
     {
@@ -203,8 +206,7 @@ int main(int argc, char **argv)
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
-    shark->initializeStates();
-    renderer->loadImage("../Media/Scene.png");
+    renderer->loadImage("../Media/Scene3.png");
     renderer->loadImage("../Media/Fish.png");
     player1->loadImage(*renderer);
     bool quit = false;
@@ -238,10 +240,14 @@ int main(int argc, char **argv)
     boost::shared_ptr<Layout> center5(new CenterLayout(
         clipFitStrategy));
     layeredLayout->addLayout(center5, 2);
-    ImageRendererElement background("../Media/Scene.png", 3, backgroundPoint,
+    ImageRendererElement background("../Media/Scene3.png", 3, backgroundPoint,
         backgroundSize);
     ImageRendererElement fish("../Media/Fish.png", 1, fishPoint,
         fishSize);
+
+    //Test removing a layout
+    layeredLayout->removeLayout(center5, 2);
+    layeredLayout->addLayout(center5, 2);
 
     for( int i = 0; quit == false; ++i)
     {
@@ -283,8 +289,7 @@ int main(int argc, char **argv)
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
-    shark->initializeStates();
-    renderer->loadImage("../Media/Scene.png");
+    renderer->loadImage("../Media/Scene3.png");
     renderer->loadImage("../Media/Fish.png");
     player1->loadImage(*renderer);
     bool quit = false;
@@ -342,10 +347,16 @@ int main(int argc, char **argv)
         fillClipFit));
     borderLayout->addLayout(center7, BorderCell::Center());
     borderLayout->useCorners(BorderCorner::TopBottom());
-    ImageRendererElement background("../Media/Scene.png", 3, backgroundPoint,
+    ImageRendererElement background("../Media/Scene3.png", 3, backgroundPoint,
         backgroundSize);
+    ImageRendererElement fish("../Media/Fish.png", 1, fishPoint,
+        fishSize);
     ImageRendererElement fish2("../Media/Fish.png", 1, fishPoint,
-        sharkSize);
+        fishSize);
+
+    //Test removing layouts
+    borderLayout->removeLayout(center4, BorderCell::Left());
+    borderLayout->addLayout(center4, BorderCell::Left());
 
     for( int i = 0; quit == false; ++i)
     {
@@ -363,7 +374,6 @@ int main(int argc, char **argv)
     SDL_Quit();
     return EXIT_SUCCESS;
 }*/
-
 
 /*
 //Grid Layout Test
@@ -391,7 +401,7 @@ int main(int argc, char **argv)
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
-    renderer->loadImage("../Media/Scene.png");
+    renderer->loadImage("../Media/Scene3.png");
     renderer->loadImage("../Media/Fish.png");
     player1->loadImage(*renderer);
     bool quit = false;
@@ -466,7 +476,17 @@ int main(int argc, char **argv)
     mergeCells.push_back(p);
     gridLayout->merge(mergeCells);
 
-    ImageRendererElement background("../Media/Scene.png", 0, backgroundPoint,
+    //Test remove layout
+    gridLayout->removeLayout(coord9, where);
+    gridLayout->addLayout(coord9, where);
+
+    //Test removing a merged layout
+    where.x = 1;
+    where.y = 0;
+    gridLayout->removeLayout(coord2, where);
+    gridLayout->addLayout(coord2, where);
+
+    ImageRendererElement background("../Media/Scene3.png", 0, backgroundPoint,
         backgroundSize);
     for( int i = 0; quit == false; ++i)
     {

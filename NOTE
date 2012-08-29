@@ -11,8 +11,6 @@ Add flagImageForFreeing(...) C) Other classes should be sure to not call
 loadImage twice. MainGameScene will and other classes probably will too. C is a
 bad option.
 
-Test Grid::removeLayout of a merged cell.
-
 Fish can start glowing before it's fully on screen. Is this the behavior you
 want?
 
@@ -338,6 +336,11 @@ about calculating elapsed time outside of class Line. The problem with this
 is that if line state is turned on just before new current ticks is calculated,
 it will still use the elapsed time calculated for the ENTIRE frame. Thus a player
 could hit a key to move the line and it would "jump" a little bit the first frame.
+
+//Done: Removing the layout of the top
+left cell will cause all the merged cells not to be drawn. Removing any of the
+other merged cells has no effect. Is this the behavior you want?
+Test Grid::removeLayout of a merged cell. 
 
 //Done: Test that text surfaces get pruned when not used one frame. Test that
 memory doesn't keep increasing.
