@@ -408,11 +408,21 @@ void Renderer::addLayout(boost::shared_ptr<Layout> &layout)
 
 void Renderer::removeLayout(boost::shared_ptr<Layout> &layout)
 {
+    std::list<boost::shared_ptr<Layout> >::iterator itPlaceholder;
+
     for( std::list<boost::shared_ptr<Layout> >::iterator it = layouts.begin();
         it != layouts.end(); ++it )
     {
         if( *it == layout )
+        {
+            itPlaceholder = it;
+            ++itPlaceholder;
             layouts.erase(it);
+            it = itPlaceholder;
+
+            if( it == layouts.end() )
+                break;
+        }
     }
 }
 

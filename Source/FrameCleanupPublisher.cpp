@@ -50,7 +50,23 @@ void FrameCleanupPublisher::subscribe(boost::shared_ptr<FrameCleanupSubscriber>
 void FrameCleanupPublisher::unsubscribe(boost::shared_ptr<FrameCleanupSubscriber>
     &frameCleanupSubscriber)
 {
-    subscribers.remove(frameCleanupSubscriber);
+    std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator
+        itPlaceholder;
+
+    for( std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator it =
+        subscribers.begin(); it != subscribers.end(); ++it )
+    {
+        if( frameCleanupSubscriber == *it )
+        {
+            itPlaceholder = it;
+            ++itPlaceholder;
+            subscribers.erase(it);
+            it = itPlaceholder;
+
+            if( it == subscribers.end() )
+                break;
+        }
+    }
 }
 
 void FrameCleanupPublisher::frameCleanup()

@@ -35,13 +35,21 @@ void MasterClockPublisher::subscribe(boost::shared_ptr<MasterClockSubscriber>
 void MasterClockPublisher::unsubscribe(boost::shared_ptr<MasterClockSubscriber>
     &subscriber)
 {
-    boost::weak_ptr<MasterClockSubscriber> weakSubscriber = subscriber;
-    
+    std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator itPlaceholder;
+
     for( std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator it =
         subscribers.begin(); it != subscribers.end(); ++it )
     {
-        if( !( *it < weakSubscriber ) && ! ( weakSubscriber < *it ) )
+        if( subscriber == it->lock() )
+        {
+            itPlaceholder = it;
+            ++itPlaceholder;
             subscribers.erase(it);
+            it = itPlaceholder;
+            
+            if( it == subscribers.end() )
+                break;
+        }
     }
 }
 

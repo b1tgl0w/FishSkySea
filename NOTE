@@ -13,6 +13,9 @@ bad option.
 
 Test Grid::removeLayout of a merged cell.
 
+Fish can start glowing before it's fully on screen. Is this the behavior you
+want?
+
 When done: Make sure SeaSnail::RETREAT_PROBABILITY is  (SCREEN_WIDTH / 2) / 
 VELOCITY. Also see SeaSnail::MINIMUM_TIME_TO_RETREAT()
 

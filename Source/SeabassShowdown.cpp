@@ -70,12 +70,10 @@ int main(int argc, char **argv)
     boost::shared_ptr<Scene> superScene(mainGameScene);
 
     superScene->enter();
-
-    //SEGFAULT
-    //superScene->exit(); 
-    //superScene->enter();
-    //superScene->exit();
-    //superScene->enter();
+    superScene->exit(); 
+    superScene->enter();
+    superScene->exit();
+    superScene->enter();
 
     while( superScene->run() != SceneLabel::QUIT() )
     {

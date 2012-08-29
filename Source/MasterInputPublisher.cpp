@@ -78,13 +78,21 @@ void MasterInputPublisher::subscribe(boost::shared_ptr<MasterInputSubscriber>
 void MasterInputPublisher::unsubscribe(boost::shared_ptr<MasterInputSubscriber>
     &subscriber)
 {
-    boost::weak_ptr<MasterInputSubscriber> weakSubscriber = subscriber;
+    std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator itPlaceholder;
 
     for( std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator it =
         subscribers.begin(); it != subscribers.end(); ++it )
     {
-        if( !( *it < weakSubscriber ) && !( weakSubscriber < *it ) )
+        if( subscriber == it->lock() )
+        {
+            itPlaceholder = it;
+            ++itPlaceholder;
             subscribers.erase(it);
+            it = itPlaceholder;
+            
+            if( it == subscribers.end() )
+                break;
+        }
     }
 }
 

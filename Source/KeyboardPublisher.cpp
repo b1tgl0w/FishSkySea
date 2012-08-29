@@ -66,13 +66,21 @@ void KeyboardPublisher::subscribe(boost::shared_ptr<KeyboardSubscriber> &subscri
 
 void KeyboardPublisher::unsubscribe(boost::shared_ptr<KeyboardSubscriber> &subscriber)
 {
-    boost::weak_ptr<KeyboardSubscriber> weakSubscriber = subscriber;
+    std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator itPlaceholder;
 
     for( std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator it =
         subscribers.begin(); it != subscribers.end(); ++it )
     {
-        if( !(*it < weakSubscriber) && !(weakSubscriber < *it) )
+        if( subscriber == (*it).lock() );
+        {
+            itPlaceholder = it;
+            ++itPlaceholder;
             subscribers.erase(it);
+            it = itPlaceholder;
+            
+            if( it == subscribers.end() )
+                break;
+        }
     }
 }
 

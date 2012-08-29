@@ -113,13 +113,21 @@ void MousePublisher::subscribe(boost::weak_ptr<MouseSubscriber> &subscriber)
 
 void MousePublisher::unsubscribe(boost::weak_ptr<MouseSubscriber> &subscriber)
 {
-    boost::weak_ptr<MouseSubscriber> weakSubscriber = subscriber;
+    std::list<boost::weak_ptr<MouseSubscriber> >::iterator itPlaceholder;
 
     for( std::list<boost::weak_ptr<MouseSubscriber> >::iterator it =
         subscribers.begin(); it != subscribers.end(); ++it )
     {
-        if( !( *it < weakSubscriber ) && !( weakSubscriber < *it ) )
+        if( subscriber.lock() == it->lock() )
+        {
+            itPlaceholder = it;
+            ++itPlaceholder;
             subscribers.erase(it);
+            it = itPlaceholder;
+
+            if( it == subscribers.end() )
+                break;
+        }
     }
 }
 
