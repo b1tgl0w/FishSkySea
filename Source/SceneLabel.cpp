@@ -12,14 +12,19 @@ const SceneLabel SceneLabel::NO_CHANGE()
     return SceneLabel(1);
 }
 
-const SceneLabel SceneLabel::QUIT()
+const SceneLabel SceneLabel::PREVIOUS()
 {
     return SceneLabel(2);
 }
 
-const SceneLabel SceneLabel::MAIN_GAME()
+const SceneLabel SceneLabel::QUIT()
 {
     return SceneLabel(3);
+}
+
+const SceneLabel SceneLabel::MAIN_GAME()
+{
+    return SceneLabel(4);
 }
 
 SceneLabel::SceneLabel(const SceneLabel &rhs) : value(rhs.value)

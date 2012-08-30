@@ -6,6 +6,10 @@ Left off on fixing bugs
 !!IMPORTANT:Renderer::loadImage(overloaded). Big performance improvement if
 check image has been added to images map before loading it
 
+Make a Color class that has a bunch of color constants. Do the same for
+velocities, sizes, and positions? Should this be done, or should it be
+up to individiual classes?
+
 Renderer should either A) not allow duplicate loading of images in map. B)
 Add flagImageForFreeing(...) C) Other classes should be sure to not call
 loadImage twice. MainGameScene will and other classes probably will too. C is a

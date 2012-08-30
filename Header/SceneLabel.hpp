@@ -12,6 +12,7 @@ class SceneLabel
 {
 public:
     static const SceneLabel NO_CHANGE();
+    static const SceneLabel PREVIOUS();
     static const SceneLabel QUIT();
     static const SceneLabel MAIN_GAME();
     SceneLabel(const SceneLabel &rhs);

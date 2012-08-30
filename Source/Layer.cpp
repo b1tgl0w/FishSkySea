@@ -44,6 +44,11 @@ const Layer Layer::FOREGROUND()
     return Layer(7);
 }
 
+const Layer Layer::TITLE_MENU()
+{
+    return Layer(8);
+}
+
 Layer::Layer(int initialValue)
 {
     value = initialValue;

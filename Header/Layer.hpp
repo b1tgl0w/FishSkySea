@@ -20,6 +20,7 @@ public:
     static const Layer SEA_SNAIL();
     static const Layer FOREGROUND();
     static const Layer SCORE();
+    static const Layer TITLE_MENU();
     Layer(const Layer &rhs); 
     bool operator<(const Layer &rhs) const;
     int integer() const;
