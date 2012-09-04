@@ -1,3 +1,4 @@
+/*
 //File: TitleMenu.hpp
 //Author:   John Miner
 //Created:  08/30/12
@@ -29,11 +30,15 @@ public:
     void reset();
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
+    boost::shared_ptr<Layout> layoutToAttach();
 private:
+    void createMenuGrid();
     std::list<boost::shared_ptr<MenuItem> > menuItems;
     std::list<boost::shared_ptr<MenuItem> >::iterator currentMenuItem;
-    boost::shared_ptr<RendererElement> textRendererElement;
+    std::list<boost::shared_ptr<RendererElement> > textRendererElements;
+    boost::shared_ptr<GridLayout> menuGrid;
+    std::list<boost::shared_ptr<CenterLayout> layouts;
 };
 
 #endif
-
+*/

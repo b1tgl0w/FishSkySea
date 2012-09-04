@@ -1,4 +1,4 @@
-//File: TitleMenu.cpp
+/*//File: TitleMenu.cpp
 //Author:   John Miner
 //Created:  08/30/12
 //Purpose:  Title screen menu that allows player to select Play, Play 2P, 
@@ -17,11 +17,12 @@
 
 TitleMenu::TitleMenu()
 {
+    createMenuGrid();
 }
 
 TitleMenu::TitleMenu(const TitleMenu &rhs) : menuItems(rhs.menuItems),
     currentMenuItem(rhs.currentMenuItem), 
-    textRendererElement(rhs.textRendererElement)
+    textRendererElements(rhs.textRendererElements), menuGrid(rhs.menuGrid)
 {
 }
 
@@ -32,7 +33,8 @@ TitleMenu &TitleMenu::operator=(const TitleMenu &rhs)
 
     menuItems = rhs.menuItems;
     currentMenuItem = rhs.currentMenuItem;
-    textRendererElement = rhs.textRendererElement;
+    textRendererElements = rhs.textRendererElements;
+    menuGrid = rhs.menuGrid;
 
     return *this;
 }
@@ -65,24 +67,45 @@ void TitleMenu::reset()
 
 void TitleMenu::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    layout->drawWhenReady(*textRendererElement);
+    std::list<boost::shared_ptr<RendererElement> >::iterator it2 = 
+        textRendererElements.begin();
+
+    for( std::list<boost::shared_ptr<Layout> >::iterator it = layouts.begin();
+        it != layouts.end() && it2 != textRendererElements.end(); ++it, ++it2)
+        (*it)->drawWhenReady(*it2);
 }
 
 void TitleMenu::loadImage(Renderer &renderer)
 {
     const Point POSITION = { 0.0, 0.0 };
-    const Dimension SIZE = { 150.0, 50.0 * menuItems.size() };
+    const Dimension SIZE = { 150.0, 50.0 };
     const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
     const int BORDER_SIZE = 0;
     std::string menuText; 
 
     for( std::list<boost::shared_ptr<MenuItem> >::iterator it =
         menuItems.begin(); it != menuItems.end(); ++it )
-        menuText += (*it)->toString() + "\n";
-
-    renderer.loadText(menuText, COLOR, BORDER_SIZE);
-    boost::shared_ptr<RendererElement> tmp(new TextRendererElement(menuText, 
-        Layer::TITLE_MENU().integer(), POSITION, SIZE));
-    textRendererElement = tmp;
+    {
+        renderer.loadText((*it)->toString(), COLOR, BORDER_SIZE); 
+        boost::shared_ptr<RendererElement> tmp(new TextRendererElement(
+            (*it)->toString(), Layer::TITLE_MENU().integer(), POSITION, SIZE));
+        textRendererElements.push_back(tmp);
+    }
 }
 
+//This is a getter.
+//Would be better for Layout to have ::addLayout or to have a Cell::addLayout
+// in the iface and avoid a getter
+boost::shared_ptr<Layout> TitleMenu::layoutToAttach()
+{
+    boost::shared_ptr<Layout> tmp(menuGrid);
+    return tmp;
+}
+
+//Shall be called after menuItems is filled
+void TitleMenu::createMenuGrid()
+{
+    boost::shared_ptr<GridLayout> tmp(new GridLayout(1, menuItems.size());
+    menuGrid = tmp;
+}
+*/
