@@ -1,4 +1,3 @@
-/*
 //File: TitleMenu.hpp
 //Author:   John Miner
 //Created:  08/30/12
@@ -14,14 +13,17 @@
 #include "Graphic.hpp"
 
 class Layout;
+class GridLayout;
+class CenterLayout;
 class Renderer;
 class MenuItem;
 class RendererElement;
+class Scene;
 
 class TitleMenu : public Menu, public Graphic
 {
 public:
-    TitleMenu();
+    TitleMenu(boost::shared_ptr<Scene> &mainGameScene);
     TitleMenu(const TitleMenu &rhs);
     TitleMenu &operator=(const TitleMenu &rhs);
     void next();
@@ -32,13 +34,15 @@ public:
     void loadImage(Renderer &renderer);
     boost::shared_ptr<Layout> layoutToAttach();
 private:
-    void createMenuGrid();
+    TitleMenu();
+    void createMenuItems(boost::shared_ptr<Scene> &mainGameScene);
+    void createLayouts();
     std::list<boost::shared_ptr<MenuItem> > menuItems;
     std::list<boost::shared_ptr<MenuItem> >::iterator currentMenuItem;
     std::list<boost::shared_ptr<RendererElement> > textRendererElements;
     boost::shared_ptr<GridLayout> menuGrid;
-    std::list<boost::shared_ptr<CenterLayout> layouts;
+    std::list<boost::shared_ptr<CenterLayout> > layouts;
 };
 
 #endif
-*/
+

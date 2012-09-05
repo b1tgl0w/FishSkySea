@@ -6,6 +6,10 @@ Left off on fixing bugs
 !!IMPORTANT:Renderer::loadImage(overloaded). Big performance improvement if
 check image has been added to images map before loading it
 
+Layouts should be refactored so that they all contain cells. The cell should
+be an iface with an addLayout member. (This is a big undertaking. Do probably 
+for next project)
+
 Make a Color class that has a bunch of color constants. Do the same for
 velocities, sizes, and positions? Should this be done, or should it be
 up to individiual classes?

@@ -1,4 +1,4 @@
-/*//File: TitleMenu.cpp
+//File: TitleMenu.cpp
 //Author:   John Miner
 //Created:  08/30/12
 //Purpose:  Title screen menu that allows player to select Play, Play 2P, 
@@ -14,10 +14,16 @@
 #include "../Header/Layer.hpp"
 #include "../Header/RendererElement.hpp"
 #include "../Header/TextRendererElement.hpp"
+#include "../Header/GridLayout.hpp"
+#include "../Header/CenterLayout.hpp"
+#include "../Header/FillClipFit.hpp"
+#include "../Header/SceneMenuItem.hpp"
+#include "../Header/Scene.hpp"
 
-TitleMenu::TitleMenu()
+TitleMenu::TitleMenu(boost::shared_ptr<Scene> &mainGameScene)
 {
-    createMenuGrid();
+    createMenuItems(mainGameScene);
+    createLayouts();
 }
 
 TitleMenu::TitleMenu(const TitleMenu &rhs) : menuItems(rhs.menuItems),
@@ -70,9 +76,10 @@ void TitleMenu::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     std::list<boost::shared_ptr<RendererElement> >::iterator it2 = 
         textRendererElements.begin();
 
-    for( std::list<boost::shared_ptr<Layout> >::iterator it = layouts.begin();
-        it != layouts.end() && it2 != textRendererElements.end(); ++it, ++it2)
-        (*it)->drawWhenReady(*it2);
+    for( std::list<boost::shared_ptr<CenterLayout> >::iterator it = 
+        layouts.begin(); it != layouts.end() && it2 != 
+        textRendererElements.end(); ++it, ++it2)
+        (*it)->drawWhenReady(**it2);
 }
 
 void TitleMenu::loadImage(Renderer &renderer)
@@ -102,10 +109,25 @@ boost::shared_ptr<Layout> TitleMenu::layoutToAttach()
     return tmp;
 }
 
-//Shall be called after menuItems is filled
-void TitleMenu::createMenuGrid()
+void TitleMenu::createMenuItems(boost::shared_ptr<Scene> &mainGameScene)
 {
-    boost::shared_ptr<GridLayout> tmp(new GridLayout(1, menuItems.size());
-    menuGrid = tmp;
+    boost::shared_ptr<MenuItem> play(new SceneMenuItem(mainGameScene, "Play"));
+    menuItems.push_back(play);
 }
-*/
+
+//Shall be called after menuItems is filled
+void TitleMenu::createLayouts()
+{
+    boost::shared_ptr<FillClipFit> fillClipFit(new FillClipFit);
+    Point cell = { 0.0, 0.0 };
+    boost::shared_ptr<GridLayout> tmp(new GridLayout(1, menuItems.size()));
+    menuGrid = tmp;
+    
+    for( cell.y = 0; cell.y < menuItems.size(); ++(cell.y) )
+    {
+        boost::shared_ptr<Layout> centerLayout(new CenterLayout(
+            fillClipFit));
+        menuGrid->addLayout(centerLayout, cell);
+    }
+}
+
