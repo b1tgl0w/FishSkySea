@@ -37,14 +37,16 @@ class GridLayout;
 class MainGameScene : public Scene
 {
 public:
-    MainGameScene(boost::shared_ptr<Renderer> &renderer, boost::shared_ptr<
+    MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
+        boost::shared_ptr<Renderer> &renderer, boost::shared_ptr<
         KeyboardPublisher> &keyboardPublisher, const Dimension 
         &screenResolution, boost::shared_ptr<Game> &game);
     MainGameScene(const MainGameScene &rhs);
     MainGameScene &operator=(const MainGameScene &rhs);
     void enter();
-    SceneLabel run();
+    void run();
     void exit();
+    void transitionTo(boost::shared_ptr<Scene> &scene);
 private:
     MainGameScene();
     static const Point &POLE_POINT();
@@ -77,6 +79,9 @@ private:
     boost::shared_ptr<GridLayout> gridLayout;
     boost::shared_ptr<Layout> superGridLayout;
     boost::shared_ptr<Layout> superLayeredLayout;
+    boost::shared_ptr<boost::shared_ptr<Scene> > currentScene;
+    bool transition;
+    boost::shared_ptr<Scene> toScene;
 };
 
 #endif

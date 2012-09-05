@@ -17,13 +17,15 @@ class Scene;
 class SceneMenuItem : public MenuItem
 {
 public:
-    SceneMenuItem(boost::shared_ptr<Scene> &scene, const std::string &label);
+    SceneMenuItem(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
+        boost::shared_ptr<Scene> &scene, const std::string &label);
     SceneMenuItem(const SceneMenuItem &rhs);
     SceneMenuItem &operator=(const SceneMenuItem &rhs);
     void select();
     std::string toString();
 private:
     SceneMenuItem();
+    boost::shared_ptr<boost::shared_ptr<Scene> > currentScene;
     boost::shared_ptr<Scene> scene;
     std::string label;
 };

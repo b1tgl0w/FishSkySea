@@ -20,15 +20,41 @@
 #include "../Header/SceneMenuItem.hpp"
 #include "../Header/Scene.hpp"
 
-TitleMenu::TitleMenu(boost::shared_ptr<Scene> &mainGameScene)
+const int &TitleMenu::STOP()
 {
-    createMenuItems(mainGameScene);
+    static const int TMP_STOP = 0;
+    return TMP_STOP;
+}
+
+const int &TitleMenu::NEXT()
+{
+    static const int TMP_NEXT = 1;
+    return TMP_NEXT;
+}
+
+const int &TitleMenu::PREVIOUS()
+{
+    static const int TMP_PREVIOUS = 2;
+    return TMP_PREVIOUS;
+}
+
+const Uint32 &TitleMenu::PRESSED_TIME_THRESHOLD()
+{
+    static const Uint32 TMP_PRESSED_TIME_THRESHOLD = 100;
+    return TMP_PRESSED_TIME_THRESHOLD;
+}
+
+TitleMenu::TitleMenu(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
+    boost::shared_ptr<Scene> &mainGameScene) : cycle(STOP()), pressedTime(0)
+{
+    createMenuItems(currentScene, mainGameScene);
     createLayouts();
 }
 
 TitleMenu::TitleMenu(const TitleMenu &rhs) : menuItems(rhs.menuItems),
     currentMenuItem(rhs.currentMenuItem), 
-    textRendererElements(rhs.textRendererElements), menuGrid(rhs.menuGrid)
+    textRendererElements(rhs.textRendererElements), menuGrid(rhs.menuGrid),
+    cycle(rhs.cycle), pressedTime(rhs.pressedTime)
 {
 }
 
@@ -41,6 +67,8 @@ TitleMenu &TitleMenu::operator=(const TitleMenu &rhs)
     currentMenuItem = rhs.currentMenuItem;
     textRendererElements = rhs.textRendererElements;
     menuGrid = rhs.menuGrid;
+    cycle = rhs.cycle;
+    pressedTime = rhs.pressedTime;
 
     return *this;
 }
@@ -109,10 +137,53 @@ boost::shared_ptr<Layout> TitleMenu::layoutToAttach()
     return tmp;
 }
 
-void TitleMenu::createMenuItems(boost::shared_ptr<Scene> &mainGameScene)
+void TitleMenu::createMenuItems(boost::shared_ptr<boost::shared_ptr<Scene> >
+    &currentScene, boost::shared_ptr<Scene> &mainGameScene)
 {
-    boost::shared_ptr<MenuItem> play(new SceneMenuItem(mainGameScene, "Play"));
+    boost::shared_ptr<MenuItem> play(new SceneMenuItem(currentScene,
+        mainGameScene, "Play"));
     menuItems.push_back(play);
+}
+
+void TitleMenu::keyPressed(const SDLKey &key)
+{
+    if( key == SDLK_w || key == SDLK_UP )
+    {
+        previous();
+        cycle = PREVIOUS();
+        pressedTime = -PRESSED_TIME_THRESHOLD() * 2; //Delay before cycling
+    }
+
+    if( key == SDLK_s || key == SDLK_DOWN )
+    {
+        next();
+        cycle = NEXT();
+        pressedTime = -PRESSED_TIME_THRESHOLD() * 2; //Delay before cycling
+    }
+}
+
+void TitleMenu::keyReleased(const SDLKey &key)
+{
+    if( (key == SDLK_w || key == SDLK_UP) && cycle == PREVIOUS() )
+        cycle = STOP();
+
+    if( (key == SDLK_s || key == SDLK_DOWN) && cycle == NEXT() )
+        cycle = STOP();
+}
+
+void TitleMenu::clockTick(Uint32 elapsedTime)
+{
+    pressedTime += elapsedTime;
+
+    if( pressedTime >= PRESSED_TIME_THRESHOLD() )
+    {
+        if( cycle == NEXT() )
+            next();
+        else if( cycle == PREVIOUS() )
+            previous();
+
+        pressedTime = 0; //Smaller delay here
+    }
 }
 
 //Shall be called after menuItems is filled

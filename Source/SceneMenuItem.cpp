@@ -8,13 +8,14 @@
 #include "../Header/SceneMenuItem.hpp"
 #include "../Header/Scene.hpp"
 
-SceneMenuItem::SceneMenuItem(boost::shared_ptr<Scene> &scene, const 
-    std::string &label) : scene(scene), label(label)
+SceneMenuItem::SceneMenuItem(boost::shared_ptr<boost::shared_ptr<Scene> >
+    &currentScene, boost::shared_ptr<Scene> &scene, const 
+    std::string &label) : currentScene(currentScene), scene(scene), label(label)
 {
 }
 
-SceneMenuItem::SceneMenuItem(const SceneMenuItem &rhs) : scene(rhs.scene),
-    label(rhs.label)
+SceneMenuItem::SceneMenuItem(const SceneMenuItem &rhs) : currentScene(
+    rhs.currentScene), scene(rhs.scene), label(rhs.label)
 {
 }
 
@@ -23,6 +24,7 @@ SceneMenuItem &SceneMenuItem::operator=(const SceneMenuItem &rhs)
     if( &rhs == this )
         return *this;
 
+    currentScene = rhs.currentScene;
     scene = rhs.scene;
     label = rhs.label;
 
@@ -31,7 +33,7 @@ SceneMenuItem &SceneMenuItem::operator=(const SceneMenuItem &rhs)
 
 void SceneMenuItem::select()
 {
-    scene->enter();
+    (*currentScene)->transitionTo(scene);
 }
 
 std::string SceneMenuItem::toString()

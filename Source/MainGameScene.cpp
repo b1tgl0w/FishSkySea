@@ -51,7 +51,9 @@ const std::string &MainGameScene::BACKGROUND_PATH()
     return TMP_BACKGROUND_PATH;
 }
 
-MainGameScene::MainGameScene(boost::shared_ptr<Renderer> &renderer, 
+MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
+    &currentScene,
+    boost::shared_ptr<Renderer> &renderer, 
     boost::shared_ptr<KeyboardPublisher> &keyboardPublisher,
     const Dimension &screenResolution, boost::shared_ptr<Game> &game) : 
     renderer(renderer), keyboardPublisher(keyboardPublisher),
@@ -70,7 +72,7 @@ MainGameScene::MainGameScene(boost::shared_ptr<Renderer> &renderer,
     layeredLayout(new LayeredLayout(2, clipFit)), borderLayout(new BorderLayout(
     BorderSize::Thick())), superBorderLayout(borderLayout), gridLayout(new
     GridLayout(1, 3)), superGridLayout(gridLayout), superLayeredLayout(
-    layeredLayout)
+    layeredLayout), currentScene(currentScene) 
 {
     ocean->initializeSharedFromThis();
     player1->initializeLine();
@@ -90,7 +92,8 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     rhs.playerSubscriber), gameSubscriber(rhs.gameSubscriber), layeredLayout(
     rhs.layeredLayout), borderLayout(rhs.borderLayout), superBorderLayout(
     rhs.superBorderLayout), gridLayout(rhs.gridLayout), superGridLayout(
-    rhs.superGridLayout), superLayeredLayout(superLayeredLayout)
+    rhs.superGridLayout), superLayeredLayout(superLayeredLayout),
+    currentScene(rhs.currentScene)
 {
 }
 
@@ -124,6 +127,7 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     gridLayout = rhs.gridLayout;
     superGridLayout = rhs.superGridLayout;
     superLayeredLayout = rhs.superLayeredLayout;
+    currentScene = rhs.currentScene;
 
     return *this;
 }
@@ -134,6 +138,7 @@ void MainGameScene::enter()
 {
     Point cell = { 0, 0 };
 
+    transition = false;
     ocean->loadImage(*(renderer));
     ocean->addCollidable(ocean);
     player1->loadImage(*renderer);
@@ -150,7 +155,7 @@ void MainGameScene::enter()
     renderer->addLayout(superLayeredLayout);
 }
 
-SceneLabel MainGameScene::run()
+void MainGameScene::run()
 {
     masterInputPublisher->pollInput();
     masterClockPublisher->pollClock();
@@ -161,9 +166,14 @@ SceneLabel MainGameScene::run()
     renderer->render();
 
     if( game->shouldQuit() )
-        return SceneLabel::QUIT();
+        exit();
 
-    return SceneLabel::NO_CHANGE();
+    if( transition )
+    {
+        exit();
+        *currentScene = toScene;
+        toScene->enter();
+    }
 }
 
 //Note: Should we tell renderer to free images here or flag them for free if
@@ -184,5 +194,11 @@ void MainGameScene::exit()
     borderLayout->removeLayout(superGridLayout, BorderCell::Top());
     gridLayout->removeLayout(superScore1Layout, cell);
     renderer->removeLayout(superLayeredLayout);
+}
+
+void MainGameScene::transitionTo(boost::shared_ptr<Scene> &scene)
+{
+    transition = true;
+    toScene = scene;
 }
 

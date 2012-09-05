@@ -9,14 +9,15 @@
 #ifndef SCENE_HPP_
 #define SCENE_HPP_
 
-#include "SceneLabel.hpp"
+class Scene;
 
 class Scene
 {
 public:
     virtual void enter() = 0;
-    virtual SceneLabel run() = 0;
+    virtual void  run() = 0;
     virtual void exit() = 0;
+    virtual void transitionTo(boost::shared_ptr<Scene> &scene) = 0;
 };
 
 #endif

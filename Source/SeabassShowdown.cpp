@@ -65,11 +65,13 @@ int main(int argc, char **argv)
         "../Media/Fonts/monof55.ttf", frameCleanupPublisher)); // changed back to "../Media"
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
         KeyboardPublisher);
+    boost::shared_ptr<boost::shared_ptr<Scene> > currentScene(
+        new boost::shared_ptr<Scene>);
     boost::shared_ptr<MainGameScene> mainGameScene(new MainGameScene(
-        renderer, keyboardPublisher, screenResolution, game));
-    boost::shared_ptr<Scene> superScene(mainGameScene);
+        currentScene, renderer, keyboardPublisher, screenResolution, game));
 
-    superScene->enter();
+    *currentScene = mainGameScene;
+    (*currentScene)->enter();
     //Test exiting and reentering
     /*
     superScene->exit(); 
@@ -78,8 +80,9 @@ int main(int argc, char **argv)
     superScene->enter();
     */
 
-    while( superScene->run() != SceneLabel::QUIT() )
+    while( !game->shouldQuit() )
     {
+        (*currentScene)->run();
     }
 
     SDL_Quit();
