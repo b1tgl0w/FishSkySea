@@ -50,6 +50,7 @@
 #include "../Header/MainGameScene.hpp"
 #include "../Header/SceneLabel.hpp"
 #include "../Header/Scene.hpp"
+#include "../Header/TitleScene.hpp"
 
 void handleQuit( bool &quit );
 
@@ -69,6 +70,9 @@ int main(int argc, char **argv)
         new boost::shared_ptr<Scene>);
     boost::shared_ptr<MainGameScene> mainGameScene(new MainGameScene(
         currentScene, renderer, keyboardPublisher, screenResolution, game));
+    boost::shared_ptr<Scene> superMainGameScene(mainGameScene);
+    boost::shared_ptr<TitleScene> titleScene(new TitleScene(
+        currentScene, superMainGameScene, keyboardPublisher));
 
     *currentScene = mainGameScene;
     (*currentScene)->enter();

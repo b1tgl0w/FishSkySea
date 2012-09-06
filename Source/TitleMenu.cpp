@@ -49,6 +49,7 @@ TitleMenu::TitleMenu(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
 {
     createMenuItems(currentScene, mainGameScene);
     createLayouts();
+    reset();
 }
 
 TitleMenu::TitleMenu(const TitleMenu &rhs) : menuItems(rhs.menuItems),
@@ -160,6 +161,9 @@ void TitleMenu::keyPressed(const SDLKey &key)
         cycle = NEXT();
         pressedTime = -PRESSED_TIME_THRESHOLD() * 2; //Delay before cycling
     }
+
+    if( key == SDLK_RETURN )
+        select();
 }
 
 void TitleMenu::keyReleased(const SDLKey &key)

@@ -13,6 +13,16 @@
 
 class TitleMenu;
 class KeyboardPublisher;
+class FitStrategy;
+class LayeredLayout;
+class CenterLayout;
+class GridLayout;
+class BorderLayout;
+class Layout;
+class MasterClockPublisher;
+class MasterInputPublisher;
+class KeyboardSubscriber;
+class MasterInputSubscriber;
 
 class TitleScene : public Scene
 {
@@ -33,6 +43,19 @@ private:
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher;
     bool transition;
     boost::shared_ptr<Scene> toScene;
+    boost::shared_ptr<FitStrategy> scaleClip;
+    boost::shared_ptr<LayeredLayout> layeredLayout;
+    boost::shared_ptr<CenterLayout> centerLayout;
+    boost::shared_ptr<GridLayout> gridLayout;
+    boost::shared_ptr<BorderLayout> borderLayout;
+    boost::shared_ptr<Layout> superCenterLayout;
+    boost::shared_ptr<Layout> superGridLayout;
+    boost::shared_ptr<Layout> superBorderLayout;
+    boost::shared_ptr<Layout> menuLayout;
+    MasterInputPublisher *masterInputPublisher;
+    MasterClockPublisher *masterClockPublisher;
+    boost::shared_ptr<KeyboardSubscriber> clockSubscriber;
+    boost::shared_ptr<MasterInputSubscriber> MiSubscriber;
 };
 
 #endif

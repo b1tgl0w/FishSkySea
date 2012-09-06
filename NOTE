@@ -6,6 +6,10 @@ Left off on fixing bugs
 !!IMPORTANT:Renderer::loadImage(overloaded). Big performance improvement if
 check image has been added to images map before loading it
 
+Bug:    Game starts paused when run from title scene.
+
+Padding for grid cells
+
 Layouts should be refactored so that they all contain cells. The cell should
 be an iface with an addLayout member. (This is a big undertaking. Do probably 
 for next project)
