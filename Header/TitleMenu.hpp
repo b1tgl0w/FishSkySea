@@ -22,6 +22,7 @@ class Renderer;
 class MenuItem;
 class RendererElement;
 class Scene;
+class TextRendererElement;
 
 class TitleMenu : public Menu, public Graphic, public KeyboardSubscriber,
     public MasterClockSubscriber
@@ -52,7 +53,7 @@ private:
     static const Uint32 &PRESSED_TIME_THRESHOLD();
     std::list<boost::shared_ptr<MenuItem> > menuItems;
     std::list<boost::shared_ptr<MenuItem> >::iterator currentMenuItem;
-    std::list<boost::shared_ptr<RendererElement> > textRendererElements;
+    std::list<boost::shared_ptr<TextRendererElement> > textRendererElements;
     boost::shared_ptr<GridLayout> menuGrid;
     std::list<boost::shared_ptr<CenterLayout> > layouts;
     int cycle;

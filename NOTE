@@ -6,6 +6,9 @@ Left off on fixing bugs
 !!IMPORTANT:Renderer::loadImage(overloaded). Big performance improvement if
 check image has been added to images map before loading it
 
+Bug:    BorderLayout inside a grid cell doesn't position correctly.
+Bug:    ScaleClipFit doesn't seem to work?
+
 Bug:    Game starts paused when run from title scene.
 
 Padding for grid cells

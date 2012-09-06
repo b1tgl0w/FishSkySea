@@ -10,6 +10,8 @@
 
 #include "boost/shared_ptr.hpp"
 #include "Scene.hpp"
+#include "Graphic.hpp"
+#include "ImageRendererElement.hpp"
 
 class TitleMenu;
 class KeyboardPublisher;
@@ -23,21 +25,26 @@ class MasterClockPublisher;
 class MasterInputPublisher;
 class KeyboardSubscriber;
 class MasterInputSubscriber;
+class Renderer;
 
-class TitleScene : public Scene
+class TitleScene : public Scene, public Graphic
 {
 public:
     TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
         boost::shared_ptr<Scene> &mainGameScene, boost::shared_ptr<
-        KeyboardPublisher> &keyboardPublisher);
+        KeyboardPublisher> &keyboardPublisher, boost::shared_ptr<Renderer> 
+        &renderer, const Dimension &screenSize);
     TitleScene(const TitleScene &rhs);
     TitleScene &operator=(const TitleScene &rhs);
     void enter();
     void run();
     void exit();
     void transitionTo(boost::shared_ptr<Scene> &scene);
+    void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
+    void loadImage(Renderer &renderer);
 private:
     TitleScene();
+    static const Point &BACKGROUND_POSITION();
     boost::shared_ptr<boost::shared_ptr<Scene> > currentScene;
     boost::shared_ptr<TitleMenu> titleMenu;
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher;
@@ -48,6 +55,7 @@ private:
     boost::shared_ptr<CenterLayout> centerLayout;
     boost::shared_ptr<GridLayout> gridLayout;
     boost::shared_ptr<BorderLayout> borderLayout;
+    boost::shared_ptr<Layout> superLayeredLayout;
     boost::shared_ptr<Layout> superCenterLayout;
     boost::shared_ptr<Layout> superGridLayout;
     boost::shared_ptr<Layout> superBorderLayout;
@@ -56,6 +64,8 @@ private:
     MasterClockPublisher *masterClockPublisher;
     boost::shared_ptr<KeyboardSubscriber> clockSubscriber;
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber;
+    boost::shared_ptr<Renderer> renderer;
+    ImageRendererElement titleBackground;
 };
 
 #endif

@@ -4,6 +4,7 @@
 //Purpose:  Title screen menu that allows player to select Play, Play 2P, 
 //          Story, Options, or Credits
 
+#include <iostream> //delete
 #include <string>
 #include "../Header/TitleMenu.hpp"
 #include "../Header/Layout.hpp"
@@ -12,7 +13,6 @@
 #include "../Header/Point.hpp"
 #include "../Header/Dimension.hpp"
 #include "../Header/Layer.hpp"
-#include "../Header/RendererElement.hpp"
 #include "../Header/TextRendererElement.hpp"
 #include "../Header/GridLayout.hpp"
 #include "../Header/CenterLayout.hpp"
@@ -102,7 +102,7 @@ void TitleMenu::reset()
 
 void TitleMenu::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    std::list<boost::shared_ptr<RendererElement> >::iterator it2 = 
+    std::list<boost::shared_ptr<TextRendererElement> >::iterator it2 = 
         textRendererElements.begin();
 
     for( std::list<boost::shared_ptr<CenterLayout> >::iterator it = 
@@ -123,7 +123,7 @@ void TitleMenu::loadImage(Renderer &renderer)
         menuItems.begin(); it != menuItems.end(); ++it )
     {
         renderer.loadText((*it)->toString(), COLOR, BORDER_SIZE); 
-        boost::shared_ptr<RendererElement> tmp(new TextRendererElement(
+        boost::shared_ptr<TextRendererElement> tmp(new TextRendererElement(
             (*it)->toString(), Layer::TITLE_MENU().integer(), POSITION, SIZE));
         textRendererElements.push_back(tmp);
     }
@@ -143,6 +143,8 @@ void TitleMenu::createMenuItems(boost::shared_ptr<boost::shared_ptr<Scene> >
 {
     boost::shared_ptr<MenuItem> play(new SceneMenuItem(currentScene,
         mainGameScene, "Play"));
+    menuItems.push_back(play);
+    menuItems.push_back(play);
     menuItems.push_back(play);
 }
 
@@ -195,14 +197,16 @@ void TitleMenu::createLayouts()
 {
     boost::shared_ptr<FillClipFit> fillClipFit(new FillClipFit);
     Point cell = { 0.0, 0.0 };
-    boost::shared_ptr<GridLayout> tmp(new GridLayout(1, menuItems.size()));
+    boost::shared_ptr<GridLayout> tmp(new GridLayout(menuItems.size(), 1));
     menuGrid = tmp;
     
     for( cell.y = 0; cell.y < menuItems.size(); ++(cell.y) )
     {
-        boost::shared_ptr<Layout> centerLayout(new CenterLayout(
+        boost::shared_ptr<CenterLayout> centerLayout(new CenterLayout(
             fillClipFit));
-        menuGrid->addLayout(centerLayout, cell);
+        boost::shared_ptr<Layout> superCenterLayout(centerLayout);
+        menuGrid->addLayout(superCenterLayout, cell);
+        layouts.push_back(centerLayout);
     }
 }
 

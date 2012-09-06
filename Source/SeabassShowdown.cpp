@@ -72,9 +72,10 @@ int main(int argc, char **argv)
         currentScene, renderer, keyboardPublisher, screenResolution, game));
     boost::shared_ptr<Scene> superMainGameScene(mainGameScene);
     boost::shared_ptr<TitleScene> titleScene(new TitleScene(
-        currentScene, superMainGameScene, keyboardPublisher));
+        currentScene, superMainGameScene, keyboardPublisher, renderer,
+        screenResolution));
 
-    *currentScene = mainGameScene;
+    *currentScene = titleScene;
     (*currentScene)->enter();
     //Test exiting and reentering
     /*
