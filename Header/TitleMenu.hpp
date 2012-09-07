@@ -47,6 +47,7 @@ private:
     void createMenuItems(boost::shared_ptr<boost::shared_ptr<Scene> > 
         &currentScene, boost::shared_ptr<Scene> &mainGameScene);
     void createLayouts();
+    void highlightCurrentMenuItem(bool highlight);
     static const int &STOP();
     static const int &NEXT();
     static const int &PREVIOUS();

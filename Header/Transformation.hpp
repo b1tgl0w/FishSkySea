@@ -22,15 +22,16 @@ public:
     static Transformation FlipVertical();
     static Transformation FlipHorizontal();
     static Transformation Glow();
+    static Transformation HighlightText();
     Transformation operator|(const Transformation &rhs) const;
     Transformation operator^(const Transformation &rhs) const;
+    Transformation operator&(const Transformation &rhs) const;
     bool has(const Transformation &rhs) const;
     std::string tellTransformations() const;
     bool operator==(const Transformation &rhs) const;
     bool operator!=(const Transformation &rhs) const;
 private:
     explicit Transformation(int initialValue);
-    Transformation operator&(const Transformation &rhs) const;
     int value;
 };
 

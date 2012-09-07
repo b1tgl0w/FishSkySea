@@ -8,8 +8,9 @@ check image has been added to images map before loading it
 
 Feature:    Add showLines to layouts for testing purposes?
 
+Note:   Manually update loaded font size in Renderer
+
 Bug:    BorderLayout inside a grid cell doesn't position correctly.
-Bug:    ScaleClipFit doesn't seem to work?
 
 Bug:    Game starts paused when run from title scene.
 
@@ -457,4 +458,6 @@ BUG: Fish coming in from right side come in slower than those from left.
 //Done
 BUG: Fish can get caught on edge
 
+//Done
+Bug:    ScaleClipFit doesn't seem to work? //Fixed, I think
 

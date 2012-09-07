@@ -65,7 +65,7 @@ void ScaleClipFit::fit(std::list<boost::shared_ptr<RendererElement> >
             leastHeightPercent = dimensionPercent.heightPercent;
     }
 
-    if( leastWidthPercent < 100.0 || leastHeightPercent < 100.0 )
+    if( leastWidthPercent < 1.0 || leastHeightPercent < 1.0 )
     {
         for( std::list<boost::shared_ptr<RendererElement> >::iterator it =
             rendererElements.begin(); it != rendererElements.end(); ++it )

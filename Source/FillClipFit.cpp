@@ -7,6 +7,7 @@
 //This program is distributed under the terms of the GNU General Public License
 
 #include "../Header/FillClipFit.hpp"
+#include "../Header/Math.hpp"
 
 FillClipFit::FillClipFit()
 {
@@ -66,7 +67,8 @@ void FillClipFit::fit(std::list<boost::shared_ptr<RendererElement> >
             leastHeightPercent = dimensionPercent.heightPercent;
     }
 
-    if( leastWidthPercent != 100.0 && leastHeightPercent != 100.0 )
+    if( !Math::almostEquals(leastWidthPercent, 1.0) || 
+        !Math::almostEquals(leastHeightPercent, 1.0) )
     {
         for( std::list<boost::shared_ptr<RendererElement> >::iterator it =
             rendererElements.begin(); it != rendererElements.end(); ++it )

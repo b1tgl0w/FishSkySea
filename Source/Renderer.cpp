@@ -90,7 +90,8 @@ void Renderer::initialize(const Dimension &screenResolution, int screenBpp,
     const boost::shared_ptr<FrameCleanupPublisher> 
     &frameCleanupPublisher)
 {
-    const int FONT_SIZE = 32; //Text surfaces will be scaled
+    //Update Font size as big as height of largest text surface (manual update)
+    const int FONT_SIZE = 88; //Text surfaces will be scaled
     const int FONT_BORDER_SIZE = 3; //3 so even scaled text will have outline
     numberOfInstances()++;
     if( SDL_WasInit(SDL_INIT_VIDEO) == 0 )
@@ -227,6 +228,17 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
     if( images.count(key) > 0 )
         return;
 
+    SDL_Surface *highlightedText = NULL;
+    if( transformation.has(Transformation::HighlightText()) )
+    {
+        if( texts.count(path) >= 1 )
+        {
+            //Manually update to color in palette
+            const SDL_Color HIGHLIGHT_TEXT_COLOR = { 0xFC, 0xE6, 0x97, 0x00 };
+            highlightedText = TTF_RenderText_Blended(font, path.c_str(), 
+                HIGHLIGHT_TEXT_COLOR);
+        }
+    }
     SDL_Surface *manipulatedImage = NULL;
     //size.width = (size.width); //Causes image to scale incorrectly
     //size.height = ceil(size.height); //Causes image to scale incorrectly
@@ -234,25 +246,46 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
     if( unmanipulatedImage->w != size.width || unmanipulatedImage->h
         != size.height )
     {
-        manipulatedImage = SDL_CreateRGBSurface(unmanipulatedImage->flags,
-            ceil(size.width), ceil(size.height),
-            unmanipulatedImage->format->BitsPerPixel, 
-            unmanipulatedImage->format->Rmask, unmanipulatedImage->format->Gmask,
-            unmanipulatedImage->format->Bmask, unmanipulatedImage->format->Amask);
+        if( highlightedText == NULL )
+        {
+            manipulatedImage = SDL_CreateRGBSurface(unmanipulatedImage->flags,
+                ceil(size.width), ceil(size.height),
+                unmanipulatedImage->format->BitsPerPixel, 
+                unmanipulatedImage->format->Rmask, unmanipulatedImage->format->Gmask,
+                unmanipulatedImage->format->Bmask, unmanipulatedImage->format->Amask);
 
-        scaleImagePixels(unmanipulatedImage, manipulatedImage, size);
+            scaleImagePixels(unmanipulatedImage, manipulatedImage, size);
+        }
+        else
+        {
+            manipulatedImage = SDL_CreateRGBSurface(highlightedText->flags,
+                ceil(size.width), ceil(size.height),
+                highlightedText->format->BitsPerPixel, 
+                highlightedText->format->Rmask, highlightedText->format->Gmask,
+                highlightedText->format->Bmask, highlightedText->format->Amask);
+
+            scaleImagePixels(highlightedText, manipulatedImage, size);
+        }
     }
 
     if( transformation != Transformation::None() )
     {
         if( manipulatedImage == NULL )
-            manipulatedImage = SDL_DisplayFormatAlpha(unmanipulatedImage);
+        {
+            if( highlightedText == NULL )
+                manipulatedImage = SDL_DisplayFormatAlpha(unmanipulatedImage);
+            else
+                manipulatedImage = SDL_DisplayFormatAlpha(highlightedText);
+        }
 
         transformImage(manipulatedImage, transformation);
 
         if( transformation.has(Transformation::Glow()) )
             glowImage(key, manipulatedImage);
     }
+
+    if( highlightedText != NULL )
+        SDL_FreeSurface(highlightedText);
 
     loadImage(key, manipulatedImage);
 }

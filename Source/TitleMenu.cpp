@@ -17,6 +17,7 @@
 #include "../Header/GridLayout.hpp"
 #include "../Header/CenterLayout.hpp"
 #include "../Header/FillClipFit.hpp"
+#include "../Header/ScaleClipFit.hpp"
 #include "../Header/SceneMenuItem.hpp"
 #include "../Header/Scene.hpp"
 
@@ -40,7 +41,7 @@ const int &TitleMenu::PREVIOUS()
 
 const Uint32 &TitleMenu::PRESSED_TIME_THRESHOLD()
 {
-    static const Uint32 TMP_PRESSED_TIME_THRESHOLD = 100;
+    static const Uint32 TMP_PRESSED_TIME_THRESHOLD = 600;
     return TMP_PRESSED_TIME_THRESHOLD;
 }
 
@@ -76,18 +77,26 @@ TitleMenu &TitleMenu::operator=(const TitleMenu &rhs)
 
 void TitleMenu::next()
 {
+    highlightCurrentMenuItem(false);
+
     ++currentMenuItem;
 
     if( currentMenuItem == menuItems.end() )
         currentMenuItem = menuItems.begin();
+
+    highlightCurrentMenuItem(true);
 }
 
 void TitleMenu::previous()
 {
+    highlightCurrentMenuItem(false);
+
     if( currentMenuItem == menuItems.begin() )
         currentMenuItem = menuItems.end();
 
     --currentMenuItem;
+
+    highlightCurrentMenuItem(true);
 }
 
 void TitleMenu::select()
@@ -98,6 +107,7 @@ void TitleMenu::select()
 void TitleMenu::reset()
 {
     currentMenuItem = menuItems.begin();
+    highlightCurrentMenuItem(true);
 }
 
 void TitleMenu::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
@@ -114,7 +124,7 @@ void TitleMenu::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 void TitleMenu::loadImage(Renderer &renderer)
 {
     const Point POSITION = { 0.0, 0.0 };
-    const Dimension SIZE = { 150.0, 50.0 };
+    const Dimension SIZE = { 230.0, 88.0 };
     const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
     const int BORDER_SIZE = 0;
     std::string menuText; 
@@ -146,6 +156,7 @@ void TitleMenu::createMenuItems(boost::shared_ptr<boost::shared_ptr<Scene> >
     menuItems.push_back(play);
     menuItems.push_back(play);
     menuItems.push_back(play);
+    menuItems.push_back(play);
 }
 
 void TitleMenu::keyPressed(const SDLKey &key)
@@ -154,14 +165,14 @@ void TitleMenu::keyPressed(const SDLKey &key)
     {
         previous();
         cycle = PREVIOUS();
-        pressedTime = -PRESSED_TIME_THRESHOLD() * 2; //Delay before cycling
+        pressedTime = 0;
     }
 
     if( key == SDLK_s || key == SDLK_DOWN )
     {
         next();
         cycle = NEXT();
-        pressedTime = -PRESSED_TIME_THRESHOLD() * 2; //Delay before cycling
+        pressedTime = 0;
     }
 
     if( key == SDLK_RETURN )
@@ -179,7 +190,8 @@ void TitleMenu::keyReleased(const SDLKey &key)
 
 void TitleMenu::clockTick(Uint32 elapsedTime)
 {
-    pressedTime += elapsedTime;
+    if( cycle != STOP() )
+        pressedTime += elapsedTime;
 
     if( pressedTime >= PRESSED_TIME_THRESHOLD() )
     {
@@ -195,7 +207,7 @@ void TitleMenu::clockTick(Uint32 elapsedTime)
 //Shall be called after menuItems is filled
 void TitleMenu::createLayouts()
 {
-    boost::shared_ptr<FillClipFit> fillClipFit(new FillClipFit);
+    boost::shared_ptr<ScaleClipFit> fillClipFit(new ScaleClipFit);
     Point cell = { 0.0, 0.0 };
     boost::shared_ptr<GridLayout> tmp(new GridLayout(menuItems.size(), 1));
     menuGrid = tmp;
@@ -208,5 +220,22 @@ void TitleMenu::createLayouts()
         menuGrid->addLayout(superCenterLayout, cell);
         layouts.push_back(centerLayout);
     }
+}
+
+void TitleMenu::highlightCurrentMenuItem(bool highlight)
+{
+    if( textRendererElements.empty() || menuItems.empty() )
+        return;
+
+    std::list<boost::shared_ptr<TextRendererElement> >::iterator it = 
+        textRendererElements.begin();
+    std::list<boost::shared_ptr<MenuItem> >::iterator it2 = menuItems.begin();
+
+    for( ; it2 != currentMenuItem; ++it, ++it2 );
+
+    if( highlight )
+        (*it)->transform(Transformation::HighlightText());
+    else
+        (*it)->transform(Transformation::None());
 }
 
