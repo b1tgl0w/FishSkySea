@@ -169,72 +169,74 @@ void BorderLayout::adjustCell(const BorderCell &whichCell)
 
     if( whichCell == BorderCell::Top() )
     {
-        borderPosition.y = 0.0;
+        borderPosition.y = position.y;
         borderSize.height = leastSize * thicknessPercent;
 
         if( borderCorner == BorderCorner::TopBottom() )
         {
-            borderPosition.x = 0.0;
+            borderPosition.x = position.x;
             borderSize.width = size.width;
         }
         else
         {
-            borderPosition.x = leastSize * thicknessPercent;
+            borderPosition.x = position.x + leastSize * thicknessPercent;
             borderSize.width = size.width - cornerAddon;
         }
     }
     else if( whichCell == BorderCell::Left() )
     {
-        borderPosition.x = 0.0;
+        borderPosition.x = position.x;
         borderSize.width = leastSize * thicknessPercent;
 
         if( borderCorner == BorderCorner::Sides() )
         {
-            borderPosition.y = 0.0;
+            borderPosition.y = position.y;
             borderSize.height = size.height;
         }
         else
         {
-            borderPosition.y = leastSize * thicknessPercent;
+            borderPosition.y = position.y + leastSize * thicknessPercent;
             borderSize.height = size.height - cornerAddon;
         }
     }
     else if( whichCell == BorderCell::Right() )
     {
-        borderPosition.x = size.width - leastSize * thicknessPercent;
+        borderPosition.x = position.x + size.width - leastSize * 
+            thicknessPercent;
         borderSize.width = leastSize * thicknessPercent;
 
         if( borderCorner == BorderCorner::Sides() )
         {
-            borderPosition.y = 0.0;
+            borderPosition.y = position.y;
             borderSize.height = size.height;
         }
         else
         {
-            borderPosition.y = leastSize * thicknessPercent;
+            borderPosition.y = position.y + leastSize * thicknessPercent;
             borderSize.height = size.height - cornerAddon;
         }
     }
     else if( whichCell == BorderCell::Bottom() )
     {
-        borderPosition.y = size.height - leastSize * thicknessPercent;
+        borderPosition.y = position.y + size.height - leastSize * 
+            thicknessPercent;
         borderSize.height = leastSize * thicknessPercent;
 
         if( borderCorner == BorderCorner::TopBottom() )
         {
-            borderPosition.x = 0.0;
+            borderPosition.x = position.x;
             borderSize.width = size.width;
         }
         else
         {
-            borderPosition.x = leastSize * thicknessPercent;
+            borderPosition.x = position.x + leastSize * thicknessPercent;
             borderSize.width = size.width - cornerAddon;
         }
     }
     else if( whichCell == BorderCell::Center() )
     {
-        borderPosition.x = leastSize * thicknessPercent;
-        borderPosition.y = leastSize * thicknessPercent;
+        borderPosition.x = position.x + leastSize * thicknessPercent;
+        borderPosition.y = position.y + leastSize * thicknessPercent;
         borderSize.width = size.width - cornerAddon;
         borderSize.height = size.height - cornerAddon;
     }

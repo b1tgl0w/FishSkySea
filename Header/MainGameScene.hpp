@@ -82,6 +82,7 @@ private:
     boost::shared_ptr<boost::shared_ptr<Scene> > currentScene;
     bool transition;
     boost::shared_ptr<Scene> toScene;
+    bool fresh;
 };
 
 #endif

@@ -145,6 +145,7 @@ public:
     void loadImage(Renderer &renderer);
     void glow();
     bool isGlowing();
+    void gameLive(bool live);
     //!Adds fish graphic to layout to be drawn next frame.
     /*!
         \param layout the segment of the screen to draw the fish to.
@@ -359,6 +360,7 @@ private:
     Depth startingDepth;
     bool shouldResetTimes;
     bool glowing;
+    bool live;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

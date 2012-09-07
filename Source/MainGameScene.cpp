@@ -153,6 +153,7 @@ void MainGameScene::enter()
     borderLayout->addLayout(superGridLayout, BorderCell::Top());
     gridLayout->addLayout(superScore1Layout, cell);
     renderer->addLayout(superLayeredLayout);
+    ocean->gameLive(true);
 }
 
 void MainGameScene::run()
@@ -194,6 +195,7 @@ void MainGameScene::exit()
     borderLayout->removeLayout(superGridLayout, BorderCell::Top());
     gridLayout->removeLayout(superScore1Layout, cell);
     renderer->removeLayout(superLayeredLayout);
+    ocean->gameLive(false);
 }
 
 void MainGameScene::transitionTo(boost::shared_ptr<Scene> &scene)

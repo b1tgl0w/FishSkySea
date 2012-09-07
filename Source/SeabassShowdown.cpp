@@ -79,10 +79,10 @@ int main(int argc, char **argv)
     (*currentScene)->enter();
     //Test exiting and reentering
     /*
-    superScene->exit(); 
-    superScene->enter();
-    superScene->exit();
-    superScene->enter();
+    (*currentScene)->exit(); 
+    (*currentScene)->enter();
+    (*currentScene)->exit();
+    (*currentScene)->enter();
     */
 
     while( !game->shouldQuit() )

@@ -52,6 +52,7 @@ public:
     void eat(bool glowing);
     void loadImage(Renderer &renderer);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
+    void gameLive(bool live);
 //Collidable
     void collidesWith(boost::shared_ptr<Collidable> &otherObject,
         const BoundingBox &otherBox);
@@ -229,6 +230,7 @@ private:
     BoundingBox visionBox;
     bool continueAttack;
     bool justAte;
+    bool live;
 
     static const std::string &IMAGE_PATH();
     static const Layer &LAYER();

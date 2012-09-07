@@ -91,7 +91,6 @@ TitleScene &TitleScene::operator=(const TitleScene &rhs)
 
 void TitleScene::enter()
 {
-    
     Point cell = { 1, 1 };
     boost::shared_ptr<KeyboardSubscriber> titleMenuKeySubscriber(titleMenu);
     boost::shared_ptr<MasterClockSubscriber> titleMenuClockSubscriber(titleMenu);
@@ -100,8 +99,8 @@ void TitleScene::enter()
     masterClockPublisher->subscribe(titleMenuClockSubscriber);
     layeredLayout->addLayout(superCenterLayout, 0);
     layeredLayout->addLayout(superGridLayout, 1);
-    gridLayout->addLayout(menuLayout, cell);
-    //borderLayout->addLayout(menuLayout, BorderCell::Center());
+    gridLayout->addLayout(superBorderLayout, cell);
+    borderLayout->addLayout(menuLayout, BorderCell::Center());
     renderer->addLayout(superLayeredLayout);
     //keyboardPublisher->subscribe(clockSubscriber);
     masterInputPublisher->subscribe(MiSubscriber);

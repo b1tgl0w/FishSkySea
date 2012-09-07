@@ -48,6 +48,7 @@ public:
     void randomAboutFace(Uint32 elapsedTime);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     bool isGlowing();
+    void gameLive(bool live);
     void collidesWith(boost::shared_ptr<Collidable> &otherObject,
         const BoundingBox &otherBox);
     void collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -93,6 +94,7 @@ private:
     bool offScreen;
     Uint32 timeSinceOffScreen;
     Uint32 timeSinceProceed;
+    bool live;
     static const std::string &IMAGE_PATH();
     static const Layer &LAYER();
     static const Uint32 &MINIMUM_TIME_TO_PROCEED();

@@ -71,7 +71,7 @@ const Uint32 &SeaSnail::RETREAT_PROBABILITY()
 SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
     &ocean) : position(new Point(initialPosition)), ocean(ocean),
     shouldResetTimes(false), glowing(false), proceed(false), retreat(false),
-    offScreen(false), timeSinceOffScreen(0)
+    offScreen(false), timeSinceOffScreen(0), live(false)
 {
     boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
     BoundingBox tmpBox(position, tmpSize);
@@ -85,7 +85,7 @@ SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position),
     seaSnailBox(rhs.seaSnailBox), facing(rhs.facing), ocean(rhs.ocean),
     shouldResetTimes(rhs.shouldResetTimes), glowing(rhs.glowing),
     proceed(rhs.proceed), retreat(rhs.retreat),
-    timeSinceOffScreen(rhs.timeSinceOffScreen)
+    timeSinceOffScreen(rhs.timeSinceOffScreen), live(rhs.live)
 {
 }
 
@@ -103,6 +103,7 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
     proceed = rhs.proceed;
     retreat = rhs.retreat;
     timeSinceOffScreen = rhs.timeSinceOffScreen;
+    live = rhs.live;
     
     return *this;
 }
@@ -226,6 +227,11 @@ bool SeaSnail::isGlowing()
     return glowing;
 }
 
+void SeaSnail::gameLive(bool live)
+{
+    this->live = live;
+}
+
 void SeaSnail::collidesWith(boost::shared_ptr<Collidable> &otherObject,
     const BoundingBox &otherBox)
 {
@@ -296,6 +302,9 @@ void SeaSnail::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
 
 void SeaSnail::clockTick(Uint32 elapsedTime)
 {
+    if( !live )
+        return;
+
     offScreen = true;
 
     readyToProceed(elapsedTime);

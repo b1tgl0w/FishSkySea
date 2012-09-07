@@ -34,6 +34,7 @@ public:
     void keyReleased(const SDLKey &key);
     static void customDeleter(MasterClockPublisher *unused);
     virtual ~MasterClockPublisher();
+    void flush();
 private:
     void dispose();
     MasterClockPublisher();

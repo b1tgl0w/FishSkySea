@@ -31,6 +31,7 @@ public:
     //virtual void initialize(Depth depth) = 0;
     virtual void swim(Uint32 elapsedTime) = 0;
     virtual void randomAboutFace(Uint32 elapsedTime) = 0;
+    virtual void gameLive(bool live) = 0;
 private:
     virtual void moveForward(double pixels) = 0;
     virtual void aboutFace() = 0;

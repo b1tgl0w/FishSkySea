@@ -72,12 +72,12 @@ const Uint32 &Fish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 
 //Class Fish
 Fish::Fish(const Point &initialPosition,
-    const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean)
+    const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean) : live(false)
 {
     initialize(initialPosition, initialDepth, ocean, false);
 }
 
-Fish::Fish(const Fish &rhs)
+Fish::Fish(const Fish &rhs) : live(rhs.live)
 {
     boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
 
@@ -99,6 +99,7 @@ Fish &Fish::operator=(const Fish &rhs)
     {
         dispose();
         initialize(*(rhs.position), rhs.startingDepth, tmpOcean, rhs.glowing);
+        live = rhs.live;
     }
     //Else throw exception?
 
@@ -254,6 +255,11 @@ void Fish::glow()
 bool Fish::isGlowing()
 {
     return glowing;
+}
+
+void Fish::gameLive(bool live)
+{
+    this->live = live;
 }
 
 void Fish::changeState(boost::shared_ptr<FishState> &newState)
@@ -442,6 +448,9 @@ void Fish::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
 
 void Fish::clockTick(Uint32 elapsedTime)
 {
+    if( !live )
+        return;
+
     swim(elapsedTime);
     updateTimes(elapsedTime);
 

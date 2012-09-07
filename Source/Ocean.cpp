@@ -307,6 +307,16 @@ void Ocean::checkCollisions(boost::shared_ptr<Collidable> &object,
     }
 }
 
+void Ocean::gameLive(bool live)
+{
+    for(std::vector<boost::shared_ptr<Fish> >::iterator it = fishes.begin();
+        it != fishes.end(); ++it )
+        (*it)->gameLive(live);
+
+    shark->gameLive(live);
+    seaSnail->gameLive(live);
+}
+
 //Collidable
 void Ocean::collidesWith(boost::shared_ptr<Collidable> &otherObject,
     const BoundingBox &otherBox)

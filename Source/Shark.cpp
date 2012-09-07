@@ -50,12 +50,12 @@ const Uint32 &Shark::MINIMUM_TIME_TO_RANDOM_ABOUT_FACE()
 }
 
 Shark::Shark(boost::weak_ptr<Ocean> ocean,
-    const Point &initialPosition)
+    const Point &initialPosition) : live(false)
 {
     initialize(ocean, initialPosition);
 }
 
-Shark::Shark(const Shark &rhs)
+Shark::Shark(const Shark &rhs) : live(rhs.live)
 {
     initialize(rhs.ocean, *(rhs.position));
     //Else, throw exception?
@@ -68,6 +68,7 @@ Shark &Shark::operator=(const Shark &rhs)
     
     dispose();
     initialize(rhs.ocean, *(rhs.position));
+    live = rhs.live;
 
     return *this;
 }
@@ -210,6 +211,11 @@ void Shark::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     layout->drawWhenReady(re);
 }
 
+void Shark::gameLive(bool live)
+{
+    this->live = live;
+}
+
 Shark::~Shark()
 {
 }
@@ -345,6 +351,9 @@ void Shark::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
 
 void Shark::clockTick(Uint32 elapsedTime)
 {
+    if( !live )
+        return;
+
     swim(elapsedTime);
     calmDown();
 }

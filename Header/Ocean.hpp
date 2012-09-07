@@ -49,6 +49,7 @@ public:
     void removeCollidable(boost::weak_ptr<Collidable> collidable);
     void checkCollisions(boost::shared_ptr<Collidable> &object,
         const BoundingBox &objectBox);
+    void gameLive(bool live);
 //Graphic
     void draw(boost::shared_ptr<Layout> &, Renderer &renderer);
     void loadImage(Renderer &renderer);

@@ -152,3 +152,9 @@ void MasterClockPublisher::keyReleased(const SDLKey &key)
     if( key == SDLK_RIGHT || key == SDLK_LEFT )
         fastForward = 1.0;
 }
+
+void MasterClockPublisher::flush()
+{
+    std::cout << calculateElapsedTime() << std::endl;
+}
+
