@@ -154,6 +154,7 @@ void MainGameScene::enter()
     gridLayout->addLayout(superScore1Layout, cell);
     renderer->addLayout(superLayeredLayout);
     ocean->gameLive(true);
+    player1->gameLive(true);
 }
 
 void MainGameScene::run()

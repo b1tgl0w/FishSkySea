@@ -46,6 +46,7 @@ public:
     //Graphic
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
+    void gameLive(bool live);
 protected:
     void initialize(const Point &polePoint, const Point &hookPoint,
         boost::weak_ptr<Ocean> ocean, const boost::shared_ptr<Line> &line,

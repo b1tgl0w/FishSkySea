@@ -86,6 +86,11 @@ void HumanPlayer::loadImage(Renderer &renderer)
     line->loadImage(renderer);
 }
 
+void HumanPlayer::gameLive(bool live)
+{
+    line->gameLive(live);
+}
+
 void HumanPlayer::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
     line->draw(layout, renderer);

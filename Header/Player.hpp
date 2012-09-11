@@ -30,6 +30,7 @@ public:
     virtual void initializeLine() = 0;
     virtual void sendCollidable(boost::weak_ptr<Ocean> ocean) = 0;
     virtual void sendCollidableRemove(boost::weak_ptr<Ocean> ocean) = 0;
+    virtual void gameLive(bool live) = 0;
 };
 
 #endif

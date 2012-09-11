@@ -59,6 +59,7 @@ public:
     bool canHookFish();
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
+    void gameLive(bool live);
     virtual ~Line();
 //Collidable
     void collidesWith(boost::shared_ptr<Collidable> &otherObject,
@@ -241,6 +242,7 @@ private:
     bool pullLeftOn;
     bool pullRightOn;
     bool fishHooked;
+    bool live;
 };
 
 #endif

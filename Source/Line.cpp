@@ -135,13 +135,13 @@ const double &Line::SLOPE_PULL_THRESHOLD()
 
 Line::Line(boost::shared_ptr<Player> &initialPlayer,
     const Point &initialPolePoint,
-    const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean)
+    const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean) : live(false)
 {
     initialize(initialPlayer, initialPolePoint, initialHookPoint,
         ocean);
 }
 
-Line::Line(const Line &rhs)
+Line::Line(const Line &rhs) : live(rhs.live)
 {
     boost::shared_ptr<Player> tmpOwner= rhs.owner.lock();
 
@@ -172,6 +172,7 @@ Line &Line::operator=(const Line &rhs)
         initialize(tmpOwner, *(rhs.polePoint), *(rhs.hookPoint),
             rhs.ocean);
         lineIDNumber = rhs.lineIDNumber; //This is the correct behavior for copying
+        live = rhs.live;
     }
     //Else throw exception?
 
@@ -398,6 +399,11 @@ void Line::loadImage(Renderer &renderer)
     //No-op, draws a primative not a loaded image
 }
 
+void Line::gameLive(bool live)
+{
+    this->live = live;
+}
+
 void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
     boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
@@ -498,6 +504,9 @@ void Line::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
 //MasterClockSubscriber
 void Line::clockTick(Uint32 elapsedTime)
 {
+    if( !live )
+        return;
+
     state->clockTick(elapsedTime);
 }
 
