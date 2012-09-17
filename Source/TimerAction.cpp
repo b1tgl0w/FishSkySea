@@ -1,4 +1,4 @@
-//File: TimerAction.hpp
+//File: TimerAction.cpp
 //Author:   John Miner
 //Created:  09/10/12
 //Purpose:  "Tag" class for child classes that have one or more methods called
@@ -7,14 +7,11 @@
 //Copyright 2012 John Miner
 //This program is distributed under the terms of the GNU General Public License.
 
-#ifndef TIMER_ACTION_HPP_
-#define TIMER_ACTION_HPP_
+#include "../Header/TimerAction.hpp"
 
-class TimerAction
+//Intentionally implement a pure virtual function, so child classes don't have 
+//to. And this class cannot be instantiated.
+TimerAction::~TimerAction()
 {
-public:
-    virtual ~TimerAction() = 0;
-};
-
-#endif
+}
 
