@@ -10,12 +10,10 @@
 
 #include <string>
 #include "boost/shared_ptr.hpp"
-#include "boost/enable_shared_from_this.hpp"
 #include "Scene.hpp"
 #include "Dimension.hpp"
 #include "ImageRendererElement.hpp"
 #include "SceneLabel.hpp"
-#include "TimerAction.hpp"
 
 struct Point;
 class Renderer;
@@ -35,11 +33,8 @@ class MasterInputSubscriber;
 class LayeredLayout;
 class BorderLayout;
 class GridLayout;
-class TextRendererElement;
-class Timer;
 
-class MainGameScene : public Scene, public TimerAction, public
-    boost::enable_shared_from_this<MainGameScene>
+class MainGameScene : public Scene
 {
 public:
     MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
@@ -52,11 +47,8 @@ public:
     void run();
     void exit();
     void transitionTo(boost::shared_ptr<Scene> &scene);
-    void displayGo();
-    void displayGoComplete();
 private:
     MainGameScene();
-    void displayReady();
     static const Point &POLE_POINT();
     static const Point &HOOK_POINT();
     static const Point &BACKGROUND_POINT();
@@ -75,10 +67,8 @@ private:
     bool quit;
     boost::shared_ptr<CoordinateLayout> oceanLayout;
     boost::shared_ptr<CenterLayout> score1CenterLayout;
-    boost::shared_ptr<CenterLayout> statusLayout;
     boost::shared_ptr<Layout> superOceanLayout;
     boost::shared_ptr<Layout> superScore1Layout;
-    boost::shared_ptr<Layout> superStatusLayout;
     boost::shared_ptr<KeyboardSubscriber> clockSubscriber;
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber;
     boost::shared_ptr<KeyboardSubscriber> playerSubscriber;
@@ -93,9 +83,6 @@ private:
     bool transition;
     boost::shared_ptr<Scene> toScene;
     bool fresh;
-    boost::shared_ptr<RendererElement> statusElement;
-    boost::shared_ptr<Timer> readyTimer;
-    boost::shared_ptr<Timer> goTimer;
 };
 
 #endif

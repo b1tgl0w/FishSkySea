@@ -1,9 +1,8 @@
 //File: TimerAction.hpp
 //Author:   John Miner
 //Created:  09/10/12
-//Purpose:  "Tag" class for child classes that have one or more methods called
-//          from a Timer. This class cannot be instantiated. Child classes,
-//          however, need not implement a pure virtual function.
+//Purpose:  Iface for classes that have action to be called when a timer
+//          is started and/or an action to be called when a timer is stopped.
 //Copyright 2012 John Miner
 //This program is distributed under the terms of the GNU General Public License.
 
@@ -13,7 +12,8 @@
 class TimerAction
 {
 public:
-    virtual ~TimerAction() = 0;
+    virtual void timerStartAction() = 0;
+    virtual void timerStopAction() = 0;
 };
 
 #endif

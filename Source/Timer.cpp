@@ -9,8 +9,22 @@
 #include "../Header/Timer.hpp"
 #include "../Header/TimerAction.hpp"
 
-Timer::Timer(Uint32 countdownFrom) : timeLeft(countdownFrom)
+const bool &Timer::START()
 {
+    static const bool TMP_START = true;
+    return TMP_START;
+}
+
+const bool &Timer::STOP()
+{
+    static const bool TMP_STOP = false;
+    return TMP_STOP;
+}
+
+Timer::Timer(Uint32 countdownFrom, std::list<boost::shared_ptr<TimerAction> >
+    &actions) : timeLeft(countdownFrom), actions(actions)
+{
+    performActions(actions, START());
 }
 
 Timer::Timer(const Timer &rhs) : timeLeft(rhs.timeLeft), 
@@ -32,30 +46,21 @@ Timer &Timer::operator=(const Timer &rhs)
 void Timer::clockTick(Uint32 elapsedTime)
 {
     if( timeLeft <= elapsedTime )
-        performActions();
+        performActions(actions, STOP());
     else
         timeLeft -= elapsedTime;
 }
 
-void Timer::performActions()
+void Timer::performActions(std::list<boost::shared_ptr<TimerAction> > &actions,
+     bool startOrEnd)
 {
-    boost::shared_ptr<TimerAction> currentAction;
-    for( std::multimap<boost::function<void (TimerAction *)>, boost::weak_ptr<
-        TimerAction> >::iterator it = actions.begin(); it != actions.end();
-        ++it )
+    for(std::list<boost::shared_ptr<TimerAction> >::iterator it =
+        actions.begin(); it != actions.end(); ++it )
     {
-        currentAction = it->second.lock();
-
-        if( !currentAction )
-            continue;
-
-        it->first(currentAction.get());
+        if( startOrEnd == START() )
+            (*it)->timerStartAction();
+        else
+            (*it)->timerStopAction();
     }
-}
-
-void Timer::addAction(std::pair<boost::function<void (TimerAction *)>, 
-        boost::weak_ptr<TimerAction> > action)
-{
-    //actions.insert(action);
 }
 
