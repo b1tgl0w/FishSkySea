@@ -53,3 +53,9 @@ void Timer::performActions()
     }
 }
 
+void Timer::addAction(std::pair<boost::function<void (TimerAction *)>, 
+        boost::weak_ptr<TimerAction> > action)
+{
+    //actions.insert(action);
+}
+

@@ -26,6 +26,8 @@
 #include "../Header/GridLayout.hpp"
 #include "../Header/ClipFit.hpp"
 #include "../Header/Layer.hpp"
+#include "../Header/TextRendererElement.hpp"
+#include "../Header/Timer.hpp"
 
 const Point &MainGameScene::POLE_POINT()
 {
@@ -65,8 +67,10 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     background(BACKGROUND_PATH(), Layer::BACKGROUND().integer(), 
         BACKGROUND_POINT(), screenResolution), clipFit(new ClipFit), 
     quit(false), oceanLayout(new CoordinateLayout(clipFit)), 
-    score1CenterLayout(new CenterLayout(clipFit)), superOceanLayout(oceanLayout),
-    superScore1Layout(score1CenterLayout), clockSubscriber(masterClockPublisher,
+    score1CenterLayout(new CenterLayout(clipFit)), statusLayout(new 
+    CenterLayout(clipFit)), superOceanLayout(oceanLayout),
+    superScore1Layout(score1CenterLayout), superStatusLayout(statusLayout),
+    clockSubscriber(masterClockPublisher,
     MasterClockPublisher::customDeleter), MiSubscriber(keyboardPublisher),
     playerSubscriber(player1), gameSubscriber(game),
     layeredLayout(new LayeredLayout(2, clipFit)), borderLayout(new BorderLayout(
@@ -85,9 +89,10 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     rhs.masterInputPublisher), masterClockPublisher(rhs.masterClockPublisher),
     ocean(rhs.ocean), score1(rhs.score1), player1(rhs.player1), background(
     rhs.background), quit(rhs.quit), oceanLayout(rhs.oceanLayout), 
-    score1CenterLayout(rhs.score1CenterLayout), 
+    score1CenterLayout(rhs.score1CenterLayout), statusLayout(rhs.statusLayout),
     superOceanLayout(rhs.superOceanLayout), 
-    superScore1Layout(rhs.superScore1Layout), clockSubscriber(
+    superScore1Layout(rhs.superScore1Layout), 
+    superStatusLayout(rhs.superStatusLayout), clockSubscriber(
     rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), playerSubscriber(
     rhs.playerSubscriber), gameSubscriber(rhs.gameSubscriber), layeredLayout(
     rhs.layeredLayout), borderLayout(rhs.borderLayout), superBorderLayout(
@@ -115,8 +120,10 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     quit = rhs.quit;
     oceanLayout = rhs.oceanLayout;
     score1CenterLayout = rhs.score1CenterLayout,
+    statusLayout = rhs.statusLayout;
     superOceanLayout = rhs.superOceanLayout;
     superScore1Layout = rhs.superScore1Layout;
+    superStatusLayout = rhs.superStatusLayout;
     clockSubscriber = rhs.clockSubscriber;
     MiSubscriber = rhs.MiSubscriber;
     playerSubscriber = rhs.playerSubscriber;
@@ -137,12 +144,16 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
 void MainGameScene::enter()
 {
     Point cell = { 0, 0 };
+    const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
+    const int BORDER_SIZE = 0;
 
     transition = false;
     ocean->loadImage(*(renderer));
     ocean->addCollidable(ocean);
     player1->loadImage(*renderer);
     renderer->loadImage("../Media/Scene3.png");
+    renderer->loadText("Ready", COLOR, BORDER_SIZE);
+    renderer->loadText("Go", COLOR, BORDER_SIZE);
     player1->sendCollidable(ocean);
     keyboardPublisher->subscribe(clockSubscriber);
     masterInputPublisher->subscribe(MiSubscriber);
@@ -152,9 +163,12 @@ void MainGameScene::enter()
     layeredLayout->addLayout(superBorderLayout, 1);
     borderLayout->addLayout(superGridLayout, BorderCell::Top());
     gridLayout->addLayout(superScore1Layout, cell);
+    cell.x = 1;
+    gridLayout->addLayout(superStatusLayout, cell);
     renderer->addLayout(superLayeredLayout);
     ocean->gameLive(true);
     player1->gameLive(true);
+    displayReady();
 }
 
 void MainGameScene::run()
@@ -165,6 +179,10 @@ void MainGameScene::run()
     ocean->draw(superOceanLayout, *renderer);
     oceanLayout->drawWhenReady(background);
     score1->draw(superScore1Layout, *renderer);
+
+    if( statusElement )
+        statusLayout->drawWhenReady(*statusElement);
+
     renderer->render();
 
     if( game->shouldQuit() )
@@ -195,6 +213,8 @@ void MainGameScene::exit()
     layeredLayout->removeLayout(superBorderLayout, 1);
     borderLayout->removeLayout(superGridLayout, BorderCell::Top());
     gridLayout->removeLayout(superScore1Layout, cell);
+    cell.x = 1;
+    gridLayout->removeLayout(superStatusLayout, cell);
     renderer->removeLayout(superLayeredLayout);
     ocean->gameLive(false);
 }
@@ -203,5 +223,51 @@ void MainGameScene::transitionTo(boost::shared_ptr<Scene> &scene)
 {
     transition = true;
     toScene = scene;
+}
+
+void MainGameScene::displayReady()
+{
+    Point origin = { 0.0, 0.0 };
+    Dimension textSize = { 150.0, 50.0 };
+    boost::shared_ptr<TextRendererElement> readyElement(new TextRendererElement(
+        "Ready", 0, origin, textSize));
+    statusElement = readyElement;
+    boost::shared_ptr<Timer> tmpTimer(new Timer(3000));
+    readyTimer = tmpTimer;
+    boost::function<void (MainGameScene *)> f = &MainGameScene::displayGo;
+    boost::shared_ptr<TimerAction> superSharedThis(shared_from_this());
+    std::pair<boost::function<void (MainGameScene *)>, boost::shared_ptr<
+        TimerAction> > action = std::make_pair(f, superSharedThis);
+    readyTimer->addAction(action);
+    boost::shared_ptr<MasterClockSubscriber> timerSubscriber(readyTimer);
+    MasterClockPublisher *masterClockPublisher =
+        MasterClockPublisher::getInstance();
+    masterClockPublisher->subscribe(timerSubscriber);
+}
+
+void MainGameScene::displayGo()
+{
+    Point origin = { 0.0, 0.0 };
+    Dimension textSize = { 150.0, 50.0 };
+    boost::shared_ptr<TextRendererElement> goElement(new TextRendererElement(
+        "Go", 0, origin, textSize));
+    statusElement = goElement;
+    boost::shared_ptr<Timer> tmpTimer(new Timer(3000));
+    goTimer = tmpTimer;
+    boost::function<void (TimerAction *)> f = 
+        &MainGameScene::displayGoComplete;
+    boost::shared_ptr<TimerAction> superSharedThis(shared_from_this());
+    std::pair<boost::function<void (TimerAction *)>, boost::shared_ptr<
+        TimerAction> > action = std::make_pair(f, superSharedThis);
+    readyTimer->addAction(action);
+    boost::shared_ptr<MasterClockSubscriber> timerSubscriber(goTimer);
+    MasterClockPublisher *masterClockPublisher =
+        MasterClockPublisher::getInstance();
+    masterClockPublisher->subscribe(timerSubscriber);
+}
+
+void MainGameScene::displayGoComplete()
+{
+    statusElement.reset();
 }
 

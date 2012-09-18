@@ -10,6 +10,8 @@ Feature:    Add showLines to layouts for testing purposes?
 
 Note:   Manually update loaded font size in Renderer
 
+If MainGameScene has too many responsibilities, break up into smaller classes.
+
 Bug:    BorderLayout inside a grid cell doesn't position correctly.
 
 Bug:    Game starts paused when run from title scene.
