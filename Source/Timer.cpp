@@ -9,30 +9,19 @@
 #include "../Header/Timer.hpp"
 #include "../Header/TimerAction.hpp"
 
-const bool &Timer::START()
+template<typename T>
+Timer<T>::Timer(Uint32 countdownFrom) : timeLeft(countdownFrom)
 {
-    static const bool TMP_START = true;
-    return TMP_START;
 }
 
-const bool &Timer::STOP()
-{
-    static const bool TMP_STOP = false;
-    return TMP_STOP;
-}
-
-Timer::Timer(Uint32 countdownFrom, std::list<boost::shared_ptr<TimerAction> >
-    &actions) : timeLeft(countdownFrom), actions(actions)
-{
-    performActions(actions, START());
-}
-
-Timer::Timer(const Timer &rhs) : timeLeft(rhs.timeLeft), 
+template<typename T>
+Timer<T>::Timer(const Timer<T> &rhs) : timeLeft(rhs.timeLeft), 
     actions(rhs.actions)
 {
 }
 
-Timer &Timer::operator=(const Timer &rhs)
+template<typename T>
+Timer<T> &Timer<T>::operator=(const Timer<T> &rhs)
 {
     if( &rhs == this )
         return *this;
@@ -43,24 +32,36 @@ Timer &Timer::operator=(const Timer &rhs)
     return *this;
 }
 
-void Timer::clockTick(Uint32 elapsedTime)
+template<typename T>
+void Timer<T>::clockTick(Uint32 elapsedTime)
 {
     if( timeLeft <= elapsedTime )
-        performActions(actions, STOP());
+        performActions();
     else
         timeLeft -= elapsedTime;
 }
 
-void Timer::performActions(std::list<boost::shared_ptr<TimerAction> > &actions,
-     bool startOrEnd)
+template<typename T>
+void Timer<T>::performActions()
 {
-    for(std::list<boost::shared_ptr<TimerAction> >::iterator it =
-        actions.begin(); it != actions.end(); ++it )
+    boost::shared_ptr<T> currentAction;
+    for( typename std::vector<std::pair<boost::function<void (T *)>, 
+        boost::weak_ptr<T> > >::iterator it = actions.begin(); it != 
+        actions.end(); ++it )
     {
-        if( startOrEnd == START() )
-            (*it)->timerStartAction();
-        else
-            (*it)->timerStopAction();
+        currentAction = it->second.lock();
+
+        if( !currentAction )
+            continue;
+
+        it->first(currentAction.get());
     }
+}
+
+template<typename T>
+void Timer<T>::addAction(std::pair<boost::function<void (T *)>, 
+        boost::weak_ptr<T> > action)
+{
+    actions.push_back(action);
 }
 

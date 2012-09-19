@@ -9,28 +9,29 @@
 #ifndef TIMER_HPP_
 #define TIMER_HPP_
 
-#include <list>
+#include <vector>
 #include <SDL/SDL.h>
-#include "boost/shared_ptr.hpp"
+#include "boost/function.hpp"
+#include "boost/weak_ptr.hpp"
 #include "MasterClockSubscriber.hpp"
 
 class TimerAction;
 
+template<typename T>
 class Timer : public MasterClockSubscriber
 {
 public:
-    Timer(Uint32 countdownFrom, std::list<boost::shared_ptr<TimerAction> >
-        &actions);
+    Timer(Uint32 countdownFrom);
     Timer(const Timer &rhs);
     Timer &operator=(const Timer &rhs);
+    void addAction(std::pair<boost::function<void (T *)>, 
+        boost::weak_ptr<T> > action);
     void clockTick(Uint32 elapsedTime);
 private:
-    void performActions(std::list<boost::shared_ptr<TimerAction> > &actions,
-         bool startOrEnd);
+    void performActions();
     Uint32 timeLeft;
-    std::list<boost::shared_ptr<TimerAction> > actions;
-    static const bool &START();
-    static const bool &STOP();
+    std::vector<std::pair<boost::function<void (T *)>,
+        boost::weak_ptr<T> > > actions;
 };
 
 #endif

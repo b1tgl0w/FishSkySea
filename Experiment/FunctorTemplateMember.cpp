@@ -23,8 +23,7 @@ public:
     void addFunc(boost::function<void (T*)> func, T* object);
     void callFuncs();
 private:
-    std::vector<boost::function<void (T*)> > funcs;
-    std::vector<T*> objects;
+    std::vector<std::pair<boost::function<void (T*)>, T*> > funcs;
 };
 
 void Foo::print()
@@ -40,18 +39,17 @@ void Foo::printMore()
 template<typename T>
 void Bar<T>::addFunc(boost::function<void (T*)> func, T* object)
 {
-    funcs.push_back(func);
-    objects.push_back(object);
+    funcs.push_back(std::pair<boost::function<void (T*)>, T*>(func, object));
 }
 
 template<typename T>
 void Bar<T>::callFuncs()
 {
-    typename std::vector<boost::function<void (T*)> >::iterator it = funcs.begin();
-    typename std::vector<T *>::iterator it2 = objects.begin();
+    typename std::vector<std::pair<boost::function<void (T*)>, T* > >::iterator 
+        it = funcs.begin();
 
-    for(; it != funcs.end() && it2 != objects.end(); ++it, ++it2 )
-        (*it)(*it2);
+    for(; it != funcs.end(); ++it )
+        (it->first)(it->second);
 }
 
 int main(int argc, char **argv)
