@@ -8,6 +8,8 @@
 #include <iostream>
 #include <vector>
 #include "boost/function.hpp"
+#include "boost/shared_ptr.hpp"
+#include "boost/weak_ptr.hpp"
 
 class Foo
 {
@@ -20,10 +22,11 @@ template<typename T>
 class Bar
 {
 public:
-    void addFunc(boost::function<void (T*)> func, T* object);
+    void addFunc(boost::function<void (T*)> func, boost::weak_ptr<T> object);
     void callFuncs();
 private:
-    std::vector<std::pair<boost::function<void (T*)>, T*> > funcs;
+    std::vector<std::pair<boost::function<void (T*)>, boost::weak_ptr<T> > > 
+        funcs;
 };
 
 void Foo::print()
@@ -37,30 +40,41 @@ void Foo::printMore()
 }
 
 template<typename T>
-void Bar<T>::addFunc(boost::function<void (T*)> func, T* object)
+void Bar<T>::addFunc(boost::function<void (T*)> func, boost::weak_ptr<T>
+    object)
 {
-    funcs.push_back(std::pair<boost::function<void (T*)>, T*>(func, object));
+    funcs.push_back(std::pair<boost::function<void (T*)>, boost::weak_ptr<T> >
+        (func, object));
 }
 
 template<typename T>
 void Bar<T>::callFuncs()
 {
-    typename std::vector<std::pair<boost::function<void (T*)>, T* > >::iterator 
-        it = funcs.begin();
+    typename std::vector<std::pair<boost::function<void (T*)>, 
+        boost::weak_ptr<T> > >::iterator it = funcs.begin();
+
+    boost::shared_ptr<T> currentFunc;
 
     for(; it != funcs.end(); ++it )
-        (it->first)(it->second);
+    {
+        currentFunc = it->second.lock();
+
+        if( !currentFunc )
+            continue;
+
+        (it->first)(currentFunc.get());
+    }
 }
 
 int main(int argc, char **argv)
 {
-    Foo *foo = new Foo;
+    boost::shared_ptr<Foo> foo(new Foo);
+    boost::weak_ptr<Foo> weakFoo = foo;
     boost::function<void (Foo*)> func = &Foo::print;
     boost::function<void (Foo*)> func2 = &Foo::printMore;
     Bar<Foo> bar;
-    bar.addFunc(func, foo);
-    bar.addFunc(func2, foo);
+    bar.addFunc(func, weakFoo);
+    bar.addFunc(func2, weakFoo);
     bar.callFuncs();
-    delete foo;
 }
 

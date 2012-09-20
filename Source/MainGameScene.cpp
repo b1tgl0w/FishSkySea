@@ -236,9 +236,9 @@ void MainGameScene::displayReady()
         (3000));
     readyTimer = tmpTimer;
     boost::function<void (MainGameScene *)> f = &MainGameScene::displayGo;
-    boost::shared_ptr<TimerAction> superSharedThis(shared_from_this());
-    std::pair<boost::function<void (MainGameScene *)>, boost::shared_ptr<
-        TimerAction> > action = std::make_pair(f, superSharedThis);
+    boost::weak_ptr<MainGameScene> sharedThis(shared_from_this());
+    std::pair<boost::function<void (MainGameScene *)>, boost::weak_ptr<
+        MainGameScene> > action = std::make_pair(f, sharedThis);
     readyTimer->addAction(action);
     boost::shared_ptr<MasterClockSubscriber> timerSubscriber(readyTimer);
     MasterClockPublisher *masterClockPublisher =
@@ -253,13 +253,14 @@ void MainGameScene::displayGo()
     boost::shared_ptr<TextRendererElement> goElement(new TextRendererElement(
         "Go", 0, origin, textSize));
     statusElement = goElement;
-    boost::shared_ptr<Timer> tmpTimer(new Timer(3000));
+    boost::shared_ptr<Timer<MainGameScene> > tmpTimer(new Timer<MainGameScene>
+        (3000));
     goTimer = tmpTimer;
-    boost::function<void (TimerAction *)> f = 
+    boost::function<void (MainGameScene *)> f = 
         &MainGameScene::displayGoComplete;
-    boost::shared_ptr<TimerAction> superSharedThis(shared_from_this());
-    std::pair<boost::function<void (TimerAction *)>, boost::shared_ptr<
-        TimerAction> > action = std::make_pair(f, superSharedThis);
+    boost::weak_ptr<MainGameScene> sharedThis(shared_from_this());
+    std::pair<boost::function<void (MainGameScene *)>, boost::weak_ptr<
+        MainGameScene> > action = std::make_pair(f, sharedThis);
     readyTimer->addAction(action);
     boost::shared_ptr<MasterClockSubscriber> timerSubscriber(goTimer);
     MasterClockPublisher *masterClockPublisher =
