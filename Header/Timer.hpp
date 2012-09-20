@@ -13,12 +13,16 @@
 #include <SDL/SDL.h>
 #include "boost/function.hpp"
 #include "boost/weak_ptr.hpp"
+#include "boost/shared_ptr.hpp"
+#include "boost/enable_shared_from_this.hpp"
 #include "MasterClockSubscriber.hpp"
+#include "MasterClockPublisher.hpp"
 
 class TimerAction;
 
 template<typename T>
-class Timer : public MasterClockSubscriber
+class Timer : public MasterClockSubscriber, public 
+    boost::enable_shared_from_this<Timer<T> >
 {
 public:
     Timer(Uint32 countdownFrom);
@@ -61,7 +65,14 @@ template<typename T>
 void Timer<T>::clockTick(Uint32 elapsedTime)
 {
     if( timeLeft <= elapsedTime )
+    {
         performActions();
+        MasterClockPublisher *masterClockPublisher = MasterClockPublisher::
+            getInstance();
+        boost::shared_ptr<MasterClockSubscriber> clockSubscriber(this->
+            shared_from_this());
+        masterClockPublisher->unsubscribe(clockSubscriber);
+    }
     else
         timeLeft -= elapsedTime;
 }

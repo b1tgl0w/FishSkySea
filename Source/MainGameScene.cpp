@@ -166,8 +166,6 @@ void MainGameScene::enter()
     cell.x = 1;
     gridLayout->addLayout(superStatusLayout, cell);
     renderer->addLayout(superLayeredLayout);
-    ocean->gameLive(true);
-    player1->gameLive(true);
     displayReady();
 }
 
@@ -227,7 +225,7 @@ void MainGameScene::transitionTo(boost::shared_ptr<Scene> &scene)
 
 void MainGameScene::displayReady()
 {
-    /*Point origin = { 0.0, 0.0 };
+    Point origin = { 0.0, 0.0 };
     Dimension textSize = { 150.0, 50.0 };
     boost::shared_ptr<TextRendererElement> readyElement(new TextRendererElement(
         "Ready", 0, origin, textSize));
@@ -238,17 +236,19 @@ void MainGameScene::displayReady()
     boost::function<void (MainGameScene *)> f = &MainGameScene::displayGo;
     boost::weak_ptr<MainGameScene> sharedThis(shared_from_this());
     std::pair<boost::function<void (MainGameScene *)>, boost::weak_ptr<
-        MainGameScene> > action = std::make_pair(f, sharedThis);
+        MainGameScene> > action(f, sharedThis);
     readyTimer->addAction(action);
     boost::shared_ptr<MasterClockSubscriber> timerSubscriber(readyTimer);
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
-    masterClockPublisher->subscribe(timerSubscriber);*/
+    masterClockPublisher->subscribe(timerSubscriber);
 }
 
 void MainGameScene::displayGo()
 {
-    /*Point origin = { 0.0, 0.0 };
+    ocean->gameLive(true);
+    player1->gameLive(true);
+    Point origin = { 0.0, 0.0 };
     Dimension textSize = { 150.0, 50.0 };
     boost::shared_ptr<TextRendererElement> goElement(new TextRendererElement(
         "Go", 0, origin, textSize));
@@ -260,16 +260,16 @@ void MainGameScene::displayGo()
         &MainGameScene::displayGoComplete;
     boost::weak_ptr<MainGameScene> sharedThis(shared_from_this());
     std::pair<boost::function<void (MainGameScene *)>, boost::weak_ptr<
-        MainGameScene> > action = std::make_pair(f, sharedThis);
-    readyTimer->addAction(action);
+        MainGameScene> > action(f, sharedThis);
+    goTimer->addAction(action);
     boost::shared_ptr<MasterClockSubscriber> timerSubscriber(goTimer);
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
-    masterClockPublisher->subscribe(timerSubscriber);*/
+    masterClockPublisher->subscribe(timerSubscriber);
 }
 
 void MainGameScene::displayGoComplete()
 {
-    /*statusElement.reset();*/
+    statusElement.reset();
 }
 

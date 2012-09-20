@@ -53,14 +53,22 @@ void MasterClockPublisher::unsubscribe(boost::shared_ptr<MasterClockSubscriber>
     }
 }
 
+//Note: Since subscribers can unsubscribe themselves during a clockTick,
+//      some elements on the list can become invalidated. This is compensated
+//      for.
 void MasterClockPublisher::pollClock()
 {
     boost::shared_ptr<MasterClockSubscriber> sharedSubscriber;
     int elapsedTime = calculateElapsedTime();
+    
+    int i = 0;
 
     for(std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator it =
-        subscribers.begin(); it != subscribers.end(); ++it)
+        subscribers.begin(); it != subscribers.end(); ++it, ++i)
     {
+        if( i >= subscribers.size() )
+            break;
+
         sharedSubscriber = (*it).lock();
 
         if( !sharedSubscriber)
