@@ -39,14 +39,19 @@ const Layer Layer::SCORE()
     return Layer(6);
 }
 
-const Layer Layer::FOREGROUND()
+const Layer Layer::DOCK_SUPPORTS()
 {
     return Layer(7);
 }
 
-const Layer Layer::TITLE_MENU()
+const Layer Layer::FOREGROUND()
 {
     return Layer(8);
+}
+
+const Layer Layer::TITLE_MENU()
+{
+    return Layer(9);
 }
 
 Layer::Layer(int initialValue)

@@ -47,10 +47,23 @@ const Point &MainGameScene::BACKGROUND_POINT()
     return TMP_BACKGROUND_POINT;
 }
 
+const Point &MainGameScene::DOCK_SUPPORTS_POINT()
+{
+    static const Point TMP_DOCK_SUPPORTS_POINT = { 0.0, 0.0 };
+    return TMP_DOCK_SUPPORTS_POINT;
+}
+
 const std::string &MainGameScene::BACKGROUND_PATH()
 {
-    static std::string TMP_BACKGROUND_PATH = "../Media/Scene3.png";
+    static std::string TMP_BACKGROUND_PATH = "../Media/Scene4.png";
     return TMP_BACKGROUND_PATH;
+}
+
+const std::string &MainGameScene::DOCK_SUPPORTS_PATH()
+{
+    static const std::string TMP_DOCK_SUPPORTS_PATH = 
+        "../Media/DockSupports.png";
+    return TMP_DOCK_SUPPORTS_PATH;
 }
 
 MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
@@ -65,7 +78,9 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     ocean(new Ocean(screenResolution)), score1(new Score(0)),
     player1(new HumanPlayer(POLE_POINT(), HOOK_POINT(), ocean, score1)), 
     background(BACKGROUND_PATH(), Layer::BACKGROUND().integer(), 
-        BACKGROUND_POINT(), screenResolution), clipFit(new ClipFit), 
+        BACKGROUND_POINT(), screenResolution), 
+    dockSupports(DOCK_SUPPORTS_PATH(), Layer::DOCK_SUPPORTS().integer(),
+        DOCK_SUPPORTS_POINT(), screenResolution), clipFit(new ClipFit), 
     quit(false), oceanLayout(new CoordinateLayout(clipFit)), 
     score1CenterLayout(new CenterLayout(clipFit)), statusLayout(new 
     CenterLayout(clipFit)), superOceanLayout(oceanLayout),
@@ -88,9 +103,9 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     rhs.screenResolution), game(rhs.game), masterInputPublisher(
     rhs.masterInputPublisher), masterClockPublisher(rhs.masterClockPublisher),
     ocean(rhs.ocean), score1(rhs.score1), player1(rhs.player1), background(
-    rhs.background), quit(rhs.quit), oceanLayout(rhs.oceanLayout), 
-    score1CenterLayout(rhs.score1CenterLayout), statusLayout(rhs.statusLayout),
-    superOceanLayout(rhs.superOceanLayout), 
+    rhs.background), dockSupports(rhs.dockSupports), quit(rhs.quit), 
+    oceanLayout(rhs.oceanLayout), score1CenterLayout(rhs.score1CenterLayout), 
+    statusLayout(rhs.statusLayout), superOceanLayout(rhs.superOceanLayout), 
     superScore1Layout(rhs.superScore1Layout), 
     superStatusLayout(rhs.superStatusLayout), clockSubscriber(
     rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), playerSubscriber(
@@ -117,6 +132,7 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     score1 = rhs.score1;
     player1 = rhs.player1;
     background = rhs.background;
+    dockSupports = rhs.dockSupports;
     quit = rhs.quit;
     oceanLayout = rhs.oceanLayout;
     score1CenterLayout = rhs.score1CenterLayout,
@@ -151,7 +167,8 @@ void MainGameScene::enter()
     ocean->loadImage(*(renderer));
     ocean->addCollidable(ocean);
     player1->loadImage(*renderer);
-    renderer->loadImage("../Media/Scene3.png");
+    renderer->loadImage("../Media/Scene4.png");
+    renderer->loadImage("../Media/DockSupports.png");
     renderer->loadText("Ready", COLOR, BORDER_SIZE);
     renderer->loadText("Go", COLOR, BORDER_SIZE);
     player1->sendCollidable(ocean);
@@ -176,6 +193,7 @@ void MainGameScene::run()
     player1->draw(superOceanLayout, *renderer);
     ocean->draw(superOceanLayout, *renderer);
     oceanLayout->drawWhenReady(background);
+    oceanLayout->drawWhenReady(dockSupports);
     score1->draw(superScore1Layout, *renderer);
 
     if( statusElement )

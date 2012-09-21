@@ -60,7 +60,9 @@ private:
     static const Point &POLE_POINT();
     static const Point &HOOK_POINT();
     static const Point &BACKGROUND_POINT();
+    static const Point &DOCK_SUPPORTS_POINT();
     static const std::string &BACKGROUND_PATH();
+    static const std::string &DOCK_SUPPORTS_PATH();
     boost::shared_ptr<Renderer> renderer;
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher;
     Dimension screenResolution;
@@ -71,6 +73,7 @@ private:
     boost::shared_ptr<Score> score1;
     boost::shared_ptr<HumanPlayer> player1;
     ImageRendererElement background;
+    ImageRendererElement dockSupports;
     boost::shared_ptr<FitStrategy> clipFit;
     bool quit;
     boost::shared_ptr<CoordinateLayout> oceanLayout;
