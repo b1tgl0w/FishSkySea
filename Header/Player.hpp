@@ -17,6 +17,7 @@
 
 class Renderer;
 class Ocean;
+class Direction;
 
 class Player : public Graphic
 {
@@ -31,6 +32,8 @@ public:
     virtual void sendCollidable(boost::weak_ptr<Ocean> ocean) = 0;
     virtual void sendCollidableRemove(boost::weak_ptr<Ocean> ocean) = 0;
     virtual void gameLive(bool live) = 0;
+    virtual void alignWithBoundary(double &coordinate, const Direction &
+        whichBoundary, const double offset = 1.0) = 0;
 };
 
 #endif

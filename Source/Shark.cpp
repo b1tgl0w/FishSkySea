@@ -349,6 +349,12 @@ void Shark::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
     state->collidesWithSeaSnail(seaSnail, yourBox);
 }
 
+void Shark::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
+    const BoundingBox &yourBox)
+{
+    //No-op
+}
+
 void Shark::clockTick(Uint32 elapsedTime)
 {
     if( !live )
@@ -517,6 +523,13 @@ void Shark::AttackState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
     //No-op
 }
 
+void Shark::AttackState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> 
+    &player, const BoundingBox &yourBox)
+{
+    //No-op
+}
+
+
 //Patrol State
 Shark::PatrolState::PatrolState()
 {
@@ -682,6 +695,12 @@ void Shark::PatrolState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
     //No-op
 }
 
+void Shark::PatrolState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> 
+    &player, const BoundingBox &yourBox)
+{
+    //No-op
+}
+
 //Attack State
 Shark::GlowState::GlowState()
 {
@@ -836,6 +855,12 @@ void Shark::GlowState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
 
 void Shark::GlowState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
     &seaSnail, const BoundingBox &yourBox)
+{
+    //No-op
+}
+
+void Shark::GlowState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> 
+    &player, const BoundingBox &yourBox)
 {
     //No-op
 }

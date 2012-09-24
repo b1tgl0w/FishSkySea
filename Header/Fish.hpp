@@ -193,6 +193,8 @@ public:
         const BoundingBox &yourBox);
     void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
         const BoundingBox &yourBox);
+    void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
+        const BoundingBox &yourBox);
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
@@ -258,6 +260,8 @@ private:
             const BoundingBox &yourBox);
         void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
             const BoundingBox &yourBox);
+        void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
+            const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Fish> fishOwner);
         void dispose();
@@ -322,6 +326,8 @@ private:
         void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
             const BoundingBox &yourBox);
         void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+            const BoundingBox &yourBox);
+        void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
             const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Fish> fishOwner);

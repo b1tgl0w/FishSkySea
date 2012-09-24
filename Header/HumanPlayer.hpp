@@ -17,6 +17,7 @@
 #include "Point.hpp"
 #include "Weight.hpp"
 #include "PlayerKeyTranslater.hpp"
+#include "Collidable.hpp"
 
 class Line;
 
@@ -47,6 +48,8 @@ public:
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
     void gameLive(bool live);
+    void alignWithBoundary(double &coordinate, const Direction &
+        whichBoundary, const double offset);
 protected:
     void initialize(const Point &polePoint, const Point &hookPoint,
         boost::weak_ptr<Ocean> ocean, const boost::shared_ptr<Line> &line,
@@ -59,6 +62,9 @@ private:
     Point polePoint;
     Point hookPoint;
     boost::weak_ptr<Score> score;
+    boost::shared_ptr<BoundingBox> poleAreaBox;
+    boost::shared_ptr<Point> poleAreaPoint;
+    boost::shared_ptr<Dimension> poleAreaSize;
 };
 
 #endif

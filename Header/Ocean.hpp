@@ -74,6 +74,8 @@ public:
         const BoundingBox &yourBox);
     void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
         const BoundingBox &yourBox);
+    void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
+        const BoundingBox &yourBox);
 protected:
     void initialize(const Dimension &screenSize);
     void dispose();

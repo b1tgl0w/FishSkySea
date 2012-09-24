@@ -300,6 +300,12 @@ void SeaSnail::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
     //No-op
 }
 
+void SeaSnail::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
+    const BoundingBox &yourBox)
+{
+    //No-op
+}
+
 void SeaSnail::clockTick(Uint32 elapsedTime)
 {
     if( !live )

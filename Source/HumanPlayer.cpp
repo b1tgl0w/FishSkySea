@@ -13,6 +13,7 @@
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/PlayerKeyTranslater.hpp"
 #include "../Header/Ocean.hpp"
+#include "../Header/Direction.hpp"
 
 HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     &hookPoint, boost::weak_ptr<Ocean> ocean, boost::weak_ptr<Score>
@@ -89,6 +90,12 @@ void HumanPlayer::loadImage(Renderer &renderer)
 void HumanPlayer::gameLive(bool live)
 {
     line->gameLive(live);
+}
+
+void HumanPlayer::alignWithBoundary(double &coordinate, const Direction &
+    whichBoundary, const double offset)
+{
+    //To do
 }
 
 void HumanPlayer::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)

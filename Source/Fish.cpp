@@ -446,6 +446,12 @@ void Fish::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
     state->collidesWithSeaSnail(seaSnail, yourBox);
 }
 
+void Fish::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
+    const BoundingBox &yourBox)
+{
+    //No-op
+}
+
 void Fish::clockTick(Uint32 elapsedTime)
 {
     if( !live )
@@ -673,6 +679,13 @@ void Fish::FreeState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
     if( seaSnail->isGlowing() )
         sharedFishOwner->glowing = true;
 }
+
+void Fish::FreeState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
+    const BoundingBox &yourBox)
+{
+    //No-op
+}
+
 
 //Inner class HookedState
 Fish::HookedState::HookedState()
@@ -927,5 +940,11 @@ void Fish::HookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &
 
     if( seaSnail->isGlowing() )
         sharedFishOwner->glowing = true;
+}
+
+void Fish::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
+    const BoundingBox &yourBox)
+{
+    //No-op
 }
 

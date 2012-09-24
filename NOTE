@@ -6,6 +6,9 @@ Left off on fixing bugs
 !!IMPORTANT:Renderer::loadImage(overloaded). Big performance improvement if
 check image has been added to images map before loading it
 
+MemoryLeak: BoundingBoxes have shared_ptr<Points> and <Dimensions>, so do their
+owners. (cyclic reference).
+
 Feature:    Add showLines to layouts for testing purposes?
 
 Note:   Manually update loaded font size in Renderer

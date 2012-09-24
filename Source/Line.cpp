@@ -22,6 +22,7 @@
 #include "../Header/DirectLineGraphic.hpp"
 #include "../Header/DirectGraphicStrategy.hpp"
 #include "../Header/SeaSnail.hpp"
+#include "../Header/Player.hpp"
 
 //Private static variable initialization
 int &Line::highestIdNumberGiven()
@@ -501,6 +502,12 @@ void Line::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
     state->collidesWithSeaSnail(seaSnail, yourBox);
 }
 
+void Line::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
+    const BoundingBox &yourBox)
+{
+    //Same for both states, so don't call current state's method
+}
+
 //MasterClockSubscriber
 void Line::clockTick(Uint32 elapsedTime)
 {
@@ -764,6 +771,12 @@ void Line::NotHookedState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
 
 void Line::NotHookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> 
     &seaSnail, const BoundingBox &yourBox)
+{
+    //No-op
+}
+
+void Line::NotHookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> 
+    &player, const BoundingBox &yourBox)
 {
     //No-op
 }
@@ -1037,4 +1050,9 @@ void Line::HookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
     //No-op
 }
 
+void Line::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> 
+    &player, const BoundingBox &yourBox)
+{
+    //No-op
+}
 

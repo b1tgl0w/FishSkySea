@@ -20,6 +20,7 @@ class BoundingBox;
 class Fish;
 class Direction;
 class SeaSnail;
+class Player;
 
 class Collidable
 {
@@ -44,6 +45,8 @@ public:
         const BoundingBox &yourBox) = 0;
     virtual void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
         const BoundingBox &yourBox) = 0;
+    virtual void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &
+        player, const BoundingBox &yourBox) = 0;
 };
 
 #endif
