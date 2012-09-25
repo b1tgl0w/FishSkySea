@@ -46,7 +46,7 @@ public:
     virtual void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
         const BoundingBox &yourBox) = 0;
     virtual void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &
-        player, const BoundingBox &yourBox) = 0;
+        player, const BoundingBox &yourBox, const Direction &direction) = 0;
 };
 
 #endif

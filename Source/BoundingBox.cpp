@@ -8,13 +8,14 @@
 
 #include "../Header/BoundingBox.hpp"
 #include "../Header/Direction.hpp"
+#include "boost/shared_ptr.hpp"
 
 BoundingBox::BoundingBox()
 {
 }
 
-BoundingBox::BoundingBox(boost::shared_ptr<Point> &initialPosition,
-    boost::shared_ptr<Dimension> &initialSize)
+BoundingBox::BoundingBox(boost::weak_ptr<Point> initialPosition,
+    boost::weak_ptr<Dimension> initialSize)
 {
     initialize(initialPosition, initialSize);
 }
@@ -39,14 +40,23 @@ BoundingBox &BoundingBox::operator=(const BoundingBox &rhs)
 //Purpose:  Determine if two bounding boxes intersect or not
 bool BoundingBox::isCollision(const BoundingBox &otherBox) const
 {
-    double box1LeftX = position->x;
-    double box1RightX = position->x + size->width;
-    double box1TopY = position->y;
-    double box1BottomY = position->y + size->height;
-    double box2LeftX = otherBox.position->x;
-    double box2RightX = otherBox.position->x + otherBox.size->width;
-    double box2TopY = otherBox.position->y;
-    double box2BottomY = otherBox.position->y + otherBox.size->height;
+    boost::shared_ptr<Point> sharedPosition = position.lock();
+    boost::shared_ptr<Dimension> sharedSize = size.lock();
+    boost::shared_ptr<Point> sharedOtherPosition = otherBox.position.lock();
+    boost::shared_ptr<Dimension> sharedOtherSize = otherBox.size.lock();
+
+    if( !sharedPosition || !sharedSize || !sharedOtherPosition ||
+        !sharedOtherSize )
+        return false;
+
+    double box1LeftX = sharedPosition->x;
+    double box1RightX = sharedPosition->x + sharedSize->width;
+    double box1TopY = sharedPosition->y;
+    double box1BottomY = sharedPosition->y + sharedSize->height;
+    double box2LeftX = sharedOtherPosition->x;
+    double box2RightX = sharedOtherPosition->x + sharedOtherSize->width;
+    double box2TopY = sharedOtherPosition->y;
+    double box2BottomY = sharedOtherPosition->y + sharedOtherSize->height;
 
     if(
         isCollisionBoxPoint(box1LeftX, box1RightX, box1TopY, box1BottomY,
@@ -76,14 +86,23 @@ bool BoundingBox::isCollision(const BoundingBox &otherBox) const
 //                  Assumes outside box is bigger than inside box
 Direction BoundingBox::isOutside(const BoundingBox &outsideBox) const
 {
-    double insideBoxLeftX = position->x;
-    double insideBoxRightX = position->x + size->width;
-    double insideBoxTopY = position->y;
-    double insideBoxBottomY = position->y + size->height;
-    double outsideBoxLeftX = outsideBox.position->x;
-    double outsideBoxRightX = outsideBox.position->x + outsideBox.size->width;
-    double outsideBoxTopY = outsideBox.position->y;
-    double outsideBoxBottomY = outsideBox.position->y + outsideBox.size->height;
+    boost::shared_ptr<Point> sharedPosition = position.lock();
+    boost::shared_ptr<Dimension> sharedSize = size.lock();
+    boost::shared_ptr<Point> sharedOtherPosition = outsideBox.position.lock();
+    boost::shared_ptr<Dimension> sharedOtherSize = outsideBox.size.lock();
+
+    if( !sharedPosition || !sharedSize || !sharedOtherPosition ||
+        !sharedOtherSize )
+        return Direction::NONE();
+
+    double insideBoxLeftX = sharedPosition->x;
+    double insideBoxRightX = sharedPosition->x + sharedSize->width;
+    double insideBoxTopY = sharedPosition->y;
+    double insideBoxBottomY = sharedPosition->y + sharedSize->height;
+    double outsideBoxLeftX = sharedOtherPosition->x;
+    double outsideBoxRightX = sharedOtherPosition->x + sharedOtherSize->width;
+    double outsideBoxTopY = sharedOtherPosition->y;
+    double outsideBoxBottomY = sharedOtherPosition->y + sharedOtherSize->height;
 
     //Assumes coordinates are oriented
     //Assumes outside box is bigger than inside box
@@ -170,8 +189,8 @@ BoundingBox::~BoundingBox()
     dispose();
 }
 
-void BoundingBox::initialize(const boost::shared_ptr<Point> &newPosition,
-    const boost::shared_ptr<Dimension> &newSize)
+void BoundingBox::initialize(const boost::weak_ptr<Point> newPosition,
+    const boost::weak_ptr<Dimension> newSize)
 {
     position = newPosition;
     size = newSize;

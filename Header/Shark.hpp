@@ -75,7 +75,7 @@ public:
     void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
         const BoundingBox &yourBox);
     void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-        const BoundingBox &yourBox);
+        const BoundingBox &yourBox, const Direction &direction);
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
 protected:
@@ -124,7 +124,7 @@ private:
         void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
             const BoundingBox &yourBox);
         void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-            const BoundingBox &yourBox);
+            const BoundingBox &yourBox, const Direction &direction);
     protected:
         void initialize(boost::weak_ptr<Shark> sharkOwner);
         void dispose();
@@ -165,7 +165,7 @@ private:
         void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
             const BoundingBox &yourBox);
         void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-            const BoundingBox &yourBox);
+            const BoundingBox &yourBox, const Direction &direction);
     protected:
         void initialize(boost::weak_ptr<Shark> sharkOwner);
         void dispose();
@@ -206,7 +206,7 @@ private:
         void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
             const BoundingBox &yourBox);
         void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-            const BoundingBox &yourBox);
+            const BoundingBox &yourBox, const Direction &direction);
     protected:
         void initialize(boost::weak_ptr<Shark> sharkOwner);
         void dispose();

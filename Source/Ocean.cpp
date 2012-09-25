@@ -390,7 +390,7 @@ void Ocean::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
 }
 
 void Ocean::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-    const BoundingBox &yourBox)
+    const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
 }

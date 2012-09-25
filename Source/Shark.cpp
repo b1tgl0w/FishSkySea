@@ -350,7 +350,7 @@ void Shark::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
 }
 
 void Shark::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-    const BoundingBox &yourBox)
+    const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
 }
@@ -524,7 +524,7 @@ void Shark::AttackState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
 }
 
 void Shark::AttackState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> 
-    &player, const BoundingBox &yourBox)
+    &player, const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
 }
@@ -696,7 +696,7 @@ void Shark::PatrolState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
 }
 
 void Shark::PatrolState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> 
-    &player, const BoundingBox &yourBox)
+    &player, const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
 }
@@ -860,7 +860,7 @@ void Shark::GlowState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
 }
 
 void Shark::GlowState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> 
-    &player, const BoundingBox &yourBox)
+    &player, const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
 }

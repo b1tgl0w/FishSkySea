@@ -9,7 +9,7 @@
 #ifndef BOUNDING_BOX_HPP_
 #define BOUNDING_BOX_HPP_
 
-#include "boost/shared_ptr.hpp"
+#include "boost/weak_ptr.hpp"
 #include "Point.hpp"
 #include "Dimension.hpp"
 
@@ -18,8 +18,8 @@ class Direction;
 class BoundingBox
 {
 public:
-    BoundingBox(boost::shared_ptr<Point> &initialPosition,
-        boost::shared_ptr<Dimension> &initialSize);
+    BoundingBox(boost::weak_ptr<Point> initialPosition,
+        boost::weak_ptr<Dimension> initialSize);
     BoundingBox(const BoundingBox &rhs);
     BoundingBox &operator=(const BoundingBox &rhs);
     bool isCollision(const BoundingBox &otherBox) const;
@@ -27,8 +27,8 @@ public:
     virtual ~BoundingBox();
     BoundingBox();
 protected:
-    void initialize(const boost::shared_ptr<Point> &newPosition,
-        const boost::shared_ptr<Dimension> &newSize);
+    void initialize(const boost::weak_ptr<Point> newPosition,
+        const boost::weak_ptr<Dimension> newSize);
     void dispose();
 private:
     bool leftOf(const double pointX, const double leftEdgeX) const;
@@ -37,8 +37,8 @@ private:
     bool downOf(const double pointY, const double bottomEdgeY) const;
     bool isCollisionBoxPoint(double leftX, double rightX, double topY,
         double bottomY, double pointX, double pointY) const;
-    boost::shared_ptr<Point> position;
-    boost::shared_ptr<Dimension> size;
+    boost::weak_ptr<Point> position;
+    boost::weak_ptr<Dimension> size;
 };
 
 #endif

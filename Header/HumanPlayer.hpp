@@ -18,15 +18,17 @@
 #include "Weight.hpp"
 #include "PlayerKeyTranslater.hpp"
 #include "Collidable.hpp"
+#include "BoundingBox.hpp"
 
 class Line;
 
-class HumanPlayer : public Player, public KeyboardSubscriber,
+class HumanPlayer : public Player, public KeyboardSubscriber, public Collidable,
     public boost::enable_shared_from_this<HumanPlayer>
 {
 public:
     HumanPlayer(const Point &polePoint, const Point &hookPoint,
-        boost::weak_ptr<Ocean> ocean, boost::weak_ptr<Score> score);
+        boost::weak_ptr<Ocean> ocean, boost::weak_ptr<Score> score,
+        bool playerNumber);
     HumanPlayer(const HumanPlayer &rhs);
     HumanPlayer &operator=(const HumanPlayer &rhs);
     ~HumanPlayer();
@@ -50,6 +52,30 @@ public:
     void gameLive(bool live);
     void alignWithBoundary(double &coordinate, const Direction &
         whichBoundary, const double offset);
+    void collidesWith(boost::shared_ptr<Collidable> &otherObject,
+        const BoundingBox &otherBox);
+    void collidesWithHook(boost::shared_ptr<Line> &hook,
+        const BoundingBox &yourBox);
+    void collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox, const Direction &direction);
+    void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
+    void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
+    void collidesWithShark(boost::shared_ptr<Shark> &shark,
+        const BoundingBox &yourBox);
+    void collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
+        const BoundingBox &yourBox);
+    void collidesWithFish(boost::shared_ptr<Fish> &fish,
+        const BoundingBox &yourBox);
+    void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
+        const BoundingBox &yourBox);
+    void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
+        const BoundingBox &yourBox);
+    void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &
+        player, const BoundingBox &yourBox, const Direction &direction);
+    static const bool &PLAYER_ONE();
+    static const bool &PLAYER_TWO();
 protected:
     void initialize(const Point &polePoint, const Point &hookPoint,
         boost::weak_ptr<Ocean> ocean, const boost::shared_ptr<Line> &line,
@@ -62,9 +88,10 @@ private:
     Point polePoint;
     Point hookPoint;
     boost::weak_ptr<Score> score;
-    boost::shared_ptr<BoundingBox> poleAreaBox;
+    BoundingBox poleAreaBox;
     boost::shared_ptr<Point> poleAreaPoint;
     boost::shared_ptr<Dimension> poleAreaSize;
+    bool playerNumber;
 };
 
 #endif

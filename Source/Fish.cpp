@@ -447,7 +447,7 @@ void Fish::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
 }
 
 void Fish::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-    const BoundingBox &yourBox)
+    const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
 }
@@ -681,7 +681,7 @@ void Fish::FreeState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
 }
 
 void Fish::FreeState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-    const BoundingBox &yourBox)
+    const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
 }
@@ -943,7 +943,7 @@ void Fish::HookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &
 }
 
 void Fish::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-    const BoundingBox &yourBox)
+    const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
 }

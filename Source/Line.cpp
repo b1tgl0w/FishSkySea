@@ -503,9 +503,44 @@ void Line::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
 }
 
 void Line::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-    const BoundingBox &yourBox)
+    const BoundingBox &yourBox, const Direction &direction)
 {
     //Same for both states, so don't call current state's method
+    double unused = 0.0;
+    double *coordinate = &unused;
+    double size = 0.0;
+
+    if( direction == Direction::UP() )
+    {
+        if( &yourBox == &poleBox )
+            coordinate = &(polePoint.get()->y);
+    }
+    else if( direction == Direction::DOWN() )
+    {
+        if( &yourBox == &hookBox )
+        {
+            coordinate = &(hookPoint.get()->y);
+            size = hookSize->height;
+        }
+    }
+    else if( direction == Direction::LEFT() )
+    {
+        if( &yourBox == &poleBox )
+            coordinate = &(polePoint.get()->x);
+    }
+    else if( direction == Direction::RIGHT() )
+    {
+        if( &yourBox == &poleBox )
+        {
+            coordinate = &(polePoint.get()->x);
+            size = poleSize->width;
+        }
+    }
+
+    if( direction != Direction::NONE() )
+        player->alignWithBoundary(*coordinate, direction, direction ==
+            Direction::DOWN() || direction == Direction::DOWN_RIGHT() 
+            || direction == Direction::RIGHT() ? size - 1.0 : 1.0);
 }
 
 //MasterClockSubscriber
@@ -776,7 +811,7 @@ void Line::NotHookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
 }
 
 void Line::NotHookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> 
-    &player, const BoundingBox &yourBox)
+    &player, const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
 }
@@ -1051,7 +1086,7 @@ void Line::HookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
 }
 
 void Line::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> 
-    &player, const BoundingBox &yourBox)
+    &player, const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
 }

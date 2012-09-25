@@ -76,7 +76,8 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     masterInputPublisher(MasterInputPublisher::getInstance()),
     masterClockPublisher(MasterClockPublisher::getInstance()),
     ocean(new Ocean(screenResolution)), score1(new Score(0)),
-    player1(new HumanPlayer(POLE_POINT(), HOOK_POINT(), ocean, score1)), 
+    player1(new HumanPlayer(POLE_POINT(), HOOK_POINT(), ocean, score1,
+        HumanPlayer::PLAYER_ONE())), 
     background(BACKGROUND_PATH(), Layer::BACKGROUND().integer(), 
         BACKGROUND_POINT(), screenResolution), 
     dockSupports(DOCK_SUPPORTS_PATH(), Layer::DOCK_SUPPORTS().integer(),
@@ -166,6 +167,8 @@ void MainGameScene::enter()
     transition = false;
     ocean->loadImage(*(renderer));
     ocean->addCollidable(ocean);
+    boost::weak_ptr<Collidable> playerCollidable(player1);
+    ocean->addCollidable(playerCollidable);
     player1->loadImage(*renderer);
     renderer->loadImage("../Media/Scene4.png");
     renderer->loadImage("../Media/DockSupports.png");
@@ -220,6 +223,8 @@ void MainGameScene::exit()
 {
     Point cell = { 0, 0 };
     ocean->removeCollidable(ocean);
+    boost::weak_ptr<Collidable> playerCollidable(player1);
+    ocean->removeCollidable(playerCollidable);
     player1->sendCollidableRemove(ocean);
     keyboardPublisher->unsubscribe(clockSubscriber);
     masterInputPublisher->unsubscribe(MiSubscriber);

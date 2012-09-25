@@ -70,7 +70,7 @@ public:
     void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
         const BoundingBox &yourBox);
     void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
-        const BoundingBox &yourBox);
+        const BoundingBox &yourBox, const Direction &direction);
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE();
 protected:
