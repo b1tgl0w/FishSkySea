@@ -77,7 +77,8 @@ Fish::Fish(const Point &initialPosition,
     initialize(initialPosition, initialDepth, ocean, false);
 }
 
-Fish::Fish(const Fish &rhs) : live(rhs.live)
+Fish::Fish(const Fish &rhs) : fishSize(rhs.fishSize), mouthSize(rhs.mouthSize),
+    live(rhs.live)
 {
     boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
 
@@ -99,6 +100,8 @@ Fish &Fish::operator=(const Fish &rhs)
     {
         dispose();
         initialize(*(rhs.position), rhs.startingDepth, tmpOcean, rhs.glowing);
+        fishSize = rhs.fishSize;
+        mouthSize = rhs.mouthSize;
         live = rhs.live;
     }
     //Else throw exception?
@@ -123,8 +126,10 @@ void Fish::initialize(const Point &newPosition,
     updateMouthPosition();
     boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
     boost::shared_ptr<Dimension> tmpMouthSize(new Dimension(MOUTH_SIZE()));
-    BoundingBox tmpFishBox(position, tmpSize);
-    BoundingBox tmpMouthBox(mouthPosition, tmpMouthSize);
+    fishSize = tmpSize;
+    mouthSize = tmpMouthSize;
+    BoundingBox tmpFishBox(position, fishSize);
+    BoundingBox tmpMouthBox(mouthPosition, mouthSize);
     fishBox = tmpFishBox;
     mouthBox = tmpMouthBox;
     this->glowing = glowing;

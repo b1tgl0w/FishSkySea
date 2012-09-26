@@ -81,7 +81,8 @@ void Shark::initialize(boost::weak_ptr<Ocean> ocean, const Point &position)
     boost::shared_ptr<Point> tmpPosition(new Point(position));
     this->position = tmpPosition;
     boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
-    BoundingBox tmpSharkBox(this->position, tmpSize); 
+    size = tmpSize;
+    BoundingBox tmpSharkBox(this->position, size); 
     sharkBox = tmpSharkBox;
     timeSinceAboutFace = 0;
     faceRandomDirection();

@@ -229,6 +229,7 @@ private:
     boost::shared_ptr<PatrolState> patrolState;
     boost::weak_ptr<Ocean> ocean;
     boost::shared_ptr<Point> position;
+    boost::shared_ptr<Dimension> size;
     boost::shared_ptr<Point> visionPosition;
     boost::shared_ptr<Dimension> visionSize;
     Uint32 fishLastSeen;

@@ -74,17 +74,18 @@ SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
     offScreen(false), timeSinceOffScreen(0), live(false)
 {
     boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
-    BoundingBox tmpBox(position, tmpSize);
+    size = tmpSize;
+    BoundingBox tmpBox(position, size);
     seaSnailBox = tmpBox;
     glow();
     positionFromSide();
     aboutFace();
 }
 
-SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position),
-    seaSnailBox(rhs.seaSnailBox), facing(rhs.facing), ocean(rhs.ocean),
-    shouldResetTimes(rhs.shouldResetTimes), glowing(rhs.glowing),
-    proceed(rhs.proceed), retreat(rhs.retreat),
+SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position), size(
+    rhs.size), seaSnailBox(rhs.seaSnailBox), facing(rhs.facing), 
+    ocean(rhs.ocean), shouldResetTimes(rhs.shouldResetTimes), 
+    glowing(rhs.glowing), proceed(rhs.proceed), retreat(rhs.retreat),
     timeSinceOffScreen(rhs.timeSinceOffScreen), live(rhs.live)
 {
 }
@@ -95,6 +96,7 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
         return *this;
 
     position = rhs.position;
+    size = rhs.size;
     seaSnailBox = rhs.seaSnailBox;
     facing = rhs.facing;
     ocean = rhs.ocean;

@@ -355,6 +355,8 @@ private:
     boost::shared_ptr<FreeState> freeState;
     boost::shared_ptr<Point> position;
     boost::shared_ptr<Point> mouthPosition;
+    boost::shared_ptr<Dimension> fishSize;
+    boost::shared_ptr<Dimension> mouthSize;
     BoundingBox fishBox;
     BoundingBox mouthBox;
     Direction facing;

@@ -86,6 +86,7 @@ private:
     void readyToRetreat(Uint32 elapsedTime);
     void restartCycle();
     boost::shared_ptr<Point> position;
+    boost::shared_ptr<Dimension> size;
     BoundingBox seaSnailBox;
     Direction facing;
     boost::weak_ptr<Ocean> ocean;
