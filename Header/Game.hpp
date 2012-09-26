@@ -14,19 +14,31 @@
 #else
 #include <SDL.h>
 #endif
-#include "KeyboardSubscriber.hpp"
+#include "boost/shared_ptr.hpp"
+#include "Score.hpp"
+#include "Graphic.hpp"
 
-class Game : public KeyboardSubscriber
+class RendererElement;
+class Layout;
+class Renderer;
+
+class Game : public Graphic
 {
 public:
-    Game();
+    explicit Game(boost::shared_ptr<Score> &player1Score, 
+        boost::shared_ptr<Score> &player2Score);
     bool shouldQuit();
-    void keyPressed(const SDLKey &key);
-    void keyReleased(const SDLKey &key);
-protected:
-    void initialize();
+    bool checkWinner();
+    void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
+    void loadImage(Renderer &renderer);
 private:
     bool quit;
+    boost::shared_ptr<Score> player1Score;
+    boost::shared_ptr<Score> player2Score;
+    boost::shared_ptr<RendererElement> winnerText;
+    boost::shared_ptr<RendererElement> player1WinText;
+    boost::shared_ptr<RendererElement> player2WinText;
+    static const Score &WIN_SCORE();
 };
 
 #endif

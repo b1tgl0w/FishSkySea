@@ -25,6 +25,7 @@ public:
     void reset();
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
+    bool operator>=(const Score &rhs);
 private:
     Score();
     int score;

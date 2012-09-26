@@ -97,13 +97,20 @@ void KeyboardPublisher::inputEvent(const SDL_Event &e)
     }
 }
 
+//Note: Since subscribers can unsubscribe themselves during a clockTick,
+//      some elements on the list can become invalidated. This is compensated
+//      for.
 void KeyboardPublisher::notify(SDLKey key, bool pressed)
 {
     boost::shared_ptr<KeyboardSubscriber> tmpSubscriber;
+    int i = 0;
 
     for(std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator it = subscribers.begin();
-        it != subscribers.end(); ++it)
+        it != subscribers.end(); ++it, ++i)
     {
+        if( i >= subscribers.size() )
+            break;
+
         tmpSubscriber = (*it).lock();
         
         if( !tmpSubscriber )

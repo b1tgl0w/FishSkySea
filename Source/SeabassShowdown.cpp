@@ -57,7 +57,6 @@ void handleQuit( bool &quit );
 int main(int argc, char **argv)
 {
     srand((unsigned) time(0)); //Move to class Game
-    boost::shared_ptr<Game> game(new Game);
     Dimension screenResolution = { 800, 600 };
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher(new
         FrameCleanupPublisher);
@@ -69,7 +68,7 @@ int main(int argc, char **argv)
     boost::shared_ptr<boost::shared_ptr<Scene> > currentScene(
         new boost::shared_ptr<Scene>);
     boost::shared_ptr<MainGameScene> mainGameScene(new MainGameScene(
-        currentScene, renderer, keyboardPublisher, screenResolution, game));
+        currentScene, renderer, keyboardPublisher, screenResolution));
     boost::shared_ptr<Scene> superMainGameScene(mainGameScene);
     boost::shared_ptr<TitleScene> titleScene(new TitleScene(
         currentScene, superMainGameScene, keyboardPublisher, renderer,
@@ -85,7 +84,7 @@ int main(int argc, char **argv)
     (*currentScene)->enter();
     */
 
-    while( !game->shouldQuit() )
+    while( !(*currentScene)->shouldExit() )
     {
         (*currentScene)->run();
     }

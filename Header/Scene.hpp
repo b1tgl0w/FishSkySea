@@ -9,6 +9,8 @@
 #ifndef SCENE_HPP_
 #define SCENE_HPP_
 
+#include "boost/shared_ptr.hpp"
+
 class Scene;
 
 class Scene
@@ -18,6 +20,7 @@ public:
     virtual void  run() = 0;
     virtual void exit() = 0;
     virtual void transitionTo(boost::shared_ptr<Scene> &scene) = 0;
+    virtual bool shouldExit();
 };
 
 #endif

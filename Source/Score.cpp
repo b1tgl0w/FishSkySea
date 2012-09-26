@@ -73,3 +73,8 @@ void Score::loadImage(Renderer &renderer)
     //No-op, updated score is loaded when drawing
 }
 
+bool Score::operator>=(const Score &rhs)
+{
+    return score >= rhs.score;
+}
+

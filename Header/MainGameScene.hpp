@@ -17,6 +17,7 @@
 #include "SceneLabel.hpp"
 #include "TimerAction.hpp"
 #include "Timer.hpp"
+#include "KeyboardSubscriber.hpp"
 
 struct Point;
 class Renderer;
@@ -31,29 +32,31 @@ class FitStrategy;
 class CoordinateLayout;
 class CenterLayout;
 class Layout;
-class KeyboardSubscriber;
 class MasterInputSubscriber;
 class LayeredLayout;
 class BorderLayout;
 class GridLayout;
 class TextRendererElement;
 
-class MainGameScene : public Scene, public TimerAction, public
-    boost::enable_shared_from_this<MainGameScene>
+class MainGameScene : public Scene, public TimerAction, public 
+    KeyboardSubscriber, public boost::enable_shared_from_this<MainGameScene>
 {
 public:
     MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
         boost::shared_ptr<Renderer> &renderer, boost::shared_ptr<
         KeyboardPublisher> &keyboardPublisher, const Dimension 
-        &screenResolution, boost::shared_ptr<Game> &game);
+        &screenResolution);
     MainGameScene(const MainGameScene &rhs);
     MainGameScene &operator=(const MainGameScene &rhs);
     void enter();
     void run();
-    void exit();
+    void exit(); //exit scene
     void transitionTo(boost::shared_ptr<Scene> &scene);
     void displayGo();
     void displayGoComplete();
+    bool shouldExit(); //Note exit game, not scene
+    void keyPressed(const SDLKey &key);
+    void keyReleased(const SDLKey &key);
 private:
     MainGameScene();
     void displayReady();
@@ -66,7 +69,6 @@ private:
     boost::shared_ptr<Renderer> renderer;
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher;
     Dimension screenResolution;
-    boost::shared_ptr<Game> game;
     MasterInputPublisher *masterInputPublisher;
     MasterClockPublisher *masterClockPublisher;
     boost::shared_ptr<Ocean> ocean;
@@ -85,7 +87,6 @@ private:
     boost::shared_ptr<KeyboardSubscriber> clockSubscriber;
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber;
     boost::shared_ptr<KeyboardSubscriber> playerSubscriber;
-    boost::shared_ptr<KeyboardSubscriber> gameSubscriber;
     boost::shared_ptr<LayeredLayout> layeredLayout;
     boost::shared_ptr<BorderLayout> borderLayout;
     boost::shared_ptr<Layout> superBorderLayout;
@@ -99,6 +100,7 @@ private:
     boost::shared_ptr<RendererElement> statusElement;
     boost::shared_ptr<Timer<MainGameScene> > readyTimer;
     boost::shared_ptr<Timer<MainGameScene> > goTimer;
+    boost::shared_ptr<Game> game;
 };
 
 #endif

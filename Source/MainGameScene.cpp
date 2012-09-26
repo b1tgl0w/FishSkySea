@@ -70,9 +70,9 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     &currentScene,
     boost::shared_ptr<Renderer> &renderer, 
     boost::shared_ptr<KeyboardPublisher> &keyboardPublisher,
-    const Dimension &screenResolution, boost::shared_ptr<Game> &game) : 
+    const Dimension &screenResolution) : 
     renderer(renderer), keyboardPublisher(keyboardPublisher),
-    screenResolution(screenResolution), game(game),
+    screenResolution(screenResolution), 
     masterInputPublisher(MasterInputPublisher::getInstance()),
     masterClockPublisher(MasterClockPublisher::getInstance()),
     ocean(new Ocean(screenResolution)), score1(new Score(0)),
@@ -88,11 +88,12 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     superScore1Layout(score1CenterLayout), superStatusLayout(statusLayout),
     clockSubscriber(masterClockPublisher,
     MasterClockPublisher::customDeleter), MiSubscriber(keyboardPublisher),
-    playerSubscriber(player1), gameSubscriber(game),
+    playerSubscriber(player1), 
     layeredLayout(new LayeredLayout(2, clipFit)), borderLayout(new BorderLayout(
     BorderSize::Thick())), superBorderLayout(borderLayout), gridLayout(new
     GridLayout(1, 3)), superGridLayout(gridLayout), superLayeredLayout(
-    layeredLayout), currentScene(currentScene) 
+    layeredLayout), currentScene(currentScene), game(new Game(
+        score1, score1))
 {
     ocean->initializeSharedFromThis();
     player1->initializeLine();
@@ -101,7 +102,7 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
 
 MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     keyboardPublisher(rhs.keyboardPublisher), screenResolution(
-    rhs.screenResolution), game(rhs.game), masterInputPublisher(
+    rhs.screenResolution), masterInputPublisher(
     rhs.masterInputPublisher), masterClockPublisher(rhs.masterClockPublisher),
     ocean(rhs.ocean), score1(rhs.score1), player1(rhs.player1), background(
     rhs.background), dockSupports(rhs.dockSupports), quit(rhs.quit), 
@@ -110,11 +111,11 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     superScore1Layout(rhs.superScore1Layout), 
     superStatusLayout(rhs.superStatusLayout), clockSubscriber(
     rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), playerSubscriber(
-    rhs.playerSubscriber), gameSubscriber(rhs.gameSubscriber), layeredLayout(
+    rhs.playerSubscriber), layeredLayout(
     rhs.layeredLayout), borderLayout(rhs.borderLayout), superBorderLayout(
     rhs.superBorderLayout), gridLayout(rhs.gridLayout), superGridLayout(
     rhs.superGridLayout), superLayeredLayout(superLayeredLayout),
-    currentScene(rhs.currentScene)
+    currentScene(rhs.currentScene), game(rhs.game)
 {
 }
 
@@ -126,7 +127,6 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     renderer = rhs.renderer;
     keyboardPublisher = rhs.keyboardPublisher;
     screenResolution = rhs.screenResolution;
-    game = rhs.game;
     masterInputPublisher = rhs.masterInputPublisher;
     masterClockPublisher = rhs.masterClockPublisher;
     ocean = rhs.ocean;
@@ -144,7 +144,6 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     clockSubscriber = rhs.clockSubscriber;
     MiSubscriber = rhs.MiSubscriber;
     playerSubscriber = rhs.playerSubscriber;
-    gameSubscriber = rhs.gameSubscriber;
     layeredLayout = rhs.layeredLayout;
     borderLayout = rhs.borderLayout;
     superBorderLayout = rhs.superBorderLayout;
@@ -152,6 +151,7 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     superGridLayout = rhs.superGridLayout;
     superLayeredLayout = rhs.superLayeredLayout;
     currentScene = rhs.currentScene;
+    game = rhs.game;
 
     return *this;
 }
@@ -174,11 +174,11 @@ void MainGameScene::enter()
     renderer->loadImage("../Media/DockSupports.png");
     renderer->loadText("Ready", COLOR, BORDER_SIZE);
     renderer->loadText("Go", COLOR, BORDER_SIZE);
+    game->loadImage(*renderer);
     player1->sendCollidable(ocean);
     keyboardPublisher->subscribe(clockSubscriber);
     masterInputPublisher->subscribe(MiSubscriber);
     keyboardPublisher->subscribe(playerSubscriber);
-    keyboardPublisher->subscribe(gameSubscriber);
     layeredLayout->addLayout(superOceanLayout, 0);
     layeredLayout->addLayout(superBorderLayout, 1);
     borderLayout->addLayout(superGridLayout, BorderCell::Top());
@@ -187,25 +187,28 @@ void MainGameScene::enter()
     gridLayout->addLayout(superStatusLayout, cell);
     renderer->addLayout(superLayeredLayout);
     displayReady();
+    boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
+        shared_from_this());
+    keyboardPublisher->subscribe(sharedThisSubscriber);
 }
 
 void MainGameScene::run()
 {
     masterInputPublisher->pollInput();
     masterClockPublisher->pollClock();
+    game->checkWinner();
     player1->draw(superOceanLayout, *renderer);
     ocean->draw(superOceanLayout, *renderer);
     oceanLayout->drawWhenReady(background);
     oceanLayout->drawWhenReady(dockSupports);
     score1->draw(superScore1Layout, *renderer);
+    boost::shared_ptr<Layout> superStatusLayout(statusLayout);
+    game->draw(superStatusLayout, *renderer);
 
     if( statusElement )
         statusLayout->drawWhenReady(*statusElement);
 
     renderer->render();
-
-    if( game->shouldQuit() )
-        exit();
 
     if( transition )
     {
@@ -229,7 +232,6 @@ void MainGameScene::exit()
     keyboardPublisher->unsubscribe(clockSubscriber);
     masterInputPublisher->unsubscribe(MiSubscriber);
     keyboardPublisher->subscribe(playerSubscriber);
-    keyboardPublisher->subscribe(gameSubscriber);
     layeredLayout->removeLayout(superOceanLayout, 0);
     layeredLayout->removeLayout(superBorderLayout, 1);
     borderLayout->removeLayout(superGridLayout, BorderCell::Top());
@@ -238,6 +240,9 @@ void MainGameScene::exit()
     gridLayout->removeLayout(superStatusLayout, cell);
     renderer->removeLayout(superLayeredLayout);
     ocean->gameLive(false);
+    boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
+        shared_from_this());
+    keyboardPublisher->unsubscribe(sharedThisSubscriber);
 }
 
 void MainGameScene::transitionTo(boost::shared_ptr<Scene> &scene)
@@ -294,5 +299,20 @@ void MainGameScene::displayGo()
 void MainGameScene::displayGoComplete()
 {
     statusElement.reset();
+}
+
+bool MainGameScene::shouldExit()
+{
+    return quit;
+}
+
+void MainGameScene::keyPressed(const SDLKey &key)
+{
+}
+
+void MainGameScene::keyReleased(const SDLKey &key)
+{
+    if( key == SDLK_ESCAPE )
+        quit = true;
 }
 
