@@ -1,4 +1,4 @@
-////File: CreditFish.hpp
+//////File: CreditFish.hpp
 ////Author:   John Miner
 ////Created:  09/28/12
 ////Purpose:  Credit to creators of the game, swimming around like fish (i.e.
@@ -36,13 +36,13 @@
 //class Shark;
 //struct Point;
 //
-////! Bass fish that swims in ocean and gets caught
+////! Name/Title fish that swims in ocean and gets caught (for credits)
 ///*!
     //Simulates a real-life fish that swims back and forth in the ocean and can
     //be caught by a fisherman or eaten by a shark.
 //*/
 //class CreditFish : public SeaCreature, public Graphic, public Collidable,
-    //public boost::enable_shared_from_this<Fish>
+    //public boost::enable_shared_from_this<CreditFish>
 //{
 //friend class CreditFishState;
 //friend class HookedState;
@@ -53,11 +53,11 @@
         //const Point &initialPosition, const Depth &initialDepth, 
         //boost::shared_ptr<Ocean> &ocean);
     ////!Copy ctor
-    //Fish(const Fish &rhs);
+    //CreditFish(const CreditFish &rhs);
     ////!Copy assignment operator
-    //Fish &operator=(const Fish &rhs);
+    //CreditFish &operator=(const CreditFish &rhs);
     ////!dtor
-    //virtual ~Fish();
+    //virtual ~CreditFish();
     ////! Creates shared_ptr<State> member variables
     ///*!
         //_MUST_ be called IMMEDIATELY after ctor because 
@@ -184,10 +184,10 @@
     //void clockTick(Uint32 elapsedTime);
     //static const Dimension &SIZE(); //Public so ocean knows where to place
 //protected:
-    //CreditFishFish();
+    //CreditFish();
     //void initialize(const std::string &name, const std::string &title,
-        //onst Point &newPosition, const Depth &newDepth, 
-        //boost::shared_ptr<Ocean> &ocean, bool glowing);
+        //const Point &newPosition, const Depth &newDepth, 
+        //boost::shared_ptr<Ocean> &ocean);
 //private:
     ////Note, not a collidable since all states use Fish::collidable methods
     //class CreditFishState
@@ -203,7 +203,7 @@
     //
     //class HookedState : public CreditFishState
     //{
-        //friend class Fish;
+        //friend class CreditFish;
     //public:
         //void swim(Uint32 elapsedTime);
         //void pull(const Point &hookPoint);
@@ -218,7 +218,8 @@
         //void initialize(boost::weak_ptr<CreditFish> creditFishOwner);
         //void dispose();
     //private:
-        //double calculatePixelsLeft(Uint32 elapsedTime);
+        //double calculatePixelsLeftHorizontal(Uint32 elapsedTime);
+        //double calculatePixelsLeftVertical(Uint32 elapsedTime);
         //boost::weak_ptr<CreditFish> creditFishOwner; //Beware of cyclic ptrs
     //};
 //
@@ -239,16 +240,21 @@
         //void initialize(boost::weak_ptr<CreditFish> creditFishOwner);
         //void dispose();
     //private:
-        //double calculatePixelsLeft(Uint32 elapsedTime);
+        //double calculatePixelsLeftHorizontal(Uint32 elapsedTime);
+        //double calculatePixelsLeftVertical(Uint32 elapsedTime);
         //boost::weak_ptr<CreditFish> creditFishOwner; //Beware of cyclic ptrs
     //};
 //
     //void changeState(boost::shared_ptr<CreditFishState> &newState);
     //void moveForward(double pixels);
+    //void moveVertically(double pixels);
     //void aboutFace();
-    //void doRandomAboutFace(Uint32 elapsedTime, Uint32 probability);
+    //void aboutFaceVertical();
+    //void doRandomAboutFaceHorizontal(Uint32 elapsedTime, Uint32 probability);
+    //void doRandomAboutFaceVertical(Uint32 elapsedTime, Uint32 probability);
     //double calculatePixelsLeft(Uint32 elapsedTime);
     //void faceRandomDirection();
+    //void faceDown();
     //void reelIn();
     //void hitEdge(const Direction &direction);
     //void isTight(const Direction &direction);
@@ -265,10 +271,14 @@
     //boost::weak_ptr<Line> hookedByLine;
     //boost::weak_ptr<Player> hookedByPlayer;
     //Uint32 timeSinceRandomAboutFace;
+    //Uint32 timeSinceRandomAboutFaceVertical;
     //Uint32 timeSinceIsTightAboutFace;
     //Depth startingDepth;
     //bool shouldResetTimes;
+    //bool shouldResetTimesVertical;
     //bool live;
+    //std::string name;
+    //std::string title;
 //
     ////Class-wide constants
     //static const Layer &LAYER();
@@ -279,4 +289,4 @@
 //};
 //
 //#endif
-//
+

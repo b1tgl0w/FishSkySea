@@ -4,9 +4,15 @@
 //Modified: 07/01/12
 //Purpose:  An agenda for your current task
 
-Left off on: Fixing bounding box bugs.
+Left off on: Fixing credit fish syntax errors.
 
-General Task: 
+General Task: Credit Fish.
+
+Specific Steps:
+- Draw text instead of graphic (note: need word wrapping/centering)
+- Remove glow
+- Remove mouthBox
+- Update pull
 
 Documentation:  Started adding comments to methods. Left off on
 CoordinateLayout. Fish incomplete.
