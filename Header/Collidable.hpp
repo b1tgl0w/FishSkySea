@@ -18,6 +18,7 @@ class Ocean;
 class Shark;
 class BoundingBox;
 class Fish;
+class CreditFish;
 class Direction;
 class SeaSnail;
 class Player;
@@ -25,6 +26,8 @@ class Player;
 class Collidable
 {
 public:
+    //Note: Going to start using virtual, not pure virtual so objects that
+    //do not collide with each other need not override
     virtual void collidesWith(boost::shared_ptr<Collidable> &otherObject,
         const BoundingBox &otherBox) = 0;
     virtual void collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -47,6 +50,8 @@ public:
         const BoundingBox &yourBox) = 0;
     virtual void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &
         player, const BoundingBox &yourBox, const Direction &direction) = 0;
+    //virtual void collidesWithCreditFish(boost::shared_ptr<CreditFish>
+        //&creditFish, const BoundingBox &yourBox) = 0;
 };
 
 #endif
