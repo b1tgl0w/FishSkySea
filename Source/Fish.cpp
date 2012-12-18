@@ -457,6 +457,9 @@ void Fish::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
     //No-op
 }
 
+void Fish::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
+
 void Fish::clockTick(Uint32 elapsedTime)
 {
     if( !live )
@@ -690,6 +693,9 @@ void Fish::FreeState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player
 {
     //No-op
 }
+
+void Fish::FreeState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
 
 
 //Inner class HookedState
@@ -952,4 +958,7 @@ void Fish::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &play
 {
     //No-op
 }
+
+void Fish::HookedState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
 

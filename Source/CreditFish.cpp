@@ -545,6 +545,8 @@ void CreditFish::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
     const BoundingBox &yourBox){}
 void CreditFish::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
     const BoundingBox &yourBox, const Direction &direction){}
+void CreditFish::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
 
 void CreditFish::clockTick(Uint32 elapsedTime)
 {
@@ -700,8 +702,8 @@ void CreditFish::FreeState::collidesWith(boost::shared_ptr<Collidable> &otherObj
     if( !sharedFishOwner )
         return;
 
-    //if( sharedFishOwner->creditFishBox.isCollision(otherBox) )
-        //otherObject->collidesWithCreditFish(sharedFishOwner, otherBox);
+    if( sharedFishOwner->creditFishBox.isCollision(otherBox) )
+        otherObject->collidesWithCreditFish(sharedFishOwner, otherBox);
 }
 
 void CreditFish::FreeState::collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -718,8 +720,7 @@ void CreditFish::FreeState::collidesWithHook(boost::shared_ptr<Line> &hook,
     boost::shared_ptr<CreditFishState> fishState(sharedFishOwner->hookedState);
     sharedFishOwner->changeState(fishState);
     sharedFishOwner->hookedByLine = hook;
-    //Add this
-    //sharedFishOwner->hookedByPlayer = hook->hooked(sharedFishOwner);
+    //sharedFishOwner->hookedByPlayer = hook->hookedCreditFish(sharedFishOwner);
     sharedFishOwner->faceDown();
 }
 
@@ -762,6 +763,8 @@ void CreditFish::FreeState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &se
     const BoundingBox &yourBox){}
 void CreditFish::FreeState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
     const BoundingBox &yourBox, const Direction &direction){}
+void CreditFish::FreeState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
 
 
 //Inner class HookedState
@@ -916,9 +919,9 @@ void CreditFish::HookedState::collidesWith(boost::shared_ptr<Collidable> &otherO
     if( !sharedFishOwner )
         return;
 
-    //if( sharedFishOwner->creditFishBox.isCollision(otherBox) )
-        //otherObject->collidesWithCreditFish(sharedFishOwner,
-            //sharedFishOwner->creditFishBox);
+    if( sharedFishOwner->creditFishBox.isCollision(otherBox) )
+        otherObject->collidesWithCreditFish(sharedFishOwner,
+            sharedFishOwner->creditFishBox);
 }
 
 void CreditFish::HookedState::collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -955,11 +958,9 @@ void CreditFish::HookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean> 
     if( !sharedOcean || !sharedHookedByLine || !sharedHookedByPlayer)
         return;
 
-    //sharedHookedByPlayer->caughtFish(sharedFishOwner->calculateWeight(),
-        //sharedFishOwner->glowing);
     sharedHookedByLine->offHook();
     //Add this
-    //sharedOcean->addCreditFish(sharedFishOwner, sharedFishOwner->startingDepth);
+    sharedOcean->addCreditFish(sharedFishOwner, sharedFishOwner->startingDepth);
     //Ocean is responsible for showing image and bio or at least delegating
 }
 
@@ -982,4 +983,6 @@ void CreditFish::HookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &
     const BoundingBox &yourBox){}
 void CreditFish::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
     const BoundingBox &yourBox, const Direction &direction){}
+void CreditFish::HookedState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
 

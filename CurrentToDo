@@ -9,8 +9,8 @@ Left off on: Finishing and testing CreditFish
 General Task: Credit Fish.
 
 Specific Steps:
-- Uncomment collidesWithCreditFish, sharedOcean->addCreditFish,
-collidesWithCreditFish (each place)
+- Uncomment collidesWithCreditFish, hooked
+- initialize credit fishes in ocean
 - Draw text instead of graphic (note: need word wrapping/centering)
 - Remove glow
 - Remove mouthBox

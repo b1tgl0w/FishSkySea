@@ -54,6 +54,7 @@ public:
     void settle(Uint32 elapsedTime);
     void move(Uint32 elapsedTime);
     boost::weak_ptr<Player> hooked(boost::weak_ptr<Fish> hookedFish);
+    boost::weak_ptr<Player> hookedCreditFish(boost::weak_ptr<Fish> hookedFish);
     void offHook();
     Direction pull(const Point &mouthPoint);
     bool canHookFish();
@@ -84,6 +85,8 @@ public:
         const BoundingBox &yourBox);
     void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
         const BoundingBox &yourBox, const Direction &direction);
+    void collidesWithCreditFish(boost::shared_ptr<CreditFish>
+        &creditFish, const BoundingBox &yourBox);
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
 //Class-wide constants
@@ -163,6 +166,8 @@ private:
             const BoundingBox &yourBox);
         void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
             const BoundingBox &yourBox, const Direction &direction);
+        void collidesWithCreditFish(boost::shared_ptr<CreditFish>
+            &creditFish, const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Line> owner);
         void dispose();
@@ -208,6 +213,8 @@ private:
             const BoundingBox &yourBox);
         void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
             const BoundingBox &yourBox, const Direction &direction);
+        void collidesWithCreditFish(boost::shared_ptr<CreditFish>
+            &creditFish, const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Line> owner);
         void dispose();

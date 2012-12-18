@@ -356,6 +356,9 @@ void Shark::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
     //No-op
 }
 
+void Shark::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
+
 void Shark::clockTick(Uint32 elapsedTime)
 {
     if( !live )
@@ -530,6 +533,8 @@ void Shark::AttackState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
     //No-op
 }
 
+void Shark::AttackState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
 
 //Patrol State
 Shark::PatrolState::PatrolState()
@@ -702,6 +707,9 @@ void Shark::PatrolState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
     //No-op
 }
 
+void Shark::PatrolState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
+
 //Attack State
 Shark::GlowState::GlowState()
 {
@@ -865,4 +873,7 @@ void Shark::GlowState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
 {
     //No-op
 }
+
+void Shark::GlowState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
 

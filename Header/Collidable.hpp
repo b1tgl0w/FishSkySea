@@ -50,8 +50,8 @@ public:
         const BoundingBox &yourBox) = 0;
     virtual void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &
         player, const BoundingBox &yourBox, const Direction &direction) = 0;
-    //virtual void collidesWithCreditFish(boost::shared_ptr<CreditFish>
-        //&creditFish, const BoundingBox &yourBox) = 0;
+    virtual void collidesWithCreditFish(boost::shared_ptr<CreditFish>
+        &creditFish, const BoundingBox &yourBox) = 0;
 };
 
 #endif

@@ -308,6 +308,9 @@ void SeaSnail::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
     //No-op
 }
 
+void SeaSnail::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
+
 void SeaSnail::clockTick(Uint32 elapsedTime)
 {
     if( !live )

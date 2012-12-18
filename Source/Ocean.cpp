@@ -8,6 +8,7 @@
 
 #include "../Header/Ocean.hpp"
 #include "../Header/Fish.hpp"
+#include "../Header/CreditFish.hpp"
 #include "../Header/SeaSnail.hpp"
 #include "../Header/Shark.hpp"
 #include "../Header/Line.hpp"
@@ -15,6 +16,7 @@
 #include "../Header/Renderer.hpp"
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/SeaSnail.hpp"
+#include "../Header/OceanMode.hpp"
 
 double &Ocean::OCEAN_EDGE_X()
 {
@@ -82,6 +84,9 @@ Ocean::~Ocean()
 
 void Ocean::initializeSharedFromThis()
 {
+    boost::shared_ptr<OceanState> savedState = state;
+    state = gameState;
+    changeState(OceanMode::GAME_MODE());
     //Fish
     //Middle of screen and fish depth
     Depth fishStartingDepth = Depth::ROW1();
@@ -156,6 +161,39 @@ void Ocean::initializeSharedFromThis()
     fishes.push_back(fish6);
     seaSnail = tmpSeaSnail;
     shark = tmpShark;
+
+    //Credit state init
+    state = creditState;
+    changeState(OceanMode::CREDIT_MODE());
+
+    //Restore state
+    state = savedState;
+}
+
+void Ocean::initializeStates()
+{
+    boost::shared_ptr<Ocean> sharedThis(shared_from_this());
+
+    if( !sharedThis )
+        return; //Throw exception
+
+    boost::shared_ptr<GameState> tmpGameState(new GameState(sharedThis));
+    boost::shared_ptr<CreditState> tmpCreditState(new CreditState(sharedThis));
+
+    if( !tmpGameState || !tmpCreditState )
+        return; //Throw exception
+
+    gameState = tmpGameState;
+    creditState = tmpCreditState;
+    state = gameState;
+}
+
+void Ocean::changeState(const OceanMode &oceanMode)
+{
+    if( oceanMode == OceanMode::GAME_MODE() )
+        state = gameState;
+    else if( oceanMode == OceanMode::CREDIT_MODE() )
+        state = creditState;
 }
 
 double Ocean::getDepthY(const Depth &depth)
@@ -225,6 +263,13 @@ void Ocean::addFish(boost::shared_ptr<Fish> &fish, const Depth &depth)
     fish->respawn(fishStartingPoint);
 }
 
+void Ocean::addCreditFish(boost::shared_ptr<CreditFish> &creditFish, const 
+    Depth &depth)
+{
+    Point fishStartingPoint = { getFishStartingX(), getDepthY(depth) };
+    creditFish->respawn(fishStartingPoint);
+}
+
 double Ocean::getFishStartingX()
 {
     return screenSize.width / 2.0 - Fish::SIZE().width / 2.0;
@@ -253,12 +298,12 @@ void Ocean::alignWithSurface(double &coordinate, const double OFFSET)
 
 void Ocean::addCollidable(boost::weak_ptr<Collidable> collidable)
 {
-    collidables.insert(collidable);
+    state->addCollidable(collidable);
 }
 
 void Ocean::removeCollidable(boost::weak_ptr<Collidable> collidable)
 {
-    collidables.erase(collidable);
+    state->removeCollidable(collidable);
 }
 
 void Ocean::loadImage(Renderer &renderer)
@@ -271,6 +316,13 @@ void Ocean::loadImage(Renderer &renderer)
             it != fishes.end(); ++it )
             (*it)->loadImage(renderer);
     }
+    if( !creditFishes.empty() )
+    {
+        //Perhaps vector<ptr<SeaCreature> > ?
+        for(std::vector<boost::shared_ptr<CreditFish> >::iterator it = 
+            creditFishes.begin(); it != creditFishes.end(); ++it )
+            (*it)->loadImage(renderer);
+    }
     //SeaSnail
     seaSnail->loadImage(renderer);
     //Shark
@@ -279,42 +331,18 @@ void Ocean::loadImage(Renderer &renderer)
 
 void Ocean::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    if( !fishes.empty() )
-    {
-        for(std::vector<boost::shared_ptr<Fish> >::iterator it = fishes.begin();
-            it != fishes.end(); ++it)
-            (*it)->draw(layout, renderer);
-    }
-    //SeaSnail
-    seaSnail->draw(layout, renderer);
-    //Shark
-    shark->draw(layout, renderer);
+    state->draw(layout, renderer);
 }
 
 void Ocean::checkCollisions(boost::shared_ptr<Collidable> &object,
     const BoundingBox &objectBox)
 {
-    boost::shared_ptr<Collidable> sharedObject;
-    for(std::set<boost::weak_ptr<Collidable> >::iterator it = collidables.begin();
-        it != collidables.end(); ++it)
-    {
-        sharedObject = (*it).lock();
-
-        if( !sharedObject )
-            continue;
-
-        sharedObject->collidesWith(object, objectBox);
-    }
+    state->checkCollisions(object, objectBox);
 }
 
 void Ocean::gameLive(bool live)
 {
-    for(std::vector<boost::shared_ptr<Fish> >::iterator it = fishes.begin();
-        it != fishes.end(); ++it )
-        (*it)->gameLive(live);
-
-    shark->gameLive(live);
-    seaSnail->gameLive(live);
+    state->gameLive(live);
 }
 
 //Collidable
@@ -393,5 +421,197 @@ void Ocean::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
     const BoundingBox &yourBox, const Direction &direction)
 {
     //No-op
+}
+
+void Ocean::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
+
+
+Ocean::GameState::GameState(boost::shared_ptr<Ocean> &oceanOwner)
+{
+    this->oceanOwner = oceanOwner;
+}
+
+Ocean::GameState::GameState(const GameState &rhs)
+{
+    oceanOwner = rhs.oceanOwner;
+}
+
+Ocean::GameState &Ocean::GameState::operator=(const GameState &rhs)
+{
+    if( &rhs == this )
+        return *this;
+
+    oceanOwner = rhs.oceanOwner;
+
+    return *this;
+}
+
+void Ocean::GameState::addCollidable(boost::weak_ptr<Collidable> collidable)
+{
+    boost::shared_ptr<Ocean> sharedOceanOwner = oceanOwner.lock();
+
+    if( !sharedOceanOwner )
+        return;
+
+    sharedOceanOwner->collidables.insert(collidable);
+}
+
+void Ocean::GameState::removeCollidable(boost::weak_ptr<Collidable> collidable)
+{
+    boost::shared_ptr<Ocean> sharedOceanOwner = oceanOwner.lock();
+
+    if( !sharedOceanOwner )
+        return;
+
+    sharedOceanOwner->collidables.erase(collidable);
+}
+
+void Ocean::GameState::draw(boost::shared_ptr<Layout> &layout, Renderer 
+    &renderer)
+{
+    boost::shared_ptr<Ocean> sharedOceanOwner = oceanOwner.lock();
+
+    if( !sharedOceanOwner )
+        return;
+
+    if( !sharedOceanOwner->fishes.empty() )
+    {
+        for(std::vector<boost::shared_ptr<Fish> >::iterator it = 
+            sharedOceanOwner->fishes.begin(); it != sharedOceanOwner->
+            fishes.end(); ++it) (*it)->draw(layout, renderer);
+    }
+    //SeaSnail
+    sharedOceanOwner->seaSnail->draw(layout, renderer);
+    //Shark
+    sharedOceanOwner->shark->draw(layout, renderer);
+}
+
+void Ocean::GameState::checkCollisions(boost::shared_ptr<Collidable> &object,
+    const BoundingBox &objectBox)
+{
+    boost::shared_ptr<Ocean> sharedOceanOwner = oceanOwner.lock();
+
+    if( !sharedOceanOwner )
+        return;
+
+    boost::shared_ptr<Collidable> sharedObject;
+    for(std::set<boost::weak_ptr<Collidable> >::iterator it = sharedOceanOwner->
+        collidables.begin(); it != sharedOceanOwner->collidables.end(); ++it)
+    {
+        sharedObject = (*it).lock();
+
+        if( !sharedObject )
+            continue;
+
+        sharedObject->collidesWith(object, objectBox);
+    }
+}
+
+void Ocean::GameState::gameLive(bool live)
+{
+    boost::shared_ptr<Ocean> sharedOceanOwner = oceanOwner.lock();
+
+    if( !sharedOceanOwner )
+        return;
+
+    for(std::vector<boost::shared_ptr<Fish> >::iterator it = sharedOceanOwner->
+        fishes.begin(); it != sharedOceanOwner->fishes.end(); ++it )
+        (*it)->gameLive(live);
+
+    sharedOceanOwner->shark->gameLive(live);
+    sharedOceanOwner->seaSnail->gameLive(live);
+}
+
+Ocean::CreditState::CreditState(boost::shared_ptr<Ocean> &oceanOwner)
+{
+    this->oceanOwner = oceanOwner;
+}
+
+Ocean::CreditState::CreditState(const CreditState &rhs)
+{
+    oceanOwner = rhs.oceanOwner;
+}
+
+Ocean::CreditState &Ocean::CreditState::operator=(const CreditState &rhs)
+{
+    if( &rhs == this )
+        return *this;
+
+    oceanOwner = rhs.oceanOwner;
+
+    return *this;
+}
+
+void Ocean::CreditState::addCollidable(boost::weak_ptr<Collidable> collidable)
+{
+    boost::shared_ptr<Ocean> sharedOceanOwner = oceanOwner.lock();
+
+    if( !sharedOceanOwner )
+        return;
+
+    sharedOceanOwner->creditCollidables.insert(collidable);
+}
+
+void Ocean::CreditState::removeCollidable(boost::weak_ptr<Collidable> collidable)
+{
+    boost::shared_ptr<Ocean> sharedOceanOwner = oceanOwner.lock();
+
+    if( !sharedOceanOwner )
+        return;
+
+    sharedOceanOwner->creditCollidables.erase(collidable);
+}
+
+void Ocean::CreditState::draw(boost::shared_ptr<Layout> &layout, Renderer 
+    &renderer)
+{
+    boost::shared_ptr<Ocean> sharedOceanOwner = oceanOwner.lock();
+
+    if( !sharedOceanOwner )
+        return;
+
+    if( !sharedOceanOwner->creditFishes.empty() )
+    {
+        for(std::vector<boost::shared_ptr<CreditFish> >::iterator it = 
+            sharedOceanOwner->creditFishes.begin(); it != 
+            sharedOceanOwner->creditFishes.end(); ++it)
+            (*it)->draw(layout, renderer);
+    }
+}
+
+void Ocean::CreditState::checkCollisions(boost::shared_ptr<Collidable> &object,
+    const BoundingBox &objectBox)
+{
+    boost::shared_ptr<Ocean> sharedOceanOwner = oceanOwner.lock();
+
+    if( !sharedOceanOwner )
+        return;
+
+    boost::shared_ptr<Collidable> sharedObject;
+    for(std::set<boost::weak_ptr<Collidable> >::iterator it = 
+        sharedOceanOwner->creditCollidables.begin();
+        it != sharedOceanOwner->creditCollidables.end(); ++it)
+    {
+        sharedObject = (*it).lock();
+
+        if( !sharedObject )
+            continue;
+
+        sharedObject->collidesWith(object, objectBox);
+    }
+}
+
+void Ocean::CreditState::gameLive(bool live)
+{
+    boost::shared_ptr<Ocean> sharedOceanOwner = oceanOwner.lock();
+
+    if( !sharedOceanOwner )
+        return;
+
+    for(std::vector<boost::shared_ptr<CreditFish> >::iterator it = 
+        sharedOceanOwner->creditFishes.begin(); it != 
+        sharedOceanOwner->creditFishes.end(); ++it )
+        (*it)->gameLive(live);
 }
 

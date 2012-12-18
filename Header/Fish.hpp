@@ -195,6 +195,8 @@ public:
         const BoundingBox &yourBox);
     void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
         const BoundingBox &yourBox, const Direction &direction);
+    void collidesWithCreditFish(boost::shared_ptr<CreditFish>
+        &creditFish, const BoundingBox &yourBox);
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
@@ -262,6 +264,8 @@ private:
             const BoundingBox &yourBox);
         void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
             const BoundingBox &yourBox, const Direction &direction);
+        void collidesWithCreditFish(boost::shared_ptr<CreditFish>
+            &creditFish, const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Fish> fishOwner);
         void dispose();
@@ -329,6 +333,8 @@ private:
             const BoundingBox &yourBox);
         void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
             const BoundingBox &yourBox, const Direction &direction);
+        void collidesWithCreditFish(boost::shared_ptr<CreditFish>
+            &creditFish, const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Fish> fishOwner);
         void dispose();

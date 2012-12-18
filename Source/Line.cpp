@@ -543,6 +543,9 @@ void Line::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
             || direction == Direction::RIGHT() ? size - 1.0 : 1.0);
 }
 
+void Line::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
+
 //MasterClockSubscriber
 void Line::clockTick(Uint32 elapsedTime)
 {
@@ -815,6 +818,9 @@ void Line::NotHookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
 {
     //No-op
 }
+
+void Line::NotHookedState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
 
 Line::HookedState::HookedState(boost::weak_ptr<Line> owner)
 {
@@ -1090,4 +1096,7 @@ void Line::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
 {
     //No-op
 }
+
+void Line::HookedState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
 

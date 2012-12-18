@@ -95,6 +95,7 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     layeredLayout), currentScene(currentScene), game(new Game(
         score1, score1))
 {
+    ocean->initializeStates();
     ocean->initializeSharedFromThis();
     player1->initializeLine();
     player1->initializePlayerKeyTranslater();

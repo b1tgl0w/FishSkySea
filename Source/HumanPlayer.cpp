@@ -289,3 +289,6 @@ void HumanPlayer::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &
     //No-op
 }
 
+void HumanPlayer::collidesWithCreditFish(boost::shared_ptr<CreditFish>
+    &creditFish, const BoundingBox &yourBox) {}
+
