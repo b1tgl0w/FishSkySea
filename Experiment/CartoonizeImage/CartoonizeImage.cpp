@@ -13,14 +13,8 @@
 #include <iostream>
 #include "../../Header/Point.hpp"
 #include "../../Header/Math.hpp"
+#include "../../SharedHeader/PaletteHarmony/Color.hpp"
 #include <fstream>
-
-struct Color
-{
-    int r;
-    int g;
-    int b;
-};
 
 const Point IMAGE_POSITION = { 0, 0 };
 void initializeSdl();
@@ -34,8 +28,8 @@ void freeImages(SDL_Surface *screen, SDL_Surface *image, SDL_Surface
 std::vector<Color> loadPalette(const std::string &PalettePath);
 void printColors(const std::vector<Color> &colors);
 SDL_Surface *cartoonizeImage(SDL_Surface *imageToCartoonize,
-    const std::vector<Color> &colors);
-void cartoonizePixel(Uint8 *r, Uint8 *g, Uint8 *b, const std::vector<Color> 
+    std::vector<Color> &colors);
+void cartoonizePixel(Uint8 *r, Uint8 *g, Uint8 *b, std::vector<Color> 
     &colors);
 
 int main(int argc, char **argv)
@@ -142,14 +136,16 @@ void freeImages(SDL_Surface *screen, SDL_Surface *image, SDL_Surface
 std::vector<Color> loadPalette(const std::string &PalettePath)
 {
     std::vector<Color> colors;
-    Color color;
+    int r, g, b;
     int skip;
+    Color color;
     char hsvString[256];
     std::ifstream file(PalettePath.c_str());
     file.getline(hsvString, 256);
     while(!file.eof())
     {
-        file >> skip >> skip >> skip >> color.r >> color.g >> color.b;
+        file >> skip >> skip >> skip >> r >> g >> b;
+        color.blendRgb(r, g, b);
         colors.push_back(color);
     }
 
@@ -162,19 +158,19 @@ void printColors(const std::vector<Color> &colors)
 {
     for( std::vector<Color>::const_iterator it = colors.begin();
         it != colors.end(); ++it )
-    {
-        std::cout << (*it).r << '\t' << (*it).g << '\t' << (*it).b << std::endl;
-    }
+        it->print();
 }
 
 SDL_Surface *cartoonizeImage(SDL_Surface *imageToCartoonize,
-    const std::vector<Color> &colors)
+    std::vector<Color> &colors)
 {
     SDL_Surface *cartoonizedImage = SDL_DisplayFormatAlpha(imageToCartoonize);
     Uint8 r;
     Uint8 g;
     Uint8 b;
     Uint8 a;
+    Color color;
+    Uint32 newSdlColor;
 
     SDL_LockSurface(cartoonizedImage);
 
@@ -182,9 +178,10 @@ SDL_Surface *cartoonizeImage(SDL_Surface *imageToCartoonize,
     {
         SDL_GetRGBA(((Uint32*) cartoonizedImage->pixels)[i], 
             cartoonizedImage->format, &r, &g, &b, &a);
-        cartoonizePixel(&r, &g, &b, colors);
-        ((Uint32 *) cartoonizedImage->pixels)[i] = SDL_MapRGBA(
-            cartoonizedImage->format, r, g, b, a);
+        color.blendRgb(r, g, b);
+        color.cartoonize(colors);
+        newSdlColor = color.convertToSdlColor(cartoonizedImage->format);
+        ((Uint32 *) cartoonizedImage->pixels)[i] = newSdlColor;
     }
 
     SDL_UnlockSurface(cartoonizedImage);
@@ -192,7 +189,7 @@ SDL_Surface *cartoonizeImage(SDL_Surface *imageToCartoonize,
     return cartoonizedImage;
 }
 
-void cartoonizePixel(Uint8 *r, Uint8 *g, Uint8 *b, const std::vector<Color> 
+/*void cartoonizePixel(Uint8 *r, Uint8 *g, Uint8 *b, std::vector<Color> 
     &colors)
 {
     if( colors.empty() )
@@ -201,11 +198,18 @@ void cartoonizePixel(Uint8 *r, Uint8 *g, Uint8 *b, const std::vector<Color>
     Color closestColor = colors[0];
     int closestDifference = 9999;
     int currentDifference = 0;
-    for( std::vector<Color>::const_iterator it = colors.begin();
+    Uint8 paletteColorR;
+    Uint8 paletteColorG;
+    Uint8 paletteColorB;
+    Uint8 paletteColorA;
+    SDL_PixelFormat *format = SDL_GetVideoSurface()->format;
+    for( std::vector<Color>::iterator it = colors.begin();
         it != colors.end(); ++it )
     {
-        currentDifference = Math::abs(*r - it->r) + Math::abs(*g - it->g) + 
-            Math::abs(*b - it->b);
+        SDL_GetRGBA(it->convertToSdlColor(format), format, &paletteColorR,
+            &paletteColorG, &paletteColorB, &paletteColorA);
+        currentDifference = Math::abs(*r - paletteColorR) + Math::abs(*g 
+            - paletteColorG) + Math::abs(*b - paletteColorB);
 
         if( currentDifference < closestDifference)
         {
@@ -214,8 +218,10 @@ void cartoonizePixel(Uint8 *r, Uint8 *g, Uint8 *b, const std::vector<Color>
         }
     }
 
-    *r = closestColor.r;
-    *g = closestColor.g;
-    *b = closestColor.b;
-}
+    SDL_GetRGBA(closestColor.convertToSdlColor(format), format, &paletteColorR,
+        &paletteColorG, &paletteColorB, &paletteColorA);
+    *r = paletteColorR;
+    *g = paletteColorG;
+    *b = paletteColorB;
+}*/
 
