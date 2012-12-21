@@ -6,6 +6,9 @@ Left off on fixing bugs
 !!IMPORTANT:Renderer::loadImage(overloaded). Big performance improvement if
 check image has been added to images map before loading it
 
+Note: Commented out TTF_SetFontOutline and TTF_GetFontOutline in Renderer
+due to compile issues. Fix them another way so you can use them
+
 MemoryLeak: BoundingBoxes have shared_ptr<Points> and <Dimensions>, so do their
 owners. (cyclic reference).
 

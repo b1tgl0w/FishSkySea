@@ -111,7 +111,8 @@ void Renderer::initialize(const Dimension &screenResolution, int screenBpp,
 
     this->frameCleanupPublisher = frameCleanupPublisher;
     font = TTF_OpenFont(fontPath.c_str(), FONT_SIZE);
-    TTF_SetFontOutline(font, FONT_BORDER_SIZE);
+    //Commenting out due to compile issues
+    //TTF_SetFontOutline(font, FONT_BORDER_SIZE);
     this->fontPath = fontPath;
 
     //Should I call images.clear() and toDraw.clear() or is that a task for
@@ -188,8 +189,9 @@ void Renderer::loadText(const std::string &text, const SDL_Color &color,
     if( images.count(text) > 0 )
         return;
 
-    if( TTF_GetFontOutline(font) != borderSize )
-        TTF_SetFontOutline(font, borderSize);
+    //Commenting out due to compile issues
+    //if( TTF_GetFontOutline(font) != borderSize )
+        //TTF_SetFontOutline(font, borderSize);
 
     SDL_Surface *textSurface = TTF_RenderText_Blended(font, 
         text.c_str(), color);

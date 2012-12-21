@@ -9,6 +9,7 @@
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/MasterClockSubscriber.hpp"
 #include "../Header/Math.hpp"
+#include <iostream>
 
 bool MasterClockPublisher::instantiated = false;
 MasterClockPublisher *MasterClockPublisher::instance;
