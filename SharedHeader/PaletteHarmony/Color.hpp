@@ -25,6 +25,7 @@ public:
     //void fillRect(SDL_Surface *surface, const Point &where,
         //const Dimension &size);
     bool blendRgb(double red, double green, double blue);
+    void blendHsv(double hue, double saturation, double value);
     void setHue(double newHue);
     void adjustHue(double howMuch);
     //Returns false if beyond valid range

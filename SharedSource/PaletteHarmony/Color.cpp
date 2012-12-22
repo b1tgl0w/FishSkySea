@@ -65,6 +65,14 @@ bool Color::blendRgb(double red, double green, double blue)
     return convertRgbToHsv();
 }
 
+void Color::blendHsv(double hue, double saturation, double value)
+{
+    this->hue = hue;
+    this->saturation = saturation;
+    this->value = value;
+    convertHsvToRgb();
+}
+
 void Color::setHue(double newHue)
 {
     double hueDifference = newHue - hue;
@@ -496,19 +504,25 @@ void Color::cartoonize(const std::vector<Color> &colors)
 
     Color closestColor = colors[0];
     int closestDifference = 9999;
+    int closestSVDifference = 9999;
     int currentDifference = 0;
+    int currentSVDifference = 0;
     for(std::vector<Color>::const_iterator it = colors.begin();
         it != colors.end(); ++it )
     {
-        if( it->value > 20 ) //fix this
-            currentDifference = Math::abs(red - it->red) +
-            Math::abs(green - it->green) + Math::abs(blue -
-            it->blue);
+        currentDifference = Math::abs(hue - it->hue);
+        currentSVDifference = Math::abs(saturation - it->saturation)
+            + Math::abs(value - it->value);
 
-        if( currentDifference < closestDifference)
+        if( currentDifference < closestDifference || (currentDifference ==
+            closestDifference && currentSVDifference < closestSVDifference ))
         {
             closestDifference = currentDifference;
+            closestSVDifference = currentSVDifference;
             closestColor = *it;
+
+            if (closestDifference == 0 && currentSVDifference == 0)
+                break;
         }
     }
 

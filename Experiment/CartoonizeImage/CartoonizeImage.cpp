@@ -25,7 +25,7 @@ void drawGame(SDL_Surface *screen, SDL_Surface *image);
 void handleInputQuit(bool &quit);
 void freeImages(SDL_Surface *screen, SDL_Surface *image, SDL_Surface 
     *cartoonizedImage);
-std::vector<Color> loadPalette(const std::string &PalettePath);
+std::vector<Color> generateReducedPalette();
 void printColors(const std::vector<Color> &colors);
 SDL_Surface *cartoonizeImage(SDL_Surface *imageToCartoonize,
     std::vector<Color> &colors);
@@ -34,21 +34,22 @@ void cartoonizePixel(Uint8 *r, Uint8 *g, Uint8 *b, std::vector<Color>
 
 int main(int argc, char **argv)
 {
+    if( argc != 3 )
+    {
+        std::cerr << "Error: Malformed command." << std::endl;
+        std::cerr << "Usage: CartoonizeImage imagePath outputPath.bmp" << std::endl;
+        exit(1);
+    }
+
     SDL_Surface *screen = NULL;
-    SDL_Surface *image;
+    SDL_Surface *image = NULL;
     bool quit = false;
     initializeSdl();
     initializeScreen(&screen);
-    image = optimizeImage(loadImage("../Media/PictureToCartoonize.jpg"));
-    std::vector<Color> colors = loadPalette("../Data/Palette.txt");
+    image = optimizeImage(loadImage(argv[1]));
+    std::vector<Color> colors = generateReducedPalette();
     SDL_Surface *cartoonizedImage = cartoonizeImage(image, colors);
-
-    while(quit == false)
-    {
-        handleInputQuit(quit);
-        drawGame(screen, cartoonizedImage);
-    }
-
+    SDL_SaveBMP(cartoonizedImage, argv[2]);
     freeImages(screen, image, cartoonizedImage);
 
     return EXIT_SUCCESS;
@@ -80,7 +81,10 @@ SDL_Surface *loadImage(std::string imagePath)
     SDL_Surface *image = IMG_Load(imagePath.c_str());
 
     if( !image )
-        std::cout << "SDL_LoadImage:" << SDL_GetError() << std::endl;
+    {
+        std::cout << "Error: " <<  SDL_GetError() << std::endl;
+        exit(1);
+    }
 
     return image;
 }
@@ -133,23 +137,24 @@ void freeImages(SDL_Surface *screen, SDL_Surface *image, SDL_Surface
     SDL_FreeSurface(cartoonizedImage);
 }
 
-std::vector<Color> loadPalette(const std::string &PalettePath)
+std::vector<Color> generateReducedPalette()
 {
+    int hueStepValue = 10;
+    int otherStepValue = 33;
     std::vector<Color> colors;
-    int r, g, b;
-    int skip;
     Color color;
-    char hsvString[256];
-    std::ifstream file(PalettePath.c_str());
-    file.getline(hsvString, 256);
-    while(!file.eof())
+    for( int h = 0; h < 360; h += hueStepValue )
     {
-        file >> skip >> skip >> skip >> r >> g >> b;
-        color.blendRgb(r, g, b);
-        colors.push_back(color);
+        for( int s = 0; s <= 100; s += otherStepValue )
+        {
+            
+            for( int v = 0; v <= 100; v += otherStepValue )
+            {
+                color.blendHsv(h, s, v);
+                colors.push_back(color);
+            }
+        }
     }
-
-    file.close();
 
     return colors;
 }
