@@ -55,14 +55,14 @@ const Point &MainGameScene::DOCK_SUPPORTS_POINT()
 
 const std::string &MainGameScene::BACKGROUND_PATH()
 {
-    static std::string TMP_BACKGROUND_PATH = "../Media/Scene4.png";
+    static std::string TMP_BACKGROUND_PATH = "../Media/Scene5.png";
     return TMP_BACKGROUND_PATH;
 }
 
 const std::string &MainGameScene::DOCK_SUPPORTS_PATH()
 {
     static const std::string TMP_DOCK_SUPPORTS_PATH = 
-        "../Media/DockSupports.png";
+        "../Media/DockSupports2.png";
     return TMP_DOCK_SUPPORTS_PATH;
 }
 
@@ -171,8 +171,8 @@ void MainGameScene::enter()
     boost::weak_ptr<Collidable> playerCollidable(player1);
     ocean->addCollidable(playerCollidable);
     player1->loadImage(*renderer);
-    renderer->loadImage("../Media/Scene4.png");
-    renderer->loadImage("../Media/DockSupports.png");
+    renderer->loadImage("../Media/Scene5.png");
+    renderer->loadImage("../Media/DockSupports2.png");
     renderer->loadText("Ready", COLOR, BORDER_SIZE);
     renderer->loadText("Go", COLOR, BORDER_SIZE);
     game->loadImage(*renderer);
