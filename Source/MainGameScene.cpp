@@ -47,6 +47,18 @@ const Point &MainGameScene::BACKGROUND_POINT()
     return TMP_BACKGROUND_POINT;
 }
 
+const Point &MainGameScene::ELDER_FISHER_POINT()
+{
+    static const Point TMP_ELDER_FISHER_POINT = { 0.0, 0.0 };
+    return TMP_ELDER_FISHER_POINT;
+}
+
+const Point &MainGameScene::MOWHAWK_FISHER_POINT()
+{
+    static const Point TMP_MOWHAWK_FISHER_POINT = { 0.0, 0.0 };
+    return TMP_MOWHAWK_FISHER_POINT;
+}
+
 const Point &MainGameScene::DOCK_SUPPORTS_POINT()
 {
     static const Point TMP_DOCK_SUPPORTS_POINT = { 0.0, 0.0 };
@@ -57,6 +69,20 @@ const std::string &MainGameScene::BACKGROUND_PATH()
 {
     static std::string TMP_BACKGROUND_PATH = "../Media/Scene5.png";
     return TMP_BACKGROUND_PATH;
+}
+
+const std::string &MainGameScene::MOWHAWK_FISHER_PATH()
+{
+    static const std::string TMP_MOWHAWK_FISHER_PATH = 
+        "../Media/MowhawkFisher.png";
+    return TMP_MOWHAWK_FISHER_PATH;
+}
+
+const std::string &MainGameScene::ELDER_FISHER_PATH()
+{
+    static const std::string TMP_ELDER_FISHER_PATH = 
+        "../Media/ElderFisher.png";
+    return TMP_ELDER_FISHER_PATH;
 }
 
 const std::string &MainGameScene::DOCK_SUPPORTS_PATH()
@@ -80,6 +106,10 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
         HumanPlayer::PLAYER_ONE())), 
     background(BACKGROUND_PATH(), Layer::BACKGROUND().integer(), 
         BACKGROUND_POINT(), screenResolution), 
+    elderFisher(ELDER_FISHER_PATH(), Layer::FOREGROUND().integer(), 
+        ELDER_FISHER_POINT(), screenResolution), 
+    mowhawkFisher(MOWHAWK_FISHER_PATH(), Layer::FOREGROUND().integer(), 
+        MOWHAWK_FISHER_POINT(), screenResolution), 
     dockSupports(DOCK_SUPPORTS_PATH(), Layer::DOCK_SUPPORTS().integer(),
         DOCK_SUPPORTS_POINT(), screenResolution), clipFit(new ClipFit), 
     quit(false), oceanLayout(new CoordinateLayout(clipFit)), 
@@ -106,10 +136,10 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     rhs.screenResolution), masterInputPublisher(
     rhs.masterInputPublisher), masterClockPublisher(rhs.masterClockPublisher),
     ocean(rhs.ocean), score1(rhs.score1), player1(rhs.player1), background(
-    rhs.background), dockSupports(rhs.dockSupports), quit(rhs.quit), 
-    oceanLayout(rhs.oceanLayout), score1CenterLayout(rhs.score1CenterLayout), 
-    statusLayout(rhs.statusLayout), superOceanLayout(rhs.superOceanLayout), 
-    superScore1Layout(rhs.superScore1Layout), 
+    rhs.background), elderFisher(rhs.elderFisher), mowhawkFisher(rhs.mowhawkFisher),
+    dockSupports(rhs.dockSupports), quit(rhs.quit), oceanLayout(rhs.oceanLayout), 
+    score1CenterLayout(rhs.score1CenterLayout), statusLayout(rhs.statusLayout), 
+    superOceanLayout(rhs.superOceanLayout), superScore1Layout(rhs.superScore1Layout), 
     superStatusLayout(rhs.superStatusLayout), clockSubscriber(
     rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), playerSubscriber(
     rhs.playerSubscriber), layeredLayout(
@@ -134,6 +164,8 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     score1 = rhs.score1;
     player1 = rhs.player1;
     background = rhs.background;
+    elderFisher = rhs.elderFisher;
+    mowhawkFisher = rhs.mowhawkFisher;
     dockSupports = rhs.dockSupports;
     quit = rhs.quit;
     oceanLayout = rhs.oceanLayout;
@@ -172,6 +204,8 @@ void MainGameScene::enter()
     ocean->addCollidable(playerCollidable);
     player1->loadImage(*renderer);
     renderer->loadImage("../Media/Scene5.png");
+    renderer->loadImage("../Media/MowhawkFisher.png");
+    renderer->loadImage("../Media/ElderFisher.png");
     renderer->loadImage("../Media/DockSupports2.png");
     renderer->loadText("Ready", COLOR, BORDER_SIZE);
     renderer->loadText("Go", COLOR, BORDER_SIZE);
@@ -201,6 +235,8 @@ void MainGameScene::run()
     player1->draw(superOceanLayout, *renderer);
     ocean->draw(superOceanLayout, *renderer);
     oceanLayout->drawWhenReady(background);
+    oceanLayout->drawWhenReady(mowhawkFisher);
+    oceanLayout->drawWhenReady(elderFisher);
     oceanLayout->drawWhenReady(dockSupports);
     score1->draw(superScore1Layout, *renderer);
     boost::shared_ptr<Layout> superStatusLayout(statusLayout);

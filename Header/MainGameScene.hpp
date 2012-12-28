@@ -63,7 +63,11 @@ private:
     static const Point &POLE_POINT();
     static const Point &HOOK_POINT();
     static const Point &BACKGROUND_POINT();
+    static const Point &ELDER_FISHER_POINT();
+    static const Point &MOWHAWK_FISHER_POINT();
     static const Point &DOCK_SUPPORTS_POINT();
+    static const std::string &ELDER_FISHER_PATH();
+    static const std::string &MOWHAWK_FISHER_PATH();
     static const std::string &BACKGROUND_PATH();
     static const std::string &DOCK_SUPPORTS_PATH();
     boost::shared_ptr<Renderer> renderer;
@@ -76,6 +80,8 @@ private:
     boost::shared_ptr<HumanPlayer> player1;
     ImageRendererElement background;
     ImageRendererElement dockSupports;
+    ImageRendererElement elderFisher;
+    ImageRendererElement mowhawkFisher;
     boost::shared_ptr<FitStrategy> clipFit;
     bool quit;
     boost::shared_ptr<CoordinateLayout> oceanLayout;
