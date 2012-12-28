@@ -8,8 +8,8 @@
 //Copyright 2012 John Miner
 //This program is distributed under the terms of the GNU General Public License
 
-#ifndef IMAGE_RENDERER_ELEMENT_HPP_
-#define IMAGE_RENDERER_ELEMENT_HPP_
+#ifndef DIRECT_RENDERER_ELEMENT_HPP_
+#define DIRECT_RENDERER_ELEMENT_HPP_
 
 #include <string>
 #include <list>

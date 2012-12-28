@@ -233,6 +233,9 @@ private:
     double calculateMaxLineLength();
     void cast();
     static int &highestIdNumberGiven();
+    static const std::string &HOOK_PATH();
+    static const Dimension &HOOK_GRAPHIC_SIZE();
+    static const Point &HOOK_GRAPHIC_OFFSET();
     boost::shared_ptr<LineState> state;
     boost::shared_ptr<NotHookedState> notHookedState;
     boost::shared_ptr<HookedState> hookedState;

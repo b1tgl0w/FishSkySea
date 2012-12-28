@@ -18,11 +18,13 @@
 #include "../Header/Ocean.hpp"
 #include "../Header/Shark.hpp"
 #include "../Header/BoundingBox.hpp"
+#include "../Header/ImageRendererElement.hpp"
 #include "../Header/DirectRendererElement.hpp"
 #include "../Header/DirectLineGraphic.hpp"
 #include "../Header/DirectGraphicStrategy.hpp"
 #include "../Header/SeaSnail.hpp"
 #include "../Header/Player.hpp"
+#include "../Header/ImageRendererElement.hpp"
 
 //Private static variable initialization
 int &Line::highestIdNumberGiven()
@@ -36,6 +38,12 @@ const std::string &Line::LINE_IDENTIFIER()
 {
     static const std::string TMP_LINE_IDENTIFIER = "LINE";
     return TMP_LINE_IDENTIFIER;
+}
+
+const std::string &Line::HOOK_PATH()
+{
+    static const std::string TMP_HOOK_PATH = "../Media/FishHook.png";
+    return TMP_HOOK_PATH;
 }
 
 const Layer &Line::LAYER()
@@ -52,8 +60,20 @@ const Dimension &Line::POLE_DIMENSION()
 
 const Dimension &Line::HOOK_DIMENSION()
 {
-    static const Dimension TMP_HOOK_DIMENSION = { 4.0, 4.0 }; //Or 8x8?
+    static const Dimension TMP_HOOK_DIMENSION = { 4.0, 4.0 }; 
     return TMP_HOOK_DIMENSION;
+}
+
+const Point &Line::HOOK_GRAPHIC_OFFSET()
+{
+    static const Point TMP_HOOK_GRAPHIC_OFFSET = { -7.0, 0 };
+    return TMP_HOOK_GRAPHIC_OFFSET;
+}
+
+const Dimension &Line::HOOK_GRAPHIC_SIZE()
+{
+    static const Dimension TMP_HOOK_GRAPHIC_SIZE = { 8.0, 10.0 };
+    return TMP_HOOK_GRAPHIC_SIZE;
 }
 
 const bool &Line::INITIAL_REEL_IN_ON()
@@ -397,7 +417,7 @@ bool Line::canHookFish()
 
 void Line::loadImage(Renderer &renderer)
 {
-    //No-op, draws a primative not a loaded image
+    renderer.loadImage(HOOK_PATH());
 }
 
 void Line::gameLive(bool live)
@@ -432,8 +452,16 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     DirectRendererElement re2(LINE_IDENTIFIER()
         + StringUtility::toString(lineIDNumber), LAYER().integer(), noOffset,
         size, dgs2);
+    Point hookGraphic = *hookPoint;
+    hookGraphic.x += HOOK_GRAPHIC_OFFSET().x;
+    hookGraphic.y += HOOK_GRAPHIC_OFFSET().y;
+    ImageRendererElement re3(HOOK_PATH(), LAYER().integer(), hookGraphic,
+        HOOK_GRAPHIC_SIZE());
     layout->drawWhenReady(re);
     layout->drawWhenReady(re2);
+
+    if( state != hookedState )
+        layout->drawWhenReady(re3);
 }
 
 void Line::changeState(boost::shared_ptr<LineState> &newState)
