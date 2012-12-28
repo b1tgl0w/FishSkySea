@@ -31,7 +31,7 @@
 
 const Point &MainGameScene::POLE_POINT()
 {
-    static const Point TMP_POLE_POINT = { 150.0, 250.0 };
+    static const Point TMP_POLE_POINT = { 130.0, 205.0 };
     return TMP_POLE_POINT;
 }
 
@@ -49,13 +49,13 @@ const Point &MainGameScene::BACKGROUND_POINT()
 
 const Point &MainGameScene::ELDER_FISHER_POINT()
 {
-    static const Point TMP_ELDER_FISHER_POINT = { 0.0, 0.0 };
+    static const Point TMP_ELDER_FISHER_POINT = { 660.0, 126.0 };
     return TMP_ELDER_FISHER_POINT;
 }
 
 const Point &MainGameScene::MOWHAWK_FISHER_POINT()
 {
-    static const Point TMP_MOWHAWK_FISHER_POINT = { 0.0, 0.0 };
+    static const Point TMP_MOWHAWK_FISHER_POINT = { 90.0, 120.0 };
     return TMP_MOWHAWK_FISHER_POINT;
 }
 
@@ -63,6 +63,18 @@ const Point &MainGameScene::DOCK_SUPPORTS_POINT()
 {
     static const Point TMP_DOCK_SUPPORTS_POINT = { 0.0, 0.0 };
     return TMP_DOCK_SUPPORTS_POINT;
+}
+
+const Dimension &MainGameScene::ELDER_FISHER_SIZE()
+{
+    static const Dimension TMP_ELDER_FISHER_SIZE = { 50.0, 161.0 };
+    return TMP_ELDER_FISHER_SIZE;
+}
+
+const Dimension &MainGameScene::MOWHAWK_FISHER_SIZE()
+{
+    static const Dimension TMP_MOWHAWK_FISHER_SIZE = { 50.0, 161.0 };
+    return TMP_MOWHAWK_FISHER_SIZE;
 }
 
 const std::string &MainGameScene::BACKGROUND_PATH()
@@ -107,9 +119,9 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     background(BACKGROUND_PATH(), Layer::BACKGROUND().integer(), 
         BACKGROUND_POINT(), screenResolution), 
     elderFisher(ELDER_FISHER_PATH(), Layer::FOREGROUND().integer(), 
-        ELDER_FISHER_POINT(), screenResolution), 
+        ELDER_FISHER_POINT(), ELDER_FISHER_SIZE()), 
     mowhawkFisher(MOWHAWK_FISHER_PATH(), Layer::FOREGROUND().integer(), 
-        MOWHAWK_FISHER_POINT(), screenResolution), 
+        MOWHAWK_FISHER_POINT(), MOWHAWK_FISHER_SIZE()), 
     dockSupports(DOCK_SUPPORTS_PATH(), Layer::DOCK_SUPPORTS().integer(),
         DOCK_SUPPORTS_POINT(), screenResolution), clipFit(new ClipFit), 
     quit(false), oceanLayout(new CoordinateLayout(clipFit)), 

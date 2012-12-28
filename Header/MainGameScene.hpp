@@ -65,6 +65,8 @@ private:
     static const Point &BACKGROUND_POINT();
     static const Point &ELDER_FISHER_POINT();
     static const Point &MOWHAWK_FISHER_POINT();
+    static const Dimension &ELDER_FISHER_SIZE();
+    static const Dimension &MOWHAWK_FISHER_SIZE();
     static const Point &DOCK_SUPPORTS_POINT();
     static const std::string &ELDER_FISHER_PATH();
     static const std::string &MOWHAWK_FISHER_PATH();
