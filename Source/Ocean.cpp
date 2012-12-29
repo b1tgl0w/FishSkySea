@@ -296,6 +296,13 @@ void Ocean::alignWithSurface(double &coordinate, const double OFFSET)
         OFFSET;
 }
 
+void Ocean::alignWithPerspectiveSurface(double &coordinate, const double OFFSET)
+{
+    const int SURFACE_HEIGHT_DIV_2 = 33; 
+    alignWithSurface(coordinate, OFFSET);
+    coordinate -= SURFACE_HEIGHT_DIV_2;
+}
+
 void Ocean::addCollidable(boost::weak_ptr<Collidable> collidable)
 {
     state->addCollidable(collidable);

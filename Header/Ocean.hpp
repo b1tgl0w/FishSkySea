@@ -54,6 +54,7 @@ public:
     void alignWithBoundary(double &coordinate, const Direction &whichBoundary,
         const double offset = 1.0);
     void alignWithSurface(double &coordinate, const double offset = 1.0);
+    void alignWithPerspectiveSurface(double &coordinate, const double offset = 1.0);
     void addCollidable(boost::weak_ptr<Collidable> collidable);
     void removeCollidable(boost::weak_ptr<Collidable> collidable);
     void checkCollisions(boost::shared_ptr<Collidable> &object,
