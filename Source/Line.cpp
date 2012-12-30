@@ -435,22 +435,25 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     const Uint32 WHITE = renderer.makeColor(0xFF, 0xFF, 0xFF, 0xFF);
     const Uint32 SURFACE_BLUE = renderer.makeColor(0x3f, 0x92, 0xd1, 0xff);
     const Uint32 OCEAN_BLUE = renderer.makeColor(0x00, 0x45, 0xA6, 0xff);
+    const Uint32 POLE_RED = renderer.makeColor(0xA6, 0x00, 0x24, 0xFF);
     Dimension size = { 800, 600 };
     Point noOffset = { 0, 0 };
     Point perspectiveSurface;
     Point surface;
     sharedOcean->alignWithPerspectiveSurface(perspectiveSurface.y, 0);
     sharedOcean->alignWithSurface(surface.y, 0);
-    perspectiveSurface.x = (perspectiveSurface.y - surface.y) / (polePoint->y - surface.y) *
-        (polePoint->x - surface.x) + surface.x;
     surface.x = (surface.y - polePoint->y) / (hookPoint->y - polePoint->y) *
         (hookPoint->x - polePoint->x) + polePoint->x;
+    perspectiveSurface.x = (perspectiveSurface.y - surface.y) / (polePoint->y - surface.y) *
+        (polePoint->x - surface.x) + surface.x;
     boost::shared_ptr<DirectGraphicStrategy> dgs(new DirectLineGraphic(
         surface, perspectiveSurface, OCEAN_BLUE));
     boost::shared_ptr<DirectGraphicStrategy> dgs2(new DirectLineGraphic(
-        perspectiveSurface, *polePoint, SURFACE_BLUE));
+        perspectiveSurface, *polePoint, WHITE));
     boost::shared_ptr<DirectGraphicStrategy> dgs3(new DirectLineGraphic(
-        *polePoint, surface, WHITE));
+        *hookPoint, surface, SURFACE_BLUE));
+    boost::shared_ptr<DirectGraphicStrategy> dgs4(new DirectLineGraphic(
+        initialPolePoint, *polePoint, POLE_RED));
     //When the position and size are NULL, SDL should draw
     //then entire image at 0, 0
     DirectRendererElement re(LINE_IDENTIFIER()
@@ -462,17 +465,21 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     DirectRendererElement re3(LINE_IDENTIFIER()
         + StringUtility::toString(lineIDNumber), LAYER().integer(), noOffset,
         size, dgs3);
+    DirectRendererElement re4(LINE_IDENTIFIER()
+        + StringUtility::toString(lineIDNumber), LAYER().integer(), noOffset,
+        size, dgs4);
     Point hookGraphic = *hookPoint;
     hookGraphic.x += HOOK_GRAPHIC_OFFSET().x;
     hookGraphic.y += HOOK_GRAPHIC_OFFSET().y;
-    ImageRendererElement re4(HOOK_PATH(), LAYER().integer(), hookGraphic,
+    ImageRendererElement re5(HOOK_PATH(), LAYER().integer(), hookGraphic,
         HOOK_GRAPHIC_SIZE());
     layout->drawWhenReady(re);
     layout->drawWhenReady(re2);
     layout->drawWhenReady(re3);
+    layout->drawWhenReady(re4);
 
     if( state != hookedState )
-        layout->drawWhenReady(re4);
+        layout->drawWhenReady(re5);
 }
 
 void Line::changeState(boost::shared_ptr<LineState> &newState)
