@@ -9,6 +9,19 @@
 
 #include "../Header/Layer.hpp"
 
+Layer::Layer() : value(0) //Behind everything
+{ }
+
+Layer &Layer::operator=(const Layer &rhs)
+{
+    if( &rhs == this )
+        return *this;
+
+    value = rhs.value;
+
+    return *this;
+}
+
 const Layer Layer::BACKGROUND()
 {
     return Layer(1);

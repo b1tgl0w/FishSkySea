@@ -5,15 +5,19 @@
 
 #include <sstream>
 #include "../Header/MessageBoxLine.hpp"
-#include "../../Header/Layout.hpp"
-#include "../../Header/Renderer.hpp"
+#include "../../../Header/Layout.hpp"
+#include "../../../Header/Renderer.hpp"
+#include "../../../Header/TextRendererElement.hpp"
 
 MessageBoxLine::MessageBoxLine(const Point &position, const Dimension &messageBoxSize,
-    const Dimension &lineSize) :
-    position(position), messageBoxSize(messageBoxSize), lineSize(lineSize) { }
+    const Dimension &lineSize, const Layer &layer) :
+    position(position), messageBoxSize(messageBoxSize), lineSize(lineSize),
+    layer(layer)
+    { }
 
 MessageBoxLine::MessageBoxLine(const MessageBoxLine &rhs) : position(rhs.position),
-    messageBoxSize(rhs.messageBoxSize), lineSize(rhs.lineSize), line(rhs.line)
+    messageBoxSize(rhs.messageBoxSize), lineSize(rhs.lineSize), layer(rhs.layer), 
+    line(rhs.line) { }
 
 MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
 {
@@ -23,6 +27,7 @@ MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
     position = rhs.position;
     messageBoxSize = rhs.messageBoxSize;
     lineSize = rhs.lineSize;
+    layer = rhs.layer;
     line = rhs.line;
 
     return *this;
@@ -64,7 +69,7 @@ void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     const Layer LAYER = Layer::SCORE();
 
     renderer.loadText(line, COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
-    TextRendererElement re(line, LAYER.integer(), position, lineSize);
+    TextRendererElement re(line, layer.integer(), position, lineSize);
     layout->drawWhenReady(re);
 }
 

@@ -6,12 +6,16 @@
 #ifndef MESSAGE_BOX_LINE_HPP_
 #define MESSAGE_BOX_LINE_HPP_
 
-#include <SDL/SDL_TTF.h>
+#ifdef linux
+#include <SDL/SDL_ttf.h>
+#else
+#include <SDL_ttf.h>
+#endif
 #include <string>
-#include "../../Header/Point.hpp"
-#include "../../Header/Dimension.hpp"
-#include "../Header/Justify.hpp"
-#include "../../Header/Graphic.hpp"
+#include "../../../Header/Point.hpp"
+#include "../../../Header/Dimension.hpp"
+#include "../../../Header/Graphic.hpp"
+#include "../../../Header/Layer.hpp"
 
 class Layout;
 class Renderer;
@@ -21,18 +25,19 @@ class MessageBoxLine : public Graphic
 public:
     //Position relative to MB top-left
     explicit MessageBoxLine(const Point &position, const Dimension &messageBoxSize,
-        const Dimension &lineSize);
+        const Dimension &lineSize, const Layer &layer);
     MessageBoxLine(const MessageBoxLine &rhs);
     MessageBoxLine &operator=(const MessageBoxLine &rhs);
     bool form(TTF_Font *font, const std::string &text, std::string &leftOver); 
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
 private:
-    std::string line;
+    Point position;
     Dimension messageBoxSize;
     Dimension lineSize;
+    Layer layer;
+    std::string line;
     //Position relative to MB top-left
-    Point position;
 };
 
 #endif

@@ -7,20 +7,26 @@
 #define MESSAGE_BOX_HPP_
 
 #include <string>
+#ifdef linux
 #include <SDL/SDL_ttf.h>
+#else
+#include <SDL_ttf.h>
+#endif
 #include "boost/shared_ptr.hpp"
-#include "../../Header/Graphic.hpp"
-#include "../../Header/Dimension.hpp"
+#include "../../../Header/Graphic.hpp"
+#include "../../../Header/Dimension.hpp"
 #include "../Header/MessageBoxLine.hpp"
-#include "../../Header/GridLayout.hpp"
-#include "../../Header/CenterLayout.hpp"
-#include "../../Header/ScaleClipFit.hpp"
+#include "../../../Header/GridLayout.hpp"
+#include "../../../Header/CenterLayout.hpp"
+#include "../../../Header/ScaleClipFit.hpp"
+#include "../../../Header/Layer.hpp"
 
 class MessageBox : public Graphic
 {
 public:
     MessageBox(TTF_Font *font, const std::string &text, 
-        const Dimension &size, Uint32 color, bool border);
+        const Dimension &size, const Dimension &lineSize, Uint32 color, bool border,
+        const Layer &layer);
     MessageBox(const MessageBox &rhs);
     MessageBox &operator=(const MessageBox &rhs);
     static const bool BORDER();
@@ -30,17 +36,19 @@ public:
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
 private:
-    void formLines();
+    bool formLines();
     void createLayouts();
+    TTF_Font *font;
+    std::string text;
+    Dimension size;
+    Dimension lineSize;
+    Uint32 color;
+    bool border;
     std::vector<MessageBoxLine> lines;
     boost::shared_ptr<GridLayout> gridLayout;
     std::list<boost::shared_ptr<CenterLayout> > layouts;
     boost::shared_ptr<ScaleClipFit> fitStrategy;
-    std::string text;
-    TTF_Font *font;
-    Dimension size;
-    Uint32 color;
-    bool border;
+    Layer layer;
 };
 
 #endif

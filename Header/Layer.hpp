@@ -13,6 +13,8 @@
 class Layer
 {
 public:
+    Layer &operator=(const Layer &rhs);
+    Layer();
     static const Layer BACKGROUND();
     static const Layer PLAYER();
     static const Layer FISH();
@@ -26,8 +28,6 @@ public:
     bool operator<(const Layer &rhs) const;
     int integer() const;
 private:
-    Layer(); //Don't implement
-    Layer &operator=(const Layer &rhs); //Don't implement
     explicit Layer(int initialValue);
     int value;
 };
