@@ -4,6 +4,7 @@
 //Purpose:  Display text within a black rectangle.
 
 #include "../Header/MessageBox.hpp"
+#include "../../../Header/ScaleClipFit.hpp"
 
 const bool MessageBox::BORDER()
 {
@@ -23,6 +24,10 @@ MessageBox::MessageBox(TTF_Font *font, const std::string &text,
     : font(font), text(text), size(size), lineSize(lineSize), color(color), 
     border(border), layer(layer)
 {
+    //Putting this here for now. If client-defined, change.
+    boost::shared_ptr<ScaleClipFit> tmpScaleClipFit(new ScaleClipFit);
+    fitStrategy = tmpScaleClipFit;
+
     formLines();
     createLayouts();
 }
@@ -70,7 +75,7 @@ bool MessageBox::advance()
 void MessageBox::createLayouts()
 {
     layouts.clear();
-    boost::shared_ptr<GridLayout> newGridLayout(new GridLayout(layouts.size(), 
+    boost::shared_ptr<GridLayout> newGridLayout(new GridLayout(lines.size(), 
         1));
     gridLayout = newGridLayout;
     Point cell = { 0.0, 0.0 };
@@ -106,6 +111,17 @@ bool MessageBox::formLines()
 
 void MessageBox::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
+    std::list<boost::shared_ptr<CenterLayout> >::iterator layoutIterator =
+        layouts.begin();
+
+    for( std::vector<MessageBoxLine>::iterator it = lines.begin(); it !=
+        lines.end() && layoutIterator != layouts.end(); ++it, ++layoutIterator)
+    {
+        boost::shared_ptr<Layout> superCurrentLayout(*layoutIterator);
+        it->draw(superCurrentLayout, renderer);
+    }
+    
+    //Draw message box background
 }
 
 void MessageBox::loadImage(Renderer &renderer)

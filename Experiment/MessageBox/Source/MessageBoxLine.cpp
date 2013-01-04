@@ -33,42 +33,64 @@ MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
     return *this;
 }
 
-//Returns false if its height is below bottom of box
+//Returns false if text exceeds this current line
 bool MessageBoxLine::form(TTF_Font *font, const std::string &text, std::string 
     &whatsLeft)
 {
     int currentWidth = 0;
     int currentHeight = 0;
-    bool atLeastOneThingFits = false;
     std::string currentLine;
     std::string previousLine;
     std::string currentWord;
     std::stringstream stringStream(text);
+    bool doesntFit = false;
+    whatsLeft.clear();
 
-    while( position.x + currentWidth < messageBoxSize.width && position.y + 
-        currentHeight < messageBoxSize.height )
+    while(true)// && position.y + 
+        //currentHeight < lineSize.height )
     {
         //This will be empty first iter, remain one iteration behind
         previousLine += currentWord; 
-        stringStream >> currentWord;
+
+        if( !(stringStream >> currentWord) )
+            break;
+
         currentWord += ' ';
         currentLine += currentWord;
         TTF_SizeText(font, currentLine.c_str(), &currentWidth, &currentHeight);
+
+        if( position.x + currentWidth > lineSize.width )
+        {
+            doesntFit = true;
+            break;
+        }
     }
 
-    line = previousLine;
-    whatsLeft = currentWord + stringStream.str();
 
-    return atLeastOneThingFits;
+    line = currentLine;
+    std::cout << line << std::endl;
+
+    if( doesntFit )
+    {
+        whatsLeft = currentWord;
+
+        while( stringStream >> currentWord )
+        {
+            whatsLeft += currentWord;
+            whatsLeft += ' ';
+        }
+    }
+
+    return !(whatsLeft.empty());
 }
 
 void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
+    const SDL_Color COLOR = { 0xFF, 0xFF, 0xFF, 0xFF };
     const int BORDER_SIZE = 0;
     const Layer LAYER = Layer::SCORE();
 
-    renderer.loadText(line, COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
+    renderer.loadText("Test one ", COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
     TextRendererElement re(line, layer.integer(), position, lineSize);
     layout->drawWhenReady(re);
 }
