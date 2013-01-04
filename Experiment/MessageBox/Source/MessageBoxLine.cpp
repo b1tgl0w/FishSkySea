@@ -34,15 +34,14 @@ MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
 }
 
 //Returns false if text exceeds this current line
-bool MessageBoxLine::form(TTF_Font *font, const std::string &text, std::string 
-    &whatsLeft)
+bool MessageBoxLine::form(TTF_Font *font, std::string &whatsLeft)
 {
     int currentWidth = 0;
     int currentHeight = 0;
     std::string currentLine;
     std::string previousLine;
     std::string currentWord;
-    std::stringstream stringStream(text);
+    std::stringstream stringStream(whatsLeft);
     bool doesntFit = false;
     whatsLeft.clear();
 
@@ -50,7 +49,6 @@ bool MessageBoxLine::form(TTF_Font *font, const std::string &text, std::string
         //currentHeight < lineSize.height )
     {
         //This will be empty first iter, remain one iteration behind
-        previousLine += currentWord; 
 
         if( !(stringStream >> currentWord) )
             break;
@@ -59,6 +57,7 @@ bool MessageBoxLine::form(TTF_Font *font, const std::string &text, std::string
         currentLine += currentWord;
         TTF_SizeText(font, currentLine.c_str(), &currentWidth, &currentHeight);
 
+        std::cout << currentWord << "\t" << position.x + currentWidth << std::endl;
         if( position.x + currentWidth > lineSize.width )
         {
             doesntFit = true;
@@ -68,11 +67,10 @@ bool MessageBoxLine::form(TTF_Font *font, const std::string &text, std::string
 
 
     line = currentLine;
-    std::cout << line << std::endl;
 
     if( doesntFit )
     {
-        whatsLeft = currentWord;
+        whatsLeft.clear();
 
         while( stringStream >> currentWord )
         {
@@ -90,7 +88,7 @@ void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     const int BORDER_SIZE = 0;
     const Layer LAYER = Layer::SCORE();
 
-    renderer.loadText("Test one ", COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
+    renderer.loadText(line, COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
     TextRendererElement re(line, layer.integer(), position, lineSize);
     layout->drawWhenReady(re);
 }

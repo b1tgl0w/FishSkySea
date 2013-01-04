@@ -28,7 +28,7 @@ public:
         const Dimension &lineSize, const Layer &layer);
     MessageBoxLine(const MessageBoxLine &rhs);
     MessageBoxLine &operator=(const MessageBoxLine &rhs);
-    bool form(TTF_Font *font, const std::string &text, std::string &leftOver); 
+    bool form(TTF_Font *font, std::string &leftOver); 
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
 private:

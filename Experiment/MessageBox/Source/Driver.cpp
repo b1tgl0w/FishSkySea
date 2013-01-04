@@ -25,18 +25,18 @@ int main(int argc, char **argv)
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
-        "../Media/Fonts/monof55.ttf", frameCleanupPublisher));
-    TTF_Font *testFont = TTF_OpenFont("../Media/Fonts/monof55.ttf", 88);
+        "../Media/Fonts/gentium/Gentium-R.ttf", frameCleanupPublisher));
+    TTF_Font *testFont = TTF_OpenFont("../Media/Fonts/gentium/Gentium-R.ttf", 88);
 
     if( !testFont )
         std::cout << TTF_GetError() << std::endl;
 
     Dimension messageBoxSize = { 640, 120 };
-    Dimension lineSize = { 640, 60 };
+    Dimension lineSize = { 640, 120 };
     Uint32 WHITE = 0xFFFFFFFF; 
     Point origin = { 0.0, 0.0 };
     Layer layer = Layer::FOREGROUND();
-    MessageBox messageBox(testFont, "Test one", messageBoxSize, lineSize, WHITE,
+    MessageBox messageBox(testFont, "The tears I cry are only fragments of the suffering I endure." , messageBoxSize, lineSize, WHITE,
         false, layer);
     boost::shared_ptr<FitStrategy> clipFit(new ClipFit);
     boost::shared_ptr<CoordinateLayout> testLayout(new CoordinateLayout(clipFit));
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     boost::shared_ptr<Layout> superMessageBox(messageBox.layoutToAttach());
     testLayout->addLayout(superMessageBox, origin);
     renderer->addLayout(superTestLayout);
-    for( int i = 0; i < 500; ++i )
+    for( int i = 0; i < 1000; ++i )
     {
         messageBox.draw(superTestLayout, *renderer);
         renderer->render();

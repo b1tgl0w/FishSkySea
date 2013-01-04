@@ -62,7 +62,7 @@ int main(int argc, char **argv)
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
-        "../Media/Fonts/monof55.ttf", frameCleanupPublisher)); // changed back to "../Media"
+        "../Media/Fonts/gentium/Gentium-R.ttf", frameCleanupPublisher)); // changed back to "../Media"
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
         KeyboardPublisher);
     boost::shared_ptr<boost::shared_ptr<Scene> > currentScene(

@@ -102,7 +102,7 @@ bool MessageBox::formLines()
     while( notFull == true && !(text.empty()) )
     {
         MessageBoxLine currentLine(position, size, lineSize, layer);
-        notFull = currentLine.form(font, text, text);
+        notFull = currentLine.form(font, text);
         lines.push_back(currentLine);
     }
 
@@ -111,6 +111,8 @@ bool MessageBox::formLines()
 
 void MessageBox::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
+    //Draw message box background
+
     std::list<boost::shared_ptr<CenterLayout> >::iterator layoutIterator =
         layouts.begin();
 
@@ -120,8 +122,6 @@ void MessageBox::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
         boost::shared_ptr<Layout> superCurrentLayout(*layoutIterator);
         it->draw(superCurrentLayout, renderer);
     }
-    
-    //Draw message box background
 }
 
 void MessageBox::loadImage(Renderer &renderer)
