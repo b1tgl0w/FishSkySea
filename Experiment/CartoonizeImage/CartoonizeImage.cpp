@@ -1,7 +1,6 @@
-//File: SdlImageFlip.cpp
+//File: CartoonizeImage.cpp
 //Author:   John Miner
-//Created:  10/06/11
-//Modified: 10/06/11 
+//Created:  01/04/13
 //Purpose:  Experiment with flipping/mirroring an image
 //Copyright 2012 John Miner
 //This program is distributed under the terms of the GNU General Public License

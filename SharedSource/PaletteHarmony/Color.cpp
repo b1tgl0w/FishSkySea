@@ -2,7 +2,8 @@
 //Author:   John Miner
 //Created:  04/04/12
 //Purpose:  Store RGB and HSV values, calculating one or the other if necessary
-//(C) 2012 John Miner
+//Copyright 2012 John Miner
+//This program is distributed under the terms of the GNU General Public License
 
 #include <iostream>
 #include <sstream>

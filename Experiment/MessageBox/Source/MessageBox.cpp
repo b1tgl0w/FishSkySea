@@ -68,7 +68,8 @@ MessageBox &MessageBox::operator=(const MessageBox &rhs)
 
 boost::shared_ptr<Layout> MessageBox::layoutToAttach()
 {
-    return gridLayout;
+    boost::shared_ptr<Layout> tmp(gridLayout);
+    return tmp;
 }
 
 bool MessageBox::advance()

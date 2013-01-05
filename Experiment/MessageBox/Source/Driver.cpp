@@ -41,14 +41,19 @@ int main(int argc, char **argv)
     MessageBox messageBox(testFont, "The tears I cry are only fragments of the suffering I endure. They soak my soul.", 
         messageBoxSize, lineSize, BLACK, false, layer);
     boost::shared_ptr<FitStrategy> clipFit(new ClipFit);
-    boost::shared_ptr<CoordinateLayout> testLayout(new CoordinateLayout(clipFit));
-    boost::shared_ptr<Layout> superTestLayout(testLayout);
+    boost::shared_ptr<GridLayout> gridLayout(new GridLayout(4, 1));
+    boost::shared_ptr<Layout> superGridLayout(gridLayout);
+    boost::shared_ptr<CoordinateLayout> coordinateLayout(new CoordinateLayout(clipFit));
+    boost::shared_ptr<Layout> superCoordinateLayout(coordinateLayout);
     boost::shared_ptr<Layout> superMessageBox(messageBox.layoutToAttach());
-    testLayout->addLayout(superMessageBox, origin);
-    renderer->addLayout(superTestLayout);
+    Point gridCell = { 0, 3 };
+    boost::shared_ptr<Layout> superMbLayout(messageBox.layoutToAttach());
+    coordinateLayout->addLayout(superMbLayout, origin);
+    gridLayout->addLayout(superCoordinateLayout, gridCell);
+    renderer->addLayout(superGridLayout);
     for( int i = 0; i < 1000; ++i )
     {
-        messageBox.draw(superTestLayout, *renderer);
+        messageBox.draw(superGridLayout, *renderer);
         renderer->render();
         SDL_Delay(1);
     }
@@ -57,7 +62,7 @@ int main(int argc, char **argv)
 
     for( int i = 0; i < 1000; ++i )
     {
-        messageBox.draw(superTestLayout, *renderer);
+        messageBox.draw(superGridLayout, *renderer);
         renderer->render();
         SDL_Delay(1);
     }
