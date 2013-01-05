@@ -2,9 +2,16 @@
 //Author: John Miner
 //Created: 12/31/12
 //Purpose:  Display text within a black rectangle.
+//Copyright 2013 John Miner
+//This program is distributed under the terms of the GNU General Public License
 
+#include "boost/uuid/uuid_io.hpp"
+#include "boost/uuid/uuid_generators.hpp"
 #include "../Header/MessageBox.hpp"
 #include "../../../Header/ScaleClipFit.hpp"
+#include "../../../Header/DirectGraphicStrategy.hpp"
+#include "../../../Header/DirectFilledRectangleGraphic.hpp"
+#include "../../../Header/DirectRendererElement.hpp"
 
 const bool MessageBox::BORDER()
 {
@@ -22,7 +29,8 @@ MessageBox::MessageBox(TTF_Font *font, const std::string &text,
     const Dimension &size, const Dimension &lineSize, Uint32 color, bool border,
     const Layer &layer) 
     : font(font), text(text), size(size), lineSize(lineSize), color(color), 
-    border(border), layer(layer)
+    border(border), layer(layer), uuid(boost::uuids::random_generator()()),
+    identifier(boost::uuids::to_string(uuid))
 {
     //Putting this here for now. If client-defined, change.
     boost::shared_ptr<ScaleClipFit> tmpScaleClipFit(new ScaleClipFit);
@@ -35,7 +43,7 @@ MessageBox::MessageBox(TTF_Font *font, const std::string &text,
 MessageBox::MessageBox(const MessageBox &rhs) : font(rhs.font), text(rhs.text),
     size(rhs.size), lineSize(rhs.lineSize), color(rhs.color), border(rhs.border), 
     lines(rhs.lines), gridLayout(rhs.gridLayout), layouts(rhs.layouts),
-    layer(rhs.layer) { }
+    layer(rhs.layer), uuid(rhs.uuid), identifier(rhs.identifier) { }
 
 MessageBox &MessageBox::operator=(const MessageBox &rhs)
 {
@@ -52,6 +60,8 @@ MessageBox &MessageBox::operator=(const MessageBox &rhs)
     gridLayout = rhs.gridLayout;
     layouts = rhs.layouts;
     layer = rhs.layer;
+    uuid = rhs.uuid;
+    identifier = rhs.identifier;
 
     return *this;
 }
@@ -99,7 +109,8 @@ bool MessageBox::formLines()
     //Let the layout manager take care of line position. All lines 0, 0
     Point position = { 0.0, 0.0 }; 
     
-    while( notFull == true && !(text.empty()) )
+    while( notFull == true && !(text.empty()) && (lines.size() + 1) * 
+        lineSize.height <= size.height )
     {
         MessageBoxLine currentLine(position, size, lineSize, layer);
         notFull = currentLine.form(font, text);
@@ -111,7 +122,12 @@ bool MessageBox::formLines()
 
 void MessageBox::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    //Draw message box background
+    Point origin = { 0.0, 0.0 };
+    boost::shared_ptr<DirectGraphicStrategy> dgs(new DirectFilledRectangleGraphic(
+        origin, size, color));
+    DirectRendererElement re(identifier, layer.integer(), origin,
+        size, dgs);
+    layout->drawWhenReady(re);
 
     std::list<boost::shared_ptr<CenterLayout> >::iterator layoutIterator =
         layouts.begin();

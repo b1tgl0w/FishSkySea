@@ -2,6 +2,8 @@
 //Author: John Miner
 //Created: 12/30/12
 //Purpose: Store a line of text that fits within message box or a given area.
+//Copyright 2013 John Miner
+//This program is distributed under the terms of the GNU General Public License
 
 #include <sstream>
 #include "../Header/MessageBoxLine.hpp"
@@ -89,7 +91,7 @@ void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     const Layer LAYER = Layer::SCORE();
 
     renderer.loadText(line, COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
-    TextRendererElement re(line, layer.integer(), position, lineSize);
+    TextRendererElement re(line, layer.integer() + 1, position, lineSize);
     layout->drawWhenReady(re);
 }
 

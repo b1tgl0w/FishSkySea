@@ -2,6 +2,8 @@
 //Author:   John Miner
 //Created:  01/03/13
 //Purpose:  Drive and test the experiment. Will not be merged with SBS
+//Copyright 2013 John Miner
+//This program is distributed under the terms of the GNU General Public License
 
 #include <iostream>
 #include <SDL/SDL.h>
@@ -32,18 +34,27 @@ int main(int argc, char **argv)
         std::cout << TTF_GetError() << std::endl;
 
     Dimension messageBoxSize = { 640, 120 };
-    Dimension lineSize = { 640, 120 };
-    Uint32 WHITE = 0xFFFFFFFF; 
+    Dimension lineSize = { 640, 40 };
+    Uint32 BLACK = 0x00000000;
     Point origin = { 0.0, 0.0 };
     Layer layer = Layer::FOREGROUND();
-    MessageBox messageBox(testFont, "The tears I cry are only fragments of the suffering I endure." , messageBoxSize, lineSize, WHITE,
-        false, layer);
+    MessageBox messageBox(testFont, "The tears I cry are only fragments of the suffering I endure. They soak my soul.", 
+        messageBoxSize, lineSize, BLACK, false, layer);
     boost::shared_ptr<FitStrategy> clipFit(new ClipFit);
     boost::shared_ptr<CoordinateLayout> testLayout(new CoordinateLayout(clipFit));
     boost::shared_ptr<Layout> superTestLayout(testLayout);
     boost::shared_ptr<Layout> superMessageBox(messageBox.layoutToAttach());
     testLayout->addLayout(superMessageBox, origin);
     renderer->addLayout(superTestLayout);
+    for( int i = 0; i < 1000; ++i )
+    {
+        messageBox.draw(superTestLayout, *renderer);
+        renderer->render();
+        SDL_Delay(1);
+    }
+
+    messageBox.advance();
+
     for( int i = 0; i < 1000; ++i )
     {
         messageBox.draw(superTestLayout, *renderer);

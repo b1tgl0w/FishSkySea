@@ -2,6 +2,8 @@
 //Author: John Miner
 //Created: 12/30/12
 //Purpose: Store a line of text that fits within message box or a given area.
+//Copyright 2013 John Miner
+//This program is distributed under the terms of the GNU General Public License
 
 #ifndef MESSAGE_BOX_LINE_HPP_
 #define MESSAGE_BOX_LINE_HPP_

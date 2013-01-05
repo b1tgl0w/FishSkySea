@@ -2,6 +2,8 @@
 //Author: John Miner
 //Created: 12/31/12
 //Purpose:  Display text within a black rectangle.
+//Copyright 2013 John Miner
+//This program is distributed under the terms of the GNU General Public License
 
 #ifndef MESSAGE_BOX_HPP_
 #define MESSAGE_BOX_HPP_
@@ -13,6 +15,8 @@
 #include <SDL_ttf.h>
 #endif
 #include "boost/shared_ptr.hpp"
+#include "boost/uuid/uuid.hpp"
+#include <string>
 #include "../../../Header/Graphic.hpp"
 #include "../../../Header/Dimension.hpp"
 #include "../Header/MessageBoxLine.hpp"
@@ -49,6 +53,8 @@ private:
     std::list<boost::shared_ptr<CenterLayout> > layouts;
     boost::shared_ptr<ScaleClipFit> fitStrategy;
     Layer layer;
+    boost::uuids::uuid uuid;
+    std::string identifier;
 };
 
 #endif
