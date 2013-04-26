@@ -33,7 +33,7 @@ void rotate(SDL_Surface *image, double angle, SDL_Surface *screen);
 template <typename T>
 void performRotate(SDL_Surface *image, SDL_Surface *rotated, double angle,
     SDL_Surface *screen);
-double calculateRadius(Point center, double x, double y);
+double calculateRadius(double centerX, double centerY, double x, double y);
 double getAngle(Point center, Point mouse);
 double getSign(double number);
 
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     Point mouse;
     initializeSdl();
     initializeScreen(&screen);
-    fishImage = optimizeImage(loadImage("../../../Media/Fish.png"));
+    fishImage = optimizeImage(loadImage("../Media/Fish.png"));
     //rotate<Uint32>(fishImage, 2.0, screen);
     //rotate<Uint32>(fishImage, PI, screen);
 
@@ -178,10 +178,10 @@ void performRotate(SDL_Surface *image, SDL_Surface *rotated, double angle,
     SDL_Surface *screen)
 {
     //Round or truncate or double?
-    const Point IMAGE_CENTER = { (((int) image->w) / 2.0),
-        (((int) image->h) / 2.0) };
-    const Point ROTATED_CENTER = { (((int) rotated->w) / 2.0),
-        (((int) rotated->h) / 2.0)};
+    const double ROTATED_CENTER_X = ((double) rotated->w)/2.0;
+    const double ROTATED_CENTER_Y = ((double) rotated->h)/2.0;
+    const double IMAGE_CENTER_X = ((double) image->w) / 2.0;
+    const double IMAGE_CENTER_Y = ((double) image->h) / 2.0;
     double x = 0.0; 
     double y = 0.0; 
     double lastX = 0.0;
@@ -195,59 +195,39 @@ void performRotate(SDL_Surface *image, SDL_Surface *rotated, double angle,
     SDL_LockSurface(image);
     SDL_LockSurface(rotated);
 
-    for( int i = 0; i < image->h; ++i )
+    for( double i = 0.0; i < image->h; ++i )
     {
-        for( int j = 0; j < image->w; ++j )
+        for( double j = 0.0; j < image->w; ++j )
         {
-            radius = calculateRadius(IMAGE_CENTER, j, i);
-            delX = j - IMAGE_CENTER.x;
-            delY = i - IMAGE_CENTER.y;
+            radius = calculateRadius(IMAGE_CENTER_X, IMAGE_CENTER_Y, j, i);
+            delX = j - IMAGE_CENTER_X;
+            delY = i - IMAGE_CENTER_Y;
 
-            if( fabs(delX) >= 1.0)
-            {
-                originalRadians = atan(delY / delX);
-            }
-            else
-            {
-                if( i > IMAGE_CENTER.y )
-                    originalRadians = 3.0 / 2.0 * 3.14159;
-                else
-                    originalRadians = 3.14159 / 2.0;
-            }
-            //std::cout << "cos " << cos(angle + originalRadians) << "\tsin "
-                //<< sin(angle + originalRadians) << std::endl;
-            x = ROTATED_CENTER.x - radius * cos(angle + originalRadians) *
-                getSign(originalRadians) * (i > image->h / 2 ? 1.0 : -1.0);
-            y = ROTATED_CENTER.y - radius * sin(angle + originalRadians) *
-                getSign(originalRadians) * (i > image->h / 2 ? 1.0 : -1.0);
-            //}
-            //else
-            //{
-                //x = 
-                //y = 
-            //}
+            originalRadians = atan(delY / delX);
+            
+            if( delX <= 0)
+                originalRadians -= PI;
 
-            index = rotated->w *
-                round(y) + round(x);
+            x = ROTATED_CENTER_X - radius * cos(angle + originalRadians);
+            y = ROTATED_CENTER_Y - radius * sin(angle + originalRadians);
+
+            //The bug probably lies here
+            //What I think happens is that two pixels occupy the same index
+            //when one is rounded up and an adjacent one is rounded down
+            index = round(rotated->w *
+                round(y) + round(x));
 
             if( index > (rotated->w - 1) * (rotated->h - 1) || index < 0 )
             {
-                //std::cout << "index " << index << std::endl;
             }
             else
             {
+                //The bug might also be here
                 ((T *) rotated->pixels)[index] = ((T *) image->pixels)[
-                    (int) (image->w * i + j)];
+                   (int) round(((double) image->w) * i + j)];
             }
-
-            //if( j == image->w / 2 )
-                //std::cout << "j " << j << std::endl;
         }
-
-        //std::cout << "i " << i << std::endl;
     }
-
-    //std::cout << "----------------------------------------" << std::endl;
 
     SDL_UnlockSurface(image);
     SDL_UnlockSurface(rotated);
@@ -259,10 +239,9 @@ void performRotate(SDL_Surface *image, SDL_Surface *rotated, double angle,
     SDL_Flip(screen);
 }
 
-double calculateRadius(Point center, double x, double y)
+double calculateRadius(double centerX, double centerY, double x, double y)
 {
-    Point coordinatePair = { x, y };
-    return Math::distance(center, coordinatePair);
+    return sqrt(Math::power(x - centerX, 2) + Math::power(y - centerY, 2));
 }
 
 double getAngle(Point center, Point mouse)
@@ -279,8 +258,8 @@ double getAngle(Point center, Point mouse)
     else
         result = atan((mouse.y - center.y) / (mouse.x - center.x));
 
-    if( mouse.x > center.x )
-        result += 3.14159;
+    if( mouse.x - center.x <= 0 )
+        result += PI;
 
     return result;
 }
