@@ -340,7 +340,10 @@ private:
         void dispose();
     private:
         double calculatePixelsLeft(Uint32 elapsedTime);
+        void spurtVelocity(Uint32 elapsedTime);
         boost::weak_ptr<Fish> fishOwner; //Beware of cyclic ptrs
+        double velocity;
+        Uint32 spurtPhase;
     };
 
     void changeState(boost::shared_ptr<FishState> &newState);

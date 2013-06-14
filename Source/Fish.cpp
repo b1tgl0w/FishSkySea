@@ -53,7 +53,7 @@ const Uint32 &Fish::ABOUT_FACE_TICK_PROBABILITY()
 
 const Uint32 &Fish::ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER()
 {
-    static const Uint32 TMP_ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER = 4.0;
+    static const Uint32 TMP_ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER = 7.0;
     return TMP_ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER;
 }
 
@@ -65,7 +65,7 @@ const Uint32 &Fish::MINIMUM_TIME_TO_RANDOM_ABOUT_FACE()
 
 const Uint32 &Fish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 {
-    static const Uint32 TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE = 200;
+    static const Uint32 TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE = 80;
     return TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE;
 }
 
@@ -507,6 +507,8 @@ Fish::FreeState::~FreeState()
 void Fish::FreeState::initialize(boost::weak_ptr<Fish> fishOwner)
 {
     this->fishOwner = fishOwner;
+    spurtPhase = Math::random(0, 9999);
+    spurtVelocity(0);
 }
 
 void Fish::FreeState::dispose()
@@ -515,8 +517,7 @@ void Fish::FreeState::dispose()
 
 double Fish::FreeState::calculatePixelsLeft(Uint32 elapsedTime)
 {
-    const double FREE_FISH_VELOCITY = 0.07;
-    return elapsedTime * FREE_FISH_VELOCITY;
+    return elapsedTime * velocity;
 }
 
 void Fish::FreeState::swim(Uint32 elapsedTime)
@@ -573,6 +574,18 @@ void Fish::FreeState::swim(Uint32 elapsedTime)
     sharedFishOwner->randomAboutFace(elapsedTime);
     sharedOcean->checkCollisions(collidable, sharedFishOwner->fishBox);
     sharedOcean->checkCollisions(collidable, sharedFishOwner->mouthBox);
+    spurtVelocity(elapsedTime);
+}
+
+void Fish::FreeState::spurtVelocity(Uint32 elapsedTime)
+{
+    const Uint32 SPURT_PERIOD = 700;
+    const double VELOCITY_MIN = 0.07;
+    const double VELOCITY_MAX = VELOCITY_MIN * 3;
+    spurtPhase += elapsedTime;
+    spurtPhase = Math::cycle(spurtPhase, 0, SPURT_PERIOD);
+    velocity = Math::calculateLinearPositionValue(0, SPURT_PERIOD, VELOCITY_MAX, 
+        VELOCITY_MIN, spurtPhase);
 }
 
 void Fish::FreeState::pull(const Point &hookPoint)
@@ -741,7 +754,7 @@ void Fish::HookedState::dispose()
 
 double Fish::HookedState::calculatePixelsLeft(Uint32 elapsedTime)
 {
-    const double HOOKED_FISH_VELOCITY = 0.28;
+    const double HOOKED_FISH_VELOCITY = 0.50;
     return elapsedTime * HOOKED_FISH_VELOCITY;
 }
 
