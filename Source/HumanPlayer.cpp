@@ -35,7 +35,7 @@ HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     boost::shared_ptr<Line> null;
     if( playerNumber == PLAYER_ONE() )
     {
-        Point tmpPoint = { 126.0, polePoint.y };
+        Point tmpPoint = { 130.0, polePoint.y };
         boost::shared_ptr<Point> tmpPoleAreaPoint(new Point(tmpPoint));
         poleAreaPoint = tmpPoleAreaPoint;
     }

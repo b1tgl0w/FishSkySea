@@ -37,7 +37,7 @@ const Point &MainGameScene::POLE_POINT()
 
 const Point &MainGameScene::HOOK_POINT()
 {
-    static const Point TMP_HOOK_POINT = { 150.0, 500.0 };
+    static const Point TMP_HOOK_POINT = { 130.0, 550.0 };
     return TMP_HOOK_POINT;
 }
 

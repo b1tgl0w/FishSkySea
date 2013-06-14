@@ -6,6 +6,8 @@ Left off on fixing bugs
 !!IMPORTANT:Renderer::loadImage(overloaded). Big performance improvement if
 check image has been added to images map before loading it
 
+Feature: Make the pole start out from the fisherman's hand
+
 Note: Commented out TTF_SetFontOutline and TTF_GetFontOutline in Renderer
 due to compile issues. Fix them another way so you can use them
 

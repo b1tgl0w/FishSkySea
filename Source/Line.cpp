@@ -232,7 +232,8 @@ void Line::initialize(boost::shared_ptr<Player> &newPlayer,
     if( !sharedOcean )
         return;
 
-    sharedOcean->alignWithSurface(hookPoint->y, 1.0);
+    //Magic number 50 means the hook will be somewhat in the water
+    sharedOcean->alignWithSurface(hookPoint->y, 50.0);
     initialPolePoint.x = polePoint->x;
     initialPolePoint.y = polePoint->y;
     initialHookPoint.x = hookPoint->x;
@@ -447,7 +448,7 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     perspectiveSurface.x = (perspectiveSurface.y - surface.y) / (polePoint->y - surface.y) *
         (polePoint->x - surface.x) + surface.x;
     boost::shared_ptr<DirectGraphicStrategy> dgs(new DirectLineGraphic(
-        surface, perspectiveSurface, OCEAN_BLUE));
+        surface, perspectiveSurface, SURFACE_BLUE));
     boost::shared_ptr<DirectGraphicStrategy> dgs2(new DirectLineGraphic(
         perspectiveSurface, *polePoint, WHITE));
     boost::shared_ptr<DirectGraphicStrategy> dgs3(new DirectLineGraphic(
