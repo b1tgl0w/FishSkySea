@@ -3,9 +3,11 @@
 //Created:  02/10/12
 //Purpose:  An agenda for your current task
 
-Left off on: Animation. Using and testing class.
+Left off on: Ripple. Fix layering.
 
 Specific Steps:
-- Create a ripple class that creates an animation.
+- Fix layered on ripple so that the blue line does not overlay the ripple
+- Make the ripple go faster when a fish is hooked.
+
 
 

@@ -32,7 +32,7 @@ public:
         const Layer &newLayer);
     Animation(const Animation &rhs);
     Animation &operator=(const Animation &rhs);
-    void addFrame(const std::pair<std::string, Uint32> &frame);
+    void addFrame(std::pair<std::string, Uint32> frame);
     void clockTick(Uint32 elapsedTime);
     void loadImage(Renderer &renderer);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);

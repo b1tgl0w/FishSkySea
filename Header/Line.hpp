@@ -25,6 +25,7 @@
 #include "Graphic.hpp"
 #include "Collidable.hpp"
 #include "MasterClockSubscriber.hpp"
+#include "Animation.hpp"
 
 class Renderer;
 class Fish;
@@ -107,6 +108,11 @@ public:
     static const double &POLE_X_VELOCITY();
     static const double &SETTLE_RATE();
     static const double &SLOPE_PULL_THRESHOLD();
+    static const Point &RIPPLE_INITIAL_POSITION();
+    static const Dimension &RIPPLE_INITIAL_SIZE();
+    static const std::string &RIPPLE_PATH1();
+    static const std::string &RIPPLE_PATH2();
+    static const std::string &RIPPLE_PATH3();
 protected:
     Line();
     void initialize(boost::shared_ptr<Player> &initialPlayer,
@@ -259,6 +265,7 @@ private:
     bool pullRightOn;
     bool fishHooked;
     bool live;
+    boost::shared_ptr<Animation> rippleAnimation;
 };
 
 #endif

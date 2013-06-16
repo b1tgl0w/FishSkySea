@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <limits>
+#include <utility>
 #include "../Header/Line.hpp"
 #include "../Header/Math.hpp"
 #include "../Header/StringUtility.hpp"
@@ -25,6 +26,7 @@
 #include "../Header/SeaSnail.hpp"
 #include "../Header/Player.hpp"
 #include "../Header/ImageRendererElement.hpp"
+#include "../Header/MasterClockPublisher.hpp"
 
 //Private static variable initialization
 int &Line::highestIdNumberGiven()
@@ -154,15 +156,66 @@ const double &Line::SLOPE_PULL_THRESHOLD()
     return TMP_SLOPE_PULL_THRESHOLD;
 }
 
+const std::string &Line::RIPPLE_PATH1()
+{
+    static const std::string TMP_PATH = "../Media/Ripple1.png";
+    return TMP_PATH;
+}
+
+const std::string &Line::RIPPLE_PATH2()
+{
+    static const std::string TMP_PATH = "../Media/Ripple2.png";
+    return TMP_PATH;
+}
+
+const std::string &Line::RIPPLE_PATH3()
+{
+    static const std::string TMP_PATH = "../Media/Ripple3.png";
+    return TMP_PATH;
+}
+
+//0,0 because it will be updated before first draw
+//Don't change to some other value
+const Point &Line::RIPPLE_INITIAL_POSITION()
+{
+    static const Point TMP_RIPPLE_INITIAL_POSITION = {0, 0};
+    return TMP_RIPPLE_INITIAL_POSITION;
+}
+
+const Dimension &Line::RIPPLE_INITIAL_SIZE()
+{
+    static const Dimension TMP_RIPPLE_INITIAL_SIZE = {20, 20};
+    return TMP_RIPPLE_INITIAL_SIZE;
+}
+
 Line::Line(boost::shared_ptr<Player> &initialPlayer,
     const Point &initialPolePoint,
-    const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean) : live(false)
+    const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean) : live(false),
+    rippleAnimation(new Animation(RIPPLE_INITIAL_POSITION(), 
+    RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1()))
 {
+    Uint32 rippleFrameTime = 500;
+    /*std::pair<std::string, Uint32> ripplePair1(RIPPLE_PATH1(), rippleFrameTime);
+    std::pair<std::string, Uint32> ripplePair2(RIPPLE_PATH2(), rippleFrameTime);
+    std::pair<std::string, Uint32> ripplePair3(RIPPLE_PATH3(), rippleFrameTime);*/
+    rippleAnimation->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH1(), 
+        rippleFrameTime));
+    rippleAnimation->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
+        rippleFrameTime));
+    rippleAnimation->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH3(), 
+        rippleFrameTime));
+    rippleAnimation->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
+        rippleFrameTime));
+    boost::shared_ptr<MasterClockSubscriber> rippleAnimationSubscriber(
+        rippleAnimation);
+    MasterClockPublisher *mcp = MasterClockPublisher::getInstance();
+    mcp->subscribe(rippleAnimationSubscriber);
     initialize(initialPlayer, initialPolePoint, initialHookPoint,
         ocean);
 }
 
-Line::Line(const Line &rhs) : live(rhs.live)
+Line::Line(const Line &rhs) : live(rhs.live), rippleAnimation(
+    rhs.rippleAnimation)
 {
     boost::shared_ptr<Player> tmpOwner= rhs.owner.lock();
 
@@ -194,6 +247,7 @@ Line &Line::operator=(const Line &rhs)
             rhs.ocean);
         lineIDNumber = rhs.lineIDNumber; //This is the correct behavior for copying
         live = rhs.live;
+        rippleAnimation = rhs.rippleAnimation;
     }
     //Else throw exception?
 
@@ -419,6 +473,9 @@ bool Line::canHookFish()
 void Line::loadImage(Renderer &renderer)
 {
     renderer.loadImage(HOOK_PATH());
+    renderer.loadImage(RIPPLE_PATH1());
+    renderer.loadImage(RIPPLE_PATH2());
+    renderer.loadImage(RIPPLE_PATH3());
 }
 
 void Line::gameLive(bool live)
@@ -441,12 +498,16 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     Point noOffset = { 0, 0 };
     Point perspectiveSurface;
     Point surface;
+    Point ripplePoint;
     sharedOcean->alignWithPerspectiveSurface(perspectiveSurface.y, 0);
     sharedOcean->alignWithSurface(surface.y, 0);
     surface.x = (surface.y - polePoint->y) / (hookPoint->y - polePoint->y) *
         (hookPoint->x - polePoint->x) + polePoint->x;
     perspectiveSurface.x = (perspectiveSurface.y - surface.y) / (polePoint->y - surface.y) *
         (polePoint->x - surface.x) + surface.x;
+    ripplePoint.x = perspectiveSurface.x - RIPPLE_INITIAL_SIZE().width / 2 + 1;
+    ripplePoint.y = perspectiveSurface.y - RIPPLE_INITIAL_SIZE().height / 2 + 1;
+    rippleAnimation->reposition(ripplePoint);
     boost::shared_ptr<DirectGraphicStrategy> dgs(new DirectLineGraphic(
         surface, perspectiveSurface, SURFACE_BLUE));
     boost::shared_ptr<DirectGraphicStrategy> dgs2(new DirectLineGraphic(
@@ -478,6 +539,7 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     layout->drawWhenReady(re2);
     layout->drawWhenReady(re3);
     layout->drawWhenReady(re4);
+    rippleAnimation->draw(layout, renderer);
 
     if( state != hookedState )
         layout->drawWhenReady(re5);

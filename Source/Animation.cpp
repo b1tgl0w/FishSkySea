@@ -59,13 +59,15 @@ void Animation::updateFrameIndex()
     Uint32 currentTotal = 0;
     frameIndex = 0;
     int i = 0;
+    Uint32 lastTotal = 0;
 
     for( std::vector<std::pair<std::string, Uint32> >::iterator it = 
         frames.begin(); it != frames.end(); ++it, ++i)
     {
+        lastTotal = currentTotal;
         currentTotal += it->second;
 
-        if( currentTicks <= currentTotal )
+        if( currentTicks > lastTotal )
             frameIndex = i;
     }
 }
@@ -77,7 +79,7 @@ void Animation::reposition(const Point &newPosition)
 }
 
 //Assumes image has been loaded
-void Animation::addFrame(const std::pair<std::string, Uint32> &frame)
+void Animation::addFrame(std::pair<std::string, Uint32> frame)
 {
     frames.push_back(frame);
     totalTicks += frame.second;
