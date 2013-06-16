@@ -3,12 +3,9 @@
 //Created:  02/10/12
 //Purpose:  An agenda for your current task
 
-Left off on: Animation. Figuring out responsibilities of class
+Left off on: Animation. Using and testing class.
 
 Specific Steps:
-- Figure out whether it is the Animation's responsibility to load images and
-send RE's to renderer
-- Subscribe to clock publisher
-- Fill in other methods
+- Create a ripple class that creates an animation.
 
 
