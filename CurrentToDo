@@ -3,8 +3,13 @@
 //Created:  02/10/12
 //Purpose:  An agenda for your current task
 
-Left off on: Ripple. Fix layering.
+Left off on: Seahorse. Fixing syntax errors
 
 Specific Steps:
-- Fix layered on ripple so that the blue line does not overlay the ripple
+- Fix syntax errors
+- Test that swims and can be added to ocean
+- Make flot up and down
+- Make pause
+- Make fish move toward it unless hooked
+- Make stay under shark
 
