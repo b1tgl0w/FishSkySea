@@ -192,24 +192,41 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     const Point &initialPolePoint,
     const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean) : live(false),
     rippleAnimation(new Animation(RIPPLE_INITIAL_POSITION(), 
+    RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
+    rippleAnimationNotHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
+    RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
+    rippleAnimationHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1()))
 {
-    Uint32 rippleFrameTime = 500;
+    Uint32 rippleFrameTimeNotHooked = 500;
+    Uint32 rippleFrameTimeHooked = 100;
     /*std::pair<std::string, Uint32> ripplePair1(RIPPLE_PATH1(), rippleFrameTime);
     std::pair<std::string, Uint32> ripplePair2(RIPPLE_PATH2(), rippleFrameTime);
     std::pair<std::string, Uint32> ripplePair3(RIPPLE_PATH3(), rippleFrameTime);*/
-    rippleAnimation->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH1(), 
-        rippleFrameTime));
-    rippleAnimation->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
-        rippleFrameTime));
-    rippleAnimation->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH3(), 
-        rippleFrameTime));
-    rippleAnimation->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
-        rippleFrameTime));
-    boost::shared_ptr<MasterClockSubscriber> rippleAnimationSubscriber(
-        rippleAnimation);
+    rippleAnimationNotHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH1(), 
+        rippleFrameTimeNotHooked));
+    rippleAnimationNotHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
+        rippleFrameTimeNotHooked));
+    rippleAnimationNotHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH3(), 
+        rippleFrameTimeNotHooked));
+    rippleAnimationNotHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
+        rippleFrameTimeNotHooked));
+    boost::shared_ptr<MasterClockSubscriber> raNotHookedSubscriber(
+        rippleAnimationNotHooked);
     MasterClockPublisher *mcp = MasterClockPublisher::getInstance();
-    mcp->subscribe(rippleAnimationSubscriber);
+    mcp->subscribe(raNotHookedSubscriber);
+    rippleAnimationHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH1(), 
+        rippleFrameTimeHooked));
+    rippleAnimationHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
+        rippleFrameTimeHooked));
+    rippleAnimationHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH3(), 
+        rippleFrameTimeHooked));
+    rippleAnimationHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
+        rippleFrameTimeHooked));
+    boost::shared_ptr<MasterClockSubscriber> raHookedSubscriber(
+        rippleAnimationHooked);
+    mcp->subscribe(raHookedSubscriber);
+    rippleAnimation = rippleAnimationNotHooked;
     initialize(initialPlayer, initialPolePoint, initialHookPoint,
         ocean);
 }
@@ -419,6 +436,7 @@ boost::weak_ptr<Player> Line::hooked(boost::weak_ptr<Fish> hookedFish)
 {
     this->hookedFish = hookedFish;
     boost::shared_ptr<LineState> lineState(hookedState);
+    rippleAnimation = rippleAnimationHooked;
     changeState(lineState);
     return owner;
 }
@@ -432,6 +450,7 @@ void Line::offHook()
     hookedFish.reset();
     fishHooked = false;
     boost::shared_ptr<LineState> lineState(notHookedState);
+    rippleAnimation = rippleAnimationNotHooked;
     changeState(lineState);
 }
 

@@ -266,6 +266,8 @@ private:
     bool fishHooked;
     bool live;
     boost::shared_ptr<Animation> rippleAnimation;
+    boost::shared_ptr<Animation> rippleAnimationNotHooked;
+    boost::shared_ptr<Animation> rippleAnimationHooked;
 };
 
 #endif
