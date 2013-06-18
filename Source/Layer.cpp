@@ -42,34 +42,39 @@ const Layer Layer::FISH()
     return Layer(4);
 }
 
-const Layer Layer::SHARK()
+const Layer Layer::SEA_HORSE()
 {
     return Layer(5);
 }
 
-const Layer Layer::SEA_SNAIL()
+const Layer Layer::SHARK()
 {
     return Layer(6);
 }
 
-const Layer Layer::SCORE()
+const Layer Layer::SEA_SNAIL()
 {
     return Layer(7);
 }
 
-const Layer Layer::DOCK_SUPPORTS()
+const Layer Layer::SCORE()
 {
     return Layer(8);
 }
 
-const Layer Layer::FOREGROUND()
+const Layer Layer::DOCK_SUPPORTS()
 {
     return Layer(9);
 }
 
-const Layer Layer::TITLE_MENU()
+const Layer Layer::FOREGROUND()
 {
     return Layer(10);
+}
+
+const Layer Layer::TITLE_MENU()
+{
+    return Layer(11);
 }
 
 Layer::Layer(int initialValue)

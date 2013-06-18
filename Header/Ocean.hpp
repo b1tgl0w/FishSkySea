@@ -24,6 +24,7 @@
 class OceanMode;
 class Fish;
 class SeaSnail;
+class Seahorse;
 class Shark;
 class Line;
 class Point;
@@ -149,6 +150,7 @@ private:
     std::vector<boost::shared_ptr<Fish> > fishes;
     std::vector<boost::shared_ptr<CreditFish> > creditFishes;
     boost::shared_ptr<SeaSnail> seaSnail;
+    boost::shared_ptr<Seahorse> seahorse;
     boost::shared_ptr<Shark> shark;
     std::map<Depth, double> depthCoordinates;
     static double &OCEAN_EDGE_X();
@@ -156,6 +158,7 @@ private:
     const static double &OCEAN_SURFACE_WIDTH();
     const static double &OCEAN_SURFACE_HEIGHT();
     const static Point &SEA_SNAIL_POSITION();
+    const static Point &SEA_HORSE_POSITION();
     const static Point &SHARK_POSITION();
     boost::shared_ptr<OceanState> state;
     boost::shared_ptr<GameState> gameState;

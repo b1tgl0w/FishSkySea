@@ -17,6 +17,7 @@
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/SeaSnail.hpp"
 #include "../Header/OceanMode.hpp"
+#include "../Header/Seahorse.hpp"
 
 double &Ocean::OCEAN_EDGE_X()
 {
@@ -48,6 +49,12 @@ const Point &Ocean::SEA_SNAIL_POSITION()
 {
     const static Point TMP_SEA_SNAIL_POSITION = { 100.0 , 512.0 };
     return TMP_SEA_SNAIL_POSITION;
+}
+
+const Point &Ocean::SEA_HORSE_POSITION()
+{
+    const static Point TMP_SEA_HORSE_POSITION = { 100.0 , 412.0 };
+    return TMP_SEA_HORSE_POSITION;
 }
 
 const Point &Ocean::SHARK_POSITION()
@@ -119,6 +126,8 @@ void Ocean::initializeSharedFromThis()
         fishStartingDepth, sharedThis));
     boost::shared_ptr<SeaSnail> tmpSeaSnail(new SeaSnail(SEA_SNAIL_POSITION(),
         sharedThis));
+    boost::shared_ptr<Seahorse> tmpSeahorse(new Seahorse(SEA_HORSE_POSITION(),
+        sharedThis));
     boost::shared_ptr<Shark> tmpShark(new Shark(sharedThis, SHARK_POSITION()));
     fish1->initializeStates();
     fish2->initializeStates();
@@ -126,6 +135,7 @@ void Ocean::initializeSharedFromThis()
     fish4->initializeStates();
     fish5->initializeStates();
     fish6->initializeStates();
+    tmpSeahorse->initializeStates();
     tmpShark->initializeStates();
     addCollidable(fish1);
     addCollidable(fish2);
@@ -134,6 +144,7 @@ void Ocean::initializeSharedFromThis()
     addCollidable(fish5);
     addCollidable(fish6);
     addCollidable(tmpSeaSnail);
+    addCollidable(tmpSeahorse);
     addCollidable(tmpShark);
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
@@ -145,6 +156,7 @@ void Ocean::initializeSharedFromThis()
     boost::shared_ptr<MasterClockSubscriber> subscriber6(fish6);
     boost::shared_ptr<MasterClockSubscriber> subscriber7(tmpSeaSnail);
     boost::shared_ptr<MasterClockSubscriber> subscriber8(tmpShark);
+    boost::shared_ptr<MasterClockSubscriber> subscriber9(tmpSeahorse);
     masterClockPublisher->subscribe(subscriber1);
     masterClockPublisher->subscribe(subscriber2);
     masterClockPublisher->subscribe(subscriber3);
@@ -153,6 +165,7 @@ void Ocean::initializeSharedFromThis()
     masterClockPublisher->subscribe(subscriber6);
     masterClockPublisher->subscribe(subscriber7);
     masterClockPublisher->subscribe(subscriber8);
+    masterClockPublisher->subscribe(subscriber9);
     fishes.push_back(fish1);
     fishes.push_back(fish2);
     fishes.push_back(fish3);
@@ -160,6 +173,7 @@ void Ocean::initializeSharedFromThis()
     fishes.push_back(fish5);
     fishes.push_back(fish6);
     seaSnail = tmpSeaSnail;
+    seahorse = tmpSeahorse;
     shark = tmpShark;
 
     //Credit state init
@@ -334,6 +348,7 @@ void Ocean::loadImage(Renderer &renderer)
     seaSnail->loadImage(renderer);
     //Shark
     shark->loadImage(renderer);
+    seahorse->loadImage(renderer);
 }
 
 void Ocean::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
@@ -492,6 +507,7 @@ void Ocean::GameState::draw(boost::shared_ptr<Layout> &layout, Renderer
     sharedOceanOwner->seaSnail->draw(layout, renderer);
     //Shark
     sharedOceanOwner->shark->draw(layout, renderer);
+    sharedOceanOwner->seahorse->draw(layout, renderer);
 }
 
 void Ocean::GameState::checkCollisions(boost::shared_ptr<Collidable> &object,
@@ -528,6 +544,7 @@ void Ocean::GameState::gameLive(bool live)
 
     sharedOceanOwner->shark->gameLive(live);
     sharedOceanOwner->seaSnail->gameLive(live);
+    sharedOceanOwner->seahorse->gameLive(live);
 }
 
 Ocean::CreditState::CreditState(boost::shared_ptr<Ocean> &oceanOwner)

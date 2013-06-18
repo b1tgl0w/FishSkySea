@@ -3,12 +3,10 @@
 //Created:  02/10/12
 //Purpose:  An agenda for your current task
 
-Left off on: Seahorse. Fixing syntax errors
+Left off on: Making seahorse float up and down. and pausing
 
 Specific Steps:
-- Fix syntax errors
-- Test that swims and can be added to ocean
-- Make flot up and down
+- Make float up and down
 - Make pause
 - Make fish move toward it unless hooked
 - Make stay under shark

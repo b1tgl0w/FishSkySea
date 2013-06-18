@@ -8,7 +8,6 @@
 //Copyright 2012 John Miner
 //This program is distributed under the terms of the GNU General Public License
 
-/*
 #include "../Header/Seahorse.hpp"
 #include "../Header/Renderer.hpp"
 #include "../Header/Math.hpp"
@@ -33,7 +32,7 @@ const Layer &Seahorse::LAYER()
 const Dimension &Seahorse::SIZE()
 {
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE = { 60, 134 };
+    static const Dimension TMP_SIZE = { 40, 89 };
     return TMP_SIZE;
 }
 
@@ -67,7 +66,7 @@ Seahorse &Seahorse::operator=(const Seahorse &rhs)
     {
         dispose();
         initialize(*(rhs.position), tmpOcean);
-        fishSize = rhs.fishSize;
+        seahorseSize = rhs.seahorseSize;
         live = rhs.live;
     }
     //Else throw exception?
@@ -85,11 +84,16 @@ void Seahorse::initialize(const Point &newPosition,
     boost::shared_ptr<Point> tmpPosition(new Point(newPosition));
     position = tmpPosition;
     this->ocean = ocean;
-    positionFromSide();
     boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
-    fishSize = tmpSize;
-    BoundingBox tmpFishBox(position, fishSize);
-    fishBox = tmpFishBox;
+    seahorseSize = tmpSize;
+    BoundingBox tmpSeahorseBox(position, seahorseSize);
+    BoundingBox tmpSeahorseLeftBox(position, seahorseSize);
+    BoundingBox tmpSeahorseRightBox(position, seahorseSize);
+    seahorseBox = tmpSeahorseBox;
+    seahorseLeftBox = tmpSeahorseLeftBox;
+    seahorseRightBox = tmpSeahorseRightBox;
+    
+    positionFromSide();
     resetTimes(); //Also sets shouldResetTime
 }
 
@@ -141,6 +145,7 @@ void Seahorse::positionFromSide()
     faceRandomDirection();
     sharedOcean->alignWithBoundary(position->x, facing,
         facing == Direction::LEFT() ? -SIZE().width - 1 : -1 );
+    aboutFace();
 }
 
 void Seahorse::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
@@ -280,6 +285,19 @@ void Seahorse::clockTick(Uint32 elapsedTime)
         resetTimes();
 }
 
+void Seahorse::aboutFace()
+{
+    if( facing == Direction::LEFT() )
+        facing = Direction::RIGHT();
+    else
+        facing = Direction::LEFT();
+}
+
+void Seahorse::randomAboutFace(Uint32 elapsedTime)
+{
+    //No-op
+}
+
 //Inner class FreeState
 Seahorse::SwimmingState::SwimmingState()
 {
@@ -296,7 +314,7 @@ Seahorse::SwimmingState::SwimmingState(const Seahorse::SwimmingState &rhs)
     initialize(rhs.seahorseOwner);
 }
 
-Seahorse::SwimmingState &Fish::SwimmingState::operator=(const Seahorse::SwimmingState &rhs)
+Seahorse::SwimmingState &Seahorse::SwimmingState::operator=(const Seahorse::SwimmingState &rhs)
 {
     if( this == &rhs )
         return *this;
@@ -323,7 +341,8 @@ void Seahorse::SwimmingState::dispose()
 
 double Seahorse::SwimmingState::calculatePixelsLeft(Uint32 elapsedTime)
 {
-    return elapsedTime * velocity;
+    //return elapsedTime * velocity;
+    return elapsedTime * 0.1;
 }
 
 void Seahorse::SwimmingState::swim(Uint32 elapsedTime)
@@ -337,7 +356,7 @@ void Seahorse::SwimmingState::swim(Uint32 elapsedTime)
         return;
 
     boost::shared_ptr<Collidable> collidable(sharedSeahorseOwner);
-    boost::shared_ptr<Ocean> sharedOcean = sharedFishOwner->ocean.lock();
+    boost::shared_ptr<Ocean> sharedOcean = sharedSeahorseOwner->ocean.lock();
 
     if( !sharedOcean )
         return;
@@ -349,7 +368,7 @@ void Seahorse::SwimmingState::swim(Uint32 elapsedTime)
         //This should go first or else the fish can be caught on the edge
         //and get stuck.
         pixelsThisIteration = Math::lesser(MAXIMUM_PIXELS, pixelsLeft);
-        sharedFishOwner->moveForward(pixelsThisIteration);
+        sharedSeahorseOwner->moveForward(pixelsThisIteration);
         pixelsLeft -= pixelsThisIteration;
 
         sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseBox);
@@ -375,7 +394,6 @@ void Seahorse::SwimmingState::swim(Uint32 elapsedTime)
 
         if( tmpOcean->hitEdge(sharedFishOwner->fishBox) )
             sharedFishOwner->aboutFace();*/
-/*
     }
 
     sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseBox);
@@ -389,13 +407,15 @@ void Seahorse::SwimmingState::collidesWith(boost::shared_ptr<Collidable> &otherO
 {
     boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
 
-    if( !seahorseOwner )
+    if( !sharedSeahorseOwner )
         return;
 
+/*
     if( sharedSeahorseOwner->seahorseLeftBox.isCollision(otherBox) )
         otherObject->collidesWithSeahorseLeft(sharedSeahorseOwner, otherBox);
     if( sharedSeahorseOwner->seahorseRightBox.isCollision(otherBox) )
         otherObject->collidesWithSeahorseRight(sharedSeahorseOwner, otherBox);
+        */
 }
 
 void Seahorse::SwimmingState::collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -407,13 +427,13 @@ void Seahorse::SwimmingState::collidesWithHook(boost::shared_ptr<Line> &hook,
 void Seahorse::SwimmingState::collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox, const Direction &direction)
 {
-    boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
+    boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
 
-    if( !sharedFishOwner )
+    if( !sharedSeahorseOwner )
         return;
 
-    if( &yourBox == &(sharedFishOwner->fishBox) )
-        sharedFishOwner->hitEdge(direction);
+    if( &yourBox == &(sharedSeahorseOwner->seahorseBox) )
+        ;//sharedSeahorseOwner->hitEdge(direction);
 }
 
 void Seahorse::SwimmingState::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
@@ -530,7 +550,7 @@ void Seahorse::FloatingState::swim(Uint32 elapsedTime)
         //Moving one pixel at a time is inefficient, but the hook
         //box is planned to be small.
         pixelsThisIteration = Math::lesser(MAXIMUM_PIXELS, pixelsLeft);
-        sharedFishOwner->moveForward(pixelsThisIteration);
+        sharedSeahorseOwner->moveForward(pixelsThisIteration);
         pixelsLeft -= pixelsThisIteration;
         tmpOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseBox);
         tmpOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseLeftBox);
@@ -553,7 +573,6 @@ void Seahorse::FloatingState::swim(Uint32 elapsedTime)
             //Should be called from within tmpOcean: tmpOcean->addFish(*fishOwner);
             sharedFishOwner->changeState(sharedFishOwner->freeState);
         }*/
-/*
     }
 
     tmpOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseBox);
@@ -567,13 +586,15 @@ void Seahorse::FloatingState::collidesWith(boost::shared_ptr<Collidable> &otherO
 {
     boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
 
-    if( !seahorseOwner )
+    if( !sharedSeahorseOwner )
         return;
 
+/*
     if( sharedSeahorseOwner->seahorseLeftBox.isCollision(otherBox) )
         otherObject->collidesWithSeahorseLeft(sharedSeahorseOwner, otherBox);
     if( sharedSeahorseOwner->seahorseRightBox.isCollision(otherBox) )
         otherObject->collidesWithSeahorseRight(sharedSeahorseOwner, otherBox);
+*/
 }
 
 void Seahorse::FloatingState::collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -631,4 +652,4 @@ void Seahorse::FloatingState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
 
 void Seahorse::FloatingState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
-*/
+

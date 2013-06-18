@@ -38,7 +38,7 @@ struct Point;
     be caught by a fisherman or eaten by a shark.
 */
 class Seahorse : public SeaCreature, public Graphic, public Collidable,
-    public boost::enable_shared_from_this<Fish>
+    public boost::enable_shared_from_this<Seahorse>
 {
 friend class SeahorseState;
 friend class SwimmingState;
@@ -137,6 +137,8 @@ public:
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
+    void aboutFace();
+    void randomAboutFace(Uint32 elapsedTime); //No-op
 
 protected:
     Seahorse();
