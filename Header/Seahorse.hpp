@@ -276,10 +276,14 @@ private:
 
     void changeState(boost::shared_ptr<SeahorseState> &newState);
     void moveForward(double pixels);
+    void moveBob(double pixels);
     double calculatePixelsLeft(Uint32 elapsedTime);
+    double calculatePixelsLeftBob(Uint32 elapsedTime);
     void faceRandomDirection();
     void resetTimes();
     void updateTimes(Uint32 elapsedTime);
+    void turnBob();
+    void bob(Uint32 elapsedTime);
     boost::shared_ptr<SeahorseState> state;
     boost::shared_ptr<SwimmingState> swimmingState;
     boost::shared_ptr<FloatingState> floatingState;
@@ -292,6 +296,8 @@ private:
     boost::weak_ptr<Ocean> ocean;
     bool shouldResetTimes;
     bool live;
+    double bobRemaining;
+    Direction bobDirection;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

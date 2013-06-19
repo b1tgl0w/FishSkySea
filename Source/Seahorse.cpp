@@ -92,6 +92,9 @@ void Seahorse::initialize(const Point &newPosition,
     seahorseBox = tmpSeahorseBox;
     seahorseLeftBox = tmpSeahorseLeftBox;
     seahorseRightBox = tmpSeahorseRightBox;
+    bobDirection = Direction::UP();
+    bobRemaining = 0;
+    turnBob();
     
     positionFromSide();
     resetTimes(); //Also sets shouldResetTime
@@ -183,6 +186,14 @@ void Seahorse::moveForward(double pixels)
         position->x -= pixels;
     else
         position->x += pixels;
+}
+
+void Seahorse::moveBob(double pixels)
+{
+    if( bobDirection == Direction::UP() )
+        position->y -= pixels;
+    else
+        position->y += pixels;
 }
 
 //Note: This function does not adhere to the single responsibility principle
@@ -279,6 +290,7 @@ void Seahorse::clockTick(Uint32 elapsedTime)
         return;
 
     swim(elapsedTime);
+    bob(elapsedTime);
     updateTimes(elapsedTime);
 
     if( shouldResetTimes )
@@ -345,6 +357,16 @@ double Seahorse::SwimmingState::calculatePixelsLeft(Uint32 elapsedTime)
     return elapsedTime * 0.1;
 }
 
+double Seahorse::calculatePixelsLeftBob(Uint32 elapsedTime)
+{
+    double pixels = elapsedTime * 0.02;
+
+    if( pixels <= bobRemaining )
+        return pixels;
+
+    return bobRemaining; 
+}
+
 void Seahorse::SwimmingState::swim(Uint32 elapsedTime)
 {
     const double MAXIMUM_PIXELS = 1.0;
@@ -399,6 +421,75 @@ void Seahorse::SwimmingState::swim(Uint32 elapsedTime)
     sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseBox);
     sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseLeftBox);
     sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseRightBox);
+}
+
+void Seahorse::turnBob()
+{
+    const double BOB_PIXELS = 12.0;
+    if( bobRemaining <= 0 )
+    {
+        if( bobDirection == Direction::UP() )
+            bobDirection = Direction::DOWN();
+        else
+            bobDirection = Direction::UP();
+
+        bobRemaining = BOB_PIXELS;
+    }
+
+}
+
+void Seahorse::bob(Uint32 elapsedTime)
+{
+    const double MAXIMUM_PIXELS = 1.0;
+    turnBob();
+    double pixelsLeft = calculatePixelsLeftBob(elapsedTime);
+    double pixelsThisIteration = 0;
+    
+    boost::shared_ptr<Collidable> collidable(shared_from_this());
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+
+    if( !sharedOcean )
+        return;
+
+    while( pixelsLeft > 0 )
+    {
+        //Moving one pixel at a time is inefficient, but the hook
+        //box is planned to be small.
+        //This should go first or else the fish can be caught on the edge
+        //and get stuck.
+        pixelsThisIteration = Math::lesser(MAXIMUM_PIXELS, pixelsLeft);
+        moveBob(pixelsThisIteration);
+        pixelsLeft -= pixelsThisIteration;
+        bobRemaining -= pixelsThisIteration;
+        turnBob();
+        sharedOcean->checkCollisions(collidable, seahorseBox);
+        sharedOcean->checkCollisions(collidable, seahorseLeftBox);
+        sharedOcean->checkCollisions(collidable, seahorseRightBox);
+
+        //Change to for loop and shared_array
+/*        if( tmpLine1->didHook(sharedFishOwner->mouthBox, *sharedFishOwner) ) //Hook(s) visibility
+        {
+            sharedFishOwner->changeState(sharedFishOwner->hookedState);
+            //Instead of setting hooked by here, didBite will call
+            //fish.hooked if necessary
+            //hookedBy = ...
+        }
+
+        if( tmpLine2->didHook(sharedFishOwner->mouthBox, *sharedFishOwner) ) //Hook(s) visibility
+        {
+            sharedFishOwner->changeState(sharedFishOwner->hookedState);
+            //Instead of setting hooked by here, didBite will call
+            //fish.hooked if necessary
+            //hookedBy = ...
+        }
+
+        if( tmpOcean->hitEdge(sharedFishOwner->fishBox) )
+            sharedFishOwner->aboutFace();*/
+    }
+
+    sharedOcean->checkCollisions(collidable, seahorseBox);
+    sharedOcean->checkCollisions(collidable, seahorseLeftBox);
+    sharedOcean->checkCollisions(collidable, seahorseRightBox);
 }
 
 //FreeState Collidable
