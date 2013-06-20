@@ -21,6 +21,7 @@
 #include "BoundingBox.hpp"
 
 class Line;
+class Seahorse;
 
 class HumanPlayer : public Player, public KeyboardSubscriber, public Collidable,
     public boost::enable_shared_from_this<HumanPlayer>
@@ -76,6 +77,14 @@ public:
         player, const BoundingBox &yourBox, const Direction &direction);
     void collidesWithCreditFish(boost::shared_ptr<CreditFish>
         &creditFish, const BoundingBox &yourBox);
+    void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox);
+    void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox);
+    void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox);
+    void collidesSharkBack(boost::shared_ptr<Shark> &shark,
+        const BoundingBox & yourBox);
     static const bool &PLAYER_ONE();
     static const bool &PLAYER_TWO();
 protected:

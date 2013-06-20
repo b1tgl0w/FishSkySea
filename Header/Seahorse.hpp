@@ -134,6 +134,14 @@ public:
         const BoundingBox &yourBox, const Direction &direction);
     void collidesWithCreditFish(boost::shared_ptr<CreditFish>
         &creditFish, const BoundingBox &yourBox);
+    void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox);
+    void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox);
+    void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox);
+    void collidesSharkBack(boost::shared_ptr<Shark> &shark,
+        const BoundingBox & yourBox);
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
@@ -200,6 +208,14 @@ private:
             const BoundingBox &yourBox, const Direction &direction);
         void collidesWithCreditFish(boost::shared_ptr<CreditFish>
             &creditFish, const BoundingBox &yourBox);
+        void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+            const BoundingBox &yourBox);
+        void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+            const BoundingBox &yourBox);
+        void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+            const BoundingBox &yourBox);
+        void collidesSharkBack(boost::shared_ptr<Shark> &shark,
+            const BoundingBox & yourBox);
     protected:
         void initialize(boost::weak_ptr<Seahorse> SeahorseOwner);
         void dispose();
@@ -266,6 +282,14 @@ private:
             const BoundingBox &yourBox, const Direction &direction);
         void collidesWithCreditFish(boost::shared_ptr<CreditFish>
             &creditFish, const BoundingBox &yourBox);
+        void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+            const BoundingBox &yourBox);
+        void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+            const BoundingBox &yourBox);
+        void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+            const BoundingBox &yourBox);
+        void collidesSharkBack(boost::shared_ptr<Shark> &shark,
+            const BoundingBox & yourBox);
     protected:
         void initialize(boost::weak_ptr<Seahorse> seahorseOwner);
         void dispose();
@@ -284,6 +308,8 @@ private:
     void updateTimes(Uint32 elapsedTime);
     void turnBob();
     void bob(Uint32 elapsedTime);
+    void avoidBoundaries(const Direction &direction);
+    void resetBobRemaining();
     boost::shared_ptr<SeahorseState> state;
     boost::shared_ptr<SwimmingState> swimmingState;
     boost::shared_ptr<FloatingState> floatingState;

@@ -30,6 +30,7 @@
 class Renderer;
 class Ocean;
 class Shark;
+class Seahorse;
 struct Point;
 
 class SeaSnail : public SeaCreature, public Graphic, public Collidable,
@@ -73,6 +74,14 @@ public:
         const BoundingBox &yourBox, const Direction &direction);
     void collidesWithCreditFish(boost::shared_ptr<CreditFish>
         &creditFish, const BoundingBox &yourBox);
+    void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox);
+    void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox);
+    void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox);
+    void collidesSharkBack(boost::shared_ptr<Shark> &shark,
+        const BoundingBox & yourBox);
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE();
 protected:

@@ -15,6 +15,7 @@
 #include "../Header/Ocean.hpp"
 #include "../Header/Direction.hpp"
 #include "../Header/BoundingBox.hpp"
+#include "../Header/Seahorse.hpp"
 
 const bool &HumanPlayer::PLAYER_ONE()
 {
@@ -291,4 +292,12 @@ void HumanPlayer::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &
 
 void HumanPlayer::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
+void HumanPlayer::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void HumanPlayer::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void HumanPlayer::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void HumanPlayer::collidesSharkBack(boost::shared_ptr<Shark> &shark,
+    const BoundingBox & yourBox) {}
 

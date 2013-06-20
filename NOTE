@@ -20,6 +20,8 @@ Note:   Manually update loaded font size in Renderer
 
 Bug:    BorderLayout inside a grid cell doesn't position correctly.
 
+Bug:    Seahorse can barely touch shark
+
 Bug:    Game starts paused when run from title scene.
 
 Padding for grid cells

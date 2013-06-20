@@ -18,6 +18,7 @@
 #include "../Header/Transformation.hpp"
 #include "../Header/ImageRendererElement.hpp"
 #include "../Header/SeaSnail.hpp"
+#include "../Header/Seahorse.hpp"
 
 //Class-wide constants
 const std::string &Fish::IMAGE_PATH()
@@ -459,6 +460,14 @@ void Fish::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
 
 void Fish::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
+void Fish::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void Fish::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void Fish::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void Fish::collidesSharkBack(boost::shared_ptr<Shark> &shark,
+    const BoundingBox & yourBox) {}
 
 void Fish::clockTick(Uint32 elapsedTime)
 {
@@ -709,6 +718,14 @@ void Fish::FreeState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player
 
 void Fish::FreeState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
+void Fish::FreeState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void Fish::FreeState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void Fish::FreeState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void Fish::FreeState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
+    const BoundingBox & yourBox) {}
 
 
 //Inner class HookedState
@@ -974,4 +991,12 @@ void Fish::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &play
 
 void Fish::HookedState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
+void Fish::HookedState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void Fish::HookedState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void Fish::HookedState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void Fish::HookedState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
+    const BoundingBox & yourBox) {}
 

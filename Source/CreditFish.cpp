@@ -18,6 +18,7 @@
 #include "../Header/Transformation.hpp"
 #include "../Header/ImageRendererElement.hpp"
 #include "../Header/SeaSnail.hpp"
+#include "../Header/Seahorse.hpp"
 
 //Remove this after adding name/title
 const std::string &CreditFish::IMAGE_PATH()
@@ -547,6 +548,14 @@ void CreditFish::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
     const BoundingBox &yourBox, const Direction &direction){}
 void CreditFish::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
+void CreditFish::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void CreditFish::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {} 
+void CreditFish::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void CreditFish::collidesSharkBack(boost::shared_ptr<Shark> &shark,
+    const BoundingBox & yourBox) {}
 
 void CreditFish::clockTick(Uint32 elapsedTime)
 {
@@ -765,6 +774,14 @@ void CreditFish::FreeState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &
     const BoundingBox &yourBox, const Direction &direction){}
 void CreditFish::FreeState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
+void CreditFish::FreeState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void CreditFish::FreeState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {} 
+void CreditFish::FreeState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void CreditFish::FreeState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
+    const BoundingBox & yourBox) {}
 
 
 //Inner class HookedState
@@ -985,4 +1002,11 @@ void CreditFish::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
     const BoundingBox &yourBox, const Direction &direction){}
 void CreditFish::HookedState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
-
+void CreditFish::HookedState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void CreditFish::HookedState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {} 
+void CreditFish::HookedState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+    const BoundingBox &yourBox) {}
+void CreditFish::HookedState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
+    const BoundingBox & yourBox) {}

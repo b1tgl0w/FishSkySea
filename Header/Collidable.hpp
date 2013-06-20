@@ -22,6 +22,7 @@ class CreditFish;
 class Direction;
 class SeaSnail;
 class Player;
+class Seahorse;
 
 class Collidable
 {
@@ -52,6 +53,14 @@ public:
         player, const BoundingBox &yourBox, const Direction &direction) = 0;
     virtual void collidesWithCreditFish(boost::shared_ptr<CreditFish>
         &creditFish, const BoundingBox &yourBox) = 0;
+    virtual void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox) = 0;
+    virtual void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox) = 0;
+    virtual void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
+        const BoundingBox &yourBox) = 0;
+    virtual void collidesSharkBack(boost::shared_ptr<Shark> &shark,
+        const BoundingBox & yourBox) = 0;
 };
 
 #endif
