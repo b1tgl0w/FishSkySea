@@ -6,7 +6,6 @@
 Left off on: Make fish move toward seahorse
 
 Specific Steps:
-- Make pause
 - Make fish move toward it unless hooked
 - Make bob when in swim state
 

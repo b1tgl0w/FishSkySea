@@ -37,13 +37,14 @@ const Dimension &Seahorse::SIZE()
 }
 
 Seahorse::Seahorse(const Point &initialPosition,
-    boost::shared_ptr<Ocean> &ocean) : live(false)
+    boost::shared_ptr<Ocean> &ocean) : live(false), floatedOnce(false),
+    floatTime(0)
 {
     initialize(initialPosition, ocean);
 }
 
 Seahorse::Seahorse(const Seahorse &rhs) : seahorseSize(rhs.seahorseSize),
-    live(rhs.live)
+    live(rhs.live), floatedOnce(rhs.floatedOnce), floatTime(rhs.floatTime)
 {
     boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
 
@@ -67,6 +68,8 @@ Seahorse &Seahorse::operator=(const Seahorse &rhs)
         initialize(*(rhs.position), tmpOcean);
         seahorseSize = rhs.seahorseSize;
         live = rhs.live;
+        floatedOnce = rhs.floatedOnce;
+        floatTime = rhs.floatTime;
     }
     //Else throw exception?
 
@@ -98,6 +101,7 @@ void Seahorse::initialize(const Point &newPosition,
     positionFromSide();
     resetTimes(); //Also sets shouldResetTime
     depth = Depth::random();
+    resetFloat();
 }
 
 //Note:_MUST_ be called IMMEDIATELY after ctor
@@ -112,7 +116,7 @@ void Seahorse::initializeStates()
         return; //Throw exception
 
     swimmingState = tmpSwimmingState;
-    floatingState = floatingState;
+    floatingState = tmpFloatingState;
     state = swimmingState; //must be called after swimmingState is initialized
 }
 
@@ -123,6 +127,16 @@ Seahorse::~Seahorse()
 
 void Seahorse::dispose()
 {
+}
+
+void Seahorse::resetFloat()
+{
+    if( facing == Direction::RIGHT() )
+        floatX = 800 * .666666 + seahorseSize->width / 2.0; //ScreenWidth * .6666
+    else
+        floatX = 800 * .333333 - seahorseSize->width / 2.0;
+    floatedOnce = false;
+    floatTime = 0;
 }
 
 void Seahorse::faceRandomDirection()
@@ -311,7 +325,6 @@ void Seahorse::clockTick(Uint32 elapsedTime)
         return;
 
     swim(elapsedTime);
-    bob(elapsedTime);
     updateTimes(elapsedTime);
 
     if( shouldResetTimes )
@@ -334,6 +347,7 @@ void Seahorse::respawn(const double yCoordinate)
     position->y = yCoordinate;
     //Random depth for next time
     depth = Depth::random();
+    resetFloat();
 }
 
 void Seahorse::randomAboutFace(Uint32 elapsedTime)
@@ -452,6 +466,20 @@ void Seahorse::SwimmingState::swim(Uint32 elapsedTime)
     sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseBox);
     sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseLeftBox);
     sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseRightBox);
+    if( ( sharedSeahorseOwner->facing == Direction::RIGHT() && 
+        sharedSeahorseOwner->position->x >= sharedSeahorseOwner->floatX ) || 
+        (sharedSeahorseOwner->facing == Direction::LEFT() && sharedSeahorseOwner->
+        position->x <= sharedSeahorseOwner->floatX) )
+    {
+        if( sharedSeahorseOwner->floatedOnce == false )
+        {
+        std::cout << "asdf" << std::endl;
+            boost::shared_ptr<SeahorseState> tmpState(sharedSeahorseOwner->
+                floatingState);
+            sharedSeahorseOwner->changeState(tmpState);
+            sharedSeahorseOwner->floatedOnce = true;
+        }
+    }
 }
 
 void Seahorse::turnBob()
@@ -708,54 +736,23 @@ double Seahorse::FloatingState::calculatePixelsLeft(Uint32 elapsedTime)
 
 void Seahorse::FloatingState::swim(Uint32 elapsedTime)
 {
-    const double MAXIMUM_PIXELS = 1.0;
-    double pixelsLeft = calculatePixelsLeft(elapsedTime);
-    double pixelsThisIteration = 0.0;
+    const Uint32 FLOAT_DURATION = 4000;
     boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
 
     if( !sharedSeahorseOwner )
         return;
 
-    boost::shared_ptr<Ocean> tmpOcean = sharedSeahorseOwner->ocean.lock();
 
-    if( !tmpOcean )
-        return;
-
-    boost::shared_ptr<Collidable> collidable(sharedSeahorseOwner);
-
-    while( pixelsLeft > 0 )
+    sharedSeahorseOwner->bob(elapsedTime);
+    if( sharedSeahorseOwner->floatTime >= FLOAT_DURATION )
     {
-        //Moving one pixel at a time is inefficient, but the hook
-        //box is planned to be small.
-        pixelsThisIteration = Math::lesser(MAXIMUM_PIXELS, pixelsLeft);
-        sharedSeahorseOwner->moveForward(pixelsThisIteration);
-        pixelsLeft -= pixelsThisIteration;
-        tmpOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseBox);
-        tmpOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseLeftBox);
-        tmpOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseRightBox);
-
-        //if( tmpShark->shouldEatFish(fishOwner->fishBox) )
-        //{
-            //tmpOcean->addFish(*fishOwner);
-        //}
-
-        //What to do about reeling in? The fish should move upward with hook
-        // However, when the line is pulled the fish should not move up. When
-        // the line is reeled in, it should move up
-
-        //Uncomment or write new code to catch fish
-        //Note: Caused bug that made hook not stay with fish
-        /*if( tmpOcean->isAboveSurface(sharedFishOwner->fishBox, *sharedFishOwner) )
-        {
-            tmpHookedByPlayer->caughtFish(sharedFishOwner->calculateWeight());
-            //Should be called from within tmpOcean: tmpOcean->addFish(*fishOwner);
-            sharedFishOwner->changeState(sharedFishOwner->freeState);
-        }*/
+        boost::shared_ptr<SeahorseState> tmpState(sharedSeahorseOwner->
+            swimmingState);
+        sharedSeahorseOwner->changeState(tmpState);
+        sharedSeahorseOwner->floatTime = 0.0;
     }
-
-    tmpOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseBox);
-    tmpOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseLeftBox);
-    tmpOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseRightBox);
+    else
+        sharedSeahorseOwner->floatTime += elapsedTime;
 }
 
 //FloatingState Collidable

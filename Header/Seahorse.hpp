@@ -312,6 +312,7 @@ private:
     void bob(Uint32 elapsedTime);
     void avoidBoundaries(const Direction &direction);
     void resetBobRemaining();
+    void resetFloat();
     boost::shared_ptr<SeahorseState> state;
     boost::shared_ptr<SwimmingState> swimmingState;
     boost::shared_ptr<FloatingState> floatingState;
@@ -328,6 +329,9 @@ private:
     Direction bobDirection;
     Depth depth;
     Direction verticalFacing;
+    double floatX;
+    bool floatedOnce;
+    Uint32 floatTime;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();
