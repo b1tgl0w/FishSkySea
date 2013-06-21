@@ -94,7 +94,7 @@ void Seahorse::initialize(const Point &newPosition,
     bobDirection = Direction::UP();
     bobRemaining = 0;
     turnBob();
-    
+
     positionFromSide();
     resetTimes(); //Also sets shouldResetTime
     depth = Depth::random();
@@ -131,6 +131,10 @@ void Seahorse::faceRandomDirection()
         facing = Direction::LEFT();
     else
         facing = Direction::RIGHT();
+    if( Math::randomlyNegative() < 0 )
+        verticalFacing = Direction::UP();
+    else
+        verticalFacing = Direction::DOWN();
 }
 
 void Seahorse::swim(Uint32 elapsedTime)
@@ -186,6 +190,10 @@ void Seahorse::moveForward(double pixels)
         position->x -= pixels;
     else
         position->x += pixels;
+    if( verticalFacing == Direction::UP() )
+        position->y -= pixels;
+    else
+        position->y += pixels;
 }
 
 void Seahorse::moveBob(double pixels)
@@ -518,9 +526,15 @@ void Seahorse::avoidBoundaries(const Direction &direction)
 {
     //Don't use turnBob() here because potential bug
     if( direction == Direction::UP() )
+    {
         bobDirection = Direction::DOWN();
+        verticalFacing = Direction::DOWN();
+    }
     else if( direction == Direction::DOWN() )
+    {
         bobDirection = Direction::UP();
+        verticalFacing = Direction::UP();
+    }
 
     resetBobRemaining();
 }

@@ -273,11 +273,14 @@ private:
     boost::shared_ptr<Dimension> size;
     boost::shared_ptr<Point> visionPosition;
     boost::shared_ptr<Dimension> visionSize;
+    boost::shared_ptr<Point> backPosition;
+    boost::shared_ptr<Dimension> backSize;
     Uint32 fishLastSeen;
     Uint32 timeSinceAboutFace;
     Direction facing;
     BoundingBox sharkBox;
     BoundingBox visionBox;
+    BoundingBox backBox;
     bool continueAttack;
     bool justAte;
     bool live;

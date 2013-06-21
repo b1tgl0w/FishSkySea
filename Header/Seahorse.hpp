@@ -327,6 +327,7 @@ private:
     double bobRemaining;
     Direction bobDirection;
     Depth depth;
+    Direction verticalFacing;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

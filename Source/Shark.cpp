@@ -93,9 +93,17 @@ void Shark::initialize(boost::weak_ptr<Ocean> ocean, const Point &position)
     visionSize = tmpVisionSize;
     visionPosition->y = this->position->y;
     visionSize->height = SIZE().height;
-    adjustVisionBox();
+    boost::shared_ptr<Point> tmpBackPosition(new Point);
+    boost::shared_ptr<Dimension> tmpBackSize(new Dimension);
+    backPosition = tmpBackPosition;
+    backSize = tmpBackSize;
+    backPosition->y = this->position->y;
+    backSize->height = SIZE().height;
     BoundingBox tmpVisionBox(visionPosition, visionSize);
     visionBox = tmpVisionBox;
+    BoundingBox tmpBackBox(backPosition, backSize);
+    backBox = tmpBackBox;
+    adjustVisionBox();
     continueAttack = false;
     justAte = false;
 }
@@ -119,6 +127,7 @@ void Shark::initializeStates()
     state = patrolState;
 }
 
+//Note: Also updates back box
 void Shark::adjustVisionBox()
 {
     //Assumes visionPosition->y is constant and already set
@@ -130,12 +139,18 @@ void Shark::adjustVisionBox()
         sharedOcean->alignWithBoundary(visionPosition->x, Direction::LEFT(),
             0.0); //no offset
         visionSize->width = position->x - 1.0 - visionPosition->x;
+        backPosition->x = SIZE().width + 1.0 + position->x;
+        sharedOcean->alignWithBoundary(backSize->width, Direction::RIGHT(),
+            backPosition->x); 
     }
     else
     {
         visionPosition->x = SIZE().width + 1.0 + position->x;
         sharedOcean->alignWithBoundary(visionSize->width, Direction::RIGHT(),
             visionPosition->x); 
+        sharedOcean->alignWithBoundary(backPosition->x, Direction::LEFT(),
+            0.0); //no offset
+        backSize->width = position->x - 1.0 - backPosition->x;
     }
 }
 
@@ -442,6 +457,7 @@ void Shark::AttackState::swim(Uint32 elapsedTime)
 
         sharedOcean->checkCollisions(collidable, sharedSharkOwner->sharkBox);
         sharedOcean->checkCollisions(collidable, sharedSharkOwner->visionBox);
+        sharedOcean->checkCollisions(collidable, sharedSharkOwner->backBox);
     }
 
     //No random about face when on the attack
@@ -468,6 +484,8 @@ void Shark::AttackState::collidesWith(boost::shared_ptr<Collidable> &object,
         object->collidesWithShark(sharedSharkOwner, otherBox);
     if( sharedSharkOwner->visionBox.isCollision(otherBox) )
         object->collidesWithSharkVision(sharedSharkOwner, otherBox);
+    if( sharedSharkOwner->backBox.isCollision(otherBox) )
+        object->collidesSharkBack(sharedSharkOwner, otherBox);
 }
 
 void Shark::AttackState::collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -620,6 +638,8 @@ void Shark::PatrolState::swim(Uint32 elapsedTime)
             sharedSharkOwner->sharkBox);
         sharedOcean->checkCollisions(collidable,
             sharedSharkOwner->visionBox);
+        sharedOcean->checkCollisions(collidable,
+            sharedSharkOwner->backBox);
     }
 
     sharedSharkOwner->randomAboutFace(elapsedTime);
@@ -646,6 +666,8 @@ void Shark::PatrolState::collidesWith(boost::shared_ptr<Collidable> &object,
         object->collidesWithShark(sharedSharkOwner, otherBox);
     if( sharedSharkOwner->visionBox.isCollision(otherBox) )
         object->collidesWithSharkVision(sharedSharkOwner, otherBox);
+    if( sharedSharkOwner->backBox.isCollision(otherBox) )
+        object->collidesSharkBack(sharedSharkOwner, otherBox);
 }
 
 void Shark::PatrolState::collidesWithHook(boost::shared_ptr<Line> &hook,
@@ -800,6 +822,7 @@ void Shark::GlowState::swim(Uint32 elapsedTime)
 
         sharedOcean->checkCollisions(collidable, sharedSharkOwner->sharkBox);
         sharedOcean->checkCollisions(collidable, sharedSharkOwner->visionBox);
+        sharedOcean->checkCollisions(collidable, sharedSharkOwner->backBox);
     }
 
     sharedSharkOwner->continueAttack = true;
