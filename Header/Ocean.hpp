@@ -52,6 +52,7 @@ public:
     void addFish(boost::shared_ptr<Fish> &fish, const Depth &depth);
     void addCreditFish(boost::shared_ptr<CreditFish> &CreditFish, const Depth 
         &depth);
+    void addSeahorse(boost::shared_ptr<Seahorse> &seahorse, const Depth &depth);
     void alignWithBoundary(double &coordinate, const Direction &whichBoundary,
         const double offset = 1.0);
     void alignWithSurface(double &coordinate, const double offset = 1.0);

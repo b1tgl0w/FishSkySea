@@ -114,3 +114,9 @@ Weight Depth::correspondingWeight()
         ((double) ROW6().value - ROW1().value));
 }
 
+Depth Depth::random()
+{
+    Depth tmp(Math::random(2, 7));
+    return tmp;
+}
+

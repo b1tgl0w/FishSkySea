@@ -36,7 +36,6 @@ const Dimension &Seahorse::SIZE()
     return TMP_SIZE;
 }
 
-//Class Fish
 Seahorse::Seahorse(const Point &initialPosition,
     boost::shared_ptr<Ocean> &ocean) : live(false)
 {
@@ -98,6 +97,7 @@ void Seahorse::initialize(const Point &newPosition,
     
     positionFromSide();
     resetTimes(); //Also sets shouldResetTime
+    depth = Depth::random();
 }
 
 //Note:_MUST_ be called IMMEDIATELY after ctor
@@ -316,6 +316,16 @@ void Seahorse::aboutFace()
         facing = Direction::RIGHT();
     else
         facing = Direction::LEFT();
+}
+
+void Seahorse::respawn(const double yCoordinate)
+{
+    boost::shared_ptr<SeahorseState> seahorseState(swimmingState);
+    changeState(seahorseState);
+    positionFromSide();
+    position->y = yCoordinate;
+    //Random depth for next time
+    depth = Depth::random();
 }
 
 void Seahorse::randomAboutFace(Uint32 elapsedTime)

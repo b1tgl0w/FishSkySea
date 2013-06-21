@@ -284,6 +284,11 @@ void Ocean::addCreditFish(boost::shared_ptr<CreditFish> &creditFish, const
     creditFish->respawn(fishStartingPoint);
 }
 
+void Ocean::addSeahorse(boost::shared_ptr<Seahorse> &seahorse, const Depth &depth)
+{
+    seahorse->respawn(getDepthY(depth));
+}
+
 double Ocean::getFishStartingX()
 {
     return screenSize.width / 2.0 - Fish::SIZE().width / 2.0;

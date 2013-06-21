@@ -27,6 +27,7 @@
 #include "BoundingBox.hpp"
 #include "Collidable.hpp"
 #include "MasterClockSubscriber.hpp"
+#include "Depth.hpp"
 
 class Renderer;
 class Ocean;
@@ -147,6 +148,7 @@ public:
     static const Dimension &SIZE(); //Public so ocean knows where to place
     void aboutFace();
     void randomAboutFace(Uint32 elapsedTime); //No-op
+    void respawn(const double yCoordinate);
 
 protected:
     Seahorse();
@@ -324,6 +326,7 @@ private:
     bool live;
     double bobRemaining;
     Direction bobDirection;
+    Depth depth;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

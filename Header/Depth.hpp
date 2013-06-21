@@ -30,6 +30,7 @@ public:
     bool operator==(const Depth &rhs);
     bool operator<(const Depth &rhs) const;
     Weight correspondingWeight();
+    static Depth random();
 protected:
     void initialize(int value);
     void dispose();
