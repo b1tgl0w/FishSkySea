@@ -461,11 +461,20 @@ void Fish::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
 void Fish::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void Fish::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox) 
+{
+    state->collidesWithSeahorseLeft(seahorse, yourBox);
+}
 void Fish::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox) 
+{
+    state->collidesWithSeahorseRight(seahorse, yourBox);
+}
 void Fish::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox) 
+{
+    state->collidesWithSeahorse(seahorse, yourBox);
+}
 void Fish::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
 
@@ -718,10 +727,28 @@ void Fish::FreeState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player
 
 void Fish::FreeState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
+
 void Fish::FreeState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox) 
+{
+    boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
+
+    if( !sharedFishOwner )
+        return;
+
+    sharedFishOwner->facing = Direction::RIGHT();
+}
 void Fish::FreeState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox)
+{
+
+    boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
+
+    if( !sharedFishOwner )
+        return;
+
+    sharedFishOwner->facing = Direction::LEFT();
+}
 void Fish::FreeState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Fish::FreeState::collidesSharkBack(boost::shared_ptr<Shark> &shark,

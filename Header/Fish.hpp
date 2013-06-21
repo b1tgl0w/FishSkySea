@@ -403,6 +403,7 @@ private:
     bool shouldResetTimes;
     bool glowing;
     bool live;
+    bool turnedToSeahorse;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

@@ -88,15 +88,31 @@ void Seahorse::initialize(const Point &newPosition,
     this->ocean = ocean;
     boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
     seahorseSize = tmpSize;
+    boost::shared_ptr<Point> tmpLeftPosition(new Point);
+    boost::shared_ptr<Dimension> tmpLeftSize(new Dimension);
+    boost::shared_ptr<Point> tmpRightPosition(new Point);
+    boost::shared_ptr<Dimension> tmpRightSize(new Dimension);
+    leftPosition = tmpLeftPosition;
+    leftSize = tmpLeftSize;
+    rightPosition = tmpRightPosition;
+    rightSize = tmpRightSize;
+    Point tmpOceanFloor;
+    ocean->alignWithBoundary(tmpOceanFloor.y, Direction::DOWN(), 0.0);
+    ocean->alignWithBoundary(leftPosition->y, Direction::UP(), 0.0);
+    leftSize->height = tmpOceanFloor.y - leftPosition->y;
+    ocean->alignWithBoundary(rightPosition->y, Direction::UP(), 0.0);
+    rightSize->height = tmpOceanFloor.y - rightPosition->y;
+
     BoundingBox tmpSeahorseBox(position, seahorseSize);
-    BoundingBox tmpSeahorseLeftBox(position, seahorseSize);
-    BoundingBox tmpSeahorseRightBox(position, seahorseSize);
+    BoundingBox tmpSeahorseLeftBox(leftPosition, leftSize);
+    BoundingBox tmpSeahorseRightBox(rightPosition, rightSize);
     seahorseBox = tmpSeahorseBox;
     seahorseLeftBox = tmpSeahorseLeftBox;
     seahorseRightBox = tmpSeahorseRightBox;
     bobDirection = Direction::UP();
     bobRemaining = 0;
     turnBob();
+    adjustBoxes();
 
     positionFromSide();
     resetTimes(); //Also sets shouldResetTime
@@ -355,6 +371,22 @@ void Seahorse::randomAboutFace(Uint32 elapsedTime)
     //No-op
 }
 
+void Seahorse::adjustBoxes()
+{
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+    if( !sharedOcean )
+        return;
+
+    sharedOcean->alignWithBoundary(leftPosition->x, Direction::LEFT(),
+        0.0); //no offset
+    leftSize->width = position->x + seahorseSize->width / 2 - leftPosition->x;
+    Point tmpPoint = {0.0, 0.0};
+    sharedOcean->alignWithBoundary(tmpPoint.x, Direction::RIGHT(),
+        0.0); //no offset
+    rightPosition->x = position->x + seahorseSize->width / 2 + 1;
+    rightSize->width = tmpPoint.x - rightPosition->x;
+}
+
 //Inner class FreeState
 Seahorse::SwimmingState::SwimmingState()
 {
@@ -437,6 +469,7 @@ void Seahorse::SwimmingState::swim(Uint32 elapsedTime)
         pixelsThisIteration = Math::lesser(MAXIMUM_PIXELS, pixelsLeft);
         sharedSeahorseOwner->moveForward(pixelsThisIteration);
         pixelsLeft -= pixelsThisIteration;
+        sharedSeahorseOwner->adjustBoxes();
 
         sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseBox);
         sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseLeftBox);
@@ -473,7 +506,6 @@ void Seahorse::SwimmingState::swim(Uint32 elapsedTime)
     {
         if( sharedSeahorseOwner->floatedOnce == false )
         {
-        std::cout << "asdf" << std::endl;
             boost::shared_ptr<SeahorseState> tmpState(sharedSeahorseOwner->
                 floatingState);
             sharedSeahorseOwner->changeState(tmpState);
@@ -743,6 +775,7 @@ void Seahorse::FloatingState::swim(Uint32 elapsedTime)
         return;
 
 
+    sharedSeahorseOwner->adjustBoxes();
     sharedSeahorseOwner->bob(elapsedTime);
     if( sharedSeahorseOwner->floatTime >= FLOAT_DURATION )
     {

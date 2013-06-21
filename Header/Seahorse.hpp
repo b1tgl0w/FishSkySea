@@ -313,6 +313,7 @@ private:
     void avoidBoundaries(const Direction &direction);
     void resetBobRemaining();
     void resetFloat();
+    void adjustBoxes();
     boost::shared_ptr<SeahorseState> state;
     boost::shared_ptr<SwimmingState> swimmingState;
     boost::shared_ptr<FloatingState> floatingState;
@@ -332,6 +333,10 @@ private:
     double floatX;
     bool floatedOnce;
     Uint32 floatTime;
+    boost::shared_ptr<Point> leftPosition;
+    boost::shared_ptr<Dimension> leftSize;
+    boost::shared_ptr<Point> rightPosition;
+    boost::shared_ptr<Dimension> rightSize;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();
