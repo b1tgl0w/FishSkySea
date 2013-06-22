@@ -73,13 +73,15 @@ const Uint32 &Fish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 
 //Class Fish
 Fish::Fish(const Point &initialPosition,
-    const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean) : live(false)
+    const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean) : live(false),
+    collidedWithSeahorse(false), behindSeahorse(false), stayBehindSeahorse(false)
 {
     initialize(initialPosition, initialDepth, ocean, false);
 }
 
 Fish::Fish(const Fish &rhs) : fishSize(rhs.fishSize), mouthSize(rhs.mouthSize),
-    live(rhs.live)
+    live(rhs.live), collidedWithSeahorse(rhs.collidedWithSeahorse),
+    behindSeahorse(rhs.behindSeahorse), stayBehindSeahorse(rhs.stayBehindSeahorse)
 {
     boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
 
@@ -104,6 +106,9 @@ Fish &Fish::operator=(const Fish &rhs)
         fishSize = rhs.fishSize;
         mouthSize = rhs.mouthSize;
         live = rhs.live;
+        collidedWithSeahorse = rhs.collidedWithSeahorse;
+        behindSeahorse = rhs.behindSeahorse;
+        stayBehindSeahorse = rhs.stayBehindSeahorse;
     }
     //Else throw exception?
 
@@ -461,14 +466,14 @@ void Fish::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
 void Fish::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void Fish::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) 
+    const BoundingBox &yourBox, const Direction &seahorseFacing) 
 {
-    state->collidesWithSeahorseLeft(seahorse, yourBox);
+    state->collidesWithSeahorseLeft(seahorse, yourBox, seahorseFacing);
 }
 void Fish::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) 
+    const BoundingBox &yourBox, const Direction &seahorseFacing) 
 {
-    state->collidesWithSeahorseRight(seahorse, yourBox);
+    state->collidesWithSeahorseRight(seahorse, yourBox, seahorseFacing);
 }
 void Fish::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) 
@@ -554,8 +559,16 @@ void Fish::FreeState::swim(Uint32 elapsedTime)
     if( !sharedOcean )
         return;
 
+    sharedFishOwner->collidedWithSeahorse = false;
+
+    sharedOcean->checkCollisions(collidable, sharedFishOwner->fishBox);
+    sharedOcean->checkCollisions(collidable, sharedFishOwner->mouthBox);
+
     while( pixelsLeft > 0 )
     {
+        if( sharedFishOwner->stayBehindSeahorse )
+            break;
+
         //Moving one pixel at a time is inefficient, but the hook
         //box is planned to be small.
         //This should go first or else the fish can be caught on the edge
@@ -589,9 +602,18 @@ void Fish::FreeState::swim(Uint32 elapsedTime)
             sharedFishOwner->aboutFace();*/
     }
 
-    sharedFishOwner->randomAboutFace(elapsedTime);
+    if( !sharedFishOwner->behindSeahorse )
+        sharedFishOwner->randomAboutFace(elapsedTime);
+
     sharedOcean->checkCollisions(collidable, sharedFishOwner->fishBox);
     sharedOcean->checkCollisions(collidable, sharedFishOwner->mouthBox);
+
+    if( !(sharedFishOwner->collidedWithSeahorse) )
+    {
+        sharedFishOwner->behindSeahorse = false;
+        sharedFishOwner->stayBehindSeahorse = false;
+    }
+        
     spurtVelocity(elapsedTime);
 }
 
@@ -729,17 +751,30 @@ void Fish::FreeState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 
 void Fish::FreeState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) 
+    const BoundingBox &yourBox, const Direction &seahorseFacing) 
 {
     boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
 
     if( !sharedFishOwner )
         return;
+
+    sharedFishOwner->collidedWithSeahorse = true;
+    sharedFishOwner->stayBehindSeahorse = false;
+
+    if( sharedFishOwner->behindSeahorse && sharedFishOwner->facing == Direction::LEFT() )
+    {
+        sharedFishOwner->stayBehindSeahorse = true;
+        return;
+    }
 
     sharedFishOwner->facing = Direction::RIGHT();
+
+    if( seahorseFacing == Direction::RIGHT() )
+        sharedFishOwner->behindSeahorse = true;
 }
+
 void Fish::FreeState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox)
+    const BoundingBox &yourBox, const Direction &seahorseFacing)
 {
 
     boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
@@ -747,7 +782,20 @@ void Fish::FreeState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &sea
     if( !sharedFishOwner )
         return;
 
+    sharedFishOwner->collidedWithSeahorse = true;
+    sharedFishOwner->stayBehindSeahorse = false;
+
+    if( sharedFishOwner->behindSeahorse && sharedFishOwner->facing == 
+        Direction::RIGHT() )
+    {
+        sharedFishOwner->stayBehindSeahorse = true;
+        return;
+    }
+
     sharedFishOwner->facing = Direction::LEFT();
+
+    if( seahorseFacing == Direction::LEFT() )
+        sharedFishOwner->behindSeahorse = true;
 }
 void Fish::FreeState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
@@ -1019,9 +1067,9 @@ void Fish::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &play
 void Fish::HookedState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void Fish::HookedState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Fish::HookedState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Fish::HookedState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Fish::HookedState::collidesSharkBack(boost::shared_ptr<Shark> &shark,

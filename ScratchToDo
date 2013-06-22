@@ -1,0 +1,11 @@
+//This file is a to do list to keep open while you're coding to keep you on track
+//This file complements CurrentToDo. 
+//Current to is specifications of current task, this is implementation of task
+
+done 1.  collidesWithSeahorseLeft/Right, pass seahorseFacing
+done 2.  If fsh colides horseRght, and horse is facing left, set bool behind
+done 3.  If behind, and collides with front, stop swimming, don't face other way
+done 4.  Update header and init with stayBehind and behind
+done 5.  When seahorse off screen, reset behind and stayBehind
+done 6.  When seahorse off screen, shrink bounding boxes 
+

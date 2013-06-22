@@ -90,9 +90,9 @@ public:
     void collidesWithCreditFish(boost::shared_ptr<CreditFish>
         &creditFish, const BoundingBox &yourBox);
     void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-        const BoundingBox &yourBox);
+        const BoundingBox &yourBox, const Direction &seahorseFacing);
     void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-        const BoundingBox &yourBox);
+        const BoundingBox &yourBox, const Direction &seahorseFacing);
     void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
         const BoundingBox &yourBox);
     void collidesSharkBack(boost::shared_ptr<Shark> &shark,
@@ -184,9 +184,9 @@ private:
         void collidesWithCreditFish(boost::shared_ptr<CreditFish>
             &creditFish, const BoundingBox &yourBox);
         void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-            const BoundingBox &yourBox);
+            const BoundingBox &yourBox, const Direction &seahorseFacing);
         void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-            const BoundingBox &yourBox);
+            const BoundingBox &yourBox, const Direction &seahorseFacing);
         void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
             const BoundingBox &yourBox);
         void collidesSharkBack(boost::shared_ptr<Shark> &shark,
@@ -239,9 +239,9 @@ private:
         void collidesWithCreditFish(boost::shared_ptr<CreditFish>
             &creditFish, const BoundingBox &yourBox);
         void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-            const BoundingBox &yourBox);
+            const BoundingBox &yourBox, const Direction &seahorseFacing);
         void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-            const BoundingBox &yourBox);
+            const BoundingBox &yourBox, const Direction &seahorseFacing);
         void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
             const BoundingBox &yourBox);
         void collidesSharkBack(boost::shared_ptr<Shark> &shark,

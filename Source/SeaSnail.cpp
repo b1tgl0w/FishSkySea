@@ -312,9 +312,9 @@ void SeaSnail::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
 void SeaSnail::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void SeaSnail::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void SeaSnail::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void SeaSnail::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void SeaSnail::collidesSharkBack(boost::shared_ptr<Shark> &shark,

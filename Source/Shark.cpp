@@ -375,9 +375,9 @@ void Shark::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
 void Shark::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void Shark::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Shark::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Shark::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Shark::collidesSharkBack(boost::shared_ptr<Shark> &shark,
@@ -563,9 +563,9 @@ void Shark::AttackState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
 void Shark::AttackState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void Shark::AttackState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Shark::AttackState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Shark::AttackState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Shark::AttackState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
@@ -749,9 +749,9 @@ void Shark::PatrolState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
 void Shark::PatrolState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void Shark::PatrolState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Shark::PatrolState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Shark::PatrolState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Shark::PatrolState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
@@ -925,9 +925,9 @@ void Shark::GlowState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
 void Shark::GlowState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void Shark::GlowState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Shark::GlowState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Shark::GlowState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Shark::GlowState::collidesSharkBack(boost::shared_ptr<Shark> &shark,

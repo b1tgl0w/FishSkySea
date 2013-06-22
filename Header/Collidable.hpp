@@ -54,9 +54,9 @@ public:
     virtual void collidesWithCreditFish(boost::shared_ptr<CreditFish>
         &creditFish, const BoundingBox &yourBox) = 0;
     virtual void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox, const Direction &seahorseFacing) = 0;
     virtual void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox, const Direction &seahorseFacing) = 0;
     virtual void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
         const BoundingBox &yourBox) = 0;
     virtual void collidesSharkBack(boost::shared_ptr<Shark> &shark,

@@ -38,13 +38,14 @@ const Dimension &Seahorse::SIZE()
 
 Seahorse::Seahorse(const Point &initialPosition,
     boost::shared_ptr<Ocean> &ocean) : live(false), floatedOnce(false),
-    floatTime(0)
+    floatTime(0), collidedWithOceanEdge(false)
 {
     initialize(initialPosition, ocean);
 }
 
 Seahorse::Seahorse(const Seahorse &rhs) : seahorseSize(rhs.seahorseSize),
-    live(rhs.live), floatedOnce(rhs.floatedOnce), floatTime(rhs.floatTime)
+    live(rhs.live), floatedOnce(rhs.floatedOnce), floatTime(rhs.floatTime),
+    collidedWithOceanEdge(rhs.collidedWithOceanEdge)
 {
     boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
 
@@ -70,6 +71,7 @@ Seahorse &Seahorse::operator=(const Seahorse &rhs)
         live = rhs.live;
         floatedOnce = rhs.floatedOnce;
         floatTime = rhs.floatTime;
+        collidedWithOceanEdge = rhs.collidedWithOceanEdge;
     }
     //Else throw exception?
 
@@ -268,6 +270,9 @@ void Seahorse::collidesWithHook(boost::shared_ptr<Line> &hook,
 void Seahorse::collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox, const Direction &direction)
 {
+    if( &yourBox == &seahorseBox )
+        collidedWithOceanEdge = true;
+
     state->collidesWithOceanEdge(ocean, yourBox, direction);
 }
 
@@ -280,7 +285,6 @@ void Seahorse::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
 void Seahorse::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox)
 {
-    //No-op
 }
 
 void Seahorse::collidesWithShark(boost::shared_ptr<Shark> &shark,
@@ -323,9 +327,9 @@ void Seahorse::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 
 void Seahorse::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Seahorse::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Seahorse::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 
@@ -373,6 +377,15 @@ void Seahorse::randomAboutFace(Uint32 elapsedTime)
 
 void Seahorse::adjustBoxes()
 {
+    if( collidedWithOceanEdge )
+    {
+        leftSize->width = 1.0;
+        rightSize->width = 1.0;
+        leftPosition->x = -9999.0;
+        rightPosition->x = -9999.0;
+        return;
+    }
+
     boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
     if( !sharedOcean )
         return;
@@ -459,6 +472,11 @@ void Seahorse::SwimmingState::swim(Uint32 elapsedTime)
 
     if( !sharedOcean )
         return;
+
+    sharedSeahorseOwner->collidedWithOceanEdge = false;
+    sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseBox);
+    sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseLeftBox);
+    sharedOcean->checkCollisions(collidable, sharedSeahorseOwner->seahorseRightBox);
 
     while( pixelsLeft > 0 )
     {
@@ -615,9 +633,11 @@ void Seahorse::SwimmingState::collidesWith(boost::shared_ptr<Collidable> &otherO
         return;
 
     if( sharedSeahorseOwner->seahorseLeftBox.isCollision(otherBox) )
-        otherObject->collidesWithSeahorseLeft(sharedSeahorseOwner, otherBox);
+        otherObject->collidesWithSeahorseLeft(sharedSeahorseOwner, otherBox,
+        sharedSeahorseOwner->facing);
     if( sharedSeahorseOwner->seahorseRightBox.isCollision(otherBox) )
-        otherObject->collidesWithSeahorseRight(sharedSeahorseOwner, otherBox);
+        otherObject->collidesWithSeahorseRight(sharedSeahorseOwner, otherBox,
+        sharedSeahorseOwner->facing);
     if( sharedSeahorseOwner->seahorseBox.isCollision(otherBox) )
         otherObject->collidesWithSeahorse(sharedSeahorseOwner, otherBox);
 }
@@ -701,9 +721,9 @@ void Seahorse::SwimmingState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
 void Seahorse::SwimmingState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void Seahorse::SwimmingState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Seahorse::SwimmingState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Seahorse::SwimmingState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Seahorse::SwimmingState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
@@ -798,9 +818,11 @@ void Seahorse::FloatingState::collidesWith(boost::shared_ptr<Collidable> &otherO
         return;
 
     if( sharedSeahorseOwner->seahorseLeftBox.isCollision(otherBox) )
-        otherObject->collidesWithSeahorseLeft(sharedSeahorseOwner, otherBox);
+        otherObject->collidesWithSeahorseLeft(sharedSeahorseOwner, otherBox,
+        sharedSeahorseOwner->facing);
     if( sharedSeahorseOwner->seahorseRightBox.isCollision(otherBox) )
-        otherObject->collidesWithSeahorseRight(sharedSeahorseOwner, otherBox);
+        otherObject->collidesWithSeahorseRight(sharedSeahorseOwner, otherBox,
+        sharedSeahorseOwner->facing);
     if( sharedSeahorseOwner->seahorseBox.isCollision(otherBox) )
         otherObject->collidesWithSeahorse(sharedSeahorseOwner, otherBox);
 }
@@ -885,9 +907,9 @@ void Seahorse::FloatingState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
 void Seahorse::FloatingState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void Seahorse::FloatingState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Seahorse::FloatingState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Seahorse::FloatingState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Seahorse::FloatingState::collidesSharkBack(boost::shared_ptr<Shark> &shark,

@@ -453,9 +453,9 @@ void Ocean::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
 void Ocean::collidesWithCreditFish(boost::shared_ptr<CreditFish>
     &creditFish, const BoundingBox &yourBox) {}
 void Ocean::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {} 
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {} 
 void Ocean::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Ocean::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Ocean::collidesSharkBack(boost::shared_ptr<Shark> &shark,
