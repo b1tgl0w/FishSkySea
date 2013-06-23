@@ -482,6 +482,8 @@ void Fish::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
 }
 void Fish::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void Fish::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 void Fish::clockTick(Uint32 elapsedTime)
 {
@@ -801,6 +803,8 @@ void Fish::FreeState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse
     const BoundingBox &yourBox) {}
 void Fish::FreeState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void Fish::FreeState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 
 //Inner class HookedState
@@ -1074,4 +1078,6 @@ void Fish::HookedState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahor
     const BoundingBox &yourBox) {}
 void Fish::HookedState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void Fish::HookedState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 

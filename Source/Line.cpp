@@ -682,6 +682,8 @@ void Line::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Line::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void Line::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 //MasterClockSubscriber
 void Line::clockTick(Uint32 elapsedTime)
@@ -966,6 +968,8 @@ void Line::NotHookedState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &sea
     const BoundingBox &yourBox) {}
 void Line::NotHookedState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void Line::NotHookedState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 Line::HookedState::HookedState(boost::weak_ptr<Line> owner)
 {
@@ -1252,4 +1256,6 @@ void Line::HookedState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahor
     const BoundingBox &yourBox) {}
 void Line::HookedState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void Line::HookedState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 

@@ -8,5 +8,5 @@ Left off on: Testing for funnnes, polish
 Specific Steps:
 - Test for funness, polish
 - Make bob when in swim state //postponed
-- Make appear after seasnail every other time
+- Make sure seasnail cannot appear at the same time as seahorse //postponed
 

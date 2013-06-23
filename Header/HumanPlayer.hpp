@@ -85,6 +85,8 @@ public:
         const BoundingBox &yourBox);
     void collidesSharkBack(boost::shared_ptr<Shark> &shark,
         const BoundingBox & yourBox);
+    void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
     static const bool &PLAYER_ONE();
     static const bool &PLAYER_TWO();
 protected:

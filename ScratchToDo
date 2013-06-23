@@ -2,8 +2,4 @@
 //This file complements CurrentToDo. 
 //Current to is specifications of current task, this is implementation of task
 
-done 1. Notify seahorse when seasnail goes offscreen
-done 2. Notify seasnail when seahorse goes offscreen
-done 3. Send seahorse out after seasnail leaves twice.
-4. Make seahorse hit seafloor
 

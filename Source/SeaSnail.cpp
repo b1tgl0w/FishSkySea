@@ -321,6 +321,8 @@ void SeaSnail::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void SeaSnail::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void SeaSnail::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 void SeaSnail::clockTick(Uint32 elapsedTime)
 {

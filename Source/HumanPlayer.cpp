@@ -300,4 +300,6 @@ void HumanPlayer::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void HumanPlayer::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void HumanPlayer::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 

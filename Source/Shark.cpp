@@ -382,6 +382,8 @@ void Shark::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Shark::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void Shark::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 void Shark::clockTick(Uint32 elapsedTime)
 {
@@ -570,6 +572,8 @@ void Shark::AttackState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seaho
     const BoundingBox &yourBox) {}
 void Shark::AttackState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void Shark::AttackState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 //Patrol State
 Shark::PatrolState::PatrolState()
@@ -756,6 +760,8 @@ void Shark::PatrolState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seaho
     const BoundingBox &yourBox) {}
 void Shark::PatrolState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void Shark::PatrolState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 //Attack State
 Shark::GlowState::GlowState()
@@ -932,4 +938,5 @@ void Shark::GlowState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahors
     const BoundingBox &yourBox) {}
 void Shark::GlowState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
-
+void Shark::GlowState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}

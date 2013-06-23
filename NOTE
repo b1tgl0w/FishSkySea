@@ -50,6 +50,10 @@ SECOND+ TIME.
 
 Don't forget about sound effects
 
+To Do: Make seahorse bob even when swimming vertically
+
+BUG: Make sure seasnail cannot appear at the same time as seahorse
+
 BUG: Shark never leaves the glow state. (Maybe fixed)
 
 BUG: Sometimes fish doesn't glow after touching snail. (maybe fixed?)

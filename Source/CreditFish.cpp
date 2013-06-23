@@ -556,6 +556,8 @@ void CreditFish::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void CreditFish::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void CreditFish::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 void CreditFish::clockTick(Uint32 elapsedTime)
 {
@@ -782,6 +784,8 @@ void CreditFish::FreeState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &se
     const BoundingBox &yourBox) {}
 void CreditFish::FreeState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void CreditFish::FreeState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 
 //Inner class HookedState
@@ -1010,3 +1014,5 @@ void CreditFish::HookedState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &
     const BoundingBox &yourBox) {}
 void CreditFish::HookedState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void CreditFish::HookedState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}

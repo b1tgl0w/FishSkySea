@@ -45,6 +45,27 @@ const double &Ocean::OCEAN_SURFACE_HEIGHT()
     return TMP_OCEAN_SURFACE_HEIGHT;
 }
 
+const double &Ocean::OCEAN_FLOOR_Y()
+{
+    //See image
+    const static double TMP_OCEAN_FLOOR_Y = 575.0;
+    return TMP_OCEAN_FLOOR_Y;
+}
+
+const double &Ocean::OCEAN_FLOOR_WIDTH()
+{
+    //See image
+    const static double TMP_OCEAN_FLOOR_WIDTH = 800.0;
+    return TMP_OCEAN_FLOOR_WIDTH;
+}
+
+const double &Ocean::OCEAN_FLOOR_HEIGHT()
+{
+    //See image
+    const static double TMP_OCEAN_FLOOR_HEIGHT = 26.0;
+    return TMP_OCEAN_FLOOR_HEIGHT;
+}
+
 const Point &Ocean::SEA_SNAIL_POSITION()
 {
     const static Point TMP_SEA_SNAIL_POSITION = { 100.0 , 512.0 };
@@ -225,22 +246,32 @@ void Ocean::initialize(const Dimension &screenSize)
 {
     this->screenSize = screenSize;
     Point tmpPoint = { OCEAN_EDGE_X(), OCEAN_EDGE_Y() };
+    Point tmpFloorPoint = { OCEAN_EDGE_X(), OCEAN_FLOOR_Y() };
     Dimension tmpOceanSurfaceDimension = { OCEAN_SURFACE_WIDTH(),
         OCEAN_SURFACE_HEIGHT() };
+    Dimension tmpOceanFloorDimension = { OCEAN_FLOOR_WIDTH(),
+        OCEAN_FLOOR_HEIGHT() };
     boost::shared_ptr<Point> tmpOceanEdgePosition(new Point(tmpPoint));
     boost::shared_ptr<Dimension> tmpOceanEdgeSize(new Dimension(
         this->screenSize)); 
     boost::shared_ptr<Point> tmpOceanSurfacePosition(new Point(tmpPoint));
+    boost::shared_ptr<Point> tmpOceanFloorPosition(new Point(tmpFloorPoint));
     boost::shared_ptr<Dimension> tmpOceanSurfaceSize(new Dimension(
         tmpOceanSurfaceDimension));
+    boost::shared_ptr<Dimension> tmpOceanFloorSize(new Dimension(
+        tmpOceanFloorDimension));
     oceanEdgePosition = tmpOceanEdgePosition;
     oceanEdgeSize = tmpOceanEdgeSize;
     oceanSurfacePosition = tmpOceanSurfacePosition;
     oceanSurfaceSize = tmpOceanSurfaceSize;
+    oceanFloorPosition = tmpOceanFloorPosition;
+    oceanFloorSize = tmpOceanFloorSize;
     BoundingBox tmpOceanBox(oceanEdgePosition, oceanEdgeSize);
     BoundingBox tmpOceanSurfaceBox(oceanSurfacePosition, oceanSurfaceSize);
+    BoundingBox tmpOceanFloorBox(oceanFloorPosition, oceanFloorSize);
     oceanBox = tmpOceanBox;
     oceanSurfaceBox = tmpOceanSurfaceBox;
+    oceanFloorBox = tmpOceanFloorBox;
     const double DEPTH_DISTANCE = 33;
     double currentDepthCoordinate = 340.0;
     depthCoordinates[Depth::ROW1()] = currentDepthCoordinate;
@@ -390,6 +421,12 @@ void Ocean::collidesWith(boost::shared_ptr<Collidable> &otherObject,
         otherObject->collidesWithOceanSurface(sharedThis,
             otherBox);
     }
+    if( oceanFloorBox.isCollision(otherBox) )
+    {
+        boost::shared_ptr<Ocean> sharedThis(shared_from_this());
+        otherObject->collidesWithOceanFloor(sharedThis,
+            otherBox);
+    }
     if( oceanBox.isCollision(otherBox) )
     {
         boost::shared_ptr<Ocean> sharedThis(shared_from_this());
@@ -461,6 +498,8 @@ void Ocean::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void Ocean::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+void Ocean::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) {}
 
 
 Ocean::GameState::GameState(boost::shared_ptr<Ocean> &oceanOwner)

@@ -37,12 +37,12 @@ const Layer Layer::PLAYER()
     return Layer(3);
 }
 
-const Layer Layer::FISH()
+const Layer Layer::SEA_HORSE()
 {
     return Layer(4);
 }
 
-const Layer Layer::SEA_HORSE()
+const Layer Layer::FISH()
 {
     return Layer(5);
 }

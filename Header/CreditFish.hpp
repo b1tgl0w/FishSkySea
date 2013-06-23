@@ -191,6 +191,8 @@ public:
         const BoundingBox &yourBox);
     void collidesSharkBack(boost::shared_ptr<Shark> &shark,
         const BoundingBox & yourBox);
+    void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
@@ -258,6 +260,8 @@ private:
             const BoundingBox &yourBox);
         void collidesSharkBack(boost::shared_ptr<Shark> &shark,
             const BoundingBox & yourBox);
+        void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+            const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<CreditFish> creditFishOwner);
         void dispose();
@@ -312,6 +316,8 @@ private:
             const BoundingBox &yourBox);
         void collidesSharkBack(boost::shared_ptr<Shark> &shark,
             const BoundingBox & yourBox);
+        void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+            const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<CreditFish> creditFishOwner);
         void dispose();

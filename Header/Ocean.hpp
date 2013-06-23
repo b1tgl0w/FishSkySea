@@ -98,6 +98,8 @@ public:
         const BoundingBox &yourBox);
     void collidesSharkBack(boost::shared_ptr<Shark> &shark,
         const BoundingBox & yourBox);
+    void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
 protected:
     void initialize(const Dimension &screenSize);
     void dispose();
@@ -166,6 +168,9 @@ private:
     static double &OCEAN_EDGE_Y();
     const static double &OCEAN_SURFACE_WIDTH();
     const static double &OCEAN_SURFACE_HEIGHT();
+    const static double &OCEAN_FLOOR_Y();
+    const static double &OCEAN_FLOOR_WIDTH();
+    const static double &OCEAN_FLOOR_HEIGHT();
     const static Point &SEA_SNAIL_POSITION();
     const static Point &SEA_HORSE_POSITION();
     const static Point &SHARK_POSITION();
@@ -177,8 +182,11 @@ private:
     boost::shared_ptr<Dimension> oceanEdgeSize;
     boost::shared_ptr<Point> oceanSurfacePosition;
     boost::shared_ptr<Dimension> oceanSurfaceSize;
+    boost::shared_ptr<Point> oceanFloorPosition;
+    boost::shared_ptr<Dimension> oceanFloorSize;
     BoundingBox oceanBox;
     BoundingBox oceanSurfaceBox;
+    BoundingBox oceanFloorBox;
 };
 
 #endif

@@ -345,6 +345,12 @@ void Seahorse::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     state->collidesSharkBack(shark, yourBox);
 }
 
+void Seahorse::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    state->collidesWithOceanFloor(ocean, yourBox);
+}
+
 void Seahorse::clockTick(Uint32 elapsedTime)
 {
     if( !live )
@@ -771,6 +777,17 @@ void Seahorse::SwimmingState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
         sharedSeahorseOwner->avoidBoundaries(Direction::UP());
 }
 
+void Seahorse::SwimmingState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
+
+    if( !sharedSeahorseOwner )
+        return;
+
+    if( &yourBox == &(sharedSeahorseOwner->seahorseBox) )
+        sharedSeahorseOwner->avoidBoundaries(Direction::DOWN());
+}
 
 //Inner class FloatingState
 Seahorse::FloatingState::FloatingState()
@@ -954,5 +971,17 @@ void Seahorse::FloatingState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
 
     if( &yourBox == &(sharedSeahorseOwner->seahorseBox) )
         sharedSeahorseOwner->avoidBoundaries(Direction::UP());
+}
+
+void Seahorse::FloatingState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
+
+    if( !sharedSeahorseOwner )
+        return;
+
+    if( &yourBox == &(sharedSeahorseOwner->seahorseBox) )
+        sharedSeahorseOwner->avoidBoundaries(Direction::DOWN());
 }
 
