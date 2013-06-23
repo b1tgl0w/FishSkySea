@@ -50,7 +50,7 @@ HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     //From dock to middle.
     //From polePoint.y to just above bottom of screen
     //May need some adjusting
-    Dimension tmpDimension = { 273.0, 600.0 - polePoint.y - 25.0 };
+    Dimension tmpDimension = { 273.0, 600.0 - polePoint.y - 35.0 };
     boost::shared_ptr<Dimension> tmpPoleAreaSize(new Dimension(tmpDimension));
     poleAreaSize = tmpPoleAreaSize;
     BoundingBox tmpBox(poleAreaPoint, poleAreaSize);

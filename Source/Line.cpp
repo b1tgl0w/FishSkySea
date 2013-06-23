@@ -311,6 +311,12 @@ void Line::initialize(boost::shared_ptr<Player> &newPlayer,
     initialHookPoint.x = hookPoint->x;
     initialHookPoint.y = hookPoint->y;
 
+    boost::shared_ptr<Point> tmpBitePoint(new Point);
+    bitePoint = tmpBitePoint;
+
+    BoundingBox tmpBiteBox(bitePoint, hookSize);
+    biteBox = tmpBiteBox;
+
     lineIDNumber = highestIdNumberGiven()++; 
 }
 
@@ -420,6 +426,7 @@ void Line::move(Uint32 elapsedTime, double &coordinate, double velocity)
     boost::shared_ptr<Collidable> sharedThis( shared_from_this() );
     sharedOcean->checkCollisions(sharedThis, poleBox);
     sharedOcean->checkCollisions(sharedThis, hookBox);
+    sharedOcean->checkCollisions(sharedThis, biteBox);
 }
 
 void Line::pullFish()
@@ -807,6 +814,16 @@ void Line::NotHookedState::clockTick(Uint32 elapsedTime)
 {
     move(elapsedTime);
     settle(elapsedTime);
+
+    boost::shared_ptr<Line> sharedLineOwner = lineOwner.lock();
+
+    if( !sharedLineOwner )
+        return;
+
+    sharedLineOwner->bitePoint->x = sharedLineOwner->hookPoint->x - 4.0 -
+        sharedLineOwner->hookSize->width / 2.0;
+    sharedLineOwner->bitePoint->y = sharedLineOwner->hookPoint->y + 5.0 -
+        sharedLineOwner->hookSize->height / 2.0;
 }
 
 void Line::NotHookedState::pullFish()
@@ -832,7 +849,7 @@ void Line::NotHookedState::collidesWith(boost::shared_ptr<Collidable>
     if( !sharedLineOwner )
         return;
 
-    if( sharedLineOwner->hookBox.isCollision(otherBox) )
+    if( sharedLineOwner->biteBox.isCollision(otherBox) )
         otherObject->collidesWithHook(sharedLineOwner, otherBox);
 }
 
@@ -942,8 +959,12 @@ void Line::NotHookedState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     if( !sharedLineOwner )
         return;
 
-    fish->hookedBy(sharedLineOwner, sharedLineOwner->owner);
-    sharedLineOwner->hooked(fish);
+
+    if( &yourBox == &(sharedLineOwner->biteBox) )
+    {
+        fish->hookedBy(sharedLineOwner, sharedLineOwner->owner);
+        sharedLineOwner->hooked(fish);
+    }
 }
 
 void Line::NotHookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> 
@@ -1131,7 +1152,7 @@ void Line::HookedState::collidesWith(boost::shared_ptr<Collidable> &otherObject,
     if( !sharedLineOwner )
         return;
 
-    if( sharedLineOwner->hookBox.isCollision(otherBox) )
+    if( sharedLineOwner->biteBox.isCollision(otherBox) )
         otherObject->collidesWithHook(sharedLineOwner, otherBox);
 }
 

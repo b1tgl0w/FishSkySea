@@ -428,7 +428,7 @@ void Shark::AttackState::initialize(boost::weak_ptr<Shark> owner)
 
 double Shark::AttackState::calculatePixelsLeft(Uint32 elapsedTime)
 {
-    const double ATTACK_SHARK_VELOCITY = 0.2;
+    const double ATTACK_SHARK_VELOCITY = 0.3;
     return ATTACK_SHARK_VELOCITY * elapsedTime;
 }
 
@@ -609,7 +609,7 @@ void Shark::PatrolState::initialize(boost::weak_ptr<Shark> owner)
 
 double Shark::PatrolState::calculatePixelsLeft(Uint32 elapsedTime)
 {
-    const double PATROL_SHARK_VELOCITY = 0.07;
+    const double PATROL_SHARK_VELOCITY = 0.14;
     return PATROL_SHARK_VELOCITY * elapsedTime;
 }
 
@@ -797,7 +797,7 @@ void Shark::GlowState::initialize(boost::weak_ptr<Shark> owner)
 
 double Shark::GlowState::calculatePixelsLeft(Uint32 elapsedTime)
 {
-    const double GLOW_SHARK_VELOCITY = 0.3;
+    const double GLOW_SHARK_VELOCITY = 0.4;
     return GLOW_SHARK_VELOCITY * elapsedTime;
 }
 

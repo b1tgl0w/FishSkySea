@@ -279,12 +279,14 @@ private:
     int lineIDNumber;
     BoundingBox poleBox;
     BoundingBox hookBox;
+    BoundingBox biteBox;
     boost::weak_ptr<Player> owner;
     boost::weak_ptr<Ocean> ocean;
     boost::shared_ptr<Point> polePoint;
     boost::shared_ptr<Dimension> poleSize;
     boost::shared_ptr<Point> hookPoint;
     boost::shared_ptr<Dimension> hookSize;
+    boost::shared_ptr<Point> bitePoint;
     boost::weak_ptr<Fish> hookedFish;
     Point initialPolePoint;
     Point initialHookPoint;

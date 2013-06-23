@@ -79,7 +79,7 @@ const Dimension &MainGameScene::MOWHAWK_FISHER_SIZE()
 
 const std::string &MainGameScene::BACKGROUND_PATH()
 {
-    static std::string TMP_BACKGROUND_PATH = "../Media/Scene5.png";
+    static std::string TMP_BACKGROUND_PATH = "../Media/Scene6.png";
     return TMP_BACKGROUND_PATH;
 }
 
@@ -215,7 +215,7 @@ void MainGameScene::enter()
     boost::weak_ptr<Collidable> playerCollidable(player1);
     ocean->addCollidable(playerCollidable);
     player1->loadImage(*renderer);
-    renderer->loadImage("../Media/Scene5.png");
+    renderer->loadImage("../Media/Scene6.png");
     renderer->loadImage("../Media/MowhawkFisher.png");
     renderer->loadImage("../Media/ElderFisher.png");
     renderer->loadImage("../Media/DockSupports2.png");
