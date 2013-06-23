@@ -1,7 +1,6 @@
-//File: Fish.cpp
+//File: Seahorse.cpp
 //Author:   John Miner
-//Created:  09/05/11
-//Modified: 10/11/11
+//Created:  06/22/13
 //Purpose:  Implement SeaCreature interface. Makes fish swim, randomly about
 //          face, and potentially get hooked. If hooked state changed.
 //Note:     Inner classes:  FishState, HookedState, FreeState.
