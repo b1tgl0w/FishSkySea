@@ -70,9 +70,9 @@ const Uint32 &SeaSnail::RETREAT_PROBABILITY()
 }
 
 SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
-    &ocean) : position(new Point(initialPosition)), ocean(ocean),
+    &ocean, boost::weak_ptr<Seahorse> &seahorse) : position(new Point(initialPosition)), ocean(ocean),
     shouldResetTimes(false), glowing(false), proceed(false), retreat(false),
-    offScreen(false), timeSinceOffScreen(0), live(false)
+    offScreen(false), timeSinceOffScreen(0), live(false), seahorse(seahorse)
 {
     boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
     size = tmpSize;
@@ -87,7 +87,8 @@ SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position), size(
     rhs.size), seaSnailBox(rhs.seaSnailBox), facing(rhs.facing), 
     ocean(rhs.ocean), shouldResetTimes(rhs.shouldResetTimes), 
     glowing(rhs.glowing), proceed(rhs.proceed), retreat(rhs.retreat),
-    timeSinceOffScreen(rhs.timeSinceOffScreen), live(rhs.live)
+    timeSinceOffScreen(rhs.timeSinceOffScreen), live(rhs.live),
+    seahorse(rhs.seahorse)
 {
 }
 
@@ -107,6 +108,7 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
     retreat = rhs.retreat;
     timeSinceOffScreen = rhs.timeSinceOffScreen;
     live = rhs.live;
+    seahorse = rhs.seahorse;
     
     return *this;
 }
@@ -333,7 +335,7 @@ void SeaSnail::clockTick(Uint32 elapsedTime)
     if( proceed || retreat )
         swim(elapsedTime);
 
-    if( offScreen && retreat)
+    if( offScreen && retreat )
         restartCycle();
 
     if( retreat && proceed )
@@ -395,6 +397,13 @@ void SeaSnail::updateTimes(Uint32 elapsedTime)
 
 void SeaSnail::restartCycle()
 {
+    boost::shared_ptr<Seahorse> sharedSeahorse = seahorse.lock();
+
+    if( !sharedSeahorse )
+        return;
+
+    sharedSeahorse->notifySeaSnailRetreat();
+
     shouldResetTimes = true;
     proceed = false;
     retreat = false;
@@ -402,3 +411,4 @@ void SeaSnail::restartCycle()
     aboutFace();
     glow();
 }
+

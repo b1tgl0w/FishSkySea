@@ -124,10 +124,11 @@ void Ocean::initializeSharedFromThis()
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish6(new Fish(fishStartingPoint,
         fishStartingDepth, sharedThis));
-    boost::shared_ptr<SeaSnail> tmpSeaSnail(new SeaSnail(SEA_SNAIL_POSITION(),
-        sharedThis));
     boost::shared_ptr<Seahorse> tmpSeahorse(new Seahorse(SEA_HORSE_POSITION(),
         sharedThis));
+    boost::weak_ptr<Seahorse> weakSeahorse(tmpSeahorse);
+    boost::shared_ptr<SeaSnail> tmpSeaSnail(new SeaSnail(SEA_SNAIL_POSITION(),
+        sharedThis, weakSeahorse));
     boost::shared_ptr<Shark> tmpShark(new Shark(sharedThis, SHARK_POSITION()));
     fish1->initializeStates();
     fish2->initializeStates();

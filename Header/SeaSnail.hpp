@@ -38,7 +38,7 @@ class SeaSnail : public SeaCreature, public Graphic, public Collidable,
 {
 public:
     explicit SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
-        &ocean);
+        &ocean, boost::weak_ptr<Seahorse> &seahorse);
     SeaSnail(const SeaSnail &rhs);
     SeaSnail &operator=(const SeaSnail &rhs);
     ~SeaSnail();
@@ -109,6 +109,7 @@ private:
     Uint32 timeSinceOffScreen;
     Uint32 timeSinceProceed;
     bool live;
+    boost::weak_ptr<Seahorse> seahorse;
     static const std::string &IMAGE_PATH();
     static const Layer &LAYER();
     static const Uint32 &MINIMUM_TIME_TO_PROCEED();

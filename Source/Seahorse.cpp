@@ -9,6 +9,7 @@
 //This program is distributed under the terms of the GNU General Public License
 
 #include "../Header/Seahorse.hpp"
+#include "../Header/SeaSnail.hpp"
 #include "../Header/Renderer.hpp"
 #include "../Header/Math.hpp"
 #include "../Header/Ocean.hpp"
@@ -38,14 +39,17 @@ const Dimension &Seahorse::SIZE()
 
 Seahorse::Seahorse(const Point &initialPosition,
     boost::shared_ptr<Ocean> &ocean) : live(false), floatedOnce(false),
-    floatTime(0), collidedWithOceanEdge(false)
+    floatTime(0), collidedWithOceanEdge(true), seaSnailRetreatCount(-1),
+    proceed(false)
 {
     initialize(initialPosition, ocean);
 }
 
 Seahorse::Seahorse(const Seahorse &rhs) : seahorseSize(rhs.seahorseSize),
     live(rhs.live), floatedOnce(rhs.floatedOnce), floatTime(rhs.floatTime),
-    collidedWithOceanEdge(rhs.collidedWithOceanEdge)
+    collidedWithOceanEdge(rhs.collidedWithOceanEdge),
+    seaSnailRetreatCount(rhs.seaSnailRetreatCount),
+    proceed(rhs.proceed)
 {
     boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
 
@@ -72,6 +76,8 @@ Seahorse &Seahorse::operator=(const Seahorse &rhs)
         floatedOnce = rhs.floatedOnce;
         floatTime = rhs.floatTime;
         collidedWithOceanEdge = rhs.collidedWithOceanEdge;
+        seaSnailRetreatCount = rhs.seaSnailRetreatCount;
+        proceed = rhs.proceed;
     }
     //Else throw exception?
 
@@ -285,6 +291,7 @@ void Seahorse::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
 void Seahorse::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox)
 {
+    state->collidesWithInnerOcean(ocean, yourBox);
 }
 
 void Seahorse::collidesWithShark(boost::shared_ptr<Shark> &shark,
@@ -344,6 +351,9 @@ void Seahorse::clockTick(Uint32 elapsedTime)
     if( !live )
         return;
 
+    if( !proceed )
+        return;
+
     swim(elapsedTime);
     updateTimes(elapsedTime);
 
@@ -398,6 +408,24 @@ void Seahorse::adjustBoxes()
         0.0); //no offset
     rightPosition->x = position->x + seahorseSize->width / 2 + 1;
     rightSize->width = tmpPoint.x - rightPosition->x;
+}
+
+void Seahorse::notifySeaSnailRetreat()
+{
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+
+    if( !sharedOcean )
+        return;
+
+    ++seaSnailRetreatCount;
+    seaSnailRetreatCount = Math::cycle(seaSnailRetreatCount, 0, 1);
+
+    if( seaSnailRetreatCount == 1 )
+    {
+        boost::shared_ptr<Seahorse> sharedThis(shared_from_this());
+        sharedOcean->addSeahorse(sharedThis, depth);
+        proceed = true;
+    }
 }
 
 //Inner class FreeState
@@ -671,6 +699,12 @@ void Seahorse::SwimmingState::collidesWithOceanSurface(boost::shared_ptr<Ocean> 
 void Seahorse::SwimmingState::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox)
 {
+    boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
+
+    if( !sharedSeahorseOwner )
+        return;
+
+    sharedSeahorseOwner->proceed = true;
 }
 
 void Seahorse::SwimmingState::collidesWithShark(boost::shared_ptr<Shark> &shark,
@@ -793,7 +827,6 @@ void Seahorse::FloatingState::swim(Uint32 elapsedTime)
 
     if( !sharedSeahorseOwner )
         return;
-
 
     sharedSeahorseOwner->adjustBoxes();
     sharedSeahorseOwner->bob(elapsedTime);

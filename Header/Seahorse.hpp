@@ -149,6 +149,7 @@ public:
     void aboutFace();
     void randomAboutFace(Uint32 elapsedTime); //No-op
     void respawn(const double yCoordinate);
+    void notifySeaSnailRetreat();
 
 protected:
     Seahorse();
@@ -338,6 +339,8 @@ private:
     boost::shared_ptr<Point> rightPosition;
     boost::shared_ptr<Dimension> rightSize;
     bool collidedWithOceanEdge;
+    int seaSnailRetreatCount;
+    bool proceed;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

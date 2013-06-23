@@ -144,7 +144,7 @@ Uint32 MasterClockPublisher::age()
 void MasterClockPublisher::keyPressed(const SDLKey &key)
 {
     if( key == SDLK_RIGHT )
-        fastForward = 4.0;
+        fastForward = 10.0;
     if( key == SDLK_LEFT )
         fastForward = .5;
     if( key == SDLK_RETURN )
