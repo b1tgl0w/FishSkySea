@@ -49,6 +49,8 @@ private:
         LENGTHEN_POLE_DEFAULT_KEY_P1; //Treat as const
     std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
         SHORTEN_POLE_DEFAULT_KEY_P1; //Treat as const
+    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+        SET_HOOK_DEFAULT_KEY_P1; //Treat as const
 };
 
 #endif

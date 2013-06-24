@@ -26,6 +26,7 @@ public:
     virtual void giveLine(bool on) = 0;
     virtual void lengthenPole(bool on) = 0;
     virtual void shortenPole(bool on) = 0;
+    virtual void setHook(bool on) = 0;
     virtual bool filledBucket() = 0;
     virtual void caughtFish(Weight weight, bool glowing) = 0;
     virtual void initializeLine() = 0;

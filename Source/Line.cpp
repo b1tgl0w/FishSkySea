@@ -189,6 +189,18 @@ const Dimension &Line::RIPPLE_INITIAL_SIZE()
     return TMP_RIPPLE_INITIAL_SIZE;
 }
 
+const double &Line::SET_HOOK_PIXELS()
+{
+    static const double TMP_SET_HOOK_PIXELS = 10.0;
+    return TMP_SET_HOOK_PIXELS;
+}
+
+const Uint32 &Line::SET_HOOK_RECOVER_TIME()
+{
+    static const Uint32 TMP_SET_HOOK_RECOVER_TIME = 200;
+    return TMP_SET_HOOK_RECOVER_TIME;
+}
+
 Line::Line(boost::shared_ptr<Player> &initialPlayer,
     const Point &initialPolePoint,
     const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean) : live(false),
@@ -197,7 +209,8 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     rippleAnimationNotHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
     rippleAnimationHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
-    RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1()))
+    RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
+    setHookOn(false), setHookTime(0)
 {
     Uint32 rippleFrameTimeNotHooked = 500;
     Uint32 rippleFrameTimeHooked = 100;
@@ -233,7 +246,7 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
 }
 
 Line::Line(const Line &rhs) : live(rhs.live), rippleAnimation(
-    rhs.rippleAnimation)
+    rhs.rippleAnimation), setHookOn(rhs.setHookOn), setHookTime(rhs.setHookTime)
 {
     boost::shared_ptr<Player> tmpOwner= rhs.owner.lock();
 
@@ -266,6 +279,8 @@ Line &Line::operator=(const Line &rhs)
         lineIDNumber = rhs.lineIDNumber; //This is the correct behavior for copying
         live = rhs.live;
         rippleAnimation = rhs.rippleAnimation;
+        setHookOn = rhs.setHookOn;
+        setHookTime = rhs.setHookTime;
     }
     //Else throw exception?
 
@@ -389,6 +404,22 @@ void Line::lengthenPole(bool on)
 void Line::shortenPole(bool on)
 {
     toggleMovement(shortenPoleOn, on);
+}
+
+void Line::setHook(bool on)
+{
+    if( live && on && !setHookOn )
+    {
+        setHookOn = true;
+        setHookTime = SET_HOOK_RECOVER_TIME();
+        hookPoint->y -= SET_HOOK_PIXELS();
+
+        boost::shared_ptr<Fish> sharedHookedFish = hookedFish.lock();
+
+        if( sharedHookedFish )
+            sharedHookedFish->yank();
+        
+    }
 }
 
 //To Do:    The hook will still oscillate back and forth. Fix.
@@ -790,6 +821,19 @@ void Line::NotHookedState::settle(Uint32 elapsedTime)
         if( sharedLineOwner->hookPoint->x < sharedLineOwner->polePoint->x )
             sharedLineOwner->hookPoint->x = sharedLineOwner->polePoint->x;
     }
+
+    boost::shared_ptr<Collidable> sharedCollidableLineOwner(sharedLineOwner);
+    boost::shared_ptr<Ocean> sharedOcean = sharedLineOwner->ocean.lock();
+
+    if( !sharedOcean )
+        return;
+
+    sharedOcean->checkCollisions(sharedCollidableLineOwner, 
+        sharedLineOwner->poleBox);
+    sharedOcean->checkCollisions(sharedCollidableLineOwner, 
+        sharedLineOwner->hookBox);
+    sharedOcean->checkCollisions(sharedCollidableLineOwner, 
+        sharedLineOwner->biteBox);
 }
 
 boost::weak_ptr<Player> Line::NotHookedState::hooked(boost::weak_ptr<Fish>
@@ -820,10 +864,31 @@ void Line::NotHookedState::clockTick(Uint32 elapsedTime)
     if( !sharedLineOwner )
         return;
 
+    if( sharedLineOwner->setHookOn )
+        restoreFromSetHook(elapsedTime);
+
     sharedLineOwner->bitePoint->x = sharedLineOwner->hookPoint->x - 4.0 -
         sharedLineOwner->hookSize->width / 2.0;
     sharedLineOwner->bitePoint->y = sharedLineOwner->hookPoint->y + 5.0 -
         sharedLineOwner->hookSize->height / 2.0;
+}
+
+void Line::NotHookedState::restoreFromSetHook(Uint32 elapsedTime)
+{
+    boost::shared_ptr<Line> sharedLineOwner = lineOwner.lock();
+
+    if( !sharedLineOwner )
+        return;
+
+    sharedLineOwner->hookPoint->y += (elapsedTime < sharedLineOwner->setHookTime 
+        ? (double) elapsedTime : sharedLineOwner->setHookTime) / (double) 
+        sharedLineOwner->SET_HOOK_RECOVER_TIME() * 
+        sharedLineOwner->SET_HOOK_PIXELS();
+
+    if( sharedLineOwner->setHookTime > elapsedTime )
+        sharedLineOwner->setHookTime -= elapsedTime;
+    else
+        sharedLineOwner->setHookOn = false;
 }
 
 void Line::NotHookedState::pullFish()
@@ -924,7 +989,11 @@ void Line::NotHookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean>
         return;
 
     if( &yourBox == &(sharedLineOwner->hookBox) )
+    {
         ocean->alignWithSurface(sharedLineOwner->hookPoint->y, 1.0);
+        sharedLineOwner->setHookTime = 0;
+        sharedLineOwner->setHookOn = false;
+    }
 }
 
 void Line::NotHookedState::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
@@ -1086,9 +1155,31 @@ Direction Line::HookedState::pull(const Point &mouthPoint)
 
 void Line::HookedState::clockTick(Uint32 elapsedTime)
 {
+    boost::shared_ptr<Line> sharedLineOwner = lineOwner.lock();
+
+    if( !sharedLineOwner )
+        return;
+
     move(elapsedTime);
     pullFish();
+
+    if( sharedLineOwner->setHookOn )
+        restoreFromSetHook(elapsedTime);
 }
+
+void Line::HookedState::restoreFromSetHook(Uint32 elapsedTime)
+{
+    boost::shared_ptr<Line> sharedLineOwner = lineOwner.lock();
+
+    if( !sharedLineOwner )
+        return;
+
+    if( sharedLineOwner->setHookTime > elapsedTime )
+        sharedLineOwner->setHookTime -= elapsedTime;
+    else
+        sharedLineOwner->setHookOn = false;
+}
+
 
 void Line::HookedState::pullFish()
 {

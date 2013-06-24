@@ -14,6 +14,7 @@
 #include "../Header/PlayerGiveLineAction.hpp"
 #include "../Header/PlayerLengthenPoleAction.hpp"
 #include "../Header/PlayerShortenPoleAction.hpp"
+#include "../Header/PlayerSetHookAction.hpp"
 
 PlayerKeyTranslater::PlayerKeyTranslater()
 {
@@ -77,16 +78,21 @@ void PlayerKeyTranslater::initialize(const boost::shared_ptr<Player> &player)
         new PlayerLengthenPoleAction(player));
     boost::shared_ptr<PlayerShortenPoleAction> tmpPlayerShortenPoleAction(
         new PlayerShortenPoleAction(player));
+    boost::shared_ptr<PlayerSetHookAction> tmpPlayerSetHookAction(
+        new PlayerSetHookAction(player));
     REEL_IN_DEFAULT_KEY_P1 = std::make_pair(SDLK_w, tmpPlayerReelInAction);
     GIVE_LINE_DEFAULT_KEY_P1 = std::make_pair(SDLK_s, tmpPlayerGiveLineAction);
     LENGTHEN_POLE_DEFAULT_KEY_P1 = std::make_pair(SDLK_d,
         tmpPlayerLengthenPoleAction);
     SHORTEN_POLE_DEFAULT_KEY_P1 = std::make_pair(SDLK_a,
         tmpPlayerShortenPoleAction);
+    SET_HOOK_DEFAULT_KEY_P1 = std::make_pair(SDLK_e,
+        tmpPlayerSetHookAction);
     actions.insert(REEL_IN_DEFAULT_KEY_P1);
     actions.insert(GIVE_LINE_DEFAULT_KEY_P1);
     actions.insert(LENGTHEN_POLE_DEFAULT_KEY_P1);
     actions.insert(SHORTEN_POLE_DEFAULT_KEY_P1);
+    actions.insert(SET_HOOK_DEFAULT_KEY_P1);
 }
 
 void PlayerKeyTranslater::initialize(const std::map<SDLKey,

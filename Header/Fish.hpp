@@ -147,6 +147,7 @@ public:
     void glow();
     bool isGlowing();
     void gameLive(bool live);
+    void yank();
     //!Adds fish graphic to layout to be drawn next frame.
     /*!
         \param layout the segment of the screen to draw the fish to.
@@ -421,6 +422,7 @@ private:
     static const Uint32 &ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER();
     static const Uint32 &MINIMUM_TIME_TO_RANDOM_ABOUT_FACE();
     static const Uint32 &MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE();
+    static const double &YANK_PIXELS();
 };
 
 #endif

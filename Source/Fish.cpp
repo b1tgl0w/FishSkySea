@@ -70,6 +70,12 @@ const Uint32 &Fish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
     return TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE;
 }
 
+const double &Fish::YANK_PIXELS()
+{
+    static const double TMP_YANK_PIXELS = 10.0;
+    return TMP_YANK_PIXELS;
+}
+
 
 //Class Fish
 Fish::Fish(const Point &initialPosition,
@@ -271,6 +277,11 @@ bool Fish::isGlowing()
 void Fish::gameLive(bool live)
 {
     this->live = live;
+}
+
+void Fish::yank()
+{
+    position->y -= YANK_PIXELS();
 }
 
 void Fish::changeState(boost::shared_ptr<FishState> &newState)

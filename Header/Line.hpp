@@ -53,6 +53,7 @@ public:
     void giveLine(bool on);
     void lengthenPole(bool on);
     void shortenPole(bool on);
+    void setHook(bool on);
     void settle(Uint32 elapsedTime);
     void move(Uint32 elapsedTime);
     boost::weak_ptr<Player> hooked(boost::weak_ptr<Fish> hookedFish);
@@ -161,6 +162,7 @@ private:
         void offHook();
         Direction pull(const Point &mouthPoint);
         void clockTick(Uint32 elapsedTime);
+        void restoreFromSetHook(Uint32 elapsedTime);
         void collidesWith(boost::shared_ptr<Collidable> &otherObject, const
             BoundingBox &otherBox);
         void collidesWithHook(boost::shared_ptr<Line> &hook, const BoundingBox
@@ -218,6 +220,7 @@ private:
         void offHook();
         Direction pull(const Point &mouthPoint);
         void clockTick(Uint32 elapsedTime);
+        void restoreFromSetHook(Uint32 elapsedTime);
         void collidesWith(boost::shared_ptr<Collidable> &otherObject, const 
             BoundingBox &yourBox);
         void collidesWithHook(boost::shared_ptr<Line> &hook, const BoundingBox
@@ -273,6 +276,8 @@ private:
     static const std::string &HOOK_PATH();
     static const Dimension &HOOK_GRAPHIC_SIZE();
     static const Point &HOOK_GRAPHIC_OFFSET();
+    static const double &SET_HOOK_PIXELS();
+    static const Uint32 &SET_HOOK_RECOVER_TIME();
     boost::shared_ptr<LineState> state;
     boost::shared_ptr<NotHookedState> notHookedState;
     boost::shared_ptr<HookedState> hookedState;
@@ -296,8 +301,10 @@ private:
     bool shortenPoleOn;
     bool pullLeftOn;
     bool pullRightOn;
+    bool setHookOn;
     bool fishHooked;
     bool live;
+    Uint32 setHookTime;
     boost::shared_ptr<Animation> rippleAnimation;
     boost::shared_ptr<Animation> rippleAnimationNotHooked;
     boost::shared_ptr<Animation> rippleAnimationHooked;

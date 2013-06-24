@@ -40,6 +40,7 @@ public:
     void giveLine(bool on);
     void lengthenPole(bool on);
     void shortenPole(bool on);
+    void setHook(bool on);
     bool filledBucket();
     void caughtFish(Weight weight, bool glowing);
     void sendCollidable(boost::weak_ptr<Ocean> ocean);

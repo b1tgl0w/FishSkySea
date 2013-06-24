@@ -171,6 +171,11 @@ void HumanPlayer::shortenPole(bool on)
     line->shortenPole(on);
 }
 
+void HumanPlayer::setHook(bool on)
+{
+    line->setHook(on);
+}
+
 bool HumanPlayer::filledBucket()
 {
     //Get rid of error on visual studio. Just a placeholder!
