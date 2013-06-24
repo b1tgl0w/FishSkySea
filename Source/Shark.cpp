@@ -854,6 +854,13 @@ void Shark::GlowState::collidesWith(boost::shared_ptr<Collidable> &object,
 
     if( sharedSharkOwner->sharkBox.isCollision(otherBox) )
         object->collidesWithShark(sharedSharkOwner, otherBox);
+    //Note: We want collisions with vision to behave like colliding with
+    //back in glow state. e.g. when the seahorse hits vision, bounce back.
+    //However, when a fish hits vision, do not take out of glow state
+    if( sharedSharkOwner->visionBox.isCollision(otherBox) )
+        object->collidesSharkBack(sharedSharkOwner, otherBox);
+    if( sharedSharkOwner->backBox.isCollision(otherBox) )
+        object->collidesSharkBack(sharedSharkOwner, otherBox);
 }
 
 void Shark::GlowState::collidesWithHook(boost::shared_ptr<Line> &hook,
