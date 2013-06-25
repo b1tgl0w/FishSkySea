@@ -42,7 +42,7 @@ const Dimension &Fish::SIZE()
 
 const Dimension &Fish::MOUTH_SIZE()
 {
-    static const Dimension TMP_MOUTH_SIZE = { 4, 4 }; //4, 4
+    static const Dimension TMP_MOUTH_SIZE = { 1.0, 4.0 }; 
     return TMP_MOUTH_SIZE;
 }
 

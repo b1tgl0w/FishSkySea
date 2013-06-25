@@ -80,7 +80,7 @@ const Point &Ocean::SEA_HORSE_POSITION()
 
 const Point &Ocean::SHARK_POSITION()
 {
-    const static Point TMP_SHARK_POSITION = { 290.0 , 271.0 };
+    const static Point TMP_SHARK_POSITION = { 290.0 , 269.0 };
     return TMP_SHARK_POSITION;
 }
 
@@ -151,6 +151,7 @@ void Ocean::initializeSharedFromThis()
     boost::shared_ptr<SeaSnail> tmpSeaSnail(new SeaSnail(SEA_SNAIL_POSITION(),
         sharedThis, weakSeahorse));
     boost::shared_ptr<Shark> tmpShark(new Shark(sharedThis, SHARK_POSITION()));
+    boost::shared_ptr<Clouds> tmpClouds(new Clouds);
     fish1->initializeStates();
     fish2->initializeStates();
     fish3->initializeStates();
@@ -179,6 +180,7 @@ void Ocean::initializeSharedFromThis()
     boost::shared_ptr<MasterClockSubscriber> subscriber7(tmpSeaSnail);
     boost::shared_ptr<MasterClockSubscriber> subscriber8(tmpShark);
     boost::shared_ptr<MasterClockSubscriber> subscriber9(tmpSeahorse);
+    boost::shared_ptr<MasterClockSubscriber> subscriber10(tmpClouds);
     masterClockPublisher->subscribe(subscriber1);
     masterClockPublisher->subscribe(subscriber2);
     masterClockPublisher->subscribe(subscriber3);
@@ -188,6 +190,7 @@ void Ocean::initializeSharedFromThis()
     masterClockPublisher->subscribe(subscriber7);
     masterClockPublisher->subscribe(subscriber8);
     masterClockPublisher->subscribe(subscriber9);
+    masterClockPublisher->subscribe(subscriber10);
     fishes.push_back(fish1);
     fishes.push_back(fish2);
     fishes.push_back(fish3);
@@ -197,6 +200,7 @@ void Ocean::initializeSharedFromThis()
     seaSnail = tmpSeaSnail;
     seahorse = tmpSeahorse;
     shark = tmpShark;
+    clouds = tmpClouds;
 
     //Credit state init
     state = creditState;
@@ -273,7 +277,7 @@ void Ocean::initialize(const Dimension &screenSize)
     oceanSurfaceBox = tmpOceanSurfaceBox;
     oceanFloorBox = tmpOceanFloorBox;
     const double DEPTH_DISTANCE = 33;
-    double currentDepthCoordinate = 340.0;
+    double currentDepthCoordinate = 343.0;
     depthCoordinates[Depth::ROW1()] = currentDepthCoordinate;
     currentDepthCoordinate += DEPTH_DISTANCE;
     depthCoordinates[Depth::ROW2()] = currentDepthCoordinate;
@@ -386,6 +390,7 @@ void Ocean::loadImage(Renderer &renderer)
     //Shark
     shark->loadImage(renderer);
     seahorse->loadImage(renderer);
+    clouds->loadImage(renderer);
 }
 
 void Ocean::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
@@ -561,6 +566,7 @@ void Ocean::GameState::draw(boost::shared_ptr<Layout> &layout, Renderer
     //Shark
     sharedOceanOwner->shark->draw(layout, renderer);
     sharedOceanOwner->seahorse->draw(layout, renderer);
+    sharedOceanOwner->clouds->draw(layout, renderer);
 }
 
 void Ocean::GameState::checkCollisions(boost::shared_ptr<Collidable> &object,

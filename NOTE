@@ -61,6 +61,9 @@ BUG: Sometimes fish doesn't glow after touching snail. (maybe fixed?)
 Bug:    All images have "synchronized" glowing. This is okay in this game,
 but not if multiple images are glowing at the same time.
 
+NOTE:   Cloud graphics could be better. Specificlly, make the smalle clouds
+bigger.
+
 Organize this list?
 
 GlowRectangle is useless.

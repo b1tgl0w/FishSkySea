@@ -22,59 +22,64 @@ Layer &Layer::operator=(const Layer &rhs)
     return *this;
 }
 
-const Layer Layer::BACKGROUND()
+const Layer Layer::BACKGROUND1()
 {
     return Layer(1);
 }
 
-const Layer Layer::RIPPLE_LAYER1()
+const Layer Layer::BACKGROUND2()
 {
     return Layer(2);
 }
 
-const Layer Layer::PLAYER()
+const Layer Layer::RIPPLE_LAYER1()
 {
     return Layer(3);
 }
 
-const Layer Layer::SEA_HORSE()
+const Layer Layer::PLAYER()
 {
     return Layer(4);
 }
 
-const Layer Layer::FISH()
+const Layer Layer::SEA_HORSE()
 {
     return Layer(5);
 }
 
-const Layer Layer::SHARK()
+const Layer Layer::FISH()
 {
     return Layer(6);
 }
 
-const Layer Layer::SEA_SNAIL()
+const Layer Layer::SHARK()
 {
     return Layer(7);
 }
 
-const Layer Layer::SCORE()
+const Layer Layer::SEA_SNAIL()
 {
     return Layer(8);
 }
 
-const Layer Layer::DOCK_SUPPORTS()
+const Layer Layer::SCORE()
 {
     return Layer(9);
 }
 
-const Layer Layer::FOREGROUND()
+const Layer Layer::DOCK_SUPPORTS()
 {
     return Layer(10);
 }
 
-const Layer Layer::TITLE_MENU()
+const Layer Layer::FOREGROUND()
 {
     return Layer(11);
+}
+
+const Layer Layer::TITLE_MENU()
+{
+    return Layer(12);
 }
 
 Layer::Layer(int initialValue)

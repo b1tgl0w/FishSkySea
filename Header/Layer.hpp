@@ -15,7 +15,8 @@ class Layer
 public:
     Layer &operator=(const Layer &rhs);
     Layer();
-    static const Layer BACKGROUND();
+    static const Layer BACKGROUND1();
+    static const Layer BACKGROUND2();
     static const Layer PLAYER();
     static const Layer RIPPLE_LAYER1();
     static const Layer SEA_HORSE();

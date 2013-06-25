@@ -63,7 +63,7 @@ const Dimension &Line::POLE_DIMENSION()
 
 const Dimension &Line::HOOK_DIMENSION()
 {
-    static const Dimension TMP_HOOK_DIMENSION = { 4.0, 4.0 }; 
+    static const Dimension TMP_HOOK_DIMENSION = { 1.0, 4.0 }; 
     return TMP_HOOK_DIMENSION;
 }
 
@@ -892,10 +892,8 @@ void Line::NotHookedState::clockTick(Uint32 elapsedTime)
     if( sharedLineOwner->setHookOn )
         restoreFromSetHook(elapsedTime);
 
-    sharedLineOwner->bitePoint->x = sharedLineOwner->hookPoint->x - 4.0 -
-        sharedLineOwner->hookSize->width / 2.0;
-    sharedLineOwner->bitePoint->y = sharedLineOwner->hookPoint->y + 5.0 -
-        sharedLineOwner->hookSize->height / 2.0;
+    sharedLineOwner->bitePoint->x = sharedLineOwner->hookPoint->x - 2.0;
+    sharedLineOwner->bitePoint->y = sharedLineOwner->hookPoint->y + 5.0;
 }
 
 void Line::NotHookedState::restoreFromSetHook(Uint32 elapsedTime)

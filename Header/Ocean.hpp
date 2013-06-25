@@ -20,6 +20,7 @@
 #include "Collidable.hpp"
 #include "Graphic.hpp"
 #include "Depth.hpp"
+#include "Clouds.hpp"
 
 class OceanMode;
 class Fish;
@@ -187,6 +188,7 @@ private:
     BoundingBox oceanBox;
     BoundingBox oceanSurfaceBox;
     BoundingBox oceanFloorBox;
+    boost::shared_ptr<Clouds> clouds;
 };
 
 #endif
