@@ -148,6 +148,8 @@ public:
     bool isGlowing();
     void gameLive(bool live);
     void yank();
+    void nibble(boost::shared_ptr<Line> &line);
+    void doNibble();
     //!Adds fish graphic to layout to be drawn next frame.
     /*!
         \param layout the segment of the screen to draw the fish to.
@@ -225,6 +227,8 @@ private:
         virtual void swim(Uint32 elapsedTime) = 0;
         virtual void pull(const Point &hookPoint) = 0;
         virtual void randomAboutFace(Uint32 elapsedTime) = 0;
+        virtual void nibble(boost::shared_ptr<Line> &line) = 0;
+        virtual void swim(double pixels) = 0;
     private:
         virtual double calculatePixelsLeft(Uint32 elapsedTime) = 0;
     };
@@ -233,10 +237,12 @@ private:
     {
         friend class Fish;
     public:
+        void swim(double pixels);
         void swim(Uint32 elapsedTime);
         void pull(const Point &hookPoint);
         void randomAboutFace(Uint32 elapsedTime);
         bool atDepth(const Depth &depth);
+        void nibble(boost::shared_ptr<Line> &line);
         HookedState();
         HookedState(boost::weak_ptr<Fish> fishOwner);
         HookedState(const HookedState &rhs);
@@ -294,16 +300,19 @@ private:
     private:
         double calculatePixelsLeft(Uint32 elapsedTime);
         boost::weak_ptr<Fish> fishOwner; //Beware of cyclic ptrs
+        static const double &HOOKED_FISH_VELOCITY();
     };
 
     class FreeState : public FishState
     {
         friend class Fish;
     public:
+        void swim(double pixels);
         void swim(Uint32 elapsedTime);
         void pull(const Point &hookPoint);
         void randomAboutFace(Uint32 elapsedTime);
         bool atDepth(const Depth &depth);
+        void nibble(boost::shared_ptr<Line> &line);
         FreeState();
         FreeState(boost::weak_ptr<Fish> fishOwner);
         FreeState(const FreeState &rhs);
@@ -391,6 +400,7 @@ private:
     void isTight(const Direction &direction);
     void resetTimes();
     void updateTimes(Uint32 elapsedTime);
+    void swim(double pixels);
     boost::shared_ptr<FishState> state;
     boost::shared_ptr<HookedState> hookedState;
     boost::shared_ptr<FreeState> freeState;
@@ -404,8 +414,10 @@ private:
     boost::weak_ptr<Ocean> ocean;
     boost::weak_ptr<Line> hookedByLine;
     boost::weak_ptr<Player> hookedByPlayer;
+    boost::weak_ptr<Line> nibbleLine;
     Uint32 timeSinceRandomAboutFace;
     Uint32 timeSinceIsTightAboutFace;
+    Uint32 nibbleTime;
     Depth startingDepth;
     bool shouldResetTimes;
     bool glowing;
@@ -413,6 +425,8 @@ private:
     bool behindSeahorse;
     bool stayBehindSeahorse;
     bool collidedWithSeahorse;
+    bool nibbling;
+    bool justFinishedNibbling;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();
@@ -423,6 +437,7 @@ private:
     static const Uint32 &MINIMUM_TIME_TO_RANDOM_ABOUT_FACE();
     static const Uint32 &MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE();
     static const double &YANK_PIXELS();
+    static const Uint32 &NIBBLE_TIME();
 };
 
 #endif

@@ -197,7 +197,7 @@ const double &Line::SET_HOOK_PIXELS()
 
 const Uint32 &Line::SET_HOOK_RECOVER_TIME()
 {
-    static const Uint32 TMP_SET_HOOK_RECOVER_TIME = 200;
+    static const Uint32 TMP_SET_HOOK_RECOVER_TIME = 400;
     return TMP_SET_HOOK_RECOVER_TIME;
 }
 
@@ -210,7 +210,7 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
     rippleAnimationHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
-    setHookOn(false), setHookTime(0)
+    setHookOn(false), setHookTime(0), fishIsNibbling(false)
 {
     Uint32 rippleFrameTimeNotHooked = 500;
     Uint32 rippleFrameTimeHooked = 100;
@@ -246,7 +246,8 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
 }
 
 Line::Line(const Line &rhs) : live(rhs.live), rippleAnimation(
-    rhs.rippleAnimation), setHookOn(rhs.setHookOn), setHookTime(rhs.setHookTime)
+    rhs.rippleAnimation), setHookOn(rhs.setHookOn), setHookTime(rhs.setHookTime),
+    fishIsNibbling(rhs.fishIsNibbling)
 {
     boost::shared_ptr<Player> tmpOwner= rhs.owner.lock();
 
@@ -281,6 +282,7 @@ Line &Line::operator=(const Line &rhs)
         rippleAnimation = rhs.rippleAnimation;
         setHookOn = rhs.setHookOn;
         setHookTime = rhs.setHookTime;
+        fishIsNibbling = rhs.fishIsNibbling;
     }
     //Else throw exception?
 
@@ -408,17 +410,30 @@ void Line::shortenPole(bool on)
 
 void Line::setHook(bool on)
 {
+    if( live && on && !setHookOn && fishIsNibbling )
+    {
+        boost::shared_ptr<Fish> sharedNibbleFish = nibbleFish.lock();
+        boost::shared_ptr<Line> sharedThis(shared_from_this());
+
+        if( ! sharedNibbleFish || !sharedThis )
+            return;
+
+        sharedNibbleFish->hookedBy(sharedThis, owner);
+        hooked(sharedNibbleFish);
+    }
+    else if( live && on && !setHookOn )
+    {
+        hookPoint->y -= SET_HOOK_PIXELS();
+
+    }
     if( live && on && !setHookOn )
     {
         setHookOn = true;
         setHookTime = SET_HOOK_RECOVER_TIME();
-        hookPoint->y -= SET_HOOK_PIXELS();
-
         boost::shared_ptr<Fish> sharedHookedFish = hookedFish.lock();
 
         if( sharedHookedFish )
             sharedHookedFish->yank();
-        
     }
 }
 
@@ -539,6 +554,16 @@ void Line::loadImage(Renderer &renderer)
 void Line::gameLive(bool live)
 {
     this->live = live;
+}
+
+void Line::nibble(boost::shared_ptr<Fish> &fish)
+{
+    state->nibble(fish);
+}
+
+void Line::stopNibble()
+{
+    fishIsNibbling = false;
 }
 
 void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
@@ -891,6 +916,17 @@ void Line::NotHookedState::restoreFromSetHook(Uint32 elapsedTime)
         sharedLineOwner->setHookOn = false;
 }
 
+void Line::NotHookedState::nibble(boost::shared_ptr<Fish> &fish)
+{
+    boost::shared_ptr<Line> sharedLineOwner = lineOwner.lock();
+
+    if( !sharedLineOwner )
+        return;
+
+    sharedLineOwner->nibbleFish = fish;
+    sharedLineOwner->fishIsNibbling = true;
+}
+
 void Line::NotHookedState::pullFish()
 {
 }
@@ -1028,12 +1064,11 @@ void Line::NotHookedState::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
     if( !sharedLineOwner )
         return;
 
+    if( sharedLineOwner->fishIsNibbling )
+        return;
 
     if( &yourBox == &(sharedLineOwner->biteBox) )
-    {
-        fish->hookedBy(sharedLineOwner, sharedLineOwner->owner);
-        sharedLineOwner->hooked(fish);
-    }
+        fish->nibble(sharedLineOwner);
 }
 
 void Line::NotHookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> 
@@ -1178,6 +1213,10 @@ void Line::HookedState::restoreFromSetHook(Uint32 elapsedTime)
         sharedLineOwner->setHookTime -= elapsedTime;
     else
         sharedLineOwner->setHookOn = false;
+}
+
+void Line::HookedState::nibble(boost::shared_ptr<Fish> &fish)
+{
 }
 
 

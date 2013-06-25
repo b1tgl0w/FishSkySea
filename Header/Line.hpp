@@ -64,6 +64,8 @@ public:
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
     void gameLive(bool live);
+    void nibble(boost::shared_ptr<Fish> &fish);
+    void stopNibble();
     virtual ~Line();
 //Collidable
     void collidesWith(boost::shared_ptr<Collidable> &otherObject,
@@ -142,6 +144,7 @@ private:
             hookedFish) = 0;
         virtual void offHook() = 0;
         virtual Direction pull(const Point &mouthPoint) = 0;
+        virtual void nibble(boost::shared_ptr<Fish> &fish) = 0;
         //Inherited void clockTick(Uint32 elapsedTime) = 0;
     private:
         virtual void pullFish() = 0;
@@ -163,6 +166,8 @@ private:
         Direction pull(const Point &mouthPoint);
         void clockTick(Uint32 elapsedTime);
         void restoreFromSetHook(Uint32 elapsedTime);
+        void nibble(boost::shared_ptr<Fish> &fish);
+        void stopNibble();
         void collidesWith(boost::shared_ptr<Collidable> &otherObject, const
             BoundingBox &otherBox);
         void collidesWithHook(boost::shared_ptr<Line> &hook, const BoundingBox
@@ -221,6 +226,7 @@ private:
         Direction pull(const Point &mouthPoint);
         void clockTick(Uint32 elapsedTime);
         void restoreFromSetHook(Uint32 elapsedTime);
+        void nibble(boost::shared_ptr<Fish> &fish);
         void collidesWith(boost::shared_ptr<Collidable> &otherObject, const 
             BoundingBox &yourBox);
         void collidesWithHook(boost::shared_ptr<Line> &hook, const BoundingBox
@@ -293,6 +299,7 @@ private:
     boost::shared_ptr<Dimension> hookSize;
     boost::shared_ptr<Point> bitePoint;
     boost::weak_ptr<Fish> hookedFish;
+    boost::weak_ptr<Fish> nibbleFish;
     Point initialPolePoint;
     Point initialHookPoint;
     bool reelInOn;
@@ -304,6 +311,7 @@ private:
     bool setHookOn;
     bool fishHooked;
     bool live;
+    bool fishIsNibbling;
     Uint32 setHookTime;
     boost::shared_ptr<Animation> rippleAnimation;
     boost::shared_ptr<Animation> rippleAnimationNotHooked;

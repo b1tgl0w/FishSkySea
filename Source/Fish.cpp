@@ -72,22 +72,31 @@ const Uint32 &Fish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 
 const double &Fish::YANK_PIXELS()
 {
-    static const double TMP_YANK_PIXELS = 10.0;
+    static const double TMP_YANK_PIXELS = 5.0;
     return TMP_YANK_PIXELS;
+}
+
+const Uint32 &Fish::NIBBLE_TIME()
+{
+    static const Uint32 TMP_NIBBLE_TIME = 200;
+    return TMP_NIBBLE_TIME;
 }
 
 
 //Class Fish
 Fish::Fish(const Point &initialPosition,
     const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean) : live(false),
-    collidedWithSeahorse(false), behindSeahorse(false), stayBehindSeahorse(false)
+    collidedWithSeahorse(false), behindSeahorse(false), stayBehindSeahorse(false),
+    nibbling(false), nibbleTime(0), justFinishedNibbling(false)
 {
     initialize(initialPosition, initialDepth, ocean, false);
 }
 
 Fish::Fish(const Fish &rhs) : fishSize(rhs.fishSize), mouthSize(rhs.mouthSize),
     live(rhs.live), collidedWithSeahorse(rhs.collidedWithSeahorse),
-    behindSeahorse(rhs.behindSeahorse), stayBehindSeahorse(rhs.stayBehindSeahorse)
+    behindSeahorse(rhs.behindSeahorse), stayBehindSeahorse(rhs.stayBehindSeahorse),
+    nibbling(rhs.nibbling), nibbleTime(rhs.nibbleTime),
+    justFinishedNibbling(rhs.justFinishedNibbling)
 {
     boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
 
@@ -115,6 +124,9 @@ Fish &Fish::operator=(const Fish &rhs)
         collidedWithSeahorse = rhs.collidedWithSeahorse;
         behindSeahorse = rhs.behindSeahorse;
         stayBehindSeahorse = rhs.stayBehindSeahorse;
+        nibbling = rhs.nibbling;
+        nibbleTime = rhs.nibbleTime;
+        justFinishedNibbling = rhs.justFinishedNibbling;
     }
     //Else throw exception?
 
@@ -184,6 +196,11 @@ void Fish::faceRandomDirection()
 void Fish::swim(Uint32 elapsedTime)
 {
     state->swim(elapsedTime);
+}
+
+void Fish::swim(double pixels)
+{
+    state->swim(pixels);
 }
 
 void Fish::randomAboutFace(Uint32 elapsedTime)
@@ -284,6 +301,11 @@ void Fish::yank()
     position->y -= YANK_PIXELS();
 }
 
+void Fish::nibble(boost::shared_ptr<Line> &line)
+{
+    state->nibble(line);
+}
+
 void Fish::changeState(boost::shared_ptr<FishState> &newState)
 {
     state = newState;
@@ -369,6 +391,14 @@ void Fish::respawn(const Point &newPosition)
     positionFromSide();
     position->y = newPosition.y;
     updateMouthPosition();
+
+    boost::shared_ptr<Line> sharedNibbleLine = nibbleLine.lock();
+    
+    if( sharedNibbleLine ) 
+    {
+        sharedNibbleLine->stopNibble();
+        nibbling = false;
+    }
 }
 
 void Fish::hitEdge(const Direction &direction)
@@ -405,6 +435,11 @@ void Fish::updateTimes(Uint32 elapsedTime)
 {
     timeSinceRandomAboutFace += elapsedTime;
     timeSinceIsTightAboutFace += elapsedTime;
+
+    if ( nibbleTime > elapsedTime )
+        nibbleTime -= elapsedTime;
+    else
+        nibbleTime = 0;
 }
 
 //Collidable
@@ -501,11 +536,38 @@ void Fish::clockTick(Uint32 elapsedTime)
     if( !live )
         return;
 
-    swim(elapsedTime);
+    if( nibbling && state == freeState)
+        doNibble();
+    else
+        swim(elapsedTime);
+
     updateTimes(elapsedTime);
 
     if( shouldResetTimes )
         resetTimes();
+}
+
+void Fish::doNibble()
+{
+    if( nibbleTime <= 0 )
+    {
+        boost::shared_ptr<Line> sharedNibbleLine = nibbleLine.lock();
+
+        if( !sharedNibbleLine ) 
+            return;
+
+        sharedNibbleLine->stopNibble();
+        nibbling = false;
+
+        double passNibble = mouthSize->width + 
+            sharedNibbleLine->HOOK_DIMENSION().width + 1;
+
+        justFinishedNibbling = true;
+        swim(passNibble);
+        justFinishedNibbling = false;
+
+        return;
+    }
 }
 
 //Inner class FreeState
@@ -554,6 +616,12 @@ void Fish::FreeState::dispose()
 double Fish::FreeState::calculatePixelsLeft(Uint32 elapsedTime)
 {
     return elapsedTime * velocity;
+}
+
+void Fish::FreeState::swim(double pixels)
+{
+    Uint32 elapsedTime = Math::round(pixels / velocity);
+    swim(elapsedTime);
 }
 
 void Fish::FreeState::swim(Uint32 elapsedTime)
@@ -657,6 +725,21 @@ void Fish::FreeState::randomAboutFace(Uint32 elapsedTime)
         ABOUT_FACE_TICK_PROBABILITY());
 }
 
+void Fish::FreeState::nibble(boost::shared_ptr<Line> &line)
+{
+    boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
+    
+    if( !sharedFishOwner )
+        return;
+
+    if( sharedFishOwner->nibbling )
+        return;
+
+    sharedFishOwner->nibbleLine = line;
+    sharedFishOwner->nibbling = true;
+    sharedFishOwner->nibbleTime = sharedFishOwner->NIBBLE_TIME();
+}
+
 //FreeState Collidable
 void Fish::FreeState::collidesWith(boost::shared_ptr<Collidable> &otherObject,
     const BoundingBox &otherBox)
@@ -683,12 +766,17 @@ void Fish::FreeState::collidesWithHook(boost::shared_ptr<Line> &hook,
     if( !sharedFishOwner )
         return;
 
+    if( sharedFishOwner->nibbling || sharedFishOwner->justFinishedNibbling)
+        return;
+
     if( &yourBox == &(sharedFishOwner->mouthBox) )
     {
-        boost::shared_ptr<FishState> fishState(sharedFishOwner->hookedState);
+        hook->nibble(sharedFishOwner);
+        nibble(hook);
+        /*boost::shared_ptr<FishState> fishState(sharedFishOwner->hookedState);
         sharedFishOwner->changeState(fishState);
         sharedFishOwner->hookedByLine = hook;
-        sharedFishOwner->hookedByPlayer = hook->hooked(sharedFishOwner);
+        sharedFishOwner->hookedByPlayer = hook->hooked(sharedFishOwner);*/
     }
 }
 
@@ -817,6 +905,11 @@ void Fish::FreeState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
 void Fish::FreeState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
 
+const double &Fish::HookedState::HOOKED_FISH_VELOCITY()
+{
+    static const double TMP_VEL = .50;
+    return TMP_VEL;
+}
 
 //Inner class HookedState
 Fish::HookedState::HookedState()
@@ -861,8 +954,13 @@ void Fish::HookedState::dispose()
 
 double Fish::HookedState::calculatePixelsLeft(Uint32 elapsedTime)
 {
-    const double HOOKED_FISH_VELOCITY = 0.50;
-    return elapsedTime * HOOKED_FISH_VELOCITY;
+    return elapsedTime * HOOKED_FISH_VELOCITY();
+}
+
+void Fish::HookedState::swim(double pixels)
+{
+    Uint32 elapsedTime = Math::round(pixels / HOOKED_FISH_VELOCITY());
+    swim(elapsedTime);
 }
 
 void Fish::HookedState::swim(Uint32 elapsedTime)
@@ -947,6 +1045,11 @@ void Fish::HookedState::randomAboutFace(Uint32 elapsedTime)
     sharedFishOwner->doRandomAboutFace(elapsedTime,
         sharedFishOwner->ABOUT_FACE_TICK_PROBABILITY() /
         sharedFishOwner->ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER());
+}
+
+void Fish::HookedState::nibble(boost::shared_ptr<Line> &line)
+{
+    //No-op
 }
 
 //HookedState Collidable
