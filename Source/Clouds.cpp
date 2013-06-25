@@ -88,6 +88,9 @@ void Clouds::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 
 void Clouds::clockTick(Uint32 elapsedTime)
 {
+    if( !live )
+        return;
+
     double delX = elapsedTime * .025; //magic num is velocity
     firstImagePosition.x -= delX;
     secondImagePosition.x -= delX;
@@ -99,5 +102,10 @@ void Clouds::clockTick(Uint32 elapsedTime)
         secondImagePosition.x += imageSize.width * 3;
     if( thirdImagePosition.x < -imageSize.width + 1 )
         thirdImagePosition.x += imageSize.width * 3;
+}
+
+void Clouds::gameLive(bool l)
+{
+    live = l;
 }
 

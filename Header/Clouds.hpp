@@ -33,11 +33,13 @@ public:
     void loadImage(Renderer &renderer);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void clockTick(Uint32 elapsedTime);
+    void gameLive(bool l);
 private:
     Point firstImagePosition;
     Point secondImagePosition;
     Point thirdImagePosition;
     Dimension imageSize;
+    bool live;
 
     static const std::string &IMAGE_PATH1();
     static const std::string &IMAGE_PATH2();

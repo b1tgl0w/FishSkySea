@@ -46,6 +46,12 @@ const Dimension &Fish::MOUTH_SIZE()
     return TMP_MOUTH_SIZE;
 }
 
+const Dimension &Fish::MOUTH_SIZE_SEAHORSE()
+{
+    static const Dimension TMP_MOUTH_SIZE_SEAHORSE = { 5.0, 4.0 }; 
+    return TMP_MOUTH_SIZE_SEAHORSE;
+}
+
 const Uint32 &Fish::ABOUT_FACE_TICK_PROBABILITY()
 {
     static const Uint32 TMP_ABOUT_FACE_TICK_PROBABILITY = 2000; 
@@ -693,6 +699,10 @@ void Fish::FreeState::swim(Uint32 elapsedTime)
     {
         sharedFishOwner->behindSeahorse = false;
         sharedFishOwner->stayBehindSeahorse = false;
+        sharedFishOwner->mouthSize->width = sharedFishOwner->MOUTH_SIZE().
+            width;
+        sharedFishOwner->mouthSize->height = sharedFishOwner->MOUTH_SIZE().
+            height;
     }
         
     spurtVelocity(elapsedTime);
@@ -766,7 +776,11 @@ void Fish::FreeState::collidesWithHook(boost::shared_ptr<Line> &hook,
     if( !sharedFishOwner )
         return;
 
-    if( sharedFishOwner->nibbling || sharedFishOwner->justFinishedNibbling)
+    //Don't change this without thinking
+    //being stuck behind the seahorse, the fish needs to nibble more than once.
+    //or else it will be very hard to catch a fish under this condition
+    if( !sharedFishOwner->behindSeahorse && (sharedFishOwner->nibbling || 
+        sharedFishOwner->justFinishedNibbling))
         return;
 
     if( &yourBox == &(sharedFishOwner->mouthBox) )
@@ -871,7 +885,13 @@ void Fish::FreeState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seah
     sharedFishOwner->facing = Direction::RIGHT();
 
     if( seahorseFacing == Direction::RIGHT() )
+    {
         sharedFishOwner->behindSeahorse = true;
+        sharedFishOwner->mouthSize->width = sharedFishOwner->MOUTH_SIZE_SEAHORSE().
+            width;
+        sharedFishOwner->mouthSize->height = sharedFishOwner->MOUTH_SIZE_SEAHORSE().
+            height;
+    }
 }
 
 void Fish::FreeState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
@@ -896,7 +916,13 @@ void Fish::FreeState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &sea
     sharedFishOwner->facing = Direction::LEFT();
 
     if( seahorseFacing == Direction::LEFT() )
+    {
         sharedFishOwner->behindSeahorse = true;
+        sharedFishOwner->mouthSize->width = sharedFishOwner->MOUTH_SIZE_SEAHORSE().
+            width;
+        sharedFishOwner->mouthSize->height = sharedFishOwner->MOUTH_SIZE_SEAHORSE().
+            height;
+    }
 }
 void Fish::FreeState::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}

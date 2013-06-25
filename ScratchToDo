@@ -2,8 +2,3 @@
 //This file complements CurrentToDo. 
 //Current to is specifications of current task, this is implementation of task
 
-done 1. Fish notify line that it's nibbling
-done 2. Fish notify line that it's done nibbling
-done 3. Line catch fish if it's nibbling and setting hook
-done 4. Fish pause to nibble
-done 5. Fish stop nibbling after period of time

@@ -604,6 +604,7 @@ void Ocean::GameState::gameLive(bool live)
     sharedOceanOwner->shark->gameLive(live);
     sharedOceanOwner->seaSnail->gameLive(live);
     sharedOceanOwner->seahorse->gameLive(live);
+    sharedOceanOwner->clouds->gameLive(live);
 }
 
 Ocean::CreditState::CreditState(boost::shared_ptr<Ocean> &oceanOwner)

@@ -432,6 +432,7 @@ private:
     static const std::string &IMAGE_PATH();
     static const Layer &LAYER();
     static const Dimension &MOUTH_SIZE();
+    static const Dimension &MOUTH_SIZE_SEAHORSE();
     static const Uint32 &ABOUT_FACE_TICK_PROBABILITY();
     static const Uint32 &ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER();
     static const Uint32 &MINIMUM_TIME_TO_RANDOM_ABOUT_FACE();

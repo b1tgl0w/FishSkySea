@@ -415,7 +415,7 @@ void Line::setHook(bool on)
         boost::shared_ptr<Fish> sharedNibbleFish = nibbleFish.lock();
         boost::shared_ptr<Line> sharedThis(shared_from_this());
 
-        if( ! sharedNibbleFish || !sharedThis )
+        if( !sharedNibbleFish || !sharedThis )
             return;
 
         sharedNibbleFish->hookedBy(sharedThis, owner);
