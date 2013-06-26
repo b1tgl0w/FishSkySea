@@ -5,21 +5,28 @@
 //Copyright 2013 John Miner
 //This program is distributed under the terms of the GNU General Public License
 
+#include "boost/uuid/uuid_io.hpp"
+#include "boost/uuid/uuid_generators.hpp"
 #include <sstream>
 #include "../Header/MessageBoxLine.hpp"
 #include "../../../Header/Layout.hpp"
 #include "../../../Header/Renderer.hpp"
 #include "../../../Header/TextRendererElement.hpp"
+#include "../../../Header/DirectGraphicStrategy.hpp"
+#include "../../../Header/DirectFilledRectangleGraphic.hpp"
+#include "../../../Header/DirectRendererElement.hpp"
 
 MessageBoxLine::MessageBoxLine(const Point &position, const Dimension &messageBoxSize,
-    const Dimension &lineSize, const Layer &layer) :
+    const Dimension &lineSize, const Layer &layer, Uint32 bgColor) :
     position(position), messageBoxSize(messageBoxSize), lineSize(lineSize),
-    layer(layer)
+    layer(layer), uuid(boost::uuids::random_generator()()),
+    identifier(boost::uuids::to_string(uuid)), bgColor(bgColor)
     { }
 
 MessageBoxLine::MessageBoxLine(const MessageBoxLine &rhs) : position(rhs.position),
     messageBoxSize(rhs.messageBoxSize), lineSize(rhs.lineSize), layer(rhs.layer), 
-    line(rhs.line) { }
+    line(rhs.line), uuid(rhs.uuid), identifier(rhs.identifier), bgColor(rhs.bgColor)
+    { }
 
 MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
 {
@@ -31,6 +38,9 @@ MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
     lineSize = rhs.lineSize;
     layer = rhs.layer;
     line = rhs.line;
+    uuid = rhs.uuid;
+    identifier = rhs.identifier;
+    bgColor = rhs.bgColor;
 
     return *this;
 }
@@ -93,6 +103,13 @@ void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     renderer.loadText(line, COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
     TextRendererElement re(line, layer.integer() + 1, position, lineSize);
     layout->drawWhenReady(re);
+
+    Point origin = { 0.0, 0.0 };
+    boost::shared_ptr<DirectGraphicStrategy> dgs(new DirectFilledRectangleGraphic(
+        origin, lineSize, bgColor));
+    DirectRendererElement re2(identifier, layer.integer(), origin,
+        lineSize, dgs);
+    layout->drawWhenReady(re2);
 }
 
 void MessageBoxLine::loadImage(Renderer &renderer)

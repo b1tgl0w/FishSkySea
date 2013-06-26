@@ -33,7 +33,7 @@ MessageBox::MessageBox(TTF_Font *font, const std::string &text,
     identifier(boost::uuids::to_string(uuid))
 {
     //Putting this here for now. If client-defined, change.
-    boost::shared_ptr<ScaleClipFit> tmpScaleClipFit(new ScaleClipFit);
+    boost::shared_ptr<ClipFit> tmpScaleClipFit(new ClipFit);
     fitStrategy = tmpScaleClipFit;
 
     formLines();
@@ -113,7 +113,7 @@ bool MessageBox::formLines()
     while( notFull == true && !(text.empty()) && (lines.size() + 1) * 
         lineSize.height <= size.height )
     {
-        MessageBoxLine currentLine(position, size, lineSize, layer);
+        MessageBoxLine currentLine(position, size, lineSize, layer, color);
         notFull = currentLine.form(font, text);
         lines.push_back(currentLine);
     }
@@ -123,13 +123,6 @@ bool MessageBox::formLines()
 
 void MessageBox::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    Point origin = { 0.0, 0.0 };
-    boost::shared_ptr<DirectGraphicStrategy> dgs(new DirectFilledRectangleGraphic(
-        origin, size, color));
-    DirectRendererElement re(identifier, layer.integer(), origin,
-        size, dgs);
-    layout->drawWhenReady(re);
-
     std::list<boost::shared_ptr<CenterLayout> >::iterator layoutIterator =
         layouts.begin();
 

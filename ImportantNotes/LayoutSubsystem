@@ -1,0 +1,3 @@
+Note:   Coordinate layouts should NOT have sublayouts unless you plan to
+modify the coordinate layout class.
+

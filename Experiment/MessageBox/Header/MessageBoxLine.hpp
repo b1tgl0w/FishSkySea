@@ -14,6 +14,7 @@
 #include <SDL_ttf.h>
 #endif
 #include <string>
+#include "boost/uuid/uuid.hpp"
 #include "../../../Header/Point.hpp"
 #include "../../../Header/Dimension.hpp"
 #include "../../../Header/Graphic.hpp"
@@ -27,7 +28,7 @@ class MessageBoxLine : public Graphic
 public:
     //Position relative to MB top-left
     explicit MessageBoxLine(const Point &position, const Dimension &messageBoxSize,
-        const Dimension &lineSize, const Layer &layer);
+        const Dimension &lineSize, const Layer &layer, Uint32 bgColor);
     MessageBoxLine(const MessageBoxLine &rhs);
     MessageBoxLine &operator=(const MessageBoxLine &rhs);
     bool form(TTF_Font *font, std::string &leftOver); 
@@ -39,6 +40,9 @@ private:
     Dimension lineSize;
     Layer layer;
     std::string line;
+    boost::uuids::uuid uuid;
+    std::string identifier;
+    Uint32 bgColor;
     //Position relative to MB top-left
 };
 

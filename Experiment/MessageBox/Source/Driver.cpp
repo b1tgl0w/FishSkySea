@@ -22,7 +22,7 @@
 
 int main(int argc, char **argv)
 {
-    Dimension screenResolution = { 640, 480 };
+    Dimension screenResolution = { 800, 600 };
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher(new
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
@@ -33,23 +33,19 @@ int main(int argc, char **argv)
     if( !testFont )
         std::cout << TTF_GetError() << std::endl;
 
-    Dimension messageBoxSize = { 640, 120 };
-    Dimension lineSize = { 640, 40 };
+    Dimension messageBoxSize = { 800, 120 };
+    Dimension lineSize = { 800, 40 };
     Uint32 BLACK = 0x00000000;
     Point origin = { 0.0, 0.0 };
     Layer layer = Layer::FOREGROUND();
-    MessageBox messageBox(testFont, "The tears I cry are only fragments of the suffering I endure. They soak my soul.", 
+//    MessageBox messageBox(testFont, "The tears I cry are only fragments of the suffering I endure. They soak my soul. I call out to the ocean and drift away... I'm going to put some filler text in here... kinda ruins the moment, doesn't it? I neeeeed more filler. I'm not sure how much. Maybe this is enough",
+    MessageBox messageBox(testFont, "The", 
         messageBoxSize, lineSize, BLACK, false, layer);
     boost::shared_ptr<FitStrategy> clipFit(new ClipFit);
-    boost::shared_ptr<GridLayout> gridLayout(new GridLayout(4, 1));
-    boost::shared_ptr<Layout> superGridLayout(gridLayout);
-    boost::shared_ptr<CoordinateLayout> coordinateLayout(new CoordinateLayout(clipFit));
-    boost::shared_ptr<Layout> superCoordinateLayout(coordinateLayout);
-    boost::shared_ptr<Layout> superMessageBox(messageBox.layoutToAttach());
-    Point gridCell = { 0, 3 };
     boost::shared_ptr<Layout> superMbLayout(messageBox.layoutToAttach());
-    coordinateLayout->addLayout(superMbLayout, origin);
-    gridLayout->addLayout(superCoordinateLayout, gridCell);
+    boost::shared_ptr<GridLayout> gridLayout(new GridLayout(3, 1));
+    boost::shared_ptr<Layout> superGridLayout(gridLayout);
+    gridLayout->addLayout(superMbLayout, origin);
     renderer->addLayout(superGridLayout);
     for( int i = 0; i < 1000; ++i )
     {

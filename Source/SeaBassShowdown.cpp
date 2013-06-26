@@ -388,7 +388,8 @@ int main(int argc, char **argv)
 int main(int argc, char **argv)
 {
     srand((unsigned) time(0)); //Move to class Game, Ocean, or Renderer
-    boost::shared_ptr<Game> game(new Game);
+    boost::shared_ptr<Score> score(new Score(0));
+    boost::shared_ptr<Game> game(new Game(score, score));
     Dimension screenResolution = { 800, 600 };
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher(new
         FrameCleanupPublisher);
@@ -400,16 +401,18 @@ int main(int argc, char **argv)
     Point backgroundPoint = { 0.0, 0.0 };
     Dimension fishSize = { 70, 26 };
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
+    ocean->initializeStates();
     ocean->initializeSharedFromThis();
     ocean->loadImage(*(renderer));
-    boost::shared_ptr<Score> score(new Score(0));
     boost::shared_ptr<HumanPlayer> player1(new HumanPlayer(polePoint,
-        hookPoint, ocean, score));
+        hookPoint, ocean, score, HumanPlayer::PLAYER_ONE()));
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
-    renderer->loadImage("../Media/Scene3.png");
-    renderer->loadImage("../Media/Fish.png");
+    renderer->loadImage("../Media/Scene7.png");
+    renderer->loadImage("../Media/MowhawkFisher.png");
+    renderer->loadImage("../Media/ElderFisher.png");
+    renderer->loadImage("../Media/DockSupports2.png");
     player1->loadImage(*renderer);
     bool quit = false;
     ocean->addCollidable(ocean);
@@ -425,8 +428,6 @@ int main(int argc, char **argv)
     masterInputPublisher->subscribe(MiSubscriber);
     boost::shared_ptr<KeyboardSubscriber> playerSubscriber(player1);
     keyboardPublisher->subscribe(playerSubscriber);
-    boost::shared_ptr<KeyboardSubscriber> gameSubscriber(game);
-    keyboardPublisher->subscribe(gameSubscriber);
     boost::shared_ptr<FitStrategy> clipFitStrategy(new ClipFit);
     boost::shared_ptr<FitStrategy> fillClipFit(new ScaleClipFit);
     int gridRows = 3;
@@ -492,6 +493,7 @@ int main(int argc, char **argv)
     where.y = 0;
     gridLayout->removeLayout(coord2, where);
     gridLayout->addLayout(coord2, where);
+    ocean->gameLive(true);
 
     ImageRendererElement background("../Media/Scene3.png", 0, backgroundPoint,
         backgroundSize);
@@ -534,7 +536,8 @@ int main(int argc, char **argv)
 
     SDL_Quit();
     return EXIT_SUCCESS;
-}*/
+}
+*/
 
 void handleQuit( bool &quit )
 {

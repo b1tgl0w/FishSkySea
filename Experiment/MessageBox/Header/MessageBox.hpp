@@ -22,7 +22,7 @@
 #include "../Header/MessageBoxLine.hpp"
 #include "../../../Header/GridLayout.hpp"
 #include "../../../Header/CenterLayout.hpp"
-#include "../../../Header/ScaleClipFit.hpp"
+#include "../../../Header/ClipFit.hpp"
 #include "../../../Header/Layer.hpp"
 
 class MessageBox : public Graphic
@@ -51,7 +51,7 @@ private:
     std::vector<MessageBoxLine> lines;
     boost::shared_ptr<GridLayout> gridLayout;
     std::list<boost::shared_ptr<CenterLayout> > layouts;
-    boost::shared_ptr<ScaleClipFit> fitStrategy;
+    boost::shared_ptr<ClipFit> fitStrategy;
     Layer layer;
     boost::uuids::uuid uuid;
     std::string identifier;
