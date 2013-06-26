@@ -1,12 +1,9 @@
 - Don't allow the player to keep the fish on the line too long. Either use
 and eel to eat the fish or have the line break. Either way, make sure there
 is a visible cue to warn the player
-- Dust motes in water
-- Lure
+(Save until near end of project) - Dust motes in water
 - Sound effects
 - Displayer Game Dev Inc. splash screen (or whatever)
-- Pausing: Consider pause on key down unpause on keyup (not during the same press,
-obviously)
 - Scenes need a way to flag images for freeing
 - Make an easter egg on credits minigame
 - Have shark turn around more frequently or do something so it's not so easy
@@ -15,19 +12,27 @@ to catch a fish
 - Put an expiration timer on glowing fish/shark?
 - Fish should float up and down (withing their rows)
 - Shark might move in spurts too, at least when not in attack state
-- Ripples when line is in water
 - When doing special move, put text above head of character doing the move. e.g.
 the name of the move.
-- Press a button to set hook, otherwise fish just nibbles. Note that there
-is a "recover" period between being able to set the hook again.
 - "Particle effects" such as splashing water, aura on glowing fish, snail trail,
 bubble, add more
-- Slow moving clouds
 - Menu is in this order: How to Play | Play | 2 Play | ... , the initial
 highlighted item, however, is Play.
 - Poems (unlockable?)
 - 3 Song soundtrack + tite screen + possibly story screen
 - Animated yarn, worm, or lure on hook?
 - Animated fish mouths
-- When fish hooked and pressing set button, yank fish upward.
+- Interactive splash logo. e.g. when player advances past splash screen
+by pressing a key, they get a special animation, e.g. b1tgl0w games starts glowing
+briefly then advances. Otherwise does not glow
+- Wes uses worm, Rad uses lure
+
+Done
+//Done - Press a button to set hook, otherwise fish just nibbles. Note that there
+is a "recover" period between being able to set the hook again.
+//Done - Lure (worm)
+//Done - Pausing: Consider pause on key down unpause on keyup (not during the same press,
+obviously)
+//Done - Ripples when line is in water
+//Done - Slow moving clouds
 
