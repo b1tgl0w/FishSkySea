@@ -50,6 +50,7 @@ private:
     double fastForward;
     Uint32 fastForwardCompensation;
     bool pause;
+    bool justPaused;
 };
 
 #endif

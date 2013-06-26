@@ -12,22 +12,22 @@
 
 const Weight Weight::BABY()
 {
-    return Weight(1);
+    return Weight(3);
 }
 
 const Weight Weight::SMALL()
 {
-    return Weight(2);
+    return Weight(4);
 }
 
 const Weight Weight::MEDIUM()
 {
-    return Weight(3);
+    return Weight(4);
 }
 
 const Weight Weight::LARGE()
 {
-    return Weight(4);
+    return Weight(5);
 }
 
 const Weight Weight::LUNKER()

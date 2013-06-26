@@ -15,7 +15,6 @@
 #else
 #include <SDL.h>
 #endif
-#include <ctime>
 #include "boost/shared_ptr.hpp"
 #include "Layout.hpp"
 #include "Dimension.hpp"

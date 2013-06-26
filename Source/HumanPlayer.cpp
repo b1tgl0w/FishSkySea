@@ -178,8 +178,6 @@ void HumanPlayer::setHook(bool on)
 
 bool HumanPlayer::filledBucket()
 {
-    //Get rid of error on visual studio. Just a placeholder!
-    return true; //Just a placeholder!
 }
 
 void HumanPlayer::caughtFish(Weight weight, bool glowing)

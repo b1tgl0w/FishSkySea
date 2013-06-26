@@ -62,7 +62,7 @@ int main(int argc, char **argv)
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
-        "../Media/Fonts/gentium/Gentium-R.ttf", frameCleanupPublisher)); // changed back to "../Media"
+        "../Media/Fonts/gentium/Gentium-R.ttf", frameCleanupPublisher)); 
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
         KeyboardPublisher);
     boost::shared_ptr<boost::shared_ptr<Scene> > currentScene(
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
-        "../Media/Fonts/monof55.ttf", frameCleanupPublisher)); // changed back to "../Media"
+        "../Media/Fonts/monof55.ttf", frameCleanupPublisher)); 
     Point polePoint = { 150.0, 250.0 };
     Point hookPoint = { 150.0, 500.0 };
     Point backgroundPoint = { 0.0, 0.0 };
@@ -118,8 +118,8 @@ int main(int argc, char **argv)
     player1->initializeLine(); //Shall be called once after ctor
     player1->initializePlayerKeyTranslater();
     Dimension backgroundSize = { 800.0, 600.0 };
-    renderer->loadImage("../Media/Scene3.png"); // changed back to "../Media"
-    renderer->loadImage("../Media/Fish.png"); // changed back to "../Media"
+    renderer->loadImage("../Media/Scene3.png"); 
+    renderer->loadImage("../Media/Fish.png"); 
     SDL_Color white = { 0x00, 0x00, 0x00, 0x00 };
     renderer->loadText("Hey!", white, 1);
     player1->loadImage(*renderer);
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
     renderer->addLayout(superLayeredLayout);
 
     ImageRendererElement background("../Media/Scene3.png", 0,
-        backgroundPoint, screenResolution); // changed back to "../Media"
+        backgroundPoint, screenResolution); 
     Point textPosition = { 300, 0 };
     Dimension textSize = { 100, 50 };
 
