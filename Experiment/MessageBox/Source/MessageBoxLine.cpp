@@ -69,7 +69,7 @@ bool MessageBoxLine::form(TTF_Font *font, std::string &whatsLeft)
         currentLine += currentWord;
         TTF_SizeText(font, currentLine.c_str(), &currentWidth, &currentHeight);
 
-        std::cout << currentWord << "\t" << position.x + currentWidth << std::endl;
+        //std::cout << currentWord << "\t" << position.x + currentWidth << std::endl;
         if( position.x + currentWidth > lineSize.width )
         {
             doesntFit = true;

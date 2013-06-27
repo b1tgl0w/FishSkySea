@@ -12,10 +12,12 @@
 
 GridLayout::GridLayout(int rows, int cols)
 {
+    Point tmpPosition = { 0.0, 0.0 };
+    position = tmpPosition;
     initialize(rows, cols);
 }
 
-GridLayout::GridLayout(const GridLayout &rhs)
+GridLayout::GridLayout(const GridLayout &rhs) : position(rhs.position)
 {
     if( rhs.cells.size() > 0 )
     {
@@ -36,6 +38,7 @@ GridLayout &GridLayout::operator=(const GridLayout &rhs)
         dispose();
         int rows = rhs.cells.size();
         int cols = rhs.cells[0].size();
+        position = rhs.position;
         initialize(rows, cols);
     }
 
@@ -181,8 +184,8 @@ void GridLayout::adjustCells()
             it->begin(); it2 != it->end(); ++it2, ++j )
         {
             (*it2)->scale(cellSize);
-            cellPosition.x = position.x + (((double) j) / cells[0].size()) * size.width;
-            cellPosition.y = position.y + (((double) i) / cells.size()) * size.height;
+            cellPosition.x = position.x + (((double) j) / (double) cells[0].size()) * size.width;
+            cellPosition.y = position.y + (((double) i) / (double) cells.size()) * size.height;
             (*it2)->moveTo(cellPosition);
         }
         j = 0;
@@ -369,10 +372,13 @@ void GridLayout::own(const boost::weak_ptr<Layout> &owner)
 //GridCell inner class
 GridLayout::GridCell::GridCell() : merged(false)
 {
+    Point tmpPosition = { 0.0, 0.0 };
+    position = tmpPosition;
     initialize();
 }
 
-GridLayout::GridCell::GridCell(const GridCell &rhs) : merged(rhs.merged)
+GridLayout::GridCell::GridCell(const GridCell &rhs) : merged(rhs.merged),
+    position(rhs.position)
 {
     initialize();
 }
@@ -385,6 +391,7 @@ GridLayout::GridCell &GridLayout::GridCell::operator=(const GridCell &rhs)
     dispose();
     initialize();
     merged = rhs.merged;
+    position = rhs.position;
 
     return *this;
 }

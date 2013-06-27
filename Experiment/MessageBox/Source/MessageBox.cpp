@@ -69,6 +69,7 @@ MessageBox &MessageBox::operator=(const MessageBox &rhs)
 boost::shared_ptr<Layout> MessageBox::layoutToAttach()
 {
     boost::shared_ptr<Layout> tmp(gridLayout);
+    std::cout << gridLayout->position.y << "\t";
     return tmp;
 }
 
@@ -90,7 +91,6 @@ void MessageBox::createLayouts()
         1));
     gridLayout = newGridLayout;
     Point cell = { 0.0, 0.0 };
-
     for( std::vector<MessageBoxLine>::iterator it = lines.begin(); it != lines.end();
         ++it )
     {

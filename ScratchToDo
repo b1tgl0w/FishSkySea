@@ -2,3 +2,15 @@
 //This file complements CurrentToDo. 
 //Current to is specifications of current task, this is implementation of task
 
+Bugfix ideas.
+1. Look in MessageBox and find out why if one line is provided, it works,
+but if more than one line, it fails
+2. Look in the gridlayout source code at addLayout
+3. Being positioned before being scaled?
+3. GridCell initialize being called?
+4. For some reason, message box grid layout seems to be added to the first
+cell of its parent layout, rather than third
+
+
+1. It's not due to adding sublayouts
+2. It seems to be adding the right NUMBER of cells

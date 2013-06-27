@@ -39,9 +39,9 @@ public:
     bool advance();
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
+    void createLayouts();
 private:
     bool formLines();
-    void createLayouts();
     TTF_Font *font;
     std::string text;
     Dimension size;

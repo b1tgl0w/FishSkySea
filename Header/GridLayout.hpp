@@ -45,10 +45,10 @@ public:
     void removeLayout(boost::shared_ptr<Layout> &layout, const Point &index);
     boost::weak_ptr<Layout> getElement(int row, int col);
     void own(const boost::weak_ptr<Layout> &owner);
-protected:
+//protected:
     void initialize(int rows, int cols);
     void dispose();
-private:
+//private:
     class GridCell : public Layout,
         public boost::enable_shared_from_this<GridCell>
     {
