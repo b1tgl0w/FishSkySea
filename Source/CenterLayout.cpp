@@ -11,10 +11,15 @@
 CenterLayout::CenterLayout(const boost::shared_ptr<FitStrategy> &fitStrategy)
 {
     boost::shared_ptr<Clip> clipObject(new Clip);
+    Point tmpPosition = { 0.0, 0.0 };
+    position = tmpPosition;
+    Dimension tmpSize = { 0.0, 0.0 };
+    size = tmpSize;
     initialize(fitStrategy, clipObject);
 }
 
-CenterLayout::CenterLayout(const CenterLayout &rhs)
+CenterLayout::CenterLayout(const CenterLayout &rhs) : position(rhs.position),
+size(rhs.size)
 {
     initialize(rhs.fitStrategy, rhs.clipObject);
 }
@@ -25,6 +30,8 @@ CenterLayout &CenterLayout::operator=(const CenterLayout &rhs)
         return *this;
 
     dispose();
+    position = rhs.position;
+    size = rhs.size;
     initialize(rhs.fitStrategy, rhs.clipObject);
     
     return *this;

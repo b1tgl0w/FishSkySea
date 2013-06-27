@@ -2,7 +2,13 @@
 //This file complements CurrentToDo. 
 //Current to is specifications of current task, this is implementation of task
 
+FIXED
+
 Bugfix ideas.
+- According to gdb, position.y is huge after moveTo is called by adjustCells
+- Find out which cell the mb belongs to... done, when added to the cell, it 
+is correct
+- Find out how to make the cells, and possibly the grid layout, the right size
 1. Look in MessageBox and find out why if one line is provided, it works,
 but if more than one line, it fails
 2. Look in the gridlayout source code at addLayout

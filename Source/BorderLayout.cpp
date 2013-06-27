@@ -14,10 +14,15 @@ BorderLayout::BorderLayout(const BorderSize &borderSize)
 : borderSize(borderSize), borderCorner(BorderCorner::None()),
 emptyLayout(new EmptyLayout)
 {
+    Point tmpPosition = { 0.0, 0.0 };
+    position = tmpPosition;
+    Dimension tmpDimension = { 0.0, 0.0 };
+    size = tmpDimension;
 }
 
 BorderLayout::BorderLayout(const BorderLayout &rhs)
-: borderSize(borderSize), borderCorner(BorderCorner::None())
+: borderSize(borderSize), borderCorner(BorderCorner::None()),
+    position(rhs.position), size(rhs.size)
 {
 }
     
@@ -28,6 +33,8 @@ BorderLayout &BorderLayout::operator=(const BorderLayout &rhs)
 
     dispose();
     initialize(rhs.borderSize);
+    position = rhs.position;
+    size = rhs.size;
     
     return *this;
 }

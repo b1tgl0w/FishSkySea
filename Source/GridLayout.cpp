@@ -14,10 +14,13 @@ GridLayout::GridLayout(int rows, int cols)
 {
     Point tmpPosition = { 0.0, 0.0 };
     position = tmpPosition;
+    Dimension tmpSize = { 0.0, 0.0 };
+    size = tmpSize;
     initialize(rows, cols);
 }
 
-GridLayout::GridLayout(const GridLayout &rhs) : position(rhs.position)
+GridLayout::GridLayout(const GridLayout &rhs) : position(rhs.position),
+size(rhs.size)
 {
     if( rhs.cells.size() > 0 )
     {
@@ -39,6 +42,7 @@ GridLayout &GridLayout::operator=(const GridLayout &rhs)
         int rows = rhs.cells.size();
         int cols = rhs.cells[0].size();
         position = rhs.position;
+        size = rhs.size;
         initialize(rows, cols);
     }
 
@@ -78,7 +82,6 @@ void GridLayout::dispose()
 {
     //No-op
 }
-
 
 void GridLayout::render()
 {
@@ -374,11 +377,13 @@ GridLayout::GridCell::GridCell() : merged(false)
 {
     Point tmpPosition = { 0.0, 0.0 };
     position = tmpPosition;
+    Dimension tmpSize = { 0.0, 0.0 };
+    size = tmpSize;
     initialize();
 }
 
 GridLayout::GridCell::GridCell(const GridCell &rhs) : merged(rhs.merged),
-    position(rhs.position)
+    position(rhs.position), size(rhs.size)
 {
     initialize();
 }
@@ -392,6 +397,7 @@ GridLayout::GridCell &GridLayout::GridCell::operator=(const GridCell &rhs)
     initialize();
     merged = rhs.merged;
     position = rhs.position;
+    size = rhs.size;
 
     return *this;
 }
@@ -459,7 +465,7 @@ void GridLayout::GridCell::scale(const Dimension &size)
     this->size.height = size.height;
 
     if( layout )
-        layout->scale(size);
+        layout->scale(this->size);
 }
 
 void GridLayout::GridCell::scale(const DimensionPercent &dimensionPercent)

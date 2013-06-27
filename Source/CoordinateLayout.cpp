@@ -11,10 +11,15 @@
 CoordinateLayout::CoordinateLayout(boost::shared_ptr<FitStrategy> &fitStrategy)
 {
     boost::shared_ptr<Clip> clipObject(new Clip);
+    Point tmpPosition = { 0.0, 0.0 };
+    Dimension tmpSize = { 0.0, 0.0 };
+    position = tmpPosition;
+    size = tmpSize;
     initialize(fitStrategy, clipObject);
 }
 
-CoordinateLayout::CoordinateLayout(const CoordinateLayout &rhs)
+CoordinateLayout::CoordinateLayout(const CoordinateLayout &rhs) :
+    position(rhs.position), size(rhs.size)
 {
     dispose();
     initialize(rhs.fitStrategy, rhs.clipObject);
@@ -26,6 +31,8 @@ CoordinateLayout &CoordinateLayout::operator=(const CoordinateLayout &rhs)
         return *this;
 
     dispose();
+    position = rhs.position;
+    size = rhs.size;
     initialize(rhs.fitStrategy, rhs.clipObject);
     
     return *this;

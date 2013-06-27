@@ -13,10 +13,15 @@ LayeredLayout::LayeredLayout(const int
     numberOfLayers, boost::shared_ptr<FitStrategy> &fitStrategy)
 {
     boost::shared_ptr<Clip> clipObject(new Clip);
+    Point tmpPosition = { 0.0, 0.0 };
+    position = tmpPosition;
+    Dimension tmpSize = { 0.0, 0.0 };
+    size = tmpSize;
     initialize(numberOfLayers, fitStrategy, clipObject);
 }
 
-LayeredLayout::LayeredLayout(const LayeredLayout &rhs)
+LayeredLayout::LayeredLayout(const LayeredLayout &rhs) : position(rhs.position),
+size(rhs.size)
 {
     dispose();
     initialize(rhs.layers.size(), rhs.fitStrategy,
@@ -29,6 +34,8 @@ LayeredLayout &LayeredLayout::operator=(const LayeredLayout &rhs)
         return *this;
 
     dispose();
+    position = rhs.position;
+    size = rhs.size;
     initialize(rhs.layers.size(), rhs.fitStrategy,
         rhs.clipObject);
 
