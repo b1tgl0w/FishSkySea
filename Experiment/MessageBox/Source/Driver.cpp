@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     Point origin = { 0.0, 1.0 };
     Layer layer = Layer::FOREGROUND();
     MessageBox messageBox(testFont, "The tears I cry are only fragments of the suffering I endure. They soak my soul. I call out to the ocean and drift away... I'm going to put some filler text in here... kinda ruins the moment, doesn't it? I neeeeed more filler. I'm not sure how much. Maybe this is enough",
-//    MessageBox messageBox(testFont, "The", 
+    //MessageBox messageBox(testFont, "The", 
         messageBoxSize, lineSize, BLACK, false, layer);
     boost::shared_ptr<FitStrategy> clipFit(new ClipFit);
     boost::shared_ptr<Layout> superMbLayout(messageBox.layoutToAttach());

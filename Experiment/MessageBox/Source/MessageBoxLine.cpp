@@ -48,8 +48,10 @@ MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
 //Returns false if text exceeds this current line
 bool MessageBoxLine::form(TTF_Font *font, std::string &whatsLeft)
 {
+    const int MAX_LINE_CHARACTERS = 78;
     int currentWidth = 0;
     int currentHeight = 0;
+    int lineCharacters = 0;
     std::string currentLine;
     std::string previousLine;
     std::string currentWord;
@@ -67,10 +69,11 @@ bool MessageBoxLine::form(TTF_Font *font, std::string &whatsLeft)
 
         currentWord += ' ';
         currentLine += currentWord;
-        TTF_SizeText(font, currentLine.c_str(), &currentWidth, &currentHeight);
+        //TTF_SizeText(font, currentLine.c_str(), &currentWidth, &currentHeight);
+        lineCharacters += currentWord.size();
 
         //std::cout << currentWord << "\t" << position.x + currentWidth << std::endl;
-        if( position.x + currentWidth > lineSize.width )
+        if( lineCharacters > MAX_LINE_CHARACTERS )
         {
             doesntFit = true;
             break;
@@ -100,9 +103,13 @@ void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     const int BORDER_SIZE = 0;
     const Layer LAYER = Layer::SCORE();
 
-    renderer.loadText(line, COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
-    TextRendererElement re(line, layer.integer() + 1, position, lineSize);
-    layout->drawWhenReady(re);
+    if( line.size() > 0 )
+    {
+        renderer.loadText(line, COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
+        TextRendererElement re(line, layer.integer() + 1, position, lineSize);
+        layout->drawWhenReady(re);
+    }
+    //Otherwise, blank
 
     Point origin = { 0.0, 0.0 };
     boost::shared_ptr<DirectGraphicStrategy> dgs(new DirectFilledRectangleGraphic(

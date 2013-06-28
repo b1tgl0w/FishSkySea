@@ -1,3 +1,5 @@
 Note:   Coordinate layouts should NOT have sublayouts unless you plan to
 modify the coordinate layout class.
+Note:   For some reason, grid layouts do not have fit strategies, maybe other
+layouts too.
 

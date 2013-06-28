@@ -118,6 +118,12 @@ bool MessageBox::formLines()
         lines.push_back(currentLine);
     }
 
+    while( lines.size() < 3 )
+    {
+        MessageBoxLine currentLine(position, size, lineSize, layer, color);
+        lines.push_back(currentLine);
+    }
+
     return !notFull;
 }
 
