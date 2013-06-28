@@ -15,6 +15,7 @@
 #endif
 #include <string>
 #include "boost/uuid/uuid.hpp"
+#include "boost/shared_ptr.hpp"
 #include "../../../Header/Point.hpp"
 #include "../../../Header/Dimension.hpp"
 #include "../../../Header/Graphic.hpp"
@@ -28,10 +29,11 @@ class MessageBoxLine : public Graphic
 public:
     //Position relative to MB top-left
     explicit MessageBoxLine(const Point &position, const Dimension &messageBoxSize,
-        const Dimension &lineSize, const Layer &layer, Uint32 bgColor);
+        const Dimension &lineSize, const Layer &layer, Uint32 bgColor,
+        boost::shared_ptr<TTF_Font> font);
     MessageBoxLine(const MessageBoxLine &rhs);
     MessageBoxLine &operator=(const MessageBoxLine &rhs);
-    bool form(TTF_Font *font, std::string &leftOver); 
+    bool form(std::string &leftOver); 
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
 private:
@@ -43,6 +45,7 @@ private:
     boost::uuids::uuid uuid;
     std::string identifier;
     Uint32 bgColor;
+    boost::shared_ptr<TTF_Font> font;
     //Position relative to MB top-left
 };
 

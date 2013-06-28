@@ -25,7 +25,7 @@ const bool MessageBox::NO_BORDER()
     return TMP_NO_BORDER;
 }
 
-MessageBox::MessageBox(TTF_Font *font, const std::string &text, 
+MessageBox::MessageBox(boost::shared_ptr<TTF_Font> font, const std::string &text, 
     const Dimension &size, const Dimension &lineSize, Uint32 color, bool border,
     const Layer &layer) 
     : font(font), text(text), size(size), lineSize(lineSize), color(color), 
@@ -113,14 +113,15 @@ bool MessageBox::formLines()
     while( notFull == true && !(text.empty()) && (lines.size() + 1) * 
         lineSize.height <= size.height )
     {
-        MessageBoxLine currentLine(position, size, lineSize, layer, color);
-        notFull = currentLine.form(font, text);
+        MessageBoxLine currentLine(position, size, lineSize, layer, color,
+            font);
+        notFull = currentLine.form(text);
         lines.push_back(currentLine);
     }
 
     while( lines.size() < 3 )
     {
-        MessageBoxLine currentLine(position, size, lineSize, layer, color);
+        MessageBoxLine currentLine(position, size, lineSize, layer, color, font);
         lines.push_back(currentLine);
     }
 

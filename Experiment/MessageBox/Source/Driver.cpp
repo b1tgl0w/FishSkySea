@@ -28,17 +28,19 @@ int main(int argc, char **argv)
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
         "../Media/Fonts/gentium/Gentium-R.ttf", frameCleanupPublisher));
-    TTF_Font *testFont = TTF_OpenFont("../Media/Fonts/gentium/Gentium-R.ttf", 88);
+    boost::shared_ptr<TTF_Font> testFont(TTF_OpenFont("../Media/Fonts/gentium/Gentium-R.ttf", 88), TTF_CloseFont);
+    boost::shared_ptr<TTF_Font> testFont2(TTF_OpenFont("../Media/Fonts/gentium/Gentium-R.ttf", 20), TTF_CloseFont);
+    boost::shared_ptr<TTF_Font> sharedTestFont(testFont);
 
-    if( !testFont )
+    if( !testFont || ! testFont2 )
         std::cout << TTF_GetError() << std::endl;
 
     Dimension messageBoxSize = { 800, 120 };
-    Dimension lineSize = { 800, 40 };
+    Dimension lineSize = { 800, 40};
     Uint32 BLACK = 0x00000000;
     Point origin = { 0.0, 1.0 };
     Layer layer = Layer::FOREGROUND();
-    MessageBox messageBox(testFont, "The tears I cry are only fragments of the suffering I endure. They soak my soul. I call out to the ocean and drift away... I'm going to put some filler text in here... kinda ruins the moment, doesn't it? I neeeeed more filler. I'm not sure how much. Maybe this is enough",
+    MessageBox messageBox(testFont2, "The tears I cry are only fragments of the suffering I endure. They soak my soul. I call out to the ocean and drift away... I'm going to put some filler text in here... kinda ruins the moment, doesn't it? I neeeeed more filler. I'm not sure how much. Maybe this is enough",
     //MessageBox messageBox(testFont, "The", 
         messageBoxSize, lineSize, BLACK, false, layer);
     boost::shared_ptr<FitStrategy> clipFit(new ClipFit);

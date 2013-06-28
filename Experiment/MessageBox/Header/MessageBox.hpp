@@ -28,7 +28,7 @@
 class MessageBox : public Graphic
 {
 public:
-    MessageBox(TTF_Font *font, const std::string &text, 
+    MessageBox(boost::shared_ptr<TTF_Font> font, const std::string &text, 
         const Dimension &size, const Dimension &lineSize, Uint32 color, bool border,
         const Layer &layer);
     MessageBox(const MessageBox &rhs);
@@ -42,7 +42,7 @@ public:
     void createLayouts();
 private:
     bool formLines();
-    TTF_Font *font;
+    boost::shared_ptr<TTF_Font> font;
     std::string text;
     Dimension size;
     Dimension lineSize;

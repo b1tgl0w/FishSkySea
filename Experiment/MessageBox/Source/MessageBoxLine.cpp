@@ -17,15 +17,18 @@
 #include "../../../Header/DirectRendererElement.hpp"
 
 MessageBoxLine::MessageBoxLine(const Point &position, const Dimension &messageBoxSize,
-    const Dimension &lineSize, const Layer &layer, Uint32 bgColor) :
+    const Dimension &lineSize, const Layer &layer, Uint32 bgColor,
+    boost::shared_ptr<TTF_Font> font) :
     position(position), messageBoxSize(messageBoxSize), lineSize(lineSize),
     layer(layer), uuid(boost::uuids::random_generator()()),
-    identifier(boost::uuids::to_string(uuid)), bgColor(bgColor)
+    identifier(boost::uuids::to_string(uuid)), bgColor(bgColor),
+    font(font)
     { }
 
 MessageBoxLine::MessageBoxLine(const MessageBoxLine &rhs) : position(rhs.position),
     messageBoxSize(rhs.messageBoxSize), lineSize(rhs.lineSize), layer(rhs.layer), 
-    line(rhs.line), uuid(rhs.uuid), identifier(rhs.identifier), bgColor(rhs.bgColor)
+    line(rhs.line), uuid(rhs.uuid), identifier(rhs.identifier), bgColor(rhs.bgColor),
+    font(rhs.font)
     { }
 
 MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
@@ -41,12 +44,13 @@ MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
     uuid = rhs.uuid;
     identifier = rhs.identifier;
     bgColor = rhs.bgColor;
+    font = rhs.font;
 
     return *this;
 }
 
 //Returns false if text exceeds this current line
-bool MessageBoxLine::form(TTF_Font *font, std::string &whatsLeft)
+bool MessageBoxLine::form(std::string &whatsLeft)
 {
     const int MAX_LINE_CHARACTERS = 78;
     int currentWidth = 0;
@@ -69,11 +73,12 @@ bool MessageBoxLine::form(TTF_Font *font, std::string &whatsLeft)
 
         currentWord += ' ';
         currentLine += currentWord;
-        //TTF_SizeText(font, currentLine.c_str(), &currentWidth, &currentHeight);
+        TTF_SizeText(font.get(), currentLine.c_str(), &currentWidth, &currentHeight);
         lineCharacters += currentWord.size();
 
         //std::cout << currentWord << "\t" << position.x + currentWidth << std::endl;
-        if( lineCharacters > MAX_LINE_CHARACTERS )
+        if( lineCharacters > MAX_LINE_CHARACTERS || position.x + currentWidth >
+            lineSize.width)
         {
             doesntFit = true;
             break;
@@ -103,20 +108,26 @@ void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     const int BORDER_SIZE = 0;
     const Layer LAYER = Layer::SCORE();
 
-    if( line.size() > 0 )
-    {
-        renderer.loadText(line, COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
-        TextRendererElement re(line, layer.integer() + 1, position, lineSize);
-        layout->drawWhenReady(re);
-    }
-    //Otherwise, blank
-
     Point origin = { 0.0, 0.0 };
     boost::shared_ptr<DirectGraphicStrategy> dgs(new DirectFilledRectangleGraphic(
         origin, lineSize, bgColor));
     DirectRendererElement re2(identifier, layer.integer(), origin,
         lineSize, dgs);
     layout->drawWhenReady(re2);
+
+    if( line.size() > 0 )
+    {
+        int width = 0;
+        int height = 0;
+        TTF_SizeText(font.get(), line.c_str(), &width, &height);
+        if( width < lineSize.width )
+            lineSize.width = width;
+        if( height < lineSize.height )
+            lineSize.height = height;
+        renderer.loadText(line, COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
+        TextRendererElement re(line, layer.integer() + 1, position, lineSize);
+        layout->drawWhenReady(re);
+    }
 }
 
 void MessageBoxLine::loadImage(Renderer &renderer)
