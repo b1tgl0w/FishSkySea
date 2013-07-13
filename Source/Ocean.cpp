@@ -84,12 +84,14 @@ const Point &Ocean::SHARK_POSITION()
     return TMP_SHARK_POSITION;
 }
 
-Ocean::Ocean(const Dimension &screenSize)
+Ocean::Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer)
+    : renderer(renderer)
 {
     initialize(screenSize);
 }
 
-Ocean::Ocean(const Ocean &rhs)
+Ocean::Ocean(const Ocean &rhs) : screenSize(rhs.screenSize),
+    renderer(rhs.renderer)
 {
     initialize(rhs.screenSize);
 }
@@ -100,6 +102,8 @@ Ocean &Ocean::operator=(const Ocean &rhs)
         return *this;
 
     dispose();
+    screenSize = rhs.screenSize;
+    renderer = rhs.renderer;
     initialize(rhs.screenSize);
 
     return *this;
@@ -205,9 +209,17 @@ void Ocean::initializeSharedFromThis()
     //Credit state init
     state = creditState;
     changeState(OceanMode::CREDIT_MODE());
+    boost::shared_ptr<CreditFish> tmpCreditFish(new CreditFish("John Miner",
+        "Programmer", fishStartingPoint, fishStartingDepth, sharedThis, renderer));
+    tmpCreditFish->initializeStates();
+    addCollidable(tmpCreditFish);
+    boost::shared_ptr<MasterClockSubscriber> creditSubscriber1(tmpCreditFish);
+    masterClockPublisher->subscribe(creditSubscriber1);
+    creditFishes.push_back(tmpCreditFish);
+
 
     //Restore state
-    state = savedState;
+    //state = savedState;
 }
 
 void Ocean::initializeStates()

@@ -19,6 +19,10 @@
 #include "../Header/ImageRendererElement.hpp"
 #include "../Header/SeaSnail.hpp"
 #include "../Header/Seahorse.hpp"
+#include "../Header/CoordinateLayout.hpp"
+#include "../Header/MessageBox.hpp"
+#include "../Header/Layout.hpp"
+#include "../Header/ScaleClipFit.hpp"
 
 //Remove this after adding name/title
 const std::string &CreditFish::IMAGE_PATH()
@@ -74,9 +78,24 @@ const Uint32 &CreditFish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 //Class CreditFish
 CreditFish::CreditFish(const std::string &name, const std::string &title,
     const Point &initialPosition, const Depth &initialDepth, 
-    boost::shared_ptr<Ocean> &ocean) : live(false)
+    boost::shared_ptr<Ocean> &ocean, boost::shared_ptr<Renderer>
+    &renderer) : live(false)
 {
     initialize(name, title, initialPosition, initialDepth, ocean);
+    boost::shared_ptr<FitStrategy> fs(new ScaleClipFit);
+    boost::shared_ptr<CoordinateLayout> cl(new CoordinateLayout(fs));
+    coordinateLayout = cl;
+
+    Dimension lineSize;
+    lineSize.width = size->width;
+    lineSize.height = size->height / 3;
+    Uint32 BLACK = 0x00000000;
+    boost::shared_ptr<MessageBox> mb(new MessageBox(name, *size, lineSize, BLACK, false,
+        Layer::FOREGROUND(), renderer));
+    messageBox = mb;
+    Point origin = {0, 0};
+    boost::shared_ptr<Layout> superMbLayout(messageBox->layoutToAttach());
+    coordinateLayout->addLayout(superMbLayout, origin);
 }
 
 CreditFish::CreditFish(const CreditFish &rhs) : size(rhs.size), live(rhs.live)
@@ -210,6 +229,21 @@ void CreditFish::doRandomAboutFaceHorizontal(Uint32 elapsedTime, Uint32 probabil
         aboutFaceHorizontal();
 }
 
+//Should not be called,
+//Call horizontal or vert instead
+void CreditFish::aboutFace()
+{
+    aboutFaceHorizontal();
+}
+
+double CreditFish::calculatePixelsLeft(Uint32 elapsedTime)
+{
+    //This method should not be called
+    //Call calculatePixelsLeftHorizontal or Vertical instead
+    return 0.0;
+}
+
+
 void CreditFish::doRandomAboutFaceVertical(Uint32 elapsedTime, Uint32 probability)
 {
     //This if block ensures that the fish doesn't randomly about face
@@ -264,10 +298,8 @@ void CreditFish::positionFromSide()
 
 void CreditFish::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    ImageRendererElement re(IMAGE_PATH(),
-        LAYER().integer(), *(position), SIZE());
-
-    layout->drawWhenReady(re);
+    coordinateLayout->moveTo(*position);
+    messageBox->draw(layout, renderer);
 }
 
 void CreditFish::loadImage(Renderer &renderer)
@@ -571,6 +603,12 @@ void CreditFish::clockTick(Uint32 elapsedTime)
         resetTimes();
 }
 
+boost::shared_ptr<Layout> CreditFish::layoutToAttach()
+{
+    boost::shared_ptr<Layout> tmpLayout(coordinateLayout);
+    return tmpLayout;
+}
+
 //Inner class FreeState
 CreditFish::FreeState::FreeState()
 {
@@ -654,7 +692,6 @@ void CreditFish::FreeState::swim(Uint32 elapsedTime)
             pixelsLeftVertical);
         sharedFishOwner->moveForward(pixelsHorizontalThisIteration);
         sharedFishOwner->moveVertically(pixelsVerticalThisIteration);
-        sharedFishOwner->updateHookPosition();
         pixelsLeftHorizontal -= pixelsHorizontalThisIteration;
         pixelsLeftVertical -= pixelsVerticalThisIteration;
 

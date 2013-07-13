@@ -36,6 +36,10 @@ class Player;
 class Shark;
 class Seahorse;
 struct Point;
+class CoordinateLayout;
+class MessageBox;
+class Layout;
+class Renderer;
 
 //! Name/Title fish that swims in ocean and gets caught (for credits)
 /*!
@@ -52,7 +56,8 @@ public:
     //!ctor
     explicit CreditFish(const std::string &name, const std::string &title,
         const Point &initialPosition, const Depth &initialDepth, 
-        boost::shared_ptr<Ocean> &ocean);
+        boost::shared_ptr<Ocean> &ocean, boost::shared_ptr<Renderer>
+        &renderer);
     //!Copy ctor
     CreditFish(const CreditFish &rhs);
     //!Copy assignment operator
@@ -196,6 +201,7 @@ public:
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
+    boost::shared_ptr<Layout> layoutToAttach();
 protected:
     CreditFish();
     void initialize(const std::string &name, const std::string &title,
@@ -330,10 +336,12 @@ private:
     void changeState(boost::shared_ptr<CreditFishState> &newState);
     void moveForward(double pixels);
     void moveVertically(double pixels);
+    void aboutFace(); //Should not be called, call Horizontal or Vert 
     void aboutFaceHorizontal();
     void aboutFaceVertical();
     void doRandomAboutFaceHorizontal(Uint32 elapsedTime, Uint32 probability);
     void doRandomAboutFaceVertical(Uint32 elapsedTime, Uint32 probability);
+    double calculatePixelsLeft(Uint32 elapsedTime); //Should not be called, call Horizontal or Vertical
     double calculatePixelsLeftHorizontal(Uint32 elapsedTime);
     double calculatePixelsLeftVertical(Uint32 elapsedTime);
     void faceRandomDirection();
@@ -367,6 +375,8 @@ private:
     double hookOffsetX;
     double hookOffsetY;
     Direction hookOriginalDirection;
+    boost::shared_ptr<CoordinateLayout> coordinateLayout;
+    boost::shared_ptr<MessageBox> messageBox;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

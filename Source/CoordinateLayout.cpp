@@ -7,6 +7,7 @@
 //This program is distributed under the terms of the GNU General Public License
 
 #include "../Header/CoordinateLayout.hpp"
+#include <iostream>
 
 CoordinateLayout::CoordinateLayout(boost::shared_ptr<FitStrategy> &fitStrategy)
 {
@@ -101,11 +102,13 @@ void CoordinateLayout::render()
     //Render images
     clipObject->onlyBoundary(position, size);
     fitStrategy->fit(toDraw, position, size, clipObject);
-    for( std::list<boost::shared_ptr<RendererElement> >::iterator it =
+    //This was commented out b/c of bug. Sublayouts were moved
+    // every frame!
+    /*for( std::list<boost::shared_ptr<RendererElement> >::iterator it =
         toDraw.begin(); it != toDraw.end(); ++it )
     {
-        (*it)->moveBy(position);
-    }
+        //(*it)->moveBy(position);
+    }*/
 
     boost::shared_ptr<Layout> sharedThis(shared_from_this());
     sharedOwner->drawWhenReady(toDraw, sharedThis);

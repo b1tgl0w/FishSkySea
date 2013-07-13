@@ -472,6 +472,11 @@ Uint32 Renderer::makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
     return SDL_MapRGBA(screen->format, red, green, blue, alpha);
 }
 
+void Renderer::sizeText(const std::string &str,  int &width, int &height) const
+{
+    TTF_SizeText(font, str.c_str(), &width, &height);
+}
+
 std::string Renderer::makeKey(const std::string &path, const Transformation
     &transformation, const Dimension &size, const Dimension &originalSize)
 {

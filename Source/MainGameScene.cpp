@@ -113,7 +113,7 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     screenResolution(screenResolution), 
     masterInputPublisher(MasterInputPublisher::getInstance()),
     masterClockPublisher(MasterClockPublisher::getInstance()),
-    ocean(new Ocean(screenResolution)), score1(new Score(0)),
+    ocean(new Ocean(screenResolution, renderer)), score1(new Score(0)),
     player1(new HumanPlayer(POLE_POINT(), HOOK_POINT(), ocean, score1,
         HumanPlayer::PLAYER_ONE())), 
     background(BACKGROUND_PATH(), Layer::BACKGROUND1().integer(), 

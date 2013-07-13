@@ -9,28 +9,25 @@
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/lexical_cast.hpp"
 #include <sstream>
-#include "../../../Header/MessageBoxLine.hpp"
-#include "../../../Header/Layout.hpp"
-#include "../../../Header/Renderer.hpp"
-#include "../../../Header/TextRendererElement.hpp"
-#include "../../../Header/DirectGraphicStrategy.hpp"
-#include "../../../Header/DirectFilledRectangleGraphic.hpp"
-#include "../../../Header/DirectRendererElement.hpp"
+#include "../Header/MessageBoxLine.hpp"
+#include "../Header/Layout.hpp"
+#include "../Header/Renderer.hpp"
+#include "../Header/TextRendererElement.hpp"
+#include "../Header/DirectGraphicStrategy.hpp"
+#include "../Header/DirectFilledRectangleGraphic.hpp"
+#include "../Header/DirectRendererElement.hpp"
 
 MessageBoxLine::MessageBoxLine(const Point &position, const Dimension &messageBoxSize,
-    const Dimension &lineSize, const Layer &layer, Uint32 bgColor,
-    boost::shared_ptr<TTF_Font> font) :
+    const Dimension &lineSize, const Layer &layer, Uint32 bgColor) :
     position(position), messageBoxSize(messageBoxSize), lineSize(lineSize),
     layer(layer), uuid(boost::uuids::random_generator()()),
     //identifier(boost::uuids::to_string(uuid)), bgColor(bgColor),
-    identifier(boost::lexical_cast<std::string>(uuid)), bgColor(bgColor), //for debian, old boost
-    font(font)
+    identifier(boost::lexical_cast<std::string>(uuid)), bgColor(bgColor) //for debian, old boost
     { }
 
 MessageBoxLine::MessageBoxLine(const MessageBoxLine &rhs) : position(rhs.position),
     messageBoxSize(rhs.messageBoxSize), lineSize(rhs.lineSize), layer(rhs.layer), 
-    line(rhs.line), uuid(rhs.uuid), identifier(rhs.identifier), bgColor(rhs.bgColor),
-    font(rhs.font)
+    line(rhs.line), uuid(rhs.uuid), identifier(rhs.identifier), bgColor(rhs.bgColor)
     { }
 
 MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
@@ -46,13 +43,12 @@ MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
     uuid = rhs.uuid;
     identifier = rhs.identifier;
     bgColor = rhs.bgColor;
-    font = rhs.font;
 
     return *this;
 }
 
 //Returns false if text exceeds this current line
-bool MessageBoxLine::form(std::string &whatsLeft)
+bool MessageBoxLine::form(std::string &whatsLeft, Renderer &renderer)
 {
     const int MAX_LINE_CHARACTERS = 78;
     int currentWidth = 0;
@@ -75,7 +71,7 @@ bool MessageBoxLine::form(std::string &whatsLeft)
 
         currentWord += ' ';
         currentLine += currentWord;
-        TTF_SizeText(font.get(), currentLine.c_str(), &currentWidth, &currentHeight);
+        renderer.sizeText(currentLine, currentWidth, currentHeight);
         lineCharacters += currentWord.size();
 
         //std::cout << currentWord << "\t" << position.x + currentWidth << std::endl;
@@ -121,7 +117,7 @@ void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     {
         int width = 0;
         int height = 0;
-        TTF_SizeText(font.get(), line.c_str(), &width, &height);
+        renderer.sizeText(line, width, height);
         if( width < lineSize.width )
             lineSize.width = width;
         if( height < lineSize.height )

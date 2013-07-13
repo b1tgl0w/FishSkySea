@@ -39,7 +39,7 @@ friend class OceanState;
 friend class GameState;
 friend class CreditState;
 public:
-    explicit Ocean(const Dimension &screenSize);
+    explicit Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer);
     Ocean(const Ocean &rhs);
     Ocean &operator=(const Ocean &rhs);
     virtual ~Ocean();
@@ -189,6 +189,7 @@ private:
     BoundingBox oceanSurfaceBox;
     BoundingBox oceanFloorBox;
     boost::shared_ptr<Clouds> clouds;
+    boost::shared_ptr<Renderer> renderer;
 };
 
 #endif

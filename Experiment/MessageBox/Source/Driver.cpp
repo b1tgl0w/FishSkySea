@@ -16,6 +16,7 @@
 #include "../../../Header/Point.hpp"
 #include "../../../Header/FitStrategy.hpp"
 #include "../../../Header/ClipFit.hpp"
+#include "../../../Header/ScaleClipFit.hpp"
 #include "../../../Header/CoordinateLayout.hpp"
 #include "../../../Header/Layout.hpp"
 #include "../../../Header/Layer.hpp"
@@ -44,10 +45,15 @@ int main(int argc, char **argv)
     //MessageBox messageBox(testFont, "The", 
         messageBoxSize, lineSize, BLACK, false, layer);
     boost::shared_ptr<FitStrategy> clipFit(new ClipFit);
+    boost::shared_ptr<FitStrategy> scaleClipFit(new ScaleClipFit);
     boost::shared_ptr<Layout> superMbLayout(messageBox.layoutToAttach());
+    boost::shared_ptr<CoordinateLayout> coordLayout(new CoordinateLayout(scaleClipFit));
+    Point coordPoint = {400, 40};
+    coordLayout->addLayout(superMbLayout, coordPoint);
+    boost::shared_ptr<Layout>  superCLayout(coordLayout);
     boost::shared_ptr<GridLayout> gridLayout(new GridLayout(3, 1));
     boost::shared_ptr<Layout> superGridLayout(gridLayout);
-    gridLayout->addLayout(superMbLayout, origin);
+    gridLayout->addLayout(superCLayout, origin);
     renderer->addLayout(superGridLayout);
     for( int i = 0; i < 200; ++i )
     {

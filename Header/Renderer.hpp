@@ -86,6 +86,7 @@ public:
     void removeLayout(boost::shared_ptr<Layout> &layout);
     void own(const boost::weak_ptr<Layout> &owner);
     Uint32 makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha) const;
+    void sizeText(const std::string &str, int &width, int &height) const;
 protected:
     Renderer();
     //Must be called by derived classes
