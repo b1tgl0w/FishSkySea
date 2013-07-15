@@ -31,8 +31,9 @@ class TitleScene : public Scene, public Graphic
 {
 public:
     TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
-        boost::shared_ptr<Scene> &mainGameScene, boost::shared_ptr<
-        KeyboardPublisher> &keyboardPublisher, boost::shared_ptr<Renderer> 
+        boost::shared_ptr<Scene> &mainGameScene, boost::shared_ptr<Scene>
+        &creditGamescene, boost::shared_ptr<KeyboardPublisher> 
+        &keyboardPublisher, boost::shared_ptr<Renderer> 
         &renderer, const Dimension &screenSize);
     TitleScene(const TitleScene &rhs);
     TitleScene &operator=(const TitleScene &rhs);

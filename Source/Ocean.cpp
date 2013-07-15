@@ -709,3 +709,17 @@ void Ocean::CreditState::gameLive(bool live)
         (*it)->gameLive(live);
 }
 
+std::vector<boost::shared_ptr<Layout> > Ocean::layoutsToAttach()
+{
+    std::vector<boost::shared_ptr<Layout> > layoutsToReturn;
+
+    for( std::vector<boost::shared_ptr<CreditFish> >::iterator it = 
+        creditFishes.begin(); it != creditFishes.end(); ++it )
+    {
+        boost::shared_ptr<Layout> tmpLayout((*it)->layoutToAttach());
+        layoutsToReturn.push_back(tmpLayout);
+    }
+
+    return layoutsToReturn;
+}
+

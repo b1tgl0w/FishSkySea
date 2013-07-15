@@ -48,6 +48,7 @@
 #include "../Header/BorderCorner.hpp"
 #include "../Header/Score.hpp"
 #include "../Header/MainGameScene.hpp"
+#include "../Header/CreditGameScene.hpp"
 #include "../Header/SceneLabel.hpp"
 #include "../Header/Scene.hpp"
 #include "../Header/TitleScene.hpp"
@@ -69,10 +70,13 @@ int main(int argc, char **argv)
         new boost::shared_ptr<Scene>);
     boost::shared_ptr<MainGameScene> mainGameScene(new MainGameScene(
         currentScene, renderer, keyboardPublisher, screenResolution));
+    boost::shared_ptr<CreditGameScene> creditGameScene(new CreditGameScene(
+        currentScene, renderer, keyboardPublisher, screenResolution));
     boost::shared_ptr<Scene> superMainGameScene(mainGameScene);
+    boost::shared_ptr<Scene> superCreditGameScene(creditGameScene);
     boost::shared_ptr<TitleScene> titleScene(new TitleScene(
-        currentScene, superMainGameScene, keyboardPublisher, renderer,
-        screenResolution));
+        currentScene, superMainGameScene, superCreditGameScene, 
+        keyboardPublisher, renderer, screenResolution));
 
     *currentScene = titleScene;
     (*currentScene)->enter();

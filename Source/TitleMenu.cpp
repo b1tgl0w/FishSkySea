@@ -46,9 +46,10 @@ const Uint32 &TitleMenu::PRESSED_TIME_THRESHOLD()
 }
 
 TitleMenu::TitleMenu(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
-    boost::shared_ptr<Scene> &mainGameScene) : cycle(STOP()), pressedTime(0)
+    boost::shared_ptr<Scene> &mainGameScene, boost::shared_ptr<Scene> 
+    &creditGameScene) : cycle(STOP()), pressedTime(0)
 {
-    createMenuItems(currentScene, mainGameScene);
+    createMenuItems(currentScene, mainGameScene, creditGameScene);
     createLayouts();
     reset();
 }
@@ -149,12 +150,15 @@ boost::shared_ptr<Layout> TitleMenu::layoutToAttach()
 }
 
 void TitleMenu::createMenuItems(boost::shared_ptr<boost::shared_ptr<Scene> >
-    &currentScene, boost::shared_ptr<Scene> &mainGameScene)
+    &currentScene, boost::shared_ptr<Scene> &mainGameScene, boost::shared_ptr<Scene>
+    &creditGameScene)
 {
     boost::shared_ptr<MenuItem> play(new SceneMenuItem(currentScene,
         mainGameScene, "Play"));
+    boost::shared_ptr<MenuItem> credits(new SceneMenuItem(currentScene,
+        creditGameScene, "Credits"));
     menuItems.push_back(play);
-    menuItems.push_back(play);
+    menuItems.push_back(credits);
     menuItems.push_back(play);
     menuItems.push_back(play);
 }

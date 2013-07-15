@@ -101,6 +101,7 @@ public:
         const BoundingBox & yourBox);
     void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
+    std::vector<boost::shared_ptr<Layout> > layoutsToAttach();
 protected:
     void initialize(const Dimension &screenSize);
     void dispose();

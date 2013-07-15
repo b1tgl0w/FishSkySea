@@ -31,12 +31,14 @@ const Point &TitleScene::BACKGROUND_POSITION()
 
 TitleScene::TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> > 
     &currentScene, boost::shared_ptr<Scene> &mainGameScene,
+    boost::shared_ptr<Scene> &creditGameScene,
     boost::shared_ptr<KeyboardPublisher> &keyboardPublisher,
     boost::shared_ptr<Renderer> &renderer, const Dimension &screenSize) : 
     currentScene(currentScene), titleMenu(new TitleMenu(currentScene, 
-    mainGameScene)), keyboardPublisher(keyboardPublisher), transition(false),
-    scaleClip(new ScaleClipFit), layeredLayout(new LayeredLayout(2,
-    scaleClip)), centerLayout(new CenterLayout(scaleClip)), gridLayout( new 
+    mainGameScene, creditGameScene)), keyboardPublisher(keyboardPublisher), 
+    transition(false), scaleClip(new ScaleClipFit), 
+    layeredLayout(new LayeredLayout(2, scaleClip)), 
+    centerLayout(new CenterLayout(scaleClip)), gridLayout( new 
     GridLayout(2, 3)), borderLayout(new BorderLayout(BorderSize::Medium())),
     superLayeredLayout(layeredLayout), superCenterLayout(centerLayout), 
     superGridLayout(gridLayout), superBorderLayout(borderLayout), 

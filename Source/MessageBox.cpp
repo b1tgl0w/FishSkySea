@@ -32,8 +32,8 @@ MessageBox::MessageBox(const std::string &text,
     const Layer &layer, boost::shared_ptr<Renderer> &renderer) 
     : text(text), size(size), lineSize(lineSize), color(color), 
     border(border), layer(layer), uuid(boost::uuids::random_generator()()),
-    //identifier(boost::uuids::to_string(uuid))
-    identifier(boost::lexical_cast<std::string>(uuid)), //for debian, old boost
+    identifier(boost::uuids::to_string(uuid)),
+    //identifier(boost::lexical_cast<std::string>(uuid)), //for debian, old boost
     renderer(renderer)
 {
     //Putting this here for now. If client-defined, change.

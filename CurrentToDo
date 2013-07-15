@@ -3,9 +3,9 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Attaching credit fish layout
+Left off on: Fixing credit fish size bug
 
 Specific
-    1. Attach credit fish layout somehow
     2. Fix blinking score
+    3. Allow ocean to be in credit mode or regular mode
 
