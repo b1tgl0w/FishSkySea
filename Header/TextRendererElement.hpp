@@ -22,7 +22,6 @@
 #include "Dimension.hpp"
 #include "Transformation.hpp"
 #include "Clip.hpp"
-#include "FontSize.hpp"
 
 class Renderer;
 
@@ -30,8 +29,7 @@ class TextRendererElement : public RendererElement
 {
 public:
     explicit TextRendererElement(const std::string &text, int layer,
-        const Point &initialPosition, const Dimension &initialSize,
-        const FontSize &fontSize);
+        const Point &initialPosition, const Dimension &initialSize);
     TextRendererElement(const TextRendererElement &rhs);
     TextRendererElement &operator=(const TextRendererElement &rhs);
     void render(Renderer &renderer, SDL_Surface *screen);
@@ -61,7 +59,6 @@ private:
     Dimension size;
     Transformation transformation;
     Clip clipObject;
-    FontSize fontSize;
 };
 #endif
 

@@ -18,19 +18,16 @@
 #include "../Header/DirectRendererElement.hpp"
 
 MessageBoxLine::MessageBoxLine(const Point &position, const Dimension &messageBoxSize,
-    const Dimension &lineSize, const Layer &layer, Uint32 bgColor,
-    const FontSize &fontSize) :
+    const Dimension &lineSize, const Layer &layer, Uint32 bgColor) :
     position(position), messageBoxSize(messageBoxSize), lineSize(lineSize),
     layer(layer), uuid(boost::uuids::random_generator()()),
-    identifier(boost::uuids::to_string(uuid)), bgColor(bgColor),
-    fontSize(fontSize)
+    identifier(boost::uuids::to_string(uuid)), bgColor(bgColor)
     //identifier(boost::lexical_cast<std::string>(uuid)), bgColor(bgColor) //for debian, old boost
     { }
 
 MessageBoxLine::MessageBoxLine(const MessageBoxLine &rhs) : position(rhs.position),
     messageBoxSize(rhs.messageBoxSize), lineSize(rhs.lineSize), layer(rhs.layer), 
-    line(rhs.line), uuid(rhs.uuid), identifier(rhs.identifier), bgColor(rhs.bgColor),
-    fontSize(rhs.fontSize)
+    line(rhs.line), uuid(rhs.uuid), identifier(rhs.identifier), bgColor(rhs.bgColor)
     { }
 
 MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
@@ -46,7 +43,6 @@ MessageBoxLine &MessageBoxLine::operator=(const MessageBoxLine &rhs)
     uuid = rhs.uuid;
     identifier = rhs.identifier;
     bgColor = rhs.bgColor;
-    fontSize = rhs.fontSize;
 
     return *this;
 }
@@ -75,8 +71,7 @@ bool MessageBoxLine::form(std::string &whatsLeft, Renderer &renderer)
 
         currentWord += ' ';
         currentLine += currentWord;
-        renderer.sizeText(currentLine, currentWidth, currentHeight,
-            fontSize);
+        renderer.sizeText(currentLine, currentWidth, currentHeight);
         lineCharacters += currentWord.size();
 
         //std::cout << currentWord << "\t" << position.x + currentWidth << std::endl;
@@ -122,14 +117,13 @@ void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     {
         int width = 0;
         int height = 0;
-        renderer.sizeText(line, width, height, fontSize);
+        renderer.sizeText(line, width, height);
         if( width < lineSize.width )
             lineSize.width = width;
         if( height < lineSize.height )
             lineSize.height = height;
-        renderer.loadText(line, COLOR, BORDER_SIZE, fontSize); //Load every time? Or when? FIX!
-        TextRendererElement re(line, layer.integer() + 1, position, lineSize,
-            fontSize);
+        renderer.loadText(line, COLOR, BORDER_SIZE); //Load every time? Or when? FIX!
+        TextRendererElement re(line, layer.integer() + 1, position, lineSize);
         layout->drawWhenReady(re);
     }
 }

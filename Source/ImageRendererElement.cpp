@@ -12,7 +12,6 @@
 #include "../Header/ImageRendererElement.hpp"
 #include "../Header/Renderer.hpp"
 #include "../Header/Math.hpp"
-#include "../Header/FontSize.hpp"
 
 ImageRendererElement::ImageRendererElement(const std::string &path, int layer,
     const Point &initialPosition, const Dimension &initialSize)
@@ -60,11 +59,9 @@ void ImageRendererElement::dispose()
 
 void ImageRendererElement::render(Renderer &renderer, SDL_Surface *screen)
 {
-    //Font size doesnt matter, just pass whatever
-    renderer.manipulateImage(path, transformation, size, FontSize::Huge());
+    renderer.manipulateImage(path, transformation, size);
     
-    SDL_Surface *image = renderer.whatShouldIDraw(path, transformation, size,
-        FontSize::Huge());
+    SDL_Surface *image = renderer.whatShouldIDraw(path, transformation, size);
     
     if( image == NULL )
         return;

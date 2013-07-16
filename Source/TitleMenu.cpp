@@ -20,7 +20,6 @@
 #include "../Header/ScaleClipFit.hpp"
 #include "../Header/SceneMenuItem.hpp"
 #include "../Header/Scene.hpp"
-#include "../Header/FontSize.hpp"
 
 const int &TitleMenu::STOP()
 {
@@ -134,10 +133,9 @@ void TitleMenu::loadImage(Renderer &renderer)
     for( std::list<boost::shared_ptr<MenuItem> >::iterator it =
         menuItems.begin(); it != menuItems.end(); ++it )
     {
-        renderer.loadText((*it)->toString(), COLOR, BORDER_SIZE, FontSize::Huge()); 
+        renderer.loadText((*it)->toString(), COLOR, BORDER_SIZE); 
         boost::shared_ptr<TextRendererElement> tmp(new TextRendererElement(
-            (*it)->toString(), Layer::TITLE_MENU().integer(), POSITION, SIZE,
-            FontSize::Huge()));
+            (*it)->toString(), Layer::TITLE_MENU().integer(), POSITION, SIZE));
         textRendererElements.push_back(tmp);
     }
 }

@@ -20,7 +20,6 @@
 #include "../Header/Dimension.hpp"
 #include "../Header/Graphic.hpp"
 #include "../Header/Layer.hpp"
-#include "../Header/FontSize.hpp"
 
 class Layout;
 class Renderer;
@@ -30,8 +29,7 @@ class MessageBoxLine : public Graphic
 public:
     //Position relative to MB top-left
     explicit MessageBoxLine(const Point &position, const Dimension &messageBoxSize,
-        const Dimension &lineSize, const Layer &layer, Uint32 bgColor,
-        const FontSize &fontSize);
+        const Dimension &lineSize, const Layer &layer, Uint32 bgColor);
     MessageBoxLine(const MessageBoxLine &rhs);
     MessageBoxLine &operator=(const MessageBoxLine &rhs);
     bool form(std::string &leftOver, Renderer &renderer); 
@@ -46,7 +44,6 @@ private:
     boost::uuids::uuid uuid;
     std::string identifier;
     Uint32 bgColor;
-    FontSize fontSize;
     //Position relative to MB top-left
 };
 

@@ -87,7 +87,7 @@ CreditFish::CreditFish(const std::string &name, const std::string &title,
     lineSize.height = ceil(double(size->height) / 3.0);
     Uint32 BLACK = 0x00000000;
     boost::shared_ptr<MessageBox> mb(new MessageBox(name, *size, lineSize, BLACK, false,
-        Layer::FOREGROUND(), renderer, FontSize::Small()));
+        Layer::FOREGROUND(), renderer));
     messageBox = mb;
 }
 

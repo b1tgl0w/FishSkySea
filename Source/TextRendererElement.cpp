@@ -11,17 +11,16 @@
 #include "../Header/Math.hpp"
 
 TextRendererElement::TextRendererElement(const std::string &text, int 
-    layer, const Point &initialPosition, const Dimension &initialSize,
-    const FontSize &fontSize) : 
+    layer, const Point &initialPosition, const Dimension &initialSize) : 
     text(text), position(initialPosition), originalLayer(layer), layer(layer),
-    size(initialSize), fontSize(fontSize)
+    size(initialSize)
 {
 }
     
 TextRendererElement::TextRendererElement(const TextRendererElement &rhs)
     : text(rhs.text), position(rhs.position), originalLayer(rhs.originalLayer),
     size(rhs.size), transformation(rhs.transformation), 
-    clipObject(rhs.clipObject), fontSize(rhs.fontSize)
+    clipObject(rhs.clipObject)
 {
 }
 
@@ -38,16 +37,15 @@ TextRendererElement &TextRendererElement::operator=(const TextRendererElement
     size = rhs.size;
     clipObject = rhs.clipObject;
     transformation = rhs.transformation;
-    fontSize = rhs.fontSize;
 
     return *this;
 }
 
 void TextRendererElement::render(Renderer &renderer, SDL_Surface *screen)
 {
-    renderer.manipulateImage(text, transformation, size, fontSize);
+    renderer.manipulateImage(text, transformation, size);
     SDL_Surface *textSurface = renderer.whatShouldIDraw(text,
-        transformation, size, fontSize);
+        transformation, size);
 
     if( textSurface == NULL )
         return;
