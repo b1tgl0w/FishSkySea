@@ -14,6 +14,8 @@
 #include "../Header/DirectFilledRectangleGraphic.hpp"
 #include "../Header/DirectRendererElement.hpp"
 #include "../Header/Renderer.hpp"
+#include "../Header/Point.hpp"
+#include "../Header/Dimension.hpp"
 
 const bool MessageBox::BORDER()
 {
@@ -148,5 +150,10 @@ void MessageBox::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 void MessageBox::loadImage(Renderer &renderer)
 {
     //No-op, direct graphic strategy created and used during draw
+}
+
+void MessageBox::moveTo(const Point &position)
+{
+    gridLayout->moveTo(position);
 }
 

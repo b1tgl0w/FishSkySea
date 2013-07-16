@@ -2,8 +2,4 @@
 //This file complements CurrentToDo. 
 //Current to is specifications of current task, this is implementation of task
 
-1. Add method to Layout: produceRendererElement
-2. Implement it in layout derivitives
-3. Renderer will need to produce a "partial render", and store the re
-4. There should be a way to update a previous partial render
 

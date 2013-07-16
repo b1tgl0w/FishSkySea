@@ -8,8 +8,8 @@
 #include <iostream>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
-#include "../Header/MessageBox.hpp"
-#include "../Header/MessageBoxLine.hpp"
+#include "../../../Header/MessageBox.hpp"
+#include "../../../Header/MessageBoxLine.hpp"
 #include "../../../Header/FrameCleanupPublisher.hpp"
 #include "../../../Header/Renderer.hpp"
 #include "../../../Header/Dimension.hpp"
@@ -41,9 +41,9 @@ int main(int argc, char **argv)
     Uint32 BLACK = 0x00000000;
     Point origin = { 0.0, 1.0 };
     Layer layer = Layer::FOREGROUND();
-    MessageBox messageBox(testFont2, "The tears I cry are only fragments of the suffering I endure. They soak my soul. I call out to the ocean and drift away... I'm going to put some filler text in here... kinda ruins the moment, doesn't it? I neeeeed more filler. I'm not sure how much. Maybe this is enough",
+    MessageBox messageBox("The tears I cry are only fragments of the suffering I endure. They soak my soul. I call out to the ocean and drift away... I'm going to put some filler text in here... kinda ruins the moment, doesn't it? I neeeeed more filler. I'm not sure how much. Maybe this is enough",
     //MessageBox messageBox(testFont, "The", 
-        messageBoxSize, lineSize, BLACK, false, layer);
+        messageBoxSize, lineSize, BLACK, false, layer, renderer);
     boost::shared_ptr<FitStrategy> clipFit(new ClipFit);
     boost::shared_ptr<FitStrategy> scaleClipFit(new ScaleClipFit);
     boost::shared_ptr<Layout> superMbLayout(messageBox.layoutToAttach());
@@ -55,6 +55,11 @@ int main(int argc, char **argv)
     boost::shared_ptr<Layout> superGridLayout(gridLayout);
     gridLayout->addLayout(superCLayout, origin);
     renderer->addLayout(superGridLayout);
+    Dimension dim = { 100, 60 };
+    Dimension lineDim = { 100, 20 };
+    Point br = { 700, 500 };
+    messageBox.moveTo(br);
+    messageBox.scale(dim, lineDim);
     for( int i = 0; i < 200; ++i )
     {
         messageBox.draw(superGridLayout, *renderer);

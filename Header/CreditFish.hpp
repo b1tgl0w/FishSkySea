@@ -36,7 +36,6 @@ class Player;
 class Shark;
 class Seahorse;
 struct Point;
-class CoordinateLayout;
 class MessageBox;
 class Layout;
 class Renderer;
@@ -375,7 +374,6 @@ private:
     double hookOffsetX;
     double hookOffsetY;
     Direction hookOriginalDirection;
-    boost::shared_ptr<CoordinateLayout> coordinateLayout;
     boost::shared_ptr<MessageBox> messageBox;
 
     //Class-wide constants

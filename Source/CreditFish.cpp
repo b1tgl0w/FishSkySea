@@ -19,7 +19,6 @@
 #include "../Header/ImageRendererElement.hpp"
 #include "../Header/SeaSnail.hpp"
 #include "../Header/Seahorse.hpp"
-#include "../Header/CoordinateLayout.hpp"
 #include "../Header/MessageBox.hpp"
 #include "../Header/Layout.hpp"
 #include "../Header/ScaleClipFit.hpp"
@@ -82,21 +81,14 @@ CreditFish::CreditFish(const std::string &name, const std::string &title,
     &renderer) : live(false)
 {
     initialize(name, title, initialPosition, initialDepth, ocean);
-    boost::shared_ptr<FitStrategy> fs(new ScaleClipFit);
-    boost::shared_ptr<CoordinateLayout> cl(new CoordinateLayout(fs));
-    coordinateLayout = cl;
 
     Dimension lineSize;
     lineSize.width = size->width;
-    lineSize.height = size->height / 3;
+    lineSize.height = ceil(double(size->height) / 3.0);
     Uint32 BLACK = 0x00000000;
     boost::shared_ptr<MessageBox> mb(new MessageBox(name, *size, lineSize, BLACK, false,
         Layer::FOREGROUND(), renderer));
     messageBox = mb;
-    Point origin = {0, 0};
-    boost::shared_ptr<Layout> superMbLayout(messageBox->layoutToAttach());
-    coordinateLayout->addLayout(superMbLayout, origin);
-    //coordinateLayout->scale(*size);
 }
 
 CreditFish::CreditFish(const CreditFish &rhs) : size(rhs.size), live(rhs.live)
@@ -299,7 +291,8 @@ void CreditFish::positionFromSide()
 
 void CreditFish::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    coordinateLayout->moveTo(*position);
+    messageBox->moveTo(*position);
+    messageBox->layoutToAttach()->scale(*size);
     messageBox->draw(layout, renderer);
 }
 
@@ -606,7 +599,7 @@ void CreditFish::clockTick(Uint32 elapsedTime)
 
 boost::shared_ptr<Layout> CreditFish::layoutToAttach()
 {
-    boost::shared_ptr<Layout> tmpLayout(coordinateLayout);
+    boost::shared_ptr<Layout> tmpLayout(messageBox->layoutToAttach());
     return tmpLayout;
 }
 

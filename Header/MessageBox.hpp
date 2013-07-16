@@ -26,6 +26,8 @@
 #include "../Header/Layer.hpp"
 
 class Renderer;
+class Dimension;
+class Point;
 
 class MessageBox : public Graphic
 {
@@ -42,6 +44,7 @@ public:
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
     void createLayouts();
+    void moveTo(const Point &position);
 private:
     bool formLines();
     boost::shared_ptr<TTF_Font> font;
