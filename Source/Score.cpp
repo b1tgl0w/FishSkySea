@@ -12,6 +12,7 @@
 #include "../Header/TextRendererElement.hpp"
 #include <cmath>
 #include "../Header/Math.hpp"
+#include "../Header/FontSize.hpp"
 
 Score::Score(int initialScore) : score(initialScore), 
     renderedScore(-1)
@@ -59,10 +60,10 @@ void Score::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 
     if( score != renderedScore )
         renderer.loadText(StringUtility::toString(score) + " lbs", COLOR, 
-        BORDER_SIZE);
+        BORDER_SIZE, FontSize::Huge());
 
     TextRendererElement re(StringUtility::toString(score) + " lbs",
-        LAYER.integer(), POSITION, SIZE);
+        LAYER.integer(), POSITION, SIZE, FontSize::Huge());
     layout->drawWhenReady(re);
 
     renderedScore = score;

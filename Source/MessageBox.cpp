@@ -31,12 +31,13 @@ const bool MessageBox::NO_BORDER()
 
 MessageBox::MessageBox(const std::string &text, 
     const Dimension &size, const Dimension &lineSize, Uint32 color, bool border,
-    const Layer &layer, boost::shared_ptr<Renderer> &renderer) 
+    const Layer &layer, boost::shared_ptr<Renderer> &renderer,
+    const FontSize &fontSize) 
     : text(text), size(size), lineSize(lineSize), color(color), 
     border(border), layer(layer), uuid(boost::uuids::random_generator()()),
     identifier(boost::uuids::to_string(uuid)),
     //identifier(boost::lexical_cast<std::string>(uuid)), //for debian, old boost
-    renderer(renderer)
+    renderer(renderer), fontSize(fontSize)
 {
     //Putting this here for now. If client-defined, change.
     boost::shared_ptr<ClipFit> tmpScaleClipFit(new ClipFit);
@@ -50,7 +51,7 @@ MessageBox::MessageBox(const MessageBox &rhs) : text(rhs.text),
     size(rhs.size), lineSize(rhs.lineSize), color(rhs.color), border(rhs.border), 
     lines(rhs.lines), gridLayout(rhs.gridLayout), layouts(rhs.layouts),
     layer(rhs.layer), uuid(rhs.uuid), identifier(rhs.identifier),
-    renderer(rhs.renderer){ }
+    renderer(rhs.renderer), fontSize(rhs.fontSize) { }
 
 MessageBox &MessageBox::operator=(const MessageBox &rhs)
 {
@@ -69,6 +70,7 @@ MessageBox &MessageBox::operator=(const MessageBox &rhs)
     uuid = rhs.uuid;
     identifier = rhs.identifier;
     renderer = rhs.renderer;
+    fontSize = rhs.fontSize;
 
     return *this;
 }
@@ -120,14 +122,16 @@ bool MessageBox::formLines()
     while( notFull == true && !(text.empty()) && (lines.size() + 1) * 
         lineSize.height <= size.height )
     {
-        MessageBoxLine currentLine(position, size, lineSize, layer, color);
+        MessageBoxLine currentLine(position, size, lineSize, layer, color,
+            fontSize);
         notFull = currentLine.form(text, *renderer);
         lines.push_back(currentLine);
     }
 
     while( lines.size() < 3 )
     {
-        MessageBoxLine currentLine(position, size, lineSize, layer, color);
+        MessageBoxLine currentLine(position, size, lineSize, layer, color,
+            fontSize);
         lines.push_back(currentLine);
     }
 
