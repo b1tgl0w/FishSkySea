@@ -28,6 +28,7 @@
 #include "../Header/Layer.hpp"
 #include "../Header/TextRendererElement.hpp"
 #include "../Header/Timer.hpp"
+#include "../Header/OceanMode.hpp"
 
 const Point &CreditGameScene::POLE_POINT()
 {
@@ -210,6 +211,7 @@ void CreditGameScene::enter()
     const int BORDER_SIZE = 0;
 
     transition = false;
+    ocean->changeState(OceanMode::CREDIT_MODE());
     ocean->loadImage(*(renderer));
     ocean->addCollidable(ocean);
     boost::weak_ptr<Collidable> playerCollidable(player1);

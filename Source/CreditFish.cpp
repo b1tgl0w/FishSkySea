@@ -96,6 +96,7 @@ CreditFish::CreditFish(const std::string &name, const std::string &title,
     Point origin = {0, 0};
     boost::shared_ptr<Layout> superMbLayout(messageBox->layoutToAttach());
     coordinateLayout->addLayout(superMbLayout, origin);
+    //coordinateLayout->scale(*size);
 }
 
 CreditFish::CreditFish(const CreditFish &rhs) : size(rhs.size), live(rhs.live)

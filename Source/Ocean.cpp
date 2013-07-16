@@ -208,7 +208,7 @@ void Ocean::initializeSharedFromThis()
 
     //Credit state init
     state = creditState;
-    changeState(OceanMode::CREDIT_MODE());
+    changeState(OceanMode::GAME_MODE());
     boost::shared_ptr<CreditFish> tmpCreditFish(new CreditFish("John Miner",
         "Programmer", fishStartingPoint, fishStartingDepth, sharedThis, renderer));
     tmpCreditFish->initializeStates();
