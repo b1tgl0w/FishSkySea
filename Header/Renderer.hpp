@@ -41,6 +41,8 @@ struct Point;
 struct Dimension;
 class Transformation;
 class GraphicEffect;
+class FontSize;
+
 class Renderer : public Layout,
     public boost::enable_shared_from_this<Renderer>
 {
@@ -57,9 +59,10 @@ public:
     virtual ~Renderer();
     void loadImage(std::string path);
     void loadImage(std::string key, SDL_Surface *image);
-    void loadText(const std::string &text, const SDL_Color &color, const int borderSize);
+    void loadText(const std::string &text, const SDL_Color &color, const int borderSize,
+        const FontSize &fontSize);
     void manipulateImage(const std::string &path, const Transformation
-        &transformation, Dimension size);
+        &transformation, Dimension size, const FontSize &fontSize);
     void manipulateImage(const std::string &text, const Uint32 color,
         const int borderSize, const Transformation &transformation,
         Dimension size);
@@ -75,7 +78,7 @@ public:
     void drawWhenReady(const std::list<boost::shared_ptr<RendererElement> >
         &toDraw, boost::shared_ptr<Layout> &callerLayout);
     SDL_Surface *whatShouldIDraw(const std::string &path, const Transformation
-        &transformation, const Dimension &size);
+        &transformation, const Dimension &size, const FontSize &fontSize);
     void render();
     void scale(const Dimension &size); //No-op
     void scale(const DimensionPercent &dimensionPercent); //No-op
@@ -86,7 +89,8 @@ public:
     void removeLayout(boost::shared_ptr<Layout> &layout);
     void own(const boost::weak_ptr<Layout> &owner);
     Uint32 makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha) const;
-    void sizeText(const std::string &str, int &width, int &height) const;
+    void sizeText(const std::string &str, int &width, int &height,
+        const FontSize &fontSize) const;
 protected:
     Renderer();
     //Must be called by derived classes
@@ -135,7 +139,10 @@ private:
     std::list<boost::shared_ptr<Layout> > layouts;
     SDL_Surface *screen;
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher;
-    TTF_Font *font;
+    TTF_Font *fontHuge;
+    TTF_Font *fontBig;
+    TTF_Font *fontMedium;
+    TTF_Font *fontSmall;
     std::string fontPath;
     //Constants
     static const std::string &TRANSFORMATION_KEY();

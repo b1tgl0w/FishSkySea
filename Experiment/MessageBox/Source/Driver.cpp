@@ -20,6 +20,7 @@
 #include "../../../Header/CoordinateLayout.hpp"
 #include "../../../Header/Layout.hpp"
 #include "../../../Header/Layer.hpp"
+#include "../../../Header/FontSize.hpp"
 
 int main(int argc, char **argv)
 {
@@ -29,12 +30,6 @@ int main(int argc, char **argv)
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
         "../Media/Fonts/gentium/Gentium-R.ttf", frameCleanupPublisher));
-    boost::shared_ptr<TTF_Font> testFont(TTF_OpenFont("../Media/Fonts/gentium/Gentium-R.ttf", 88), TTF_CloseFont);
-    boost::shared_ptr<TTF_Font> testFont2(TTF_OpenFont("../Media/Fonts/gentium/Gentium-R.ttf", 20), TTF_CloseFont);
-    boost::shared_ptr<TTF_Font> sharedTestFont(testFont);
-
-    if( !testFont || ! testFont2 )
-        std::cout << TTF_GetError() << std::endl;
 
     Dimension messageBoxSize = { 800, 120 };
     Dimension lineSize = { 800, 40};
@@ -42,8 +37,7 @@ int main(int argc, char **argv)
     Point origin = { 0.0, 1.0 };
     Layer layer = Layer::FOREGROUND();
     MessageBox messageBox("The tears I cry are only fragments of the suffering I endure. They soak my soul. I call out to the ocean and drift away... I'm going to put some filler text in here... kinda ruins the moment, doesn't it? I neeeeed more filler. I'm not sure how much. Maybe this is enough",
-    //MessageBox messageBox(testFont, "The", 
-        messageBoxSize, lineSize, BLACK, false, layer, renderer);
+        messageBoxSize, lineSize, BLACK, false, layer, renderer, FontSize::Small());
     boost::shared_ptr<FitStrategy> clipFit(new ClipFit);
     boost::shared_ptr<FitStrategy> scaleClipFit(new ScaleClipFit);
     boost::shared_ptr<Layout> superMbLayout(messageBox.layoutToAttach());
@@ -55,11 +49,8 @@ int main(int argc, char **argv)
     boost::shared_ptr<Layout> superGridLayout(gridLayout);
     gridLayout->addLayout(superCLayout, origin);
     renderer->addLayout(superGridLayout);
-    Dimension dim = { 100, 60 };
-    Dimension lineDim = { 100, 20 };
-    Point br = { 700, 500 };
+    Point br = { 220, 220 };
     messageBox.moveTo(br);
-    messageBox.scale(dim, lineDim);
     for( int i = 0; i < 200; ++i )
     {
         messageBox.draw(superGridLayout, *renderer);

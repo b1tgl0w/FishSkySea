@@ -29,6 +29,7 @@
 #include "../Header/TextRendererElement.hpp"
 #include "../Header/Timer.hpp"
 #include "../Header/OceanMode.hpp"
+#include "../Header/FontSize.hpp"
 
 const Point &MainGameScene::POLE_POINT()
 {
@@ -221,8 +222,8 @@ void MainGameScene::enter()
     renderer->loadImage("../Media/MowhawkFisher.png");
     renderer->loadImage("../Media/ElderFisher.png");
     renderer->loadImage("../Media/DockSupports2.png");
-    renderer->loadText("Ready", COLOR, BORDER_SIZE);
-    renderer->loadText("Go", COLOR, BORDER_SIZE);
+    renderer->loadText("Ready", COLOR, BORDER_SIZE, FontSize::Huge());
+    renderer->loadText("Go", COLOR, BORDER_SIZE, FontSize::Huge());
     game->loadImage(*renderer);
     player1->sendCollidable(ocean);
     keyboardPublisher->subscribe(clockSubscriber);
@@ -307,7 +308,7 @@ void MainGameScene::displayReady()
     Point origin = { 0.0, 0.0 };
     Dimension textSize = { 150.0, 50.0 };
     boost::shared_ptr<TextRendererElement> readyElement(new TextRendererElement(
-        "Ready", 0, origin, textSize));
+        "Ready", 0, origin, textSize, FontSize::Huge()));
     statusElement = readyElement;
     boost::shared_ptr<Timer<MainGameScene> > tmpTimer(new Timer<MainGameScene>
         (3000));
@@ -330,7 +331,7 @@ void MainGameScene::displayGo()
     Point origin = { 0.0, 0.0 };
     Dimension textSize = { 150.0, 50.0 };
     boost::shared_ptr<TextRendererElement> goElement(new TextRendererElement(
-        "Go", 0, origin, textSize));
+        "Go", 0, origin, textSize, FontSize::Huge()));
     statusElement = goElement;
     boost::shared_ptr<Timer<MainGameScene> > tmpTimer(new Timer<MainGameScene>
         (3000));

@@ -11,6 +11,7 @@
 #include "../Header/TextRendererElement.hpp"
 #include "../Header/Renderer.hpp"
 #include "../Header/Layout.hpp"
+#include "../Header/FontSize.hpp"
 
 const Score &Game::WIN_SCORE()
 {
@@ -59,14 +60,14 @@ void Game::loadImage(Renderer &renderer)
     const Point ORIGIN = { 0.0, 0.0 };
     const Dimension TEXT_SIZE = { 150.0, 50.0 };
 
-    renderer.loadText("<WIN ", COLOR, BORDER_SIZE);
-    renderer.loadText(" WIN>", COLOR, BORDER_SIZE);
+    renderer.loadText("<WIN ", COLOR, BORDER_SIZE, FontSize::Huge());
+    renderer.loadText(" WIN>", COLOR, BORDER_SIZE, FontSize::Huge());
 
     boost::shared_ptr<RendererElement> tmpPlayer1WinText(new 
-    TextRendererElement("<WIN ", 0, ORIGIN, TEXT_SIZE));
+    TextRendererElement("<WIN ", 0, ORIGIN, TEXT_SIZE, FontSize::Huge()));
     player1WinText = tmpPlayer1WinText;
     boost::shared_ptr<RendererElement> tmpPlayer2WinText(new 
-    TextRendererElement(" WIN>", 0, ORIGIN, TEXT_SIZE));
+    TextRendererElement(" WIN>", 0, ORIGIN, TEXT_SIZE, FontSize::Huge()));
     player2WinText = tmpPlayer2WinText;
 }
 

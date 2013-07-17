@@ -25,6 +25,7 @@
 #include "../Header/GraphicEffect.hpp"
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/MasterClockSubscriber.hpp"
+#include "../Header/FontSize.hpp"
 
 const std::string &Renderer::TRANSFORMATION_KEY()
 {
@@ -91,7 +92,10 @@ void Renderer::initialize(const Dimension &screenResolution, int screenBpp,
     &frameCleanupPublisher)
 {
     //Update Font size as big as height of largest text surface (manual update)
-    const int FONT_SIZE = 88; //Text surfaces will be scaled
+    const int FONT_SIZE_HUGE = 88; //Text surfaces will be scaled
+    const int FONT_SIZE_BIG = 60; //Text surfaces will be scaled
+    const int FONT_SIZE_MEDIUM = 32; //Text surfaces will be scaled
+    const int FONT_SIZE_SMALL = 12; //Text surfaces will be scaled
     const int FONT_BORDER_SIZE = 3; //3 so even scaled text will have outline
     numberOfInstances()++;
     if( SDL_WasInit(SDL_INIT_VIDEO) == 0 )
@@ -110,7 +114,10 @@ void Renderer::initialize(const Dimension &screenResolution, int screenBpp,
             screenBpp, flags);
 
     this->frameCleanupPublisher = frameCleanupPublisher;
-    font = TTF_OpenFont(fontPath.c_str(), FONT_SIZE);
+    fontHuge = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_HUGE);
+    fontBig = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_BIG);
+    fontMedium = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_MEDIUM);
+    fontSmall = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_SMALL);
     //Commenting out due to compile issues
     //TTF_SetFontOutline(font, FONT_BORDER_SIZE);
     this->fontPath = fontPath;
@@ -133,7 +140,10 @@ Renderer::~Renderer()
     {
         SDL_Quit();
         IMG_Quit();
-        TTF_CloseFont(font);
+        TTF_CloseFont(fontHuge);
+        TTF_CloseFont(fontBig);
+        TTF_CloseFont(fontMedium);
+        TTF_CloseFont(fontSmall);
     }
 }
 
@@ -184,7 +194,7 @@ void Renderer::loadImage(std::string key, SDL_Surface *image)
 }
 
 void Renderer::loadText(const std::string &text, const SDL_Color &color,
-    const int borderSize)
+    const int borderSize, const FontSize &fontSize)
 {
     if( images.count(text) > 0 )
         return;
@@ -192,9 +202,23 @@ void Renderer::loadText(const std::string &text, const SDL_Color &color,
     //Commenting out due to compile issues
     //if( TTF_GetFontOutline(font) != borderSize )
         //TTF_SetFontOutline(font, borderSize);
+    SDL_Surface *textSurface = NULL;
 
-    SDL_Surface *textSurface = TTF_RenderText_Blended(font, 
-        text.c_str(), color);
+    if( fontSize == FontSize::Huge() )
+        textSurface = TTF_RenderText_Blended(fontHuge, 
+            text.c_str(), color);
+    else if( fontSize == FontSize::Big() )
+        textSurface = TTF_RenderText_Blended(fontBig, 
+            text.c_str(), color);
+    else if( fontSize == FontSize::Medium() )
+        textSurface = TTF_RenderText_Blended(fontMedium, 
+            text.c_str(), color);
+    else
+        textSurface = TTF_RenderText_Blended(fontSmall, 
+            text.c_str(), color);
+
+    if( textSurface == NULL )
+        std::cout << "ERROR, textSurface = NULL" << std::endl;
 
     images.insert(std::pair<std::string, SDL_Surface *>(text,
         textSurface));
@@ -208,14 +232,15 @@ void Renderer::loadText(const std::string &text, const SDL_Color &color,
 }
 
 void Renderer::manipulateImage(const std::string &path, const Transformation
-        &transformation, Dimension size)
+        &transformation, Dimension size, const FontSize &fontSize)
 {
     if( images.count(path) < 1 )
     {
         if( texts.count(path) < 1 )
             return;
         else
-            loadText(path, textColors[path], textBorderSizes[path]);
+            loadText(path, textColors[path], textBorderSizes[path],
+                fontSize);
     }
 
     SDL_Surface *unmanipulatedImage = images.find(path)->second;
@@ -237,8 +262,18 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
         {
             //Manually update to color in palette
             const SDL_Color HIGHLIGHT_TEXT_COLOR = { 0xFC, 0xE6, 0x97, 0x00 };
-            highlightedText = TTF_RenderText_Blended(font, path.c_str(), 
-                HIGHLIGHT_TEXT_COLOR);
+            if( fontSize == FontSize::Huge() )
+                highlightedText = TTF_RenderText_Blended(fontHuge, path.c_str(),
+                    HIGHLIGHT_TEXT_COLOR);
+            else if( fontSize == FontSize::Big() )
+                highlightedText = TTF_RenderText_Blended(fontBig, path.c_str(),
+                    HIGHLIGHT_TEXT_COLOR);
+            else if( fontSize == FontSize::Medium() )
+                highlightedText = TTF_RenderText_Blended(fontMedium, path.c_str(),
+                    HIGHLIGHT_TEXT_COLOR);
+            else
+                highlightedText = TTF_RenderText_Blended(fontSmall, path.c_str(),
+                    HIGHLIGHT_TEXT_COLOR);
         }
     }
     SDL_Surface *manipulatedImage = NULL;
@@ -472,9 +507,17 @@ Uint32 Renderer::makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
     return SDL_MapRGBA(screen->format, red, green, blue, alpha);
 }
 
-void Renderer::sizeText(const std::string &str,  int &width, int &height) const
+void Renderer::sizeText(const std::string &str,  int &width, int &height,
+    const FontSize &fontSize) const
 {
-    TTF_SizeText(font, str.c_str(), &width, &height);
+    if( fontSize == FontSize::Huge() )
+        TTF_SizeText(fontHuge, str.c_str(), &width, &height);
+    else if( fontSize == FontSize::Big() )
+        TTF_SizeText(fontBig, str.c_str(), &width, &height);
+    else if( fontSize == FontSize::Medium() )
+        TTF_SizeText(fontMedium, str.c_str(), &width, &height);
+    else
+        TTF_SizeText(fontSmall, str.c_str(), &width, &height);
 }
 
 std::string Renderer::makeKey(const std::string &path, const Transformation
@@ -510,14 +553,16 @@ std::string Renderer::makeKey(const std::string &path, const Transformation
 //          by objects of class RendererElement.
 //Note:     Is this too much of an accessor?
 SDL_Surface *Renderer::whatShouldIDraw(const std::string &path,
-    const Transformation &transformation, const Dimension &size)
+    const Transformation &transformation, const Dimension &size, 
+    const FontSize &fontSize)
 {
     if( images.count(path) < 1 )
     {
         if( texts.count(path) < 1 ) 
             return NULL;
         else
-            loadText(path, textColors[path], textBorderSizes[path]);
+            loadText(path, textColors[path], textBorderSizes[path],
+                fontSize);
     }
 
     SDL_Surface *original = images.find(path)->second;

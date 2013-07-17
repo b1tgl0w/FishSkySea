@@ -3,9 +3,15 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Fixing MB alignment and font distortion
+Left off on: Nibble and hook credit fish
 
-Specific
-    2. Fix blinking score
-    3. Allow ocean to be in credit mode or regular mode
+General Task: Finish credits minigame (for the contributers known now)
+
+Specific Steps:
+    - Nibble and hook credit fish
+    - Catch credit fish
+    - Show bio and picture
+    - Make credit fish smaller
+    - Make move vertically
+    - Make start at random location
 
