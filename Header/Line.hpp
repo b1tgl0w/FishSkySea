@@ -34,6 +34,7 @@ class Ocean;
 class Player;
 class Dimension;
 class Seahorse;
+class CreditFish;
 
 class Line : public Graphic, public Collidable,
     public MasterClockSubscriber,
@@ -57,7 +58,7 @@ public:
     void settle(Uint32 elapsedTime);
     void move(Uint32 elapsedTime);
     boost::weak_ptr<Player> hooked(boost::weak_ptr<Fish> hookedFish);
-    boost::weak_ptr<Player> hookedCreditFish(boost::weak_ptr<Fish> hookedFish);
+    boost::weak_ptr<Player> hookedCreditFish(boost::weak_ptr<CreditFish> hookedFish);
     void offHook();
     Direction pull(const Point &mouthPoint);
     bool canHookFish();
@@ -65,6 +66,7 @@ public:
     void loadImage(Renderer &renderer);
     void gameLive(bool live);
     void nibble(boost::shared_ptr<Fish> &fish);
+    void nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish);
     void stopNibble();
     virtual ~Line();
 //Collidable
@@ -145,6 +147,8 @@ private:
         virtual void offHook() = 0;
         virtual Direction pull(const Point &mouthPoint) = 0;
         virtual void nibble(boost::shared_ptr<Fish> &fish) = 0;
+        virtual void nibbleCreditFish(boost::shared_ptr<CreditFish>     
+            &creditFish) = 0;
         //Inherited void clockTick(Uint32 elapsedTime) = 0;
     private:
         virtual void pullFish() = 0;
@@ -166,7 +170,6 @@ private:
         Direction pull(const Point &mouthPoint);
         void clockTick(Uint32 elapsedTime);
         void restoreFromSetHook(Uint32 elapsedTime);
-        void nibble(boost::shared_ptr<Fish> &fish);
         void stopNibble();
         void collidesWith(boost::shared_ptr<Collidable> &otherObject, const
             BoundingBox &otherBox);
@@ -202,6 +205,8 @@ private:
             const BoundingBox & yourBox);
         void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
+        void nibble(boost::shared_ptr<Fish> &fish);
+        void nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish);
     protected:
         void initialize(boost::weak_ptr<Line> owner);
         void dispose();
@@ -227,6 +232,7 @@ private:
         void clockTick(Uint32 elapsedTime);
         void restoreFromSetHook(Uint32 elapsedTime);
         void nibble(boost::shared_ptr<Fish> &fish);
+        void nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish);
         void collidesWith(boost::shared_ptr<Collidable> &otherObject, const 
             BoundingBox &yourBox);
         void collidesWithHook(boost::shared_ptr<Line> &hook, const BoundingBox
@@ -300,6 +306,8 @@ private:
     boost::shared_ptr<Point> bitePoint;
     boost::weak_ptr<Fish> hookedFish;
     boost::weak_ptr<Fish> nibbleFish;
+    boost::weak_ptr<CreditFish> hookedCreditFishObj;
+    boost::weak_ptr<CreditFish> nibbleCreditFishObj;
     Point initialPolePoint;
     Point initialHookPoint;
     bool reelInOn;
@@ -312,6 +320,7 @@ private:
     bool fishHooked;
     bool live;
     bool fishIsNibbling;
+    bool creditFishIsNibbling;
     Uint32 setHookTime;
     boost::shared_ptr<Animation> rippleAnimation;
     boost::shared_ptr<Animation> rippleAnimationNotHooked;

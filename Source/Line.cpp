@@ -28,6 +28,7 @@
 #include "../Header/ImageRendererElement.hpp"
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/Seahorse.hpp"
+#include "../Header/CreditFish.hpp"
 
 //Private static variable initialization
 int &Line::highestIdNumberGiven()
@@ -210,7 +211,8 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
     rippleAnimationHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
-    setHookOn(false), setHookTime(0), fishIsNibbling(false)
+    setHookOn(false), setHookTime(0), fishIsNibbling(false),
+    creditFishIsNibbling(false)
 {
     Uint32 rippleFrameTimeNotHooked = 500;
     Uint32 rippleFrameTimeHooked = 100;
@@ -247,7 +249,8 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
 
 Line::Line(const Line &rhs) : live(rhs.live), rippleAnimation(
     rhs.rippleAnimation), setHookOn(rhs.setHookOn), setHookTime(rhs.setHookTime),
-    fishIsNibbling(rhs.fishIsNibbling)
+    fishIsNibbling(rhs.fishIsNibbling), creditFishIsNibbling(
+    rhs.creditFishIsNibbling)
 {
     boost::shared_ptr<Player> tmpOwner= rhs.owner.lock();
 
@@ -283,6 +286,7 @@ Line &Line::operator=(const Line &rhs)
         setHookOn = rhs.setHookOn;
         setHookTime = rhs.setHookTime;
         fishIsNibbling = rhs.fishIsNibbling;
+        creditFishIsNibbling = rhs.creditFishIsNibbling;
     }
     //Else throw exception?
 
@@ -421,10 +425,20 @@ void Line::setHook(bool on)
         sharedNibbleFish->hookedBy(sharedThis, owner);
         hooked(sharedNibbleFish);
     }
+    else if( live && on && !setHookOn && creditFishIsNibbling )
+    {
+        boost::shared_ptr<CreditFish> sharedNibbleCreditFish = nibbleCreditFishObj.lock();
+        boost::shared_ptr<Line> sharedThis(shared_from_this());
+
+        if( !sharedNibbleCreditFish || !sharedThis )
+            return;
+
+        sharedNibbleCreditFish->hookedBy(sharedThis, owner);
+        hookedCreditFish(sharedNibbleCreditFish);
+    }
     else if( live && on && !setHookOn )
     {
         hookPoint->y -= SET_HOOK_PIXELS();
-
     }
     if( live && on && !setHookOn )
     {
@@ -434,6 +448,12 @@ void Line::setHook(bool on)
 
         if( sharedHookedFish )
             sharedHookedFish->yank();
+
+        boost::shared_ptr<CreditFish> sharedHookedCreditFish = 
+            hookedCreditFishObj.lock();
+
+        if( sharedHookedCreditFish )
+            sharedHookedCreditFish->yank();
     }
 }
 
@@ -478,17 +498,34 @@ void Line::move(Uint32 elapsedTime, double &coordinate, double velocity)
 void Line::pullFish()
 {
     boost::shared_ptr<Fish> sharedHookedFish = hookedFish.lock();
+    boost::shared_ptr<CreditFish> sharedHookedCreditFish = hookedCreditFishObj.lock();
 
-    if( !sharedHookedFish )
-        return;
+    if( sharedHookedFish )
+    {
+        if( fishHooked )
+            sharedHookedFish->pull(*hookPoint);
+    }
 
-    if( fishHooked )
-        sharedHookedFish->pull(*hookPoint);
+    if( sharedHookedCreditFish )
+    {
+        if( fishHooked )
+            sharedHookedCreditFish->pull(*hookPoint);
+    }
 }
 
 boost::weak_ptr<Player> Line::hooked(boost::weak_ptr<Fish> hookedFish)
 {
     this->hookedFish = hookedFish;
+    boost::shared_ptr<LineState> lineState(hookedState);
+    rippleAnimation = rippleAnimationHooked;
+    changeState(lineState);
+    return owner;
+}
+
+boost::weak_ptr<Player> Line::hookedCreditFish(boost::weak_ptr<CreditFish> 
+    hookedCreditFish)
+{
+    this->hookedCreditFishObj = hookedCreditFish;
     boost::shared_ptr<LineState> lineState(hookedState);
     rippleAnimation = rippleAnimationHooked;
     changeState(lineState);
@@ -502,6 +539,7 @@ void Line::offHook()
 {
     cast();
     hookedFish.reset();
+    hookedCreditFishObj.reset();
     fishHooked = false;
     boost::shared_ptr<LineState> lineState(notHookedState);
     rippleAnimation = rippleAnimationNotHooked;
@@ -561,9 +599,15 @@ void Line::nibble(boost::shared_ptr<Fish> &fish)
     state->nibble(fish);
 }
 
+void Line::nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish)
+{
+    state->nibbleCreditFish(creditFish);
+}
+
 void Line::stopNibble()
 {
     fishIsNibbling = false;
+    creditFishIsNibbling = false;
 }
 
 void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
@@ -922,6 +966,18 @@ void Line::NotHookedState::nibble(boost::shared_ptr<Fish> &fish)
     sharedLineOwner->fishIsNibbling = true;
 }
 
+void Line::NotHookedState::nibbleCreditFish(boost::shared_ptr<CreditFish> 
+    &creditFish)
+{
+    boost::shared_ptr<Line> sharedLineOwner = lineOwner.lock();
+
+    if( !sharedLineOwner )
+        return;
+
+    sharedLineOwner->nibbleCreditFishObj = creditFish;
+    sharedLineOwner->creditFishIsNibbling = true;
+}
+
 void Line::NotHookedState::pullFish()
 {
 }
@@ -1077,7 +1133,20 @@ void Line::NotHookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player>
 }
 
 void Line::NotHookedState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
-    &creditFish, const BoundingBox &yourBox) {}
+    &creditFish, const BoundingBox &yourBox) 
+{
+    boost::shared_ptr<Line> sharedLineOwner = lineOwner.lock();
+
+    if( !sharedLineOwner )
+        return;
+
+    if( sharedLineOwner->creditFishIsNibbling )
+        return;
+
+    if( &yourBox == &(sharedLineOwner->biteBox) )
+        creditFish->nibble(sharedLineOwner);
+}
+
 void Line::NotHookedState::collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox, const Direction &seahorseFacing) {}
 void Line::NotHookedState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
@@ -1208,6 +1277,10 @@ void Line::HookedState::nibble(boost::shared_ptr<Fish> &fish)
 {
 }
 
+void Line::HookedState::nibbleCreditFish(boost::shared_ptr<CreditFish> 
+    &creditFish)
+{
+}
 
 void Line::HookedState::pullFish()
 {
@@ -1219,10 +1292,18 @@ void Line::HookedState::pullFish()
     boost::shared_ptr<Fish> sharedHookedFish =
         sharedLineOwner->hookedFish.lock();
 
-    if( !sharedHookedFish )
-        return;
+    boost::shared_ptr<CreditFish> sharedHookedCreditFish =
+        sharedLineOwner->hookedCreditFishObj.lock();
 
-    sharedHookedFish->pull(*(sharedLineOwner->hookPoint));
+    if( sharedHookedFish )
+    {
+        sharedHookedFish->pull(*(sharedLineOwner->hookPoint));
+    }
+
+    if( sharedHookedCreditFish )
+    {
+        sharedHookedCreditFish->pull(*(sharedLineOwner->hookPoint));
+    }
 }
 
 Direction Line::HookedState::isTight()

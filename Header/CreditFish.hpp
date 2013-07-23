@@ -201,6 +201,9 @@ public:
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
     boost::shared_ptr<Layout> layoutToAttach();
+    void nibble(boost::shared_ptr<Line> &line);
+    void doNibble();
+    void yank();
 protected:
     CreditFish();
     void initialize(const std::string &name, const std::string &title,
@@ -215,6 +218,7 @@ private:
         virtual void swim(Uint32 elapsedTime) = 0;
         virtual void pull(const Point &hookPoint) = 0;
         virtual void randomAboutFace(Uint32 elapsedTime) = 0;
+        virtual void nibble(boost::shared_ptr<Line> &line) = 0;
     private:
         virtual double calculatePixelsLeftHorizontal(Uint32 elapsedTime) = 0;
         virtual double calculatePixelsLeftVertical(Uint32 elapsedTime) = 0;
@@ -267,6 +271,7 @@ private:
             const BoundingBox & yourBox);
         void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
+        void nibble(boost::shared_ptr<Line> &line);
     protected:
         void initialize(boost::weak_ptr<CreditFish> creditFishOwner);
         void dispose();
@@ -323,6 +328,7 @@ private:
             const BoundingBox & yourBox);
         void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
+        void nibble(boost::shared_ptr<Line> &line);
     protected:
         void initialize(boost::weak_ptr<CreditFish> creditFishOwner);
         void dispose();
@@ -350,7 +356,6 @@ private:
     void isTight(const Direction &direction);
     void resetTimes();
     void updateTimes(Uint32 elapsedTime);
-    void updateHookPosition();
     boost::shared_ptr<CreditFishState> state;
     boost::shared_ptr<HookedState> hookedState;
     boost::shared_ptr<FreeState> freeState;
@@ -371,10 +376,10 @@ private:
     bool live;
     std::string name;
     std::string title;
-    double hookOffsetX;
-    double hookOffsetY;
     Direction hookOriginalDirection;
     boost::shared_ptr<MessageBox> messageBox;
+    boost::weak_ptr<Line> nibbleLine;
+    bool nibbling;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

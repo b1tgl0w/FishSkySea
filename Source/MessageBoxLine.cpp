@@ -89,7 +89,6 @@ bool MessageBoxLine::form(std::string &whatsLeft, Renderer &renderer)
         }
     }
 
-
     line = currentLine;
 
     if( doesntFit )
@@ -103,7 +102,7 @@ bool MessageBoxLine::form(std::string &whatsLeft, Renderer &renderer)
         }
     }
 
-    return !(whatsLeft.empty());
+    return whatsLeft.empty() && doesntFit;
 }
 
 void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)

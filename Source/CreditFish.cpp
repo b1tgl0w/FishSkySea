@@ -23,13 +23,6 @@
 #include "../Header/Layout.hpp"
 #include "../Header/ScaleClipFit.hpp"
 
-//Remove this after adding name/title
-const std::string &CreditFish::IMAGE_PATH()
-{
-    static const std::string TMP_IMAGE_PATH = "../Media/Fish.png"; // changed back to "../Media"
-    return TMP_IMAGE_PATH;
-}
-
 const Layer &CreditFish::LAYER()
 {
     static const Layer TMP_LAYER = Layer::FISH();
@@ -39,7 +32,7 @@ const Layer &CreditFish::LAYER()
 const Dimension &CreditFish::SIZE()
 {
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE = { 140, 52 };
+    static const Dimension TMP_SIZE = { 140, 17 };
     return TMP_SIZE;
 }
 
@@ -78,20 +71,21 @@ const Uint32 &CreditFish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 CreditFish::CreditFish(const std::string &name, const std::string &title,
     const Point &initialPosition, const Depth &initialDepth, 
     boost::shared_ptr<Ocean> &ocean, boost::shared_ptr<Renderer>
-    &renderer) : live(false)
+    &renderer) : live(false), nibbling(false)
 {
     initialize(name, title, initialPosition, initialDepth, ocean);
 
     Dimension lineSize;
     lineSize.width = size->width;
-    lineSize.height = ceil(double(size->height) / 3.0);
+    lineSize.height = size->height;
     Uint32 BLACK = 0x00000000;
-    boost::shared_ptr<MessageBox> mb(new MessageBox(name, *size, lineSize, BLACK, false,
-        Layer::FOREGROUND(), renderer, FontSize::Small()));
+    boost::shared_ptr<MessageBox> mb(new MessageBox(name, lineSize, BLACK, false,
+        Layer::FOREGROUND(), renderer, FontSize::Small(), 1));
     messageBox = mb;
 }
 
-CreditFish::CreditFish(const CreditFish &rhs) : size(rhs.size), live(rhs.live)
+CreditFish::CreditFish(const CreditFish &rhs) : size(rhs.size), live(rhs.live),
+    nibbling(rhs.nibbling)
 {
     boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
 
@@ -117,6 +111,7 @@ CreditFish &CreditFish::operator=(const CreditFish &rhs)
             tmpOcean);
         size = rhs.size;
         live = rhs.live;
+        nibbling = rhs.nibbling;
     }
     //Else throw exception?
 
@@ -132,6 +127,8 @@ void CreditFish::initialize(const std::string &name, const std::string &title,
     // temporary one here.
     boost::shared_ptr<Point> tmpPosition(new Point(newPosition));
     position = tmpPosition;
+    boost::shared_ptr<Point> tmpHookPosition(new Point(newPosition));
+    hookPosition = tmpHookPosition;
     this->ocean = ocean;
     positionFromSide();
     this->startingDepth = newDepth;
@@ -298,7 +295,6 @@ void CreditFish::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 
 void CreditFish::loadImage(Renderer &renderer)
 {
-    renderer.loadImage(IMAGE_PATH());
 }
 
 void CreditFish::gameLive(bool live)
@@ -390,6 +386,9 @@ double CreditFish::calculatePixelsLeftVertical(Uint32 elapsedTime)
 
 void CreditFish::updateHookPosition()
 {
+    //temporary fix
+    hookPosition->x = position->x;
+    //end temporary fix
     if( hookOriginalDirection == Direction::LEFT() ||
         hookOriginalDirection == Direction::UP_LEFT() ||
         hookOriginalDirection == Direction::DOWN_LEFT() )
@@ -397,9 +396,9 @@ void CreditFish::updateHookPosition()
         if( facing == Direction::RIGHT() ||
             facing == Direction::UP_RIGHT() ||
             facing == Direction::DOWN_RIGHT() )
-            hookPosition->x = position->x + SIZE().width - hookOffsetX;
+            hookPosition->x = position->x + SIZE().width;// - hookOffsetX;
         else
-            hookPosition->x = position->x + hookOffsetX;
+            hookPosition->x = position->x;// + hookOffsetX;
     }
     else if( hookOriginalDirection == Direction::RIGHT() ||
         hookOriginalDirection == Direction::UP_RIGHT() ||
@@ -408,17 +407,17 @@ void CreditFish::updateHookPosition()
         if( facing == Direction::LEFT() ||
             facing == Direction::UP_LEFT() ||
             facing == Direction::DOWN_LEFT() )
-            hookPosition->x = position->x + SIZE().width - hookOffsetX;
+            hookPosition->x = position->x + SIZE().width;// - hookOffsetX;
         else
-            hookPosition->x = position->x + hookOffsetX;
+            hookPosition->x = position->x;// + hookOffsetX;
     }
 
-    hookPosition->y = position->y + hookOffsetY;
+    hookPosition->y = position->y;// + hookOffsetY;
 }
 
 void CreditFish::reelIn()
 {
-    position->y = hookPosition->y - hookOffsetY;
+    position->y = hookPosition->y;// - hookOffsetY;
 }
 
 void CreditFish::pull(const Point &hookPoint)
@@ -441,6 +440,14 @@ void CreditFish::respawn(const Point &newPosition)
     changeState(fishState);
     positionFromSide();
     position->y = newPosition.y;
+
+    boost::shared_ptr<Line> sharedNibbleLine = nibbleLine.lock();
+    
+    if( sharedNibbleLine ) 
+    {
+        sharedNibbleLine->stopNibble();
+        nibbling = false;
+    }
 }
 
 void CreditFish::hitEdge(const Direction &direction)
@@ -590,12 +597,38 @@ void CreditFish::clockTick(Uint32 elapsedTime)
     if( !live )
         return;
 
+    if( nibbling )
+        doNibble();
+
     swim(elapsedTime);
     updateTimes(elapsedTime);
 
     if( shouldResetTimes || shouldResetTimesVertical)
         resetTimes();
 }
+
+void CreditFish::nibble(boost::shared_ptr<Line> &line)
+{
+    state->nibble(line);
+}
+
+void CreditFish::doNibble()
+{
+    boost::shared_ptr<Line> sharedNibbleLine = nibbleLine.lock();
+
+    if( !sharedNibbleLine ) 
+        return;
+
+    sharedNibbleLine->stopNibble();
+    nibbling = false;
+}
+
+void CreditFish::yank()
+{
+    const double YANK_PIXELS = 5.0;
+    position->y -= YANK_PIXELS;
+}
+
 
 boost::shared_ptr<Layout> CreditFish::layoutToAttach()
 {
@@ -759,11 +792,13 @@ void CreditFish::FreeState::collidesWithHook(boost::shared_ptr<Line> &hook,
     if( !sharedFishOwner )
         return;
 
-    boost::shared_ptr<CreditFishState> fishState(sharedFishOwner->hookedState);
-    sharedFishOwner->changeState(fishState);
-    sharedFishOwner->hookedByLine = hook;
+    //boost::shared_ptr<CreditFishState> fishState(sharedFishOwner->hookedState);
+    //sharedFishOwner->changeState(fishState);
+    //sharedFishOwner->hookedByLine = hook;
     //sharedFishOwner->hookedByPlayer = hook->hookedCreditFish(sharedFishOwner);
-    sharedFishOwner->faceDown();
+    //sharedFishOwner->faceDown();
+    hook->nibbleCreditFish(sharedFishOwner);
+    nibble(hook);
 }
 
 void CreditFish::FreeState::collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
@@ -817,6 +852,21 @@ void CreditFish::FreeState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
 void CreditFish::FreeState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
+
+void CreditFish::FreeState::nibble(boost::shared_ptr<Line> &line)
+{
+    boost::shared_ptr<CreditFish> sharedFishOwner = creditFishOwner.lock();
+    
+    if( !sharedFishOwner )
+        return;
+
+    if( sharedFishOwner->nibbling )
+        return;
+
+    sharedFishOwner->nibbleLine = line;
+    sharedFishOwner->nibbling = true;
+}
+
 
 
 //Inner class HookedState
@@ -1047,3 +1097,9 @@ void CreditFish::HookedState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
 void CreditFish::HookedState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
+
+void CreditFish::HookedState::nibble(boost::shared_ptr<Line> &line)
+{
+    //no-op
+}
+

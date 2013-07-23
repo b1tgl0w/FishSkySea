@@ -30,18 +30,20 @@ const bool MessageBox::NO_BORDER()
 }
 
 MessageBox::MessageBox(const std::string &text, 
-    const Dimension &size, const Dimension &lineSize, Uint32 color, bool border,
+    const Dimension &lineSize, Uint32 color, bool border,
     const Layer &layer, boost::shared_ptr<Renderer> &renderer,
-    const FontSize &fontSize) 
-    : text(text), size(size), lineSize(lineSize), color(color), 
+    const FontSize &fontSize, const int numberOfLines) 
+    : text(text), lineSize(lineSize), color(color), 
     border(border), layer(layer), uuid(boost::uuids::random_generator()()),
     identifier(boost::uuids::to_string(uuid)),
     //identifier(boost::lexical_cast<std::string>(uuid)), //for debian, old boost
-    renderer(renderer), fontSize(fontSize)
+    renderer(renderer), fontSize(fontSize), numberOfLines(numberOfLines)
 {
     //Putting this here for now. If client-defined, change.
     boost::shared_ptr<ClipFit> tmpScaleClipFit(new ClipFit);
     fitStrategy = tmpScaleClipFit;
+    size.width = lineSize.width;
+    size.height = lineSize.height * numberOfLines;
 
     formLines();
     createLayouts();
@@ -51,7 +53,8 @@ MessageBox::MessageBox(const MessageBox &rhs) : text(rhs.text),
     size(rhs.size), lineSize(rhs.lineSize), color(rhs.color), border(rhs.border), 
     lines(rhs.lines), gridLayout(rhs.gridLayout), layouts(rhs.layouts),
     layer(rhs.layer), uuid(rhs.uuid), identifier(rhs.identifier),
-    renderer(rhs.renderer), fontSize(rhs.fontSize) { }
+    renderer(rhs.renderer), fontSize(rhs.fontSize), numberOfLines(
+    rhs.numberOfLines) { }
 
 MessageBox &MessageBox::operator=(const MessageBox &rhs)
 {
@@ -71,6 +74,7 @@ MessageBox &MessageBox::operator=(const MessageBox &rhs)
     identifier = rhs.identifier;
     renderer = rhs.renderer;
     fontSize = rhs.fontSize;
+    rhs.numberOfLines;
 
     return *this;
 }
@@ -128,7 +132,7 @@ bool MessageBox::formLines()
         lines.push_back(currentLine);
     }
 
-    while( lines.size() < 3 )
+    while( lines.size() < numberOfLines )
     {
         MessageBoxLine currentLine(position, size, lineSize, layer, color,
             fontSize);

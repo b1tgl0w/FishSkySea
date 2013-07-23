@@ -3,15 +3,19 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Nibble and hook credit fish
+Left off on: Showing picture and bio
 
 General Task: Finish credits minigame (for the contributers known now)
 
 Specific Steps:
-    - Nibble and hook credit fish
+    Done - Allow setting number of message box lines
+    Done - Nibble and hook credit fish
     - Catch credit fish
     - Show bio and picture
-    - Make credit fish smaller
+    Done - Make credit fish smaller
     - Make move vertically
     - Make start at random location
+    - Figure out how to fit in all the names and still be a game
+    - Layering so that creative commons license is not violated (i.e. names not obscured)
+    Done - Just use names, not titles? (until caught) (fit names on one line)
 

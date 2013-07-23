@@ -34,9 +34,9 @@ class MessageBox : public Graphic
 {
 public:
     MessageBox(const std::string &text, 
-        const Dimension &size, const Dimension &lineSize, Uint32 color, bool border,
+        const Dimension &lineSize, Uint32 color, bool border,
         const Layer &layer, boost::shared_ptr<Renderer> &renderer,
-        const FontSize &fontSize);
+        const FontSize &fontSize, const int numberOfLines);
     MessageBox(const MessageBox &rhs);
     MessageBox &operator=(const MessageBox &rhs);
     static const bool BORDER();
@@ -64,6 +64,7 @@ private:
     std::string identifier;
     boost::shared_ptr<Renderer> renderer;
     FontSize fontSize;
+    int numberOfLines;
 };
 
 #endif
