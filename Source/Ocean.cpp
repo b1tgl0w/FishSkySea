@@ -211,11 +211,20 @@ void Ocean::initializeSharedFromThis()
     changeState(OceanMode::GAME_MODE());
     boost::shared_ptr<CreditFish> tmpCreditFish(new CreditFish("John Miner",
         "Programmer", fishStartingPoint, fishStartingDepth, sharedThis, renderer));
+    fishStartingDepth = Depth::ROW2();
+    fishStartingPoint.y = getDepthY(fishStartingDepth);
+    boost::shared_ptr<CreditFish> tmpCreditFish2(new CreditFish("Kathy Miner",
+        "Artist", fishStartingPoint, fishStartingDepth, sharedThis, renderer));
     tmpCreditFish->initializeStates();
+    tmpCreditFish2->initializeStates();
     addCollidable(tmpCreditFish);
+    addCollidable(tmpCreditFish2);
     boost::shared_ptr<MasterClockSubscriber> creditSubscriber1(tmpCreditFish);
+    boost::shared_ptr<MasterClockSubscriber> creditSubscriber2(tmpCreditFish2);
     masterClockPublisher->subscribe(creditSubscriber1);
+    masterClockPublisher->subscribe(creditSubscriber2);
     creditFishes.push_back(tmpCreditFish);
+    creditFishes.push_back(tmpCreditFish2);
 
 
     //Restore state

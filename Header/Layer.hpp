@@ -10,6 +10,8 @@
 #ifndef LAYER_HPP_
 #define LAYER_HPP_
 
+#include "RandomBlock.hpp"
+
 class Layer
 {
 public:
@@ -21,6 +23,15 @@ public:
     static const Layer RIPPLE_LAYER1();
     static const Layer SEA_HORSE();
     static const Layer FISH();
+    static const Layer CREDIT_FISH1();
+    static const Layer CREDIT_FISH2();
+    static const Layer CREDIT_FISH3();
+    static const Layer CREDIT_FISH4();
+    static const Layer CREDIT_FISH5();
+    static const Layer CREDIT_FISH6();
+    static const Layer CREDIT_FISH7();
+    static const Layer CREDIT_FISH8();
+    static const Layer CREDIT_FISH9();
     static const Layer SHARK();
     static const Layer SEA_SNAIL();
     static const Layer DOCK_SUPPORTS();
@@ -33,6 +44,7 @@ public:
 private:
     explicit Layer(int initialValue);
     int value;
+    static RandomBlock randomBlock;
 };
 
 #endif

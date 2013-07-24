@@ -3,7 +3,7 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Showing picture and bio
+Left off on: Make move vertically
 
 General Task: Finish credits minigame (for the contributers known now)
 
@@ -16,6 +16,7 @@ Specific Steps:
     - Make move vertically
     - Make start at random location
     - Figure out how to fit in all the names and still be a game
-    - Layering so that creative commons license is not violated (i.e. names not obscured)
+    Done - Layering so that creative commons license is not violated (i.e. names not obscured)
     Done - Just use names, not titles? (until caught) (fit names on one line)
+    - Make creditfish on top layer be hooked, in the case that two overlap
 

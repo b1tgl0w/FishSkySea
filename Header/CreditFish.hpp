@@ -351,11 +351,13 @@ private:
     double calculatePixelsLeftVertical(Uint32 elapsedTime);
     void faceRandomDirection();
     void faceDown();
+    void updateHookPosition();
     void reelIn();
     void hitEdge(const Direction &direction);
     void isTight(const Direction &direction);
     void resetTimes();
     void updateTimes(Uint32 elapsedTime);
+    void associateLayer();
     boost::shared_ptr<CreditFishState> state;
     boost::shared_ptr<HookedState> hookedState;
     boost::shared_ptr<FreeState> freeState;
@@ -380,10 +382,13 @@ private:
     boost::shared_ptr<MessageBox> messageBox;
     boost::weak_ptr<Line> nibbleLine;
     bool nibbling;
+    int id;
+    Layer layer;
+    
+    static int nextFreeId;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();
-    static const Layer &LAYER();
     static const Uint32 &ABOUT_FACE_TICK_PROBABILITY();
     static const Uint32 &ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER();
     static const Uint32 &MINIMUM_TIME_TO_RANDOM_ABOUT_FACE();

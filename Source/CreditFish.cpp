@@ -23,11 +23,7 @@
 #include "../Header/Layout.hpp"
 #include "../Header/ScaleClipFit.hpp"
 
-const Layer &CreditFish::LAYER()
-{
-    static const Layer TMP_LAYER = Layer::FISH();
-    return TMP_LAYER;
-}
+int CreditFish::nextFreeId = 0;
 
 const Dimension &CreditFish::SIZE()
 {
@@ -74,18 +70,20 @@ CreditFish::CreditFish(const std::string &name, const std::string &title,
     &renderer) : live(false), nibbling(false)
 {
     initialize(name, title, initialPosition, initialDepth, ocean);
+    id = CreditFish::nextFreeId++;
+    associateLayer();
 
     Dimension lineSize;
     lineSize.width = size->width;
     lineSize.height = size->height;
     Uint32 BLACK = 0x00000000;
     boost::shared_ptr<MessageBox> mb(new MessageBox(name, lineSize, BLACK, false,
-        Layer::FOREGROUND(), renderer, FontSize::Small(), 1));
+        layer, renderer, FontSize::Small(), 1));
     messageBox = mb;
 }
 
 CreditFish::CreditFish(const CreditFish &rhs) : size(rhs.size), live(rhs.live),
-    nibbling(rhs.nibbling)
+    nibbling(rhs.nibbling), id(rhs.id), layer(rhs.layer)
 {
     boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
 
@@ -112,6 +110,8 @@ CreditFish &CreditFish::operator=(const CreditFish &rhs)
         size = rhs.size;
         live = rhs.live;
         nibbling = rhs.nibbling;
+        id = rhs.id;
+        layer = rhs.layer;
     }
     //Else throw exception?
 
@@ -634,6 +634,40 @@ boost::shared_ptr<Layout> CreditFish::layoutToAttach()
 {
     boost::shared_ptr<Layout> tmpLayout(messageBox->layoutToAttach());
     return tmpLayout;
+}
+
+void CreditFish::associateLayer()
+{
+    switch(id)
+    {
+    case 0:
+        layer = Layer::CREDIT_FISH1();
+        break;
+    case 1:
+        layer = Layer::CREDIT_FISH2();
+        break;
+    case 2:
+        layer = Layer::CREDIT_FISH3();
+        break;
+    case 3:
+        layer = Layer::CREDIT_FISH4();
+        break;
+    case 4:
+        layer = Layer::CREDIT_FISH5();
+        break;
+    case 5:
+        layer = Layer::CREDIT_FISH6();
+        break;
+    case 6:
+        layer = Layer::CREDIT_FISH7();
+        break;
+    case 7:
+        layer = Layer::CREDIT_FISH8();
+        break;
+    default:
+        layer = Layer::CREDIT_FISH9();
+        break;
+    }
 }
 
 //Inner class FreeState

@@ -8,8 +8,14 @@
 //This program is distributed under the terms of the GNU General Public License
 
 #include "../Header/Layer.hpp"
+#include <iostream>
+
+RandomBlock Layer::randomBlock(8, 26, 2, 9);
 
 Layer::Layer() : value(0) //Behind everything
+{ }
+
+Layer::Layer(const Layer &rhs) : value(rhs.value)
 { }
 
 Layer &Layer::operator=(const Layer &rhs)
@@ -52,44 +58,86 @@ const Layer Layer::FISH()
     return Layer(6);
 }
 
+const Layer Layer::CREDIT_FISH1()
+{
+    return Layer(randomBlock[0]);
+}
+
+const Layer Layer::CREDIT_FISH2()
+{
+    return Layer(randomBlock[1]);
+}
+
+const Layer Layer::CREDIT_FISH3()
+{
+    return Layer(randomBlock[2]);
+}
+
+const Layer Layer::CREDIT_FISH4()
+{
+    return Layer(randomBlock[3]);
+}
+
+const Layer Layer::CREDIT_FISH5()
+{
+    return Layer(randomBlock[4]);
+}
+
+const Layer Layer::CREDIT_FISH6()
+{
+    return Layer(randomBlock[5]);
+}
+
+const Layer Layer::CREDIT_FISH7()
+{
+    return Layer(randomBlock[6]);
+}
+
+const Layer Layer::CREDIT_FISH8()
+{
+    return Layer(randomBlock[7]);
+}
+
+const Layer Layer::CREDIT_FISH9()
+{
+    return Layer(randomBlock[8]);
+}
+
 const Layer Layer::SHARK()
 {
-    return Layer(7);
+    //Fish layer + number of credit fish * gap size + 1 (for credit fish
+    // starting offset) + (1 for next number)
+    return Layer(26);
 }
 
 const Layer Layer::SEA_SNAIL()
 {
-    return Layer(8);
+    return Layer(27);
 }
 
 const Layer Layer::SCORE()
 {
-    return Layer(9);
+    return Layer(28);
 }
 
 const Layer Layer::DOCK_SUPPORTS()
 {
-    return Layer(10);
+    return Layer(29);
 }
 
 const Layer Layer::FOREGROUND()
 {
-    return Layer(11);
+    return Layer(30);
 }
 
 const Layer Layer::TITLE_MENU()
 {
-    return Layer(12);
+    return Layer(31);
 }
 
 Layer::Layer(int initialValue)
 {
     value = initialValue;
-}
-
-Layer::Layer(const Layer &rhs)
-{
-    value = rhs.value;
 }
 
 int Layer::integer() const
