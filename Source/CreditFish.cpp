@@ -65,11 +65,11 @@ const Uint32 &CreditFish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 
 //Class CreditFish
 CreditFish::CreditFish(const std::string &name, const std::string &title,
-    const Point &initialPosition, const Depth &initialDepth, 
+    const Point &initialPosition, 
     boost::shared_ptr<Ocean> &ocean, boost::shared_ptr<Renderer>
     &renderer) : live(false), nibbling(false)
 {
-    initialize(name, title, initialPosition, initialDepth, ocean);
+    initialize(name, title, initialPosition, ocean);
     id = CreditFish::nextFreeId++;
     associateLayer();
 
@@ -89,7 +89,7 @@ CreditFish::CreditFish(const CreditFish &rhs) : size(rhs.size), live(rhs.live),
 
     //Make sure if any shared_ptr's are added that they are also check in this if
     if( tmpOcean )
-        initialize(rhs.name, rhs.title, *(rhs.position), rhs.startingDepth, 
+        initialize(rhs.name, rhs.title, *(rhs.position), 
             tmpOcean);
     //Else throw exception?
 }
@@ -105,7 +105,7 @@ CreditFish &CreditFish::operator=(const CreditFish &rhs)
     if( tmpOcean ) 
     {
         dispose();
-        initialize(rhs.name, rhs.title, *(rhs.position), rhs.startingDepth, 
+        initialize(rhs.name, rhs.title, *(rhs.position), 
             tmpOcean);
         size = rhs.size;
         live = rhs.live;
@@ -119,7 +119,7 @@ CreditFish &CreditFish::operator=(const CreditFish &rhs)
 }
 
 void CreditFish::initialize(const std::string &name, const std::string &title,
-    const Point &newPosition, const Depth &newDepth, boost::shared_ptr<Ocean> &ocean)
+    const Point &newPosition, boost::shared_ptr<Ocean> &ocean)
 {
     //The below hack is used because the shared pointer is not initialized
     // in the initialization block of the ctor. The shared_ptr assignment
@@ -131,7 +131,6 @@ void CreditFish::initialize(const std::string &name, const std::string &title,
     hookPosition = tmpHookPosition;
     this->ocean = ocean;
     positionFromSide();
-    this->startingDepth = newDepth;
     boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
     size = tmpSize;
     BoundingBox tmpCreditFishBox(position, size);
@@ -172,16 +171,10 @@ void CreditFish::faceRandomDirection()
         facing = Direction::LEFT();
     else
         facing = Direction::RIGHT();
-}
-
-void CreditFish::faceDown()
-{
-    if( facing == Direction::LEFT() ||
-        facing == Direction::UP_LEFT() )
-        facing = Direction::DOWN_LEFT();
-    else if( facing == Direction::RIGHT() ||
-        facing == Direction::UP_RIGHT() )
-        facing = Direction::DOWN_RIGHT();
+    if( Math::randomlyNegative() < 0 )
+        verticalFacing = Direction::UP();
+    else
+        verticalFacing = Direction::DOWN();
 }
 
 void CreditFish::swim(Uint32 elapsedTime)
@@ -270,6 +263,7 @@ void CreditFish::hookedBy(boost::weak_ptr<Line> hookedByLine, boost::weak_ptr<Pl
 {
     this->hookedByLine = hookedByLine;
     this->hookedByPlayer = hookedByPlayer;
+    verticalFacing = Direction::NONE();
     boost::shared_ptr<CreditFishState> fishState(hookedState);
     changeState(fishState);
 }
@@ -310,12 +304,14 @@ void CreditFish::changeState(boost::shared_ptr<CreditFishState> &newState)
 void CreditFish::moveForward(double pixels)
 {
     //Shouldn't I call state.moveForward here?
-    if( facing == Direction::LEFT() ||
-        facing == Direction::UP_LEFT() ||
-        facing == Direction::DOWN_LEFT() )
+    if( facing == Direction::LEFT() )
         position->x -= pixels;
     else
         position->x += pixels;
+    if( verticalFacing == Direction::UP() )
+        position->y -= pixels;
+    else if( verticalFacing == Direction::DOWN() )
+        position->y += pixels;
 }
 
 void CreditFish::moveVertically(double pixels)
@@ -457,54 +453,20 @@ void CreditFish::hitEdge(const Direction &direction)
         facing = Direction::RIGHT();
         shouldResetTimes = true; //Don't about face too soon after coming on screen
     }
-    else if( direction == Direction::UP_LEFT() )
-    {
-        facing = Direction::UP_RIGHT();
-        shouldResetTimes = true; //Don't about face too soon after coming on screen
-    }
-    else if( direction == Direction::DOWN_LEFT() )
-    {
-        facing = Direction::DOWN_RIGHT();
-        shouldResetTimes = true; //Don't about face too soon after coming on screen
-    }
     else if( direction == Direction::RIGHT() )
     {
         facing = Direction::LEFT();
-        shouldResetTimes = true; //Don't about face too soon after coming on screen
-    }
-    else if( direction == Direction::UP_RIGHT() )
-    {
-        facing = Direction::UP_LEFT();
-        shouldResetTimes = true; //Don't about face too soon after coming on screen
-    }
-    else if( direction == Direction::DOWN_RIGHT() )
-    {
-        facing = Direction::DOWN_LEFT();
-        shouldResetTimes = true; //Don't about face too soon after coming on screen
-    }
-    else if( direction == Direction::DOWN() )
-    {
-        if( facing == Direction::DOWN_LEFT() )
-        {
-            facing = Direction::UP_LEFT();
-        }
-        else if( facing == Direction::DOWN_RIGHT() )
-        {
-            facing = Direction::UP_RIGHT();
-        }
-        shouldResetTimesVertical = true; //Don't about face too soon after coming on screen
+        shouldResetTimes = true;
     }
     else if( direction == Direction::UP() )
     {
-        if( facing == Direction::UP_LEFT() )
-        {
-            facing = Direction::DOWN_LEFT();
-        }
-        else if( facing == Direction::UP_RIGHT() )
-        {
-            facing = Direction::DOWN_RIGHT();
-        }
-        shouldResetTimesVertical = true; //Don't about face too soon after coming on screen
+        verticalFacing = Direction::DOWN();
+        shouldResetTimes = true;
+    }
+    else if( direction == Direction::DOWN() )
+    {
+        verticalFacing = Direction::UP();
+        shouldResetTimes = true;
     }
 }
 
@@ -589,8 +551,12 @@ void CreditFish::collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
     const BoundingBox &yourBox) {}
 void CreditFish::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
+
 void CreditFish::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
-    const BoundingBox &yourBox) {}
+    const BoundingBox &yourBox) 
+{
+    hitEdge(Direction::DOWN());
+}
 
 void CreditFish::clockTick(Uint32 elapsedTime)
 {
@@ -780,7 +746,6 @@ void CreditFish::FreeState::swim(Uint32 elapsedTime)
             sharedFishOwner->aboutFace();*/
     }
 
-    sharedFishOwner->randomAboutFace(elapsedTime);
     sharedOcean->checkCollisions(collidable, sharedFishOwner->creditFishBox);
 }
 
@@ -844,6 +809,16 @@ void CreditFish::FreeState::collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocea
         return;
 
     sharedFishOwner->hitEdge(direction);
+    /*boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
+
+    if( !sharedSeahorseOwner )
+        return;
+
+    if( &yourBox == &(sharedSeahorseOwner->seahorseBox) )
+    {
+        if( direction == Direction::DOWN() )
+            sharedSeahorseOwner->avoidBoundaries(Direction::DOWN());
+    }*/
 }
 
 void CreditFish::FreeState::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
@@ -1096,7 +1071,7 @@ void CreditFish::HookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean> 
 
     sharedHookedByLine->offHook();
     //Add this
-    sharedOcean->addCreditFish(sharedFishOwner, sharedFishOwner->startingDepth);
+    sharedOcean->addCreditFish(sharedFishOwner);
     //Ocean is responsible for showing image and bio or at least delegating
 }
 

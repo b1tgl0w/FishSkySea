@@ -51,8 +51,7 @@ public:
     bool isAboveSurface(const BoundingBox &fishBox, const Fish &fish);
     Direction hitEdge(const BoundingBox &fishBox);
     void addFish(boost::shared_ptr<Fish> &fish, const Depth &depth);
-    void addCreditFish(boost::shared_ptr<CreditFish> &CreditFish, const Depth 
-        &depth);
+    void addCreditFish(boost::shared_ptr<CreditFish> &CreditFish);
     void addSeahorse(boost::shared_ptr<Seahorse> &seahorse, const Depth &depth);
     void alignWithBoundary(double &coordinate, const Direction &whichBoundary,
         const double offset = 1.0);
@@ -157,6 +156,7 @@ private:
 
     void addFish(const Depth &depth); //Overloaded from public
     double getDepthY(const Depth &depth);
+    double getRandomDepthY();
     double getFishStartingX();
     std::set<boost::weak_ptr<Collidable> > collidables;
     std::set<boost::weak_ptr<Collidable> > creditCollidables;

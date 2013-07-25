@@ -54,7 +54,7 @@ friend class FreeState;
 public:
     //!ctor
     explicit CreditFish(const std::string &name, const std::string &title,
-        const Point &initialPosition, const Depth &initialDepth, 
+        const Point &initialPosition,
         boost::shared_ptr<Ocean> &ocean, boost::shared_ptr<Renderer>
         &renderer);
     //!Copy ctor
@@ -207,7 +207,7 @@ public:
 protected:
     CreditFish();
     void initialize(const std::string &name, const std::string &title,
-        const Point &newPosition, const Depth &newDepth, 
+        const Point &newPosition,
         boost::shared_ptr<Ocean> &ocean);
 private:
     //Note, not a collidable since all states use Fish::collidable methods
@@ -366,6 +366,7 @@ private:
     boost::shared_ptr<Dimension> size;
     BoundingBox creditFishBox;
     Direction facing;
+    Direction verticalFacing;
     boost::weak_ptr<Ocean> ocean;
     boost::weak_ptr<Line> hookedByLine;
     boost::weak_ptr<Player> hookedByPlayer;

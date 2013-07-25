@@ -209,12 +209,12 @@ void Ocean::initializeSharedFromThis()
     //Credit state init
     state = creditState;
     changeState(OceanMode::GAME_MODE());
+    fishStartingPoint.y = getRandomDepthY();
     boost::shared_ptr<CreditFish> tmpCreditFish(new CreditFish("John Miner",
-        "Programmer", fishStartingPoint, fishStartingDepth, sharedThis, renderer));
-    fishStartingDepth = Depth::ROW2();
-    fishStartingPoint.y = getDepthY(fishStartingDepth);
+        "Programmer", fishStartingPoint, sharedThis, renderer));
+    fishStartingPoint.y = getRandomDepthY();
     boost::shared_ptr<CreditFish> tmpCreditFish2(new CreditFish("Kathy Miner",
-        "Artist", fishStartingPoint, fishStartingDepth, sharedThis, renderer));
+        "Artist", fishStartingPoint, sharedThis, renderer));
     tmpCreditFish->initializeStates();
     tmpCreditFish2->initializeStates();
     addCollidable(tmpCreditFish);
@@ -265,6 +265,12 @@ double Ocean::getDepthY(const Depth &depth)
         return 0;
     
     return it->second;
+}
+
+double Ocean::getRandomDepthY()
+{
+    return Math::random(oceanSurfacePosition->y + oceanSurfaceSize->height,
+        OCEAN_FLOOR_Y());
 }
 
 void Ocean::initialize(const Dimension &screenSize)
@@ -332,10 +338,9 @@ void Ocean::addFish(boost::shared_ptr<Fish> &fish, const Depth &depth)
     fish->respawn(fishStartingPoint);
 }
 
-void Ocean::addCreditFish(boost::shared_ptr<CreditFish> &creditFish, const 
-    Depth &depth)
+void Ocean::addCreditFish(boost::shared_ptr<CreditFish> &creditFish)
 {
-    Point fishStartingPoint = { getFishStartingX(), getDepthY(depth) };
+    Point fishStartingPoint = { getFishStartingX(), getRandomDepthY() };
     creditFish->respawn(fishStartingPoint);
 }
 

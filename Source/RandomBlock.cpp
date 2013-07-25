@@ -48,7 +48,6 @@ RandomBlock RandomBlock::operator=(const RandomBlock &rhs)
 
 int RandomBlock::operator[](const int index) const
 {
-    std::cout << randomNumbers[index] << std::endl;
     return randomNumbers[index];
 }
 
@@ -59,10 +58,6 @@ void RandomBlock::generateRandomNumbers(const int blockSize)
     int adjustedRangeMax = rangeMax / gapSize;
     int randomNumber = Math::random(adjustedRangeMin, adjustedRangeMax) * gapSize;
     const int rangeLength = adjustedRangeMax - adjustedRangeMin + 1;
-    std::cout << "range" << rangeLength << std::endl;
-    std::cout << "blockSize" << blockSize << std::endl;
-    std::cout << "adjustedRangeMin" << adjustedRangeMin << std::endl;
-    std::cout << "adjustedRangeMax" << adjustedRangeMax << std::endl;
 
     for( int i = 0; i < blockSize; ++i )
     {
