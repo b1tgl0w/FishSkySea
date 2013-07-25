@@ -67,7 +67,7 @@ void RandomBlock::generateRandomNumbers(const int blockSize)
             randomNumber = Math::random(adjustedRangeMin, adjustedRangeMax) * 
                 gapSize;
 
-            for( int j = 0; j < i - 1; ++j )
+            for( int j = 0; j < i; ++j )
             {
                 if( randomNumber == randomNumbers[j] )
                     collision = true;
