@@ -36,19 +36,19 @@ const Layer &Fish::LAYER()
 const Dimension &Fish::SIZE()
 {
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE = { 70, 26 };
+    static const Dimension TMP_SIZE(70.0 , 26.0);
     return TMP_SIZE;
 }
 
 const Dimension &Fish::MOUTH_SIZE()
 {
-    static const Dimension TMP_MOUTH_SIZE = { 1.0, 4.0 }; 
+    static const Dimension TMP_MOUTH_SIZE(1.0, 4.0); 
     return TMP_MOUTH_SIZE;
 }
 
 const Dimension &Fish::MOUTH_SIZE_SEAHORSE()
 {
-    static const Dimension TMP_MOUTH_SIZE_SEAHORSE = { 5.0, 4.0 }; 
+    static const Dimension TMP_MOUTH_SIZE_SEAHORSE(5.0, 4.0); 
     return TMP_MOUTH_SIZE_SEAHORSE;
 }
 

@@ -55,8 +55,8 @@ void Score::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
     const int BORDER_SIZE = 0;
     const Layer LAYER = Layer::SCORE();
-    const Point POSITION = { 0, 0 };
-    const Dimension SIZE = { 150, 50 };
+    const Point POSITION(0.0, 0.0);
+    const Dimension SIZE(150.0, 50.0);
 
     if( score != renderedScore )
         renderer.loadText(StringUtility::toString(score) + " lbs", COLOR, 

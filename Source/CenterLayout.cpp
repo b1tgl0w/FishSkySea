@@ -11,9 +11,9 @@
 CenterLayout::CenterLayout(const boost::shared_ptr<FitStrategy> &fitStrategy)
 {
     boost::shared_ptr<Clip> clipObject(new Clip);
-    Point tmpPosition = { 0.0, 0.0 };
+    Point tmpPosition(0.0, 0.0);
     position = tmpPosition;
-    Dimension tmpSize = { 0.0, 0.0 };
+    Dimension tmpSize(0.0, 0.0);
     size = tmpSize;
     initialize(fitStrategy, clipObject);
 }
@@ -163,8 +163,8 @@ bool CenterLayout::isHere(const Point &position)
 void CenterLayout::adjustCoordinate(boost::shared_ptr<RendererElement> 
     &rendererElement)
 {
-    Point center = { position.x + size.width / 2.0, position.y +
-        size.height / 2.0 };
+    Point center(position.x + size.width / 2.0, position.y +
+        size.height / 2.0);
 
     rendererElement->center(center);
 }

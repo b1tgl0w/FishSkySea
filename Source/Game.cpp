@@ -57,8 +57,8 @@ void Game::loadImage(Renderer &renderer)
 {
     const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
     const int BORDER_SIZE = 0;
-    const Point ORIGIN = { 0.0, 0.0 };
-    const Dimension TEXT_SIZE = { 150.0, 50.0 };
+    const Point ORIGIN(0.0, 0.0);
+    const Dimension TEXT_SIZE(150.0, 50.0);
 
     renderer.loadText("<WIN ", COLOR, BORDER_SIZE, FontSize::Huge());
     renderer.loadText(" WIN>", COLOR, BORDER_SIZE, FontSize::Huge());

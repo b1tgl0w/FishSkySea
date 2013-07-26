@@ -41,6 +41,7 @@ public:
     Layer(const Layer &rhs); 
     bool operator<(const Layer &rhs) const;
     int integer() const;
+    static void randomize();
 private:
     explicit Layer(int initialValue);
     int value;

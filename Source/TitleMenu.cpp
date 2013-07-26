@@ -125,8 +125,8 @@ void TitleMenu::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 
 void TitleMenu::loadImage(Renderer &renderer)
 {
-    const Point POSITION = { 0.0, 0.0 };
-    const Dimension SIZE = { 230.0, 88.0 };
+    const Point POSITION(0.0, 0.0);
+    const Dimension SIZE(230.0, 88.0);
     const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
     const int BORDER_SIZE = 0;
     std::string menuText; 
@@ -214,7 +214,7 @@ void TitleMenu::clockTick(Uint32 elapsedTime)
 void TitleMenu::createLayouts()
 {
     boost::shared_ptr<ScaleClipFit> fillClipFit(new ScaleClipFit);
-    Point cell = { 0.0, 0.0 };
+    Point cell(0.0, 0.0);
     boost::shared_ptr<GridLayout> tmp(new GridLayout(menuItems.size(), 1));
     menuGrid = tmp;
     

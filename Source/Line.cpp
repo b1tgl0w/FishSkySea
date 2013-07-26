@@ -58,25 +58,25 @@ const Layer &Line::LAYER()
 
 const Dimension &Line::POLE_DIMENSION()
 {
-    static const Dimension TMP_POLE_DIMENSION = { 4.0, 4.0 };
+    static const Dimension TMP_POLE_DIMENSION(4.0, 4.0);
     return TMP_POLE_DIMENSION;
 }
 
 const Dimension &Line::HOOK_DIMENSION()
 {
-    static const Dimension TMP_HOOK_DIMENSION = { 1.0, 4.0 }; 
+    static const Dimension TMP_HOOK_DIMENSION(1.0, 4.0); 
     return TMP_HOOK_DIMENSION;
 }
 
 const Point &Line::HOOK_GRAPHIC_OFFSET()
 {
-    static const Point TMP_HOOK_GRAPHIC_OFFSET = { -7.0, 0 };
+    static const Point TMP_HOOK_GRAPHIC_OFFSET(-7.0, 0);
     return TMP_HOOK_GRAPHIC_OFFSET;
 }
 
 const Dimension &Line::HOOK_GRAPHIC_SIZE()
 {
-    static const Dimension TMP_HOOK_GRAPHIC_SIZE = { 8.0, 10.0 };
+    static const Dimension TMP_HOOK_GRAPHIC_SIZE(8.0, 10.0);
     return TMP_HOOK_GRAPHIC_SIZE;
 }
 
@@ -180,13 +180,13 @@ const std::string &Line::RIPPLE_PATH3()
 //Don't change to some other value
 const Point &Line::RIPPLE_INITIAL_POSITION()
 {
-    static const Point TMP_RIPPLE_INITIAL_POSITION = {0, 0};
+    static const Point TMP_RIPPLE_INITIAL_POSITION(0.0, 0.0);
     return TMP_RIPPLE_INITIAL_POSITION;
 }
 
 const Dimension &Line::RIPPLE_INITIAL_SIZE()
 {
-    static const Dimension TMP_RIPPLE_INITIAL_SIZE = {20, 20};
+    static const Dimension TMP_RIPPLE_INITIAL_SIZE(20.0, 20.0);
     return TMP_RIPPLE_INITIAL_SIZE;
 }
 
@@ -623,8 +623,8 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     const Uint32 SURFACE_BLUE = renderer.makeColor(0x3f, 0x92, 0xd1, 0xff);
     const Uint32 OCEAN_BLUE = renderer.makeColor(0x00, 0x45, 0xA6, 0xff);
     const Uint32 POLE_RED = renderer.makeColor(0xA6, 0x00, 0x24, 0xFF);
-    Dimension size = { 800, 600 };
-    Point noOffset = { 0, 0 };
+    Dimension size(800.0, 600.0);
+    Point noOffset(0.0, 0.0);
     Point perspectiveSurface;
     Point surface;
     Point ripplePoint;

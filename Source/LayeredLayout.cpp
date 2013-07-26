@@ -13,9 +13,9 @@ LayeredLayout::LayeredLayout(const int
     numberOfLayers, boost::shared_ptr<FitStrategy> &fitStrategy)
 {
     boost::shared_ptr<Clip> clipObject(new Clip);
-    Point tmpPosition = { 0.0, 0.0 };
+    Point tmpPosition(0.0, 0.0);
     position = tmpPosition;
-    Dimension tmpSize = { 0.0, 0.0 };
+    Dimension tmpSize(0.0, 0.0);
     size = tmpSize;
     initialize(numberOfLayers, fitStrategy, clipObject);
 }
@@ -158,7 +158,7 @@ void LayeredLayout::scale(const DimensionPercent &dimensionPercent)
 
 void LayeredLayout::moveTo(const Point &newPosition)
 {
-    Point offset = { newPosition.x - position.x, newPosition.y - position.y };
+    Point offset(newPosition.x - position.x, newPosition.y - position.y);
     moveBy(offset);
 }
 
@@ -186,7 +186,7 @@ boost::shared_ptr<Layout> LayeredLayout::operator[](int layer)
 
 void LayeredLayout::addLayout(boost::shared_ptr<Layout> &layout, int layer)
 {
-    const Point TOP_LEFT = { 0.0, 0.0 };
+    const Point TOP_LEFT(0.0, 0.0);
 
     if(layer - (int) layers.size() > 0 )
     {

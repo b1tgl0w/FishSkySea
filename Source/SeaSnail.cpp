@@ -19,7 +19,7 @@
 
 const Dimension &SeaSnail::SIZE()
 {
-    static const Dimension TMP_SIZE = { 180.0, 90.0 };
+    static const Dimension TMP_SIZE(180.0, 90.0);
     return TMP_SIZE;
 }
 
@@ -70,14 +70,12 @@ const Uint32 &SeaSnail::RETREAT_PROBABILITY()
 }
 
 SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
-    &ocean, boost::weak_ptr<Seahorse> &seahorse) : position(new Point(initialPosition)), ocean(ocean),
-    shouldResetTimes(false), glowing(false), proceed(false), retreat(false),
-    offScreen(false), timeSinceOffScreen(0), live(false), seahorse(seahorse)
+    &ocean, boost::weak_ptr<Seahorse> &seahorse) : position(new Point(initialPosition)), 
+    size(new Dimension(SIZE())), seaSnailBox(position, size), facing(Direction::LEFT()),
+    ocean(ocean), shouldResetTimes(false), glowing(false), proceed(false), retreat(false),
+    offScreen(false), timeSinceOffScreen(0), timeSinceProceed(0), live(false), 
+    seahorse(seahorse)
 {
-    boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
-    size = tmpSize;
-    BoundingBox tmpBox(position, size);
-    seaSnailBox = tmpBox;
     glow();
     positionFromSide();
     aboutFace();
@@ -87,8 +85,8 @@ SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position), size(
     rhs.size), seaSnailBox(rhs.seaSnailBox), facing(rhs.facing), 
     ocean(rhs.ocean), shouldResetTimes(rhs.shouldResetTimes), 
     glowing(rhs.glowing), proceed(rhs.proceed), retreat(rhs.retreat),
-    timeSinceOffScreen(rhs.timeSinceOffScreen), live(rhs.live),
-    seahorse(rhs.seahorse)
+    offScreen(rhs.offScreen), timeSinceOffScreen(rhs.timeSinceOffScreen), 
+    timeSinceProceed(0), live(rhs.live), seahorse(rhs.seahorse)
 {
 }
 
@@ -106,7 +104,9 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
     glowing = rhs.glowing;
     proceed = rhs.proceed;
     retreat = rhs.retreat;
+    offScreen = rhs.offScreen;
     timeSinceOffScreen = rhs.timeSinceOffScreen;
+    timeSinceProceed = rhs.timeSinceProceed;
     live = rhs.live;
     seahorse = rhs.seahorse;
     

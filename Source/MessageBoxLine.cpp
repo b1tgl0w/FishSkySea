@@ -110,7 +110,7 @@ void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     const SDL_Color COLOR = { 0xFF, 0xFF, 0xFF, 0xFF };
     const int BORDER_SIZE = 0;
 
-    Point origin = { 0.0, 0.0 };
+    Point origin(0.0, 0.0);
     boost::shared_ptr<DirectGraphicStrategy> dgs(new DirectFilledRectangleGraphic(
         origin, originalLineSize, bgColor));
     DirectRendererElement re2(identifier, layer.integer(), origin,

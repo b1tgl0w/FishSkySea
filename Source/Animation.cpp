@@ -10,7 +10,7 @@
 #include "../Header/ImageRendererElement.hpp"
 
 Animation::Animation(const Point &newPosition, const Dimension &newSize,
-    const Layer &newLayer) : position(newPosition), size(newSize),
+    const Layer &newLayer) : frames(), position(newPosition), size(newSize),
     layer(newLayer), currentTicks(0), totalTicks(0), frameIndex(0),
     paused(false)
 {

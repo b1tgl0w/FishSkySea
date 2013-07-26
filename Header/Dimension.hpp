@@ -11,6 +11,8 @@
 
 struct Dimension
 {
+    Dimension(double width, double height);
+    Dimension();
     double width;
     double height;
 };

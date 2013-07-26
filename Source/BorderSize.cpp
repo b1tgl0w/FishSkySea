@@ -9,14 +9,12 @@
 
 #include "../Header/BorderSize.hpp"
 
-BorderSize::BorderSize(int value)
+BorderSize::BorderSize(int value) : value(value)
 {
-    initialize(value);
 }
 
-BorderSize::BorderSize(const BorderSize &rhs)
+BorderSize::BorderSize(const BorderSize &rhs) : value(rhs.value)
 {
-    initialize(rhs.value);
 }
 
 BorderSize &BorderSize::operator=(const BorderSize &rhs)
@@ -24,8 +22,7 @@ BorderSize &BorderSize::operator=(const BorderSize &rhs)
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.value);
+    value = rhs.value;
     
     return *this;
 }

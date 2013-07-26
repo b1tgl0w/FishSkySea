@@ -32,7 +32,7 @@ const Layer &Seahorse::LAYER()
 const Dimension &Seahorse::SIZE()
 {
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE = { 40, 89 };
+    static const Dimension TMP_SIZE(40, 89);
     return TMP_SIZE;
 }
 
@@ -408,7 +408,7 @@ void Seahorse::adjustBoxes()
     sharedOcean->alignWithBoundary(leftPosition->x, Direction::LEFT(),
         0.0); //no offset
     leftSize->width = position->x + seahorseSize->width / 2 - leftPosition->x;
-    Point tmpPoint = {0.0, 0.0};
+    Point tmpPoint(0.0, 0.0);
     sharedOcean->alignWithBoundary(tmpPoint.x, Direction::RIGHT(),
         0.0); //no offset
     rightPosition->x = position->x + seahorseSize->width / 2 + 1;

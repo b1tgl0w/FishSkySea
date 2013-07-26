@@ -39,8 +39,8 @@ DirectFilledRectangleGraphic::~DirectFilledRectangleGraphic()
 void DirectFilledRectangleGraphic::drawToScreen(SDL_Surface *screen, const Point 
     &position, const Dimension &size, const Clip &clipObject)
 {
-    DimensionPercent dimensionPercent = { size.width / this->size.width,
-        size.height / this->size.height };
+    DimensionPercent dimensionPercent(size.width / this->size.width,
+        size.height / this->size.height);
     this->size.width *= dimensionPercent.widthPercent;
     this->size.height *= dimensionPercent.heightPercent;
 

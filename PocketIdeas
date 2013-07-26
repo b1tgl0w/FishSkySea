@@ -1,3 +1,4 @@
+- Accelerate line and hook for fine movements
 - Don't allow the player to keep the fish on the line too long. Either use
 and eel to eat the fish or have the line break. Either way, make sure there
 is a visible cue to warn the player

@@ -11,18 +11,15 @@
 #include "../Header/Math.hpp"
 
 BorderLayout::BorderLayout(const BorderSize &borderSize)
-: borderSize(borderSize), borderCorner(BorderCorner::None()),
+: toDraw(), cells(), owner(), position(0.0, 0.0), size(0.0, 0.0), borderSize(borderSize), borderCorner(BorderCorner::None()),
 emptyLayout(new EmptyLayout)
 {
-    Point tmpPosition = { 0.0, 0.0 };
-    position = tmpPosition;
-    Dimension tmpDimension = { 0.0, 0.0 };
-    size = tmpDimension;
 }
 
 BorderLayout::BorderLayout(const BorderLayout &rhs)
-: borderSize(borderSize), borderCorner(BorderCorner::None()),
-    position(rhs.position), size(rhs.size)
+: toDraw(rhs.toDraw), cells(rhs.cells), owner(rhs.owner), position(rhs.position), size(rhs.size),
+borderSize(rhs.borderSize), borderCorner(BorderCorner::None()), emptyLayout(
+    rhs.emptyLayout)
 {
 }
     
@@ -31,10 +28,14 @@ BorderLayout &BorderLayout::operator=(const BorderLayout &rhs)
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.borderSize);
+    toDraw = rhs.toDraw;
+    cells = rhs.cells;
+    owner = rhs.owner;
     position = rhs.position;
     size = rhs.size;
+    borderSize = rhs.borderSize;
+    borderCorner = rhs.borderCorner;
+    emptyLayout = rhs.emptyLayout;
     
     return *this;
 }

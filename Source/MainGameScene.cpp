@@ -33,49 +33,49 @@
 
 const Point &MainGameScene::POLE_POINT()
 {
-    static const Point TMP_POLE_POINT = { 130.0, 205.0 };
+    static const Point TMP_POLE_POINT(130.0, 205.0);
     return TMP_POLE_POINT;
 }
 
 const Point &MainGameScene::HOOK_POINT()
 {
-    static const Point TMP_HOOK_POINT = { 130.0, 550.0 };
+    static const Point TMP_HOOK_POINT(130.0, 550.0);
     return TMP_HOOK_POINT;
 }
 
 const Point &MainGameScene::BACKGROUND_POINT()
 {
-    static const Point TMP_BACKGROUND_POINT = { 0.0, 0.0 };
+    static const Point TMP_BACKGROUND_POINT(0.0, 0.0);
     return TMP_BACKGROUND_POINT;
 }
 
 const Point &MainGameScene::ELDER_FISHER_POINT()
 {
-    static const Point TMP_ELDER_FISHER_POINT = { 660.0, 126.0 };
+    static const Point TMP_ELDER_FISHER_POINT(660.0, 126.0);
     return TMP_ELDER_FISHER_POINT;
 }
 
 const Point &MainGameScene::MOWHAWK_FISHER_POINT()
 {
-    static const Point TMP_MOWHAWK_FISHER_POINT = { 90.0, 120.0 };
+    static const Point TMP_MOWHAWK_FISHER_POINT(90.0, 120.0);
     return TMP_MOWHAWK_FISHER_POINT;
 }
 
 const Point &MainGameScene::DOCK_SUPPORTS_POINT()
 {
-    static const Point TMP_DOCK_SUPPORTS_POINT = { 0.0, 0.0 };
+    static const Point TMP_DOCK_SUPPORTS_POINT(0.0, 0.0);
     return TMP_DOCK_SUPPORTS_POINT;
 }
 
 const Dimension &MainGameScene::ELDER_FISHER_SIZE()
 {
-    static const Dimension TMP_ELDER_FISHER_SIZE = { 50.0, 161.0 };
+    static const Dimension TMP_ELDER_FISHER_SIZE(50.0, 161.0);
     return TMP_ELDER_FISHER_SIZE;
 }
 
 const Dimension &MainGameScene::MOWHAWK_FISHER_SIZE()
 {
-    static const Dimension TMP_MOWHAWK_FISHER_SIZE = { 50.0, 161.0 };
+    static const Dimension TMP_MOWHAWK_FISHER_SIZE(50.0, 161.0);
     return TMP_MOWHAWK_FISHER_SIZE;
 }
 
@@ -159,7 +159,7 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     rhs.playerSubscriber), layeredLayout(
     rhs.layeredLayout), borderLayout(rhs.borderLayout), superBorderLayout(
     rhs.superBorderLayout), gridLayout(rhs.gridLayout), superGridLayout(
-    rhs.superGridLayout), superLayeredLayout(superLayeredLayout),
+    rhs.superGridLayout), superLayeredLayout(rhs.superLayeredLayout),
     currentScene(rhs.currentScene), game(rhs.game)
 {
 }
@@ -207,7 +207,7 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
 //      ENTERED(...) INTO AGAIN!
 void MainGameScene::enter()
 {
-    Point cell = { 0, 0 };
+    Point cell(0, 0);
     const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
     const int BORDER_SIZE = 0;
 
@@ -276,7 +276,7 @@ void MainGameScene::run()
 //AGAIN
 void MainGameScene::exit()
 {
-    Point cell = { 0, 0 };
+    Point cell(0.0, 0.0);
     ocean->removeCollidable(ocean);
     boost::weak_ptr<Collidable> playerCollidable(player1);
     ocean->removeCollidable(playerCollidable);
@@ -305,8 +305,8 @@ void MainGameScene::transitionTo(boost::shared_ptr<Scene> &scene)
 
 void MainGameScene::displayReady()
 {
-    Point origin = { 0.0, 0.0 };
-    Dimension textSize = { 150.0, 50.0 };
+    Point origin(0.0, 0.0);
+    Dimension textSize(150.0, 50.0);
     boost::shared_ptr<TextRendererElement> readyElement(new TextRendererElement(
         "Ready", 0, origin, textSize, FontSize::Huge()));
     statusElement = readyElement;
@@ -328,8 +328,8 @@ void MainGameScene::displayGo()
 {
     ocean->gameLive(true);
     player1->gameLive(true);
-    Point origin = { 0.0, 0.0 };
-    Dimension textSize = { 150.0, 50.0 };
+    Point origin (0.0, 0.0);
+    Dimension textSize(150.0, 50.0);
     boost::shared_ptr<TextRendererElement> goElement(new TextRendererElement(
         "Go", 0, origin, textSize, FontSize::Huge()));
     statusElement = goElement;

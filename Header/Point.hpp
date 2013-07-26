@@ -11,6 +11,8 @@
 
 struct Point
 {
+    Point();
+    Point(double x, double y);
     static bool sortByXAscending(const Point &first, const Point &second);
     static bool sortByYAscending(const Point &first, const Point &second);
     double x;

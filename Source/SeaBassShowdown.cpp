@@ -58,7 +58,7 @@ void handleQuit( bool &quit );
 int main(int argc, char **argv)
 {
     srand((unsigned) time(0)); //Move to class Game
-    Dimension screenResolution = { 800, 600 };
+    Dimension screenResolution(800, 600);
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher(new
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
@@ -104,15 +104,15 @@ int main(int argc, char **argv)
 {
     srand((unsigned) time(0)); //Move to class Game, Ocean, or Renderer
     boost::shared_ptr<Game> game(new Game);
-    Dimension screenResolution = { 800, 600 };
+    Dimension screenResolution(800, 600);
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher(new
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
         "../Media/Fonts/monof55.ttf", frameCleanupPublisher)); 
-    Point polePoint = { 150.0, 250.0 };
-    Point hookPoint = { 150.0, 500.0 };
-    Point backgroundPoint = { 0.0, 0.0 };
+    Point polePoint(150.0, 250.0);
+    Point hookPoint(150.0, 500.0);
+    Point backgroundPoint(0.0, 0.0);
     boost::shared_ptr<Ocean> ocean(new Ocean(screenResolution));
     ocean->initializeSharedFromThis();
     ocean->loadImage(*(renderer));

@@ -68,19 +68,19 @@ const double &Ocean::OCEAN_FLOOR_HEIGHT()
 
 const Point &Ocean::SEA_SNAIL_POSITION()
 {
-    const static Point TMP_SEA_SNAIL_POSITION = { 100.0 , 512.0 };
+    const static Point TMP_SEA_SNAIL_POSITION(100.0 , 512.0);
     return TMP_SEA_SNAIL_POSITION;
 }
 
 const Point &Ocean::SEA_HORSE_POSITION()
 {
-    const static Point TMP_SEA_HORSE_POSITION = { 100.0 , 412.0 };
+    const static Point TMP_SEA_HORSE_POSITION(100.0 , 412.0);
     return TMP_SEA_HORSE_POSITION;
 }
 
 const Point &Ocean::SHARK_POSITION()
 {
-    const static Point TMP_SHARK_POSITION = { 290.0 , 269.0 };
+    const static Point TMP_SHARK_POSITION(290.0 , 269.0);
     return TMP_SHARK_POSITION;
 }
 
@@ -124,7 +124,7 @@ void Ocean::initializeSharedFromThis()
     Depth fishStartingDepth = Depth::ROW1();
     //XCoordinate = screenWidth / 2 - fishWidth / 2
     double fishStartingY = getDepthY(fishStartingDepth);
-    Point fishStartingPoint = { getFishStartingX(), fishStartingY };
+    Point fishStartingPoint(getFishStartingX(), fishStartingY);
     boost::shared_ptr<Ocean> sharedThis(shared_from_this());
     //Be sure to make a temporary shared_ptr before push_back
     boost::shared_ptr<Fish> fish1(new Fish(fishStartingPoint,
@@ -276,12 +276,12 @@ double Ocean::getRandomDepthY()
 void Ocean::initialize(const Dimension &screenSize)
 {
     this->screenSize = screenSize;
-    Point tmpPoint = { OCEAN_EDGE_X(), OCEAN_EDGE_Y() };
-    Point tmpFloorPoint = { OCEAN_EDGE_X(), OCEAN_FLOOR_Y() };
-    Dimension tmpOceanSurfaceDimension = { OCEAN_SURFACE_WIDTH(),
-        OCEAN_SURFACE_HEIGHT() };
-    Dimension tmpOceanFloorDimension = { OCEAN_FLOOR_WIDTH(),
-        OCEAN_FLOOR_HEIGHT() };
+    Point tmpPoint(OCEAN_EDGE_X(), OCEAN_EDGE_Y());
+    Point tmpFloorPoint(OCEAN_EDGE_X(), OCEAN_FLOOR_Y());
+    Dimension tmpOceanSurfaceDimension(OCEAN_SURFACE_WIDTH(),
+        OCEAN_SURFACE_HEIGHT());
+    Dimension tmpOceanFloorDimension(OCEAN_FLOOR_WIDTH(),
+        OCEAN_FLOOR_HEIGHT());
     boost::shared_ptr<Point> tmpOceanEdgePosition(new Point(tmpPoint));
     boost::shared_ptr<Dimension> tmpOceanEdgeSize(new Dimension(
         this->screenSize)); 
@@ -334,13 +334,13 @@ Direction Ocean::hitEdge(const BoundingBox &fishBox)
 
 void Ocean::addFish(boost::shared_ptr<Fish> &fish, const Depth &depth)
 {
-    Point fishStartingPoint = { getFishStartingX(), getDepthY(depth) };
+    Point fishStartingPoint(getFishStartingX(), getDepthY(depth));
     fish->respawn(fishStartingPoint);
 }
 
 void Ocean::addCreditFish(boost::shared_ptr<CreditFish> &creditFish)
 {
-    Point fishStartingPoint = { getFishStartingX(), getRandomDepthY() };
+    Point fishStartingPoint(getFishStartingX(), getRandomDepthY());
     creditFish->respawn(fishStartingPoint);
 }
 

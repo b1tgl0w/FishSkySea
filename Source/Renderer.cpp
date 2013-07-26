@@ -62,7 +62,7 @@ Renderer::Renderer(const Dimension &screenResolution, int screenBpp,
 
 Renderer::Renderer(const Renderer &rhs)
 {
-    Dimension rhsScreenResolution = { rhs.screen->w, rhs.screen->h };
+    Dimension rhsScreenResolution(rhs.screen->w, rhs.screen->h);
     //Cast Uint8 to int BitsPerPixel
     initialize(rhsScreenResolution, rhs.screen->format->BitsPerPixel,
         rhs.screen->flags, rhs.fontPath, rhs.frameCleanupPublisher);
@@ -74,7 +74,7 @@ Renderer &Renderer::operator=(const Renderer &rhs)
         return *this;
 
     dispose();
-    Dimension rhsScreenResolution = { rhs.screen->w, rhs.screen->h };
+    Dimension rhsScreenResolution(rhs.screen->w, rhs.screen->h);
     //Cast Uint8 to int BitsPerPixel
     initialize(rhsScreenResolution, rhs.screen->format->BitsPerPixel,
         rhs.screen->flags, rhs.fontPath, rhs.frameCleanupPublisher);
@@ -249,7 +249,7 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
         transformation == Transformation::None() )
         return;
 
-    Dimension originalSize = { unmanipulatedImage->w, unmanipulatedImage->h };
+    Dimension originalSize(unmanipulatedImage->w, unmanipulatedImage->h);
     std::string key = makeKey(path, transformation, size, originalSize);
 
     if( images.count(key) > 0 )
@@ -467,8 +467,8 @@ void Renderer::moveBy(const Point &offset)
 
 void Renderer::addLayout(boost::shared_ptr<Layout> &layout)
 {
-    Point TOP_LEFT = { 0.0, 0.0 };
-    Dimension SIZE = { screen->w, screen->h };
+    Point TOP_LEFT(0.0, 0.0);
+    Dimension SIZE(screen->w, screen->h);
     layout->moveTo(TOP_LEFT);
     layout->scale(SIZE);
     layouts.push_back(layout);
@@ -566,7 +566,7 @@ SDL_Surface *Renderer::whatShouldIDraw(const std::string &path,
     }
 
     SDL_Surface *original = images.find(path)->second;
-    Dimension originalSize = { original->w, original->h };
+    Dimension originalSize(original->w, original->h);
 
     std::string key = makeKey(path, transformation, size, originalSize);
     unusedKeys.remove(key);
@@ -628,8 +628,8 @@ SDL_Surface *Renderer::optimizeImage(SDL_Surface *unoptimizedImage)
 void Renderer::scaleImagePixels(SDL_Surface *image, SDL_Surface *scale,
     const Dimension &size)
 {
-    DimensionPercent dimensionPercent = { size.width / image->w,
-        size.height / image->h };
+    DimensionPercent dimensionPercent(size.width / image->w,
+        size.height / image->h);
     scaleImagePercent(image, scale, dimensionPercent);
 }
 
@@ -651,7 +651,7 @@ void Renderer::glowImage(std::string &key, SDL_Surface *image)
     if( graphicEffects.count(key) >= 1 )
         return;
 
-    Dimension growTo = { image->w, image->h };
+    Dimension growTo(image->w, image->h);
 
     boost::shared_ptr<GraphicEffect> tmpGraphicEffect(new GraphicEffect(
         image));

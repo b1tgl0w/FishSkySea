@@ -32,49 +32,49 @@
 
 const Point &CreditGameScene::POLE_POINT()
 {
-    static const Point TMP_POLE_POINT = { 130.0, 205.0 };
+    static const Point TMP_POLE_POINT(130.0, 205.0);
     return TMP_POLE_POINT;
 }
 
 const Point &CreditGameScene::HOOK_POINT()
 {
-    static const Point TMP_HOOK_POINT = { 130.0, 550.0 };
+    static const Point TMP_HOOK_POINT(130.0, 550.0);
     return TMP_HOOK_POINT;
 }
 
 const Point &CreditGameScene::BACKGROUND_POINT()
 {
-    static const Point TMP_BACKGROUND_POINT = { 0.0, 0.0 };
+    static const Point TMP_BACKGROUND_POINT(0.0, 0.0);
     return TMP_BACKGROUND_POINT;
 }
 
 const Point &CreditGameScene::ELDER_FISHER_POINT()
 {
-    static const Point TMP_ELDER_FISHER_POINT = { 660.0, 126.0 };
+    static const Point TMP_ELDER_FISHER_POINT(660.0, 126.0);
     return TMP_ELDER_FISHER_POINT;
 }
 
 const Point &CreditGameScene::MOWHAWK_FISHER_POINT()
 {
-    static const Point TMP_MOWHAWK_FISHER_POINT = { 90.0, 120.0 };
+    static const Point TMP_MOWHAWK_FISHER_POINT(90.0, 120.0);
     return TMP_MOWHAWK_FISHER_POINT;
 }
 
 const Point &CreditGameScene::DOCK_SUPPORTS_POINT()
 {
-    static const Point TMP_DOCK_SUPPORTS_POINT = { 0.0, 0.0 };
+    static const Point TMP_DOCK_SUPPORTS_POINT(0.0, 0.0);
     return TMP_DOCK_SUPPORTS_POINT;
 }
 
 const Dimension &CreditGameScene::ELDER_FISHER_SIZE()
 {
-    static const Dimension TMP_ELDER_FISHER_SIZE = { 50.0, 161.0 };
+    static const Dimension TMP_ELDER_FISHER_SIZE(50.0, 161.0);
     return TMP_ELDER_FISHER_SIZE;
 }
 
 const Dimension &CreditGameScene::MOWHAWK_FISHER_SIZE()
 {
-    static const Dimension TMP_MOWHAWK_FISHER_SIZE = { 50.0, 161.0 };
+    static const Dimension TMP_MOWHAWK_FISHER_SIZE(50.0, 161.0);
     return TMP_MOWHAWK_FISHER_SIZE;
 }
 
@@ -158,7 +158,7 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     rhs.playerSubscriber), layeredLayout(
     rhs.layeredLayout), borderLayout(rhs.borderLayout), superBorderLayout(
     rhs.superBorderLayout), gridLayout(rhs.gridLayout), superGridLayout(
-    rhs.superGridLayout), superLayeredLayout(superLayeredLayout),
+    rhs.superGridLayout), superLayeredLayout(rhs.superLayeredLayout),
     currentScene(rhs.currentScene), game(rhs.game)
 {
 }
@@ -206,10 +206,11 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
 //      ENTERED(...) INTO AGAIN!
 void CreditGameScene::enter()
 {
-    Point cell = { 0, 0 };
+    Point cell(0, 0);
     const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
     const int BORDER_SIZE = 0;
 
+    Layer::randomize();
     transition = false;
     ocean->changeState(OceanMode::CREDIT_MODE());
     ocean->loadImage(*(renderer));
@@ -230,7 +231,7 @@ void CreditGameScene::enter()
     keyboardPublisher->subscribe(playerSubscriber);
     std::vector<boost::shared_ptr<Layout> > creditFishLayouts = 
         ocean->layoutsToAttach();
-    Point tmpOrigin = { 0.0, 0.0 };
+    Point tmpOrigin(0.0, 0.0);
     for( std::vector<boost::shared_ptr<Layout> >::iterator it = 
         creditFishLayouts.begin(); it != creditFishLayouts.end(); ++it )
         oceanLayout->addLayout(*it, tmpOrigin);
@@ -282,7 +283,7 @@ void CreditGameScene::run()
 //AGAIN
 void CreditGameScene::exit()
 {
-    Point cell = { 0, 0 };
+    Point cell(0, 0);
     ocean->removeCollidable(ocean);
     boost::weak_ptr<Collidable> playerCollidable(player1);
     ocean->removeCollidable(playerCollidable);
@@ -311,8 +312,8 @@ void CreditGameScene::transitionTo(boost::shared_ptr<Scene> &scene)
 
 void CreditGameScene::displayReady()
 {
-    Point origin = { 0.0, 0.0 };
-    Dimension textSize = { 150.0, 50.0 };
+    Point origin(0.0, 0.0);
+    Dimension textSize(150.0, 50.0);
     boost::shared_ptr<TextRendererElement> readyElement(new TextRendererElement(
         "Ready", 0, origin, textSize, FontSize::Huge()));
     statusElement = readyElement;
@@ -334,8 +335,8 @@ void CreditGameScene::displayGo()
 {
     ocean->gameLive(true);
     player1->gameLive(true);
-    Point origin = { 0.0, 0.0 };
-    Dimension textSize = { 150.0, 50.0 };
+    Point origin(0.0, 0.0);
+    Dimension textSize(150.0, 50.0);
     boost::shared_ptr<TextRendererElement> goElement(new TextRendererElement(
         "Go", 0, origin, textSize, FontSize::Huge()));
     statusElement = goElement;

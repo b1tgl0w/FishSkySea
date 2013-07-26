@@ -9,14 +9,12 @@
 
 #include "../Header/BorderCell.hpp"
 
-BorderCell::BorderCell(int value)
+BorderCell::BorderCell(int value) : value(value)
 {
-    initialize(value);
 }
 
-BorderCell::BorderCell(const BorderCell &rhs)
+BorderCell::BorderCell(const BorderCell &rhs) : value(rhs.value)
 {
-    initialize(rhs.value);
 }
 
 BorderCell &BorderCell::operator=(const BorderCell &rhs)
@@ -25,7 +23,7 @@ BorderCell &BorderCell::operator=(const BorderCell &rhs)
         return *this;
 
     dispose();
-    initialize(rhs.value);
+    value = rhs.value;
 
     return *this;
 }

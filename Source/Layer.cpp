@@ -145,6 +145,12 @@ int Layer::integer() const
     return value;
 }
 
+void Layer::randomize()
+{
+    RandomBlock newBlock(8, 26, 2, 9);
+    Layer::randomBlock = newBlock;
+}
+
 //Note: This method was added so an std::pair could be created with
 //a Layer in it.
 bool Layer::operator<(const Layer &rhs) const

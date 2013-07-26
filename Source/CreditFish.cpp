@@ -28,7 +28,7 @@ int CreditFish::nextFreeId = 0;
 const Dimension &CreditFish::SIZE()
 {
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE = { 140, 17 };
+    static const Dimension TMP_SIZE(140, 17);
     return TMP_SIZE;
 }
 

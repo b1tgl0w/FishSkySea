@@ -20,14 +20,12 @@ void BorderCorner::dispose()
     //No-op
 }
 
-BorderCorner::BorderCorner(int value)
+BorderCorner::BorderCorner(int value) : value(value)
 {
-    initialize(value);
 }
 
-BorderCorner::BorderCorner(const BorderCorner &rhs)
+BorderCorner::BorderCorner(const BorderCorner &rhs) : value(rhs.value)
 {
-    initialize(rhs.value);
 }
 
 BorderCorner &BorderCorner::operator=(const BorderCorner &rhs)
@@ -35,8 +33,7 @@ BorderCorner &BorderCorner::operator=(const BorderCorner &rhs)
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.value);
+    value = rhs.value;
     
     return *this;
 }

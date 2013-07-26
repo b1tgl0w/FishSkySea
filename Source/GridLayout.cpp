@@ -12,9 +12,9 @@
 
 GridLayout::GridLayout(int rows, int cols)
 {
-    Point tmpPosition = { 0.0, 0.0 };
+    Point tmpPosition(0.0, 0.0);
     position = tmpPosition;
-    Dimension tmpSize = { 0.0, 0.0 };
+    Dimension tmpSize(0.0, 0.0);
     size = tmpSize;
     initialize(rows, cols);
 }
@@ -175,8 +175,8 @@ void GridLayout::adjustCells()
         return;
 
     Point cellPosition;
-    Dimension cellSize = { Math::ceil(size.width / (double) cells[0].size()),
-        Math::ceil(size.height / (double) cells.size()) };
+    Dimension cellSize(Math::ceil(size.width / (double) cells[0].size()),
+        Math::ceil(size.height / (double) cells.size()));
     int i = 0;
     int j = 0;
 
@@ -197,7 +197,7 @@ void GridLayout::adjustCells()
 
 void GridLayout::moveTo(const Point &newPosition)
 {
-    Point offset = { newPosition.x - position.x, newPosition.y - position.y };
+    Point offset(newPosition.x - position.x, newPosition.y - position.y);
     moveBy(offset);
 }
 
@@ -375,9 +375,9 @@ void GridLayout::own(const boost::weak_ptr<Layout> &owner)
 //GridCell inner class
 GridLayout::GridCell::GridCell() : merged(false)
 {
-    Point tmpPosition = { 0.0, 0.0 };
+    Point tmpPosition(0.0, 0.0);
     position = tmpPosition;
-    Dimension tmpSize = { 0.0, 0.0 };
+    Dimension tmpSize(0.0, 0.0);
     size = tmpSize;
     initialize();
 }
@@ -483,7 +483,7 @@ void GridLayout::GridCell::scale(const DimensionPercent &dimensionPercent)
 
 void GridLayout::GridCell::moveTo(const Point &newPosition)
 {
-    Point offset = { newPosition.x - position.x, newPosition.y - position.y };
+    Point offset(newPosition.x - position.x, newPosition.y - position.y);
     moveBy(offset);
 }
 

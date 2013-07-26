@@ -8,6 +8,13 @@
 
 #include "../Header/Point.hpp"
 
+Point::Point() : x(0.0), y(0.0)
+{ }
+
+Point::Point(double x, double y) : x(x), y(y)
+{
+}
+
 bool Point::sortByXAscending(const Point &first, const Point &second)
 {
     if( first.x < second.x )

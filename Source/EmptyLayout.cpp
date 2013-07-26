@@ -17,6 +17,7 @@ EmptyLayout::EmptyLayout()
 
 EmptyLayout::EmptyLayout(const EmptyLayout &rhs)
 {
+    rhs;
     dispose();
     initialize();
 }

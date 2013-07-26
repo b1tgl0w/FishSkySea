@@ -48,24 +48,24 @@ void MousePublisher::inputEvent(const SDL_Event &e)
 {
     if( e.type == SDL_MOUSEBUTTONDOWN )
     {
-        Point position = { e.button.x, e.button.y };
+        Point position(e.button.x, e.button.y);
         notifyClick(e.button.button, !PRESSED(), position);
     }
     else if( e.type == SDL_MOUSEBUTTONUP )
     {
-        Point position = { e.button.x, e.button.y };
+        Point position(e.button.x, e.button.y);
         notifyClick(e.button.button, !PRESSED(), position);
     }
     else if( e.type == SDL_MOUSEMOTION )
     {
-        Point position = { e.button.x, e.button.y };
+        Point position(e.button.x, e.button.y);
         notifyMove(position);
     }
 }
 
 Point MousePublisher::waitInput(const SDL_Event &wanted)
 {
-    Point position = { 0.0, 0.0 };
+    Point position(0.0, 0.0);
 
     if( wanted.type != SDL_MOUSEBUTTONUP && wanted.type !=
         SDL_MOUSEBUTTONDOWN && wanted.type != SDL_MOUSEMOTION )

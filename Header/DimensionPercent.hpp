@@ -11,6 +11,8 @@
 
 struct DimensionPercent
 {
+    DimensionPercent();
+    DimensionPercent(double widthPercent, double heightPercent);
     double widthPercent;
     double heightPercent;
 };

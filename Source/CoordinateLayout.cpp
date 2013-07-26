@@ -12,8 +12,8 @@
 CoordinateLayout::CoordinateLayout(boost::shared_ptr<FitStrategy> &fitStrategy)
 {
     boost::shared_ptr<Clip> clipObject(new Clip);
-    Point tmpPosition = { 0.0, 0.0 };
-    Dimension tmpSize = { 0.0, 0.0 };
+    Point tmpPosition(0.0, 0.0);
+    Dimension tmpSize(0.0, 0.0);
     position = tmpPosition;
     size = tmpSize;
     initialize(fitStrategy, clipObject);

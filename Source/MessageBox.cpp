@@ -74,7 +74,7 @@ MessageBox &MessageBox::operator=(const MessageBox &rhs)
     identifier = rhs.identifier;
     renderer = rhs.renderer;
     fontSize = rhs.fontSize;
-    rhs.numberOfLines;
+    numberOfLines = rhs.numberOfLines;
 
     return *this;
 }
@@ -103,7 +103,7 @@ void MessageBox::createLayouts()
     boost::shared_ptr<GridLayout> newGridLayout(new GridLayout(lines.size(), 
         1));
     gridLayout = newGridLayout;
-    Point cell = { 0.0, 0.0 };
+    Point cell( 0.0, 0.0);
     for( std::vector<MessageBoxLine>::iterator it = lines.begin(); it != lines.end();
         ++it )
     {
@@ -121,7 +121,7 @@ bool MessageBox::formLines()
     lines.clear();
     bool notFull = true;
     //Let the layout manager take care of line position. All lines 0, 0
-    Point position = { 0.0, 0.0 }; 
+    Point position(0.0, 0.0); 
     
     while( notFull == true && !(text.empty()) && (lines.size() + 1) * 
         lineSize.height <= size.height )

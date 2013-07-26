@@ -1,0 +1,71 @@
+This file documents which classes have updated initialization lists
+
+Done Source/Animation.cpp
+Done Source/BorderCell.cpp
+Done Source/BorderCorner.cpp
+Done Source/BorderLayout.cpp
+Done Source/BorderSize.cpp
+Source/BoundingBox.cpp
+Source/CenterLayout.cpp
+Source/Clip.cpp
+Source/ClipFit.cpp
+Source/Clouds.cpp
+Source/CoordinateLayout.cpp
+Source/CreditFish.cpp
+Source/CreditGameScene.cpp
+Source/Depth.cpp
+Source/DirectFilledRectangleGraphic.cpp
+Source/Direction.cpp
+Source/DirectLineGraphic.cpp
+Source/DirectRendererElement.cpp
+Source/EmptyLayout.cpp
+Source/FillClipFit.cpp
+Source/Fish.cpp
+Source/FontSize.cpp
+Source/FrameCleanupPublisher.cpp
+Source/Game.cpp
+Source/GraphicEffect.cpp
+Source/GridLayout.cpp
+Source/HumanPlayer.cpp
+Source/ImageRendererElement.cpp
+Source/KeyboardPublisher.cpp
+Source/Layer.cpp
+Source/LayeredLayout.cpp
+Source/Line.cpp
+Source/MainGameScene.cpp
+Source/MasterClockPublisher.cpp
+Source/MasterInputPublisher.cpp
+Source/Math.cpp
+Source/MessageBox.cpp
+Source/MessageBoxLine.cpp
+Source/MousePublisher.cpp
+Source/Ocean.cpp
+Source/OceanMode.cpp
+Source/PlayerGiveLineAction.cpp
+Source/PlayerKeyTranslater.cpp
+Source/PlayerLengthenPoleAction.cpp
+Source/PlayerReelInAction.cpp
+Source/PlayerSetHookAction.cpp
+Source/PlayerShortenPoleAction.cpp
+Source/Point.cpp
+Source/RandomBlock.cpp
+Source/Renderer.cpp
+Source/RendererElement.cpp
+Source/ScaleClipFit.cpp
+Source/Scene.cpp
+Source/SceneLabel.cpp
+Source/SceneMenuItem.cpp
+Source/Score.cpp
+Source/SeaBassShowdown.cpp
+Source/Seahorse.cpp
+Source/SeaSnail.cpp
+Source/Shark.cpp
+Source/SpilloverFit.cpp
+Source/StringUtility.cpp
+Source/TextRendererElement.cpp
+Source/TimerAction.cpp
+Source/Timer.cpp
+Source/TitleMenu.cpp
+Source/TitleScene.cpp
+Source/Transformation.cpp
+Source/Weight.cpp

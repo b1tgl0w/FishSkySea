@@ -25,7 +25,7 @@
 
 const Point &TitleScene::BACKGROUND_POSITION()
 {
-    static const Point TMP_BACKGROUND_POSITION = { 0.0, 0.0 };
+    static const Point TMP_BACKGROUND_POSITION(0.0, 0.0);
     return TMP_BACKGROUND_POSITION;
 }
 
@@ -52,7 +52,7 @@ TitleScene::TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> >
 }
 
 TitleScene::TitleScene(const TitleScene &rhs) : currentScene(rhs.currentScene),
-    titleMenu(rhs.titleMenu), keyboardPublisher(keyboardPublisher),
+    titleMenu(rhs.titleMenu), keyboardPublisher(rhs.keyboardPublisher),
     transition(rhs.transition), toScene(rhs.toScene), scaleClip(rhs.scaleClip),
     layeredLayout(rhs.layeredLayout), centerLayout(rhs.centerLayout),
     gridLayout(rhs.gridLayout), borderLayout(rhs.borderLayout),
@@ -94,7 +94,7 @@ TitleScene &TitleScene::operator=(const TitleScene &rhs)
 
 void TitleScene::enter()
 {
-    Point cell = { 1, 1 };
+    Point cell(1, 1);
     boost::shared_ptr<KeyboardSubscriber> titleMenuKeySubscriber(titleMenu);
     boost::shared_ptr<MasterClockSubscriber> titleMenuClockSubscriber(titleMenu);
     transition = false;
@@ -130,7 +130,7 @@ void TitleScene::run()
 
 void TitleScene::exit()
 {
-    Point cell = { 1, 1 };
+    Point cell(1, 1);
     boost::shared_ptr<KeyboardSubscriber> titleMenuSubscriber(titleMenu);
     boost::shared_ptr<MasterClockSubscriber> titleMenuClockSubscriber(titleMenu);
     keyboardPublisher->unsubscribe(titleMenuSubscriber);
