@@ -66,7 +66,8 @@ public:
     void loadImage(Renderer &renderer);
     void gameLive(bool live);
     void nibble(boost::shared_ptr<Fish> &fish);
-    void nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish);
+    bool nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish, const int
+        layer);
     void stopNibble();
     virtual ~Line();
 //Collidable
@@ -147,8 +148,8 @@ private:
         virtual void offHook() = 0;
         virtual Direction pull(const Point &mouthPoint) = 0;
         virtual void nibble(boost::shared_ptr<Fish> &fish) = 0;
-        virtual void nibbleCreditFish(boost::shared_ptr<CreditFish>     
-            &creditFish) = 0;
+        virtual bool nibbleCreditFish(boost::shared_ptr<CreditFish>     
+            &creditFish, const int layer) = 0;
         //Inherited void clockTick(Uint32 elapsedTime) = 0;
     private:
         virtual void pullFish() = 0;
@@ -206,7 +207,8 @@ private:
         void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
         void nibble(boost::shared_ptr<Fish> &fish);
-        void nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish);
+        bool nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish,
+            const int layer);
     protected:
         void initialize(boost::weak_ptr<Line> owner);
         void dispose();
@@ -232,7 +234,8 @@ private:
         void clockTick(Uint32 elapsedTime);
         void restoreFromSetHook(Uint32 elapsedTime);
         void nibble(boost::shared_ptr<Fish> &fish);
-        void nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish);
+        bool nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish,
+            const int layer);
         void collidesWith(boost::shared_ptr<Collidable> &otherObject, const 
             BoundingBox &yourBox);
         void collidesWithHook(boost::shared_ptr<Line> &hook, const BoundingBox
@@ -325,6 +328,7 @@ private:
     boost::shared_ptr<Animation> rippleAnimation;
     boost::shared_ptr<Animation> rippleAnimationNotHooked;
     boost::shared_ptr<Animation> rippleAnimationHooked;
+    int foremostNibbleLayer;
 };
 
 #endif

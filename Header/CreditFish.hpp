@@ -201,7 +201,7 @@ public:
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
     boost::shared_ptr<Layout> layoutToAttach();
-    void nibble(boost::shared_ptr<Line> &line);
+    void nibble(boost::shared_ptr<Line> &line, const int foremostNibbleLayer);
     void doNibble();
     void yank();
 protected:
@@ -218,7 +218,8 @@ private:
         virtual void swim(Uint32 elapsedTime) = 0;
         virtual void pull(const Point &hookPoint) = 0;
         virtual void randomAboutFace(Uint32 elapsedTime) = 0;
-        virtual void nibble(boost::shared_ptr<Line> &line) = 0;
+        virtual void nibble(boost::shared_ptr<Line> &line, const int
+            foremostNibbleLayer) = 0;
     private:
         virtual double calculatePixelsLeftHorizontal(Uint32 elapsedTime) = 0;
         virtual double calculatePixelsLeftVertical(Uint32 elapsedTime) = 0;
@@ -271,7 +272,7 @@ private:
             const BoundingBox & yourBox);
         void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
-        void nibble(boost::shared_ptr<Line> &line);
+        void nibble(boost::shared_ptr<Line> &line, const int foremostNibbleLayer);
     protected:
         void initialize(boost::weak_ptr<CreditFish> creditFishOwner);
         void dispose();
@@ -328,7 +329,7 @@ private:
             const BoundingBox & yourBox);
         void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
-        void nibble(boost::shared_ptr<Line> &line);
+        void nibble(boost::shared_ptr<Line> &line, const int foremostNibbleLayer);
     protected:
         void initialize(boost::weak_ptr<CreditFish> creditFishOwner);
         void dispose();

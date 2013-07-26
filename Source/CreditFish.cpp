@@ -573,9 +573,10 @@ void CreditFish::clockTick(Uint32 elapsedTime)
         resetTimes();
 }
 
-void CreditFish::nibble(boost::shared_ptr<Line> &line)
+void CreditFish::nibble(boost::shared_ptr<Line> &line, const int
+    foremostNibbleLayer)
 {
-    state->nibble(line);
+    state->nibble(line, foremostNibbleLayer);
 }
 
 void CreditFish::doNibble()
@@ -796,8 +797,9 @@ void CreditFish::FreeState::collidesWithHook(boost::shared_ptr<Line> &hook,
     //sharedFishOwner->hookedByLine = hook;
     //sharedFishOwner->hookedByPlayer = hook->hookedCreditFish(sharedFishOwner);
     //sharedFishOwner->faceDown();
-    hook->nibbleCreditFish(sharedFishOwner);
-    nibble(hook);
+    if( hook->nibbleCreditFish(sharedFishOwner, sharedFishOwner->
+        layer.integer()) )
+        nibble(hook, sharedFishOwner->layer.integer()); //passing own layer works
 }
 
 void CreditFish::FreeState::collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
@@ -862,11 +864,15 @@ void CreditFish::FreeState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
 void CreditFish::FreeState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
 
-void CreditFish::FreeState::nibble(boost::shared_ptr<Line> &line)
+void CreditFish::FreeState::nibble(boost::shared_ptr<Line> &line, const int
+    foremostNibbleLayer)
 {
     boost::shared_ptr<CreditFish> sharedFishOwner = creditFishOwner.lock();
     
     if( !sharedFishOwner )
+        return;
+
+    if( sharedFishOwner->layer.integer() < foremostNibbleLayer )
         return;
 
     if( sharedFishOwner->nibbling )
@@ -1107,7 +1113,8 @@ void CreditFish::HookedState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
 void CreditFish::HookedState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
 
-void CreditFish::HookedState::nibble(boost::shared_ptr<Line> &line)
+void CreditFish::HookedState::nibble(boost::shared_ptr<Line> &line, const int
+    foremostNibbleLayer)
 {
     //no-op
 }

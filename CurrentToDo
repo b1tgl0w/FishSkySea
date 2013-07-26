@@ -3,13 +3,13 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Make credit fish on top layer be hooked
+Left off on: Bio and pic
 
 General Task: Finish credits minigame (for the contributers known now)
 
 Specific Steps:
-    - Make creditfish on top layer be hooked, in the case that two overlap
     - Show bio and picture
+    Done - Make creditfish on top layer be hooked, in the case that two overlap
     Done -Fix bug that allows credit fish to occupy the same layer
     Postponed - Figure out how to fit in all the names and still be a game
     Done - Catch credit fish
