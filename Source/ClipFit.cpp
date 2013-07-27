@@ -10,13 +10,10 @@
 
 ClipFit::ClipFit()
 {
-    initialize();
 }
 
 ClipFit::ClipFit(const ClipFit &rhs)
 {
-    dispose();
-    initialize();
 }
 
 ClipFit &ClipFit::operator=(const ClipFit &rhs)
@@ -24,15 +21,11 @@ ClipFit &ClipFit::operator=(const ClipFit &rhs)
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize();
-
     return *this;
 }
 
 ClipFit::~ClipFit()
 {
-    dispose();
 }
 
 void ClipFit::initialize()

@@ -8,31 +8,28 @@
 
 #include "../Header/CenterLayout.hpp"
 
-CenterLayout::CenterLayout(const boost::shared_ptr<FitStrategy> &fitStrategy)
+CenterLayout::CenterLayout(const boost::shared_ptr<FitStrategy> &fitStrategy) :
+    owner(), toDraw(), fitStrategy(fitStrategy), position(0.0, 0.0), size(0.0,
+    0.0), clipObject(new Clip)
 {
-    boost::shared_ptr<Clip> clipObject(new Clip);
-    Point tmpPosition(0.0, 0.0);
-    position = tmpPosition;
-    Dimension tmpSize(0.0, 0.0);
-    size = tmpSize;
-    initialize(fitStrategy, clipObject);
 }
 
-CenterLayout::CenterLayout(const CenterLayout &rhs) : position(rhs.position),
-size(rhs.size)
+CenterLayout::CenterLayout(const CenterLayout &rhs) : owner(rhs.owner),
+    toDraw(rhs.toDraw), fitStrategy(rhs.fitStrategy), position(rhs.position),
+    size(rhs.size), clipObject(rhs.clipObject)
 {
-    initialize(rhs.fitStrategy, rhs.clipObject);
 }
 
 CenterLayout &CenterLayout::operator=(const CenterLayout &rhs)
 {
     if( &rhs == this )
         return *this;
-
-    dispose();
+    
+    owner = rhs.owner;
+    toDraw = rhs.toDraw;
+    fitStrategy = rhs.fitStrategy;
     position = rhs.position;
     size = rhs.size;
-    initialize(rhs.fitStrategy, rhs.clipObject);
     
     return *this;
 }

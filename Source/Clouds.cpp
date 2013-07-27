@@ -33,30 +33,26 @@ const Layer &Clouds::LAYER()
     return TMP_LAYER;
 }
 
-Clouds::Clouds()
+Clouds::Clouds() : imageSize(800.0, 200.0), firstImagePosition(0.0, 0.0), 
+    secondImagePosition(imageSize.width, 0.0), thirdImagePosition(imageSize.width *
+    2.0, 0.0), live(false)
 {
-    imageSize.width = 800;
-    imageSize.height = 200;
-    firstImagePosition.x = 0;
-    firstImagePosition.y = 0;
-    secondImagePosition.x = imageSize.width;
-    secondImagePosition.y = 0;
-    thirdImagePosition.x = imageSize.width * 2;
-    thirdImagePosition.y = 0;
 }
 
-Clouds::Clouds(const Clouds &rhs) : firstImagePosition(rhs.firstImagePosition),
-    imageSize(rhs.imageSize)
-{
-}
+Clouds::Clouds(const Clouds &rhs) : imageSize(rhs.imageSize), 
+    firstImagePosition(rhs.firstImagePosition), secondImagePosition(rhs.secondImagePosition),
+    thirdImagePosition(rhs.thirdImagePosition)
+{ }
 
 Clouds &Clouds::operator=(const Clouds &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    firstImagePosition = rhs.firstImagePosition;
     imageSize = rhs.imageSize;
+    firstImagePosition = rhs.firstImagePosition;
+    secondImagePosition = rhs.secondImagePosition;
+    thirdImagePosition = rhs.thirdImagePosition;
 
     return *this;
 }

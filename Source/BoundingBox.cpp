@@ -15,14 +15,14 @@ BoundingBox::BoundingBox()
 }
 
 BoundingBox::BoundingBox(boost::weak_ptr<Point> initialPosition,
-    boost::weak_ptr<Dimension> initialSize)
+    boost::weak_ptr<Dimension> initialSize) : position(initialPosition),
+    size(initialSize)
 {
-    initialize(initialPosition, initialSize);
 }
 
-BoundingBox::BoundingBox(const BoundingBox &rhs)
+BoundingBox::BoundingBox(const BoundingBox &rhs) : position(rhs.position),
+    size(rhs.size)
 {
-    initialize(rhs.position, rhs.size);
 }
 
 BoundingBox &BoundingBox::operator=(const BoundingBox &rhs)
@@ -30,8 +30,8 @@ BoundingBox &BoundingBox::operator=(const BoundingBox &rhs)
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.position, rhs.size);
+    position = rhs.position;
+    size = rhs.size;
 
     return *this;
 }

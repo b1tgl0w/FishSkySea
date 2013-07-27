@@ -15,8 +15,9 @@
 class Layer
 {
 public:
-    Layer &operator=(const Layer &rhs);
     Layer();
+    Layer(const Layer &rhs); 
+    Layer &operator=(const Layer &rhs);
     static const Layer BACKGROUND1();
     static const Layer BACKGROUND2();
     static const Layer PLAYER();
@@ -38,7 +39,6 @@ public:
     static const Layer FOREGROUND();
     static const Layer SCORE();
     static const Layer TITLE_MENU();
-    Layer(const Layer &rhs); 
     bool operator<(const Layer &rhs) const;
     int integer() const;
     static void randomize();

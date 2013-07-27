@@ -10,32 +10,28 @@
 #include <iostream>
 
 CoordinateLayout::CoordinateLayout(boost::shared_ptr<FitStrategy> &fitStrategy)
-{
-    boost::shared_ptr<Clip> clipObject(new Clip);
-    Point tmpPosition(0.0, 0.0);
-    Dimension tmpSize(0.0, 0.0);
-    position = tmpPosition;
-    size = tmpSize;
-    initialize(fitStrategy, clipObject);
-}
+ : owner(), sublayouts(), toDraw(), fitStrategy(fitStrategy),
+ position(0.0, 0.0), size(0.0, 0.0), clipObject(new Clip)
+{ }
 
 CoordinateLayout::CoordinateLayout(const CoordinateLayout &rhs) :
-    position(rhs.position), size(rhs.size)
-{
-    dispose();
-    initialize(rhs.fitStrategy, rhs.clipObject);
-}
+    owner(rhs.owner), sublayouts(rhs.sublayouts), toDraw(rhs.toDraw),
+    fitStrategy(rhs.fitStrategy), position(rhs.position), size(rhs.size),
+    clipObject(rhs.clipObject)
+{ }
 
 CoordinateLayout &CoordinateLayout::operator=(const CoordinateLayout &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    dispose();
+    owner = rhs.owner;
+    sublayouts = rhs.sublayouts;
+    toDraw = rhs.toDraw;
+    fitStrategy = rhs.fitStrategy;
     position = rhs.position;
     size = rhs.size;
-    initialize(rhs.fitStrategy, rhs.clipObject);
-    
+
     return *this;
 }
 

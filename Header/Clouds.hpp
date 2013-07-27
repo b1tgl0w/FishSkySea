@@ -35,10 +35,10 @@ public:
     void clockTick(Uint32 elapsedTime);
     void gameLive(bool l);
 private:
+    Dimension imageSize;
     Point firstImagePosition;
     Point secondImagePosition;
     Point thirdImagePosition;
-    Dimension imageSize;
     bool live;
 
     static const std::string &IMAGE_PATH1();

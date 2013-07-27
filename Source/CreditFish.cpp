@@ -62,36 +62,44 @@ const Uint32 &CreditFish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
     return TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE;
 }
 
-
 //Class CreditFish
 CreditFish::CreditFish(const std::string &name, const std::string &title,
     const Point &initialPosition, 
     boost::shared_ptr<Ocean> &ocean, boost::shared_ptr<Renderer>
-    &renderer) : live(false), nibbling(false)
+    &renderer) : state(), hookedState(), freeState(), position(new Point(
+    initialPosition)), hookPosition(new Point(initialPosition)), size(
+    new Dimension(SIZE())), creditFishBox(position, size), facing(
+    Direction::LEFT()), verticalFacing(Direction::DOWN()), ocean(ocean),
+    hookedByLine(), hookedByPlayer(), timeSinceRandomAboutFace(0),
+    timeSinceRandomAboutFaceVertical(0), timeSinceIsTightAboutFace(0),
+    shouldResetTimes(true), shouldResetTimesVertical(true), live(false),
+    name(name), title(title), hookOriginalDirection(Direction::LEFT()),
+    id(CreditFish::nextFreeId++), layer(associateLayer()),
+    messageBox(new MessageBox(name, *size, 0x00000000,
+        false, layer, renderer, FontSize::Small(), 1)), nibbleLine(),
+    nibbling(false)
 {
-    initialize(name, title, initialPosition, ocean);
-    id = CreditFish::nextFreeId++;
-    associateLayer();
-
-    Dimension lineSize;
-    lineSize.width = size->width;
-    lineSize.height = size->height;
-    Uint32 BLACK = 0x00000000;
-    boost::shared_ptr<MessageBox> mb(new MessageBox(name, lineSize, BLACK, false,
-        layer, renderer, FontSize::Small(), 1));
-    messageBox = mb;
+    positionFromSide();
+    resetTimes(); 
 }
 
-CreditFish::CreditFish(const CreditFish &rhs) : size(rhs.size), live(rhs.live),
-    nibbling(rhs.nibbling), id(rhs.id), layer(rhs.layer)
+CreditFish::CreditFish(const CreditFish &rhs) : state(rhs.state),
+    hookedState(rhs.hookedState), freeState(rhs.freeState),
+    position(rhs.position), hookPosition(rhs.hookPosition),
+    size(rhs.size), creditFishBox(rhs.creditFishBox), facing(rhs.facing),
+    verticalFacing(rhs.verticalFacing), ocean(rhs.ocean), hookedByLine(
+    rhs.hookedByLine), hookedByPlayer(rhs.hookedByPlayer),
+    timeSinceRandomAboutFace(rhs.timeSinceRandomAboutFace),
+    timeSinceRandomAboutFaceVertical(rhs.timeSinceRandomAboutFaceVertical),
+    timeSinceIsTightAboutFace(rhs.timeSinceIsTightAboutFace),
+    shouldResetTimes(rhs.shouldResetTimes), shouldResetTimesVertical(
+    rhs.shouldResetTimesVertical), live(rhs.live), name(rhs.name),
+    title(rhs.title), hookOriginalDirection(rhs.hookOriginalDirection),
+    id(rhs.id), layer(rhs.layer), messageBox(rhs.messageBox),
+    nibbleLine(rhs.nibbleLine), nibbling(rhs.nibbling)
 {
-    boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
-
-    //Make sure if any shared_ptr's are added that they are also check in this if
-    if( tmpOcean )
-        initialize(rhs.name, rhs.title, *(rhs.position), 
-            tmpOcean);
-    //Else throw exception?
+    positionFromSide();
+    resetTimes(); 
 }
 
 CreditFish &CreditFish::operator=(const CreditFish &rhs)
@@ -99,21 +107,32 @@ CreditFish &CreditFish::operator=(const CreditFish &rhs)
     if( this == &rhs )
         return *this;
 
-    boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
+    state = rhs.state;
+    hookedState = rhs.hookedState;
+    freeState = rhs.freeState;
+    position = rhs.position;
+    hookPosition = rhs.hookPosition;
+    size = rhs.size;
+    creditFishBox = rhs.creditFishBox;
+    facing = rhs.facing;
+    verticalFacing = rhs.verticalFacing;
+    ocean = rhs.ocean;
+    hookedByLine = rhs.hookedByLine;
+    hookedByPlayer = rhs.hookedByPlayer;
+    timeSinceRandomAboutFace = rhs.timeSinceRandomAboutFace;
+    timeSinceRandomAboutFaceVertical = rhs.timeSinceRandomAboutFaceVertical;
+    live = rhs.live;
+    name = rhs.name;
+    title = rhs.title;
+    hookOriginalDirection = rhs.hookOriginalDirection;
+    id = rhs.id;
+    layer = rhs.layer;
+    messageBox = rhs.messageBox;
+    nibbleLine = rhs.nibbleLine;
+    nibbling = rhs.nibbling;
 
-    //Make sure if any shared_ptr's are added that they are also check in this if
-    if( tmpOcean ) 
-    {
-        dispose();
-        initialize(rhs.name, rhs.title, *(rhs.position), 
-            tmpOcean);
-        size = rhs.size;
-        live = rhs.live;
-        nibbling = rhs.nibbling;
-        id = rhs.id;
-        layer = rhs.layer;
-    }
-    //Else throw exception?
+    positionFromSide();
+    resetTimes(); 
 
     return *this;
 }
@@ -121,23 +140,6 @@ CreditFish &CreditFish::operator=(const CreditFish &rhs)
 void CreditFish::initialize(const std::string &name, const std::string &title,
     const Point &newPosition, boost::shared_ptr<Ocean> &ocean)
 {
-    //The below hack is used because the shared pointer is not initialized
-    // in the initialization block of the ctor. The shared_ptr assignment
-    // operator only takes another shared pointer, so we construct a
-    // temporary one here.
-    boost::shared_ptr<Point> tmpPosition(new Point(newPosition));
-    position = tmpPosition;
-    boost::shared_ptr<Point> tmpHookPosition(new Point(newPosition));
-    hookPosition = tmpHookPosition;
-    this->ocean = ocean;
-    positionFromSide();
-    boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
-    size = tmpSize;
-    BoundingBox tmpCreditFishBox(position, size);
-    creditFishBox = tmpCreditFishBox;
-    shouldResetTimes = true;
-    shouldResetTimesVertical = true;
-    resetTimes(); 
 }
 
 //Note:_MUST_ be called IMMEDIATELY after ctor
@@ -603,8 +605,10 @@ boost::shared_ptr<Layout> CreditFish::layoutToAttach()
     return tmpLayout;
 }
 
-void CreditFish::associateLayer()
+Layer CreditFish::associateLayer()
 {
+    Layer layer; //Shadows member layer
+
     switch(id)
     {
     case 0:
@@ -635,22 +639,24 @@ void CreditFish::associateLayer()
         layer = Layer::CREDIT_FISH9();
         break;
     }
+
+    return layer;
 }
 
 //Inner class FreeState
-CreditFish::FreeState::FreeState()
+CreditFish::FreeState::FreeState() : creditFishOwner()
 {
     //Fish owner is not in a valid state!
 }
 
-CreditFish::FreeState::FreeState(boost::weak_ptr<CreditFish> creditFishOwner)
+CreditFish::FreeState::FreeState(boost::weak_ptr<CreditFish> creditFishOwner) :
+    creditFishOwner(creditFishOwner)
 {
-    initialize(creditFishOwner);
 }
 
-CreditFish::FreeState::FreeState(const CreditFish::FreeState &rhs)
+CreditFish::FreeState::FreeState(const CreditFish::FreeState &rhs) : 
+    creditFishOwner(rhs.creditFishOwner)
 {
-    initialize(rhs.creditFishOwner);
 }
 
 CreditFish::FreeState &CreditFish::FreeState::operator=(const CreditFish::FreeState &rhs)
@@ -658,8 +664,7 @@ CreditFish::FreeState &CreditFish::FreeState::operator=(const CreditFish::FreeSt
     if( this == &rhs )
         return *this;
     
-    dispose();
-    initialize(rhs.creditFishOwner);
+    creditFishOwner = rhs.creditFishOwner;
 
     return *this;
 }
@@ -885,19 +890,19 @@ void CreditFish::FreeState::nibble(boost::shared_ptr<Line> &line, const int
 
 
 //Inner class HookedState
-CreditFish::HookedState::HookedState()
+CreditFish::HookedState::HookedState() : creditFishOwner()
 {
     //creditFishOwner is not in a valid state!
 }
 
-CreditFish::HookedState::HookedState(boost::weak_ptr<CreditFish> creditFishOwner)
+CreditFish::HookedState::HookedState(boost::weak_ptr<CreditFish> creditFishOwner) :
+    creditFishOwner(creditFishOwner)
 {
-    initialize(creditFishOwner);
 }
 
-CreditFish::HookedState::HookedState(const CreditFish::HookedState &rhs)
+CreditFish::HookedState::HookedState(const CreditFish::HookedState &rhs) :
+    creditFishOwner(rhs.creditFishOwner)
 {
-    initialize(rhs.creditFishOwner);
 }
 
 CreditFish::HookedState &CreditFish::HookedState::operator=(const CreditFish::HookedState &rhs)
@@ -905,8 +910,7 @@ CreditFish::HookedState &CreditFish::HookedState::operator=(const CreditFish::Ho
     if ( this == &rhs )
         return *this;
 
-    dispose();
-    initialize(rhs.creditFishOwner);
+    creditFishOwner = rhs.creditFishOwner;
 
     return *this;
 }

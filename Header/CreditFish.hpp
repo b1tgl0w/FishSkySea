@@ -358,7 +358,7 @@ private:
     void isTight(const Direction &direction);
     void resetTimes();
     void updateTimes(Uint32 elapsedTime);
-    void associateLayer();
+    Layer associateLayer();
     boost::shared_ptr<CreditFishState> state;
     boost::shared_ptr<HookedState> hookedState;
     boost::shared_ptr<FreeState> freeState;
@@ -374,18 +374,17 @@ private:
     Uint32 timeSinceRandomAboutFace;
     Uint32 timeSinceRandomAboutFaceVertical;
     Uint32 timeSinceIsTightAboutFace;
-    Depth startingDepth;
     bool shouldResetTimes;
     bool shouldResetTimesVertical;
     bool live;
     std::string name;
     std::string title;
     Direction hookOriginalDirection;
+    int id;
+    Layer layer;
     boost::shared_ptr<MessageBox> messageBox;
     boost::weak_ptr<Line> nibbleLine;
     bool nibbling;
-    int id;
-    Layer layer;
     
     static int nextFreeId;
 

@@ -2,5 +2,11 @@
 //This file complements CurrentToDo. 
 //CurrentToDo is specifications of current task, this is implementation of task
 
+1. Check inner classes
+2. Check ctors for special code as you update them in correct order
+3. Check initialize for special code, then remove calls to
+4. Compile and test about every 7 classes
+
+
 
 

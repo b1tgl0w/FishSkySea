@@ -5,13 +5,15 @@ Done Source/BorderCell.cpp
 Done Source/BorderCorner.cpp
 Done Source/BorderLayout.cpp
 Done Source/BorderSize.cpp
-Source/BoundingBox.cpp
-Source/CenterLayout.cpp
-Source/Clip.cpp
-Source/ClipFit.cpp
-Source/Clouds.cpp
-Source/CoordinateLayout.cpp
-Source/CreditFish.cpp
+
+Done Source/BoundingBox.cpp
+Done Source/CenterLayout.cpp
+Done Source/Clip.cpp
+Done Source/ClipFit.cpp
+Done Source/Clouds.cpp
+Done Source/CoordinateLayout.cpp
+Done Source/CreditFish.cpp
+
 Source/CreditGameScene.cpp
 Source/Depth.cpp
 Source/DirectFilledRectangleGraphic.cpp

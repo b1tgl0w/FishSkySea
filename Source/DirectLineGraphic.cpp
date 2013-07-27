@@ -71,8 +71,8 @@ void DirectLineGraphic::drawToScreen(SDL_Surface *screen, const Point &position,
     }
 
     //ToDo, don't base off screen
-    DimensionPercent dimensionPercent = { size.width / (double) screen->w,
-        size.height / (double) screen->h };
+    DimensionPercent dimensionPercent(size.width / (double) screen->w,
+        size.height / (double) screen->h);
     localP1.x *= dimensionPercent.widthPercent;
     localP1.y *= dimensionPercent.heightPercent;
     localP2.x *= dimensionPercent.widthPercent;

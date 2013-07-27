@@ -11,14 +11,12 @@
 #include "../Header/Clip.hpp"
 #include "../Header/Math.hpp"
 
-Clip::Clip()
-{
-    initialize();
-}
+Clip::Clip() : position(0.0, 0.0), size(0.0, 0.0), hasBoundary(false)
+{ }
 
-Clip::Clip(const Clip &rhs)
+Clip::Clip(const Clip &rhs) : position(rhs.position), size(rhs.size),
+    hasBoundary(rhs.hasBoundary)
 {
-    initialize();
 }
 
 Clip &Clip::operator=(const Clip &rhs)
@@ -26,8 +24,9 @@ Clip &Clip::operator=(const Clip &rhs)
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize();
+    position = rhs.position;
+    size = rhs.size;
+    hasBoundary = rhs.hasBoundary;
 
     return *this;
 }
