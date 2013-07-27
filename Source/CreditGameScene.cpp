@@ -119,12 +119,13 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
         HumanPlayer::PLAYER_ONE())), 
     background(BACKGROUND_PATH(), Layer::BACKGROUND1().integer(), 
         BACKGROUND_POINT(), screenResolution), 
+    dockSupports(DOCK_SUPPORTS_PATH(), Layer::DOCK_SUPPORTS().integer(),
+        DOCK_SUPPORTS_POINT(), screenResolution),
     elderFisher(ELDER_FISHER_PATH(), Layer::FOREGROUND().integer(), 
         ELDER_FISHER_POINT(), ELDER_FISHER_SIZE()), 
     mowhawkFisher(MOWHAWK_FISHER_PATH(), Layer::FOREGROUND().integer(), 
         MOWHAWK_FISHER_POINT(), MOWHAWK_FISHER_SIZE()), 
-    dockSupports(DOCK_SUPPORTS_PATH(), Layer::DOCK_SUPPORTS().integer(),
-        DOCK_SUPPORTS_POINT(), screenResolution), clipFit(new ClipFit), 
+        clipFit(new ClipFit), 
     quit(false), oceanLayout(new CoordinateLayout(clipFit)), 
     score1CenterLayout(new CenterLayout(clipFit)), statusLayout(new 
     CenterLayout(clipFit)), superOceanLayout(oceanLayout),
@@ -135,8 +136,9 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     layeredLayout(new LayeredLayout(2, clipFit)), borderLayout(new BorderLayout(
     BorderSize::Thick())), superBorderLayout(borderLayout), gridLayout(new
     GridLayout(1, 3)), superGridLayout(gridLayout), superLayeredLayout(
-    layeredLayout), currentScene(currentScene), game(new Game(
-        score1, score1))
+    layeredLayout), currentScene(currentScene), transition(false),
+    toScene(), statusElement(), readyTimer(), goTimer(),
+    game(new Game(score1, score1))
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
@@ -149,8 +151,9 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     rhs.screenResolution), masterInputPublisher(
     rhs.masterInputPublisher), masterClockPublisher(rhs.masterClockPublisher),
     ocean(rhs.ocean), score1(rhs.score1), player1(rhs.player1), background(
-    rhs.background), elderFisher(rhs.elderFisher), mowhawkFisher(rhs.mowhawkFisher),
-    dockSupports(rhs.dockSupports), quit(rhs.quit), oceanLayout(rhs.oceanLayout), 
+    rhs.background), dockSupports(rhs.dockSupports), elderFisher(rhs.elderFisher), 
+    mowhawkFisher(rhs.mowhawkFisher), clipFit(rhs.clipFit), quit(rhs.quit), 
+    oceanLayout(rhs.oceanLayout), 
     score1CenterLayout(rhs.score1CenterLayout), statusLayout(rhs.statusLayout), 
     superOceanLayout(rhs.superOceanLayout), superScore1Layout(rhs.superScore1Layout), 
     superStatusLayout(rhs.superStatusLayout), clockSubscriber(
@@ -159,9 +162,10 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     rhs.layeredLayout), borderLayout(rhs.borderLayout), superBorderLayout(
     rhs.superBorderLayout), gridLayout(rhs.gridLayout), superGridLayout(
     rhs.superGridLayout), superLayeredLayout(rhs.superLayeredLayout),
-    currentScene(rhs.currentScene), game(rhs.game)
-{
-}
+    currentScene(rhs.currentScene), transition(rhs.transition),
+    toScene(rhs.toScene), statusElement(rhs.statusElement),
+    readyTimer(rhs.readyTimer), goTimer(rhs.goTimer), game(rhs.game)
+{ }
 
 CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
 {
@@ -177,9 +181,10 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     score1 = rhs.score1;
     player1 = rhs.player1;
     background = rhs.background;
+    dockSupports = rhs.dockSupports;
     elderFisher = rhs.elderFisher;
     mowhawkFisher = rhs.mowhawkFisher;
-    dockSupports = rhs.dockSupports;
+    clipFit = rhs.clipFit;
     quit = rhs.quit;
     oceanLayout = rhs.oceanLayout;
     score1CenterLayout = rhs.score1CenterLayout,
@@ -197,6 +202,11 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     superGridLayout = rhs.superGridLayout;
     superLayeredLayout = rhs.superLayeredLayout;
     currentScene = rhs.currentScene;
+    transition = rhs.transition;
+    toScene = rhs.toScene;
+    statusElement = rhs.statusElement;
+    readyTimer = rhs.readyTimer;
+    goTimer = rhs.goTimer;
     game = rhs.game;
 
     return *this;

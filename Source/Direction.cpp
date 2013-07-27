@@ -54,10 +54,8 @@ const Direction Direction::DOWN_RIGHT()
     return Direction(1 << 8);
 }
 
-Direction::Direction(int initialValue)
-{
-    value = initialValue;
-}
+Direction::Direction(int initialValue) : value(initialValue)
+{ }
 
 bool Direction::operator==(const Direction &rhs) const
 {
@@ -84,15 +82,11 @@ const Direction Direction::operator&(const Direction &rhs) const
     return Direction(value & rhs.value);
 }
 
-Direction::Direction()
-{
-    value = 0;
-}
+Direction::Direction() : value(0)
+{ }
 
-Direction::Direction(const Direction &rhs)
-{
-    value = rhs.value;
-}
+Direction::Direction(const Direction &rhs) : value(rhs.value)
+{ }
 
 Direction &Direction::operator=(const Direction &rhs)
 {

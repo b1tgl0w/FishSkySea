@@ -12,23 +12,21 @@
 #include "../Header/Math.hpp"
 
 DirectLineGraphic::DirectLineGraphic(const Point &p1, const Point &p2,
-    const Uint32 color)
-{
-    initialize(p1, p2, color);
-}
+    const Uint32 color) : p1(p1), p2(p2), color(color)
+{ }
 
-DirectLineGraphic::DirectLineGraphic(const DirectLineGraphic &rhs)
-{
-    initialize(rhs.p1, rhs.p2, rhs.color);
-}
+DirectLineGraphic::DirectLineGraphic(const DirectLineGraphic &rhs) :
+    p1(rhs.p1), p2(rhs.p2), color(rhs.color)
+{ }
 
 DirectLineGraphic &DirectLineGraphic::operator=(const DirectLineGraphic &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.p1, rhs.p2, rhs.color);
+    p1 = rhs.p1;
+    p2 = rhs.p2;
+    color = rhs.color;
 
     return *this;
 }

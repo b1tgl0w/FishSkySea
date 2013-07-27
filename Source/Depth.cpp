@@ -58,14 +58,12 @@ const Depth Depth::SEA_FLOOR()
     return TMP_SEA_FLOOR;
 }
 
-Depth::Depth()
+Depth::Depth() : value(0)
 {
-    initialize(0); //Surface
 }
     
-Depth::Depth(const Depth &rhs)
+Depth::Depth(const Depth &rhs) : value(rhs.value)
 {
-    initialize(rhs.value);
 }
 
 Depth &Depth::operator=(const Depth &rhs)
@@ -73,8 +71,7 @@ Depth &Depth::operator=(const Depth &rhs)
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.value);
+    value = rhs.value;
     
     return *this;
 }
@@ -103,9 +100,8 @@ bool Depth::operator<(const Depth &rhs) const
     return value < rhs.value;
 }
 
-Depth::Depth(int initialValue)
+Depth::Depth(int initialValue) : value(initialValue)
 {
-    initialize(initialValue);
 }
 
 Weight Depth::correspondingWeight()

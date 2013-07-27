@@ -91,25 +91,38 @@ const Uint32 &Fish::NIBBLE_TIME()
 
 //Class Fish
 Fish::Fish(const Point &initialPosition,
-    const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean) : live(false),
-    collidedWithSeahorse(false), behindSeahorse(false), stayBehindSeahorse(false),
-    nibbling(false), nibbleTime(0), justFinishedNibbling(false)
+    const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean) : 
+    state(), hookedState(), freeState(), position(new Point(initialPosition)),
+    mouthPosition(new Point), fishSize(new Dimension(SIZE())), mouthSize(
+    new Dimension(MOUTH_SIZE())), fishBox(position, fishSize), mouthBox(
+    mouthPosition, mouthSize), facing(Direction::LEFT()), ocean(ocean),
+    hookedByLine(), hookedByPlayer(), nibbleLine(), timeSinceRandomAboutFace(0),
+    timeSinceIsTightAboutFace(0), nibbleTime(0), startingDepth(initialDepth),
+    shouldResetTimes(false), glowing(false), live(false), behindSeahorse(false),
+    collidedWithSeahorse(false), nibbling(false), justFinishedNibbling(false)
 {
-    initialize(initialPosition, initialDepth, ocean, false);
+    positionFromSide();
+    updateMouthPosition();
+    resetTimes();
 }
 
-Fish::Fish(const Fish &rhs) : fishSize(rhs.fishSize), mouthSize(rhs.mouthSize),
-    live(rhs.live), collidedWithSeahorse(rhs.collidedWithSeahorse),
-    behindSeahorse(rhs.behindSeahorse), stayBehindSeahorse(rhs.stayBehindSeahorse),
-    nibbling(rhs.nibbling), nibbleTime(rhs.nibbleTime),
-    justFinishedNibbling(rhs.justFinishedNibbling)
-{
-    boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
-
-    //Make sure if any shared_ptr's are added that they are also check in this if
-    if( tmpOcean )
-        initialize(*(rhs.position), rhs.startingDepth, tmpOcean, rhs.glowing);
-    //Else throw exception?
+Fish::Fish(const Fish &rhs) : state(rhs.state), hookedState(rhs.hookedState),
+    freeState(rhs.freeState), position(rhs.position), mouthPosition(
+    rhs.mouthPosition), fishSize(rhs.fishSize), mouthSize(rhs.mouthSize),
+    fishBox(rhs.fishBox), mouthBox(rhs.mouthBox), facing(rhs.facing),
+    ocean(rhs.ocean), hookedByLine(rhs.hookedByLine), hookedByPlayer(
+    rhs.hookedByPlayer), nibbleLine(rhs.nibbleLine), timeSinceRandomAboutFace(
+    rhs.timeSinceRandomAboutFace), timeSinceIsTightAboutFace(
+    rhs.timeSinceIsTightAboutFace), nibbleTime(rhs.nibbleTime), startingDepth(
+    rhs.startingDepth), shouldResetTimes(rhs.shouldResetTimes),
+    glowing(rhs.glowing), live(rhs.live), behindSeahorse(rhs.behindSeahorse),
+    stayBehindSeahorse(rhs.stayBehindSeahorse), collidedWithSeahorse(
+    rhs.collidedWithSeahorse), nibbling(rhs.nibbling), justFinishedNibbling(
+    rhs.justFinishedNibbling)
+{ 
+    positionFromSide();
+    updateMouthPosition();
+    resetTimes();
 }
 
 Fish &Fish::operator=(const Fish &rhs)
@@ -117,24 +130,35 @@ Fish &Fish::operator=(const Fish &rhs)
     if( this == &rhs )
         return *this;
 
-    boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
+    state = rhs.state;
+    hookedState = rhs.hookedState;
+    freeState = rhs.freeState;
+    position = rhs.position;
+    mouthPosition = rhs.mouthPosition;
+    fishSize = rhs.fishSize;
+    mouthSize = rhs.mouthSize;
+    fishBox = rhs.fishBox;
+    mouthBox = rhs.mouthBox;
+    facing = rhs.facing;
+    ocean = rhs.ocean;
+    hookedByLine = rhs.hookedByLine;
+    hookedByPlayer = rhs.hookedByPlayer;
+    timeSinceRandomAboutFace = rhs.timeSinceRandomAboutFace;
+    timeSinceIsTightAboutFace = rhs.timeSinceIsTightAboutFace;
+    nibbleTime = rhs.nibbleTime;
+    startingDepth = rhs.startingDepth;
+    shouldResetTimes = rhs.shouldResetTimes;
+    glowing = rhs.glowing;
+    live = rhs.live;
+    behindSeahorse = rhs.behindSeahorse;
+    stayBehindSeahorse = rhs.stayBehindSeahorse;
+    collidedWithSeahorse = rhs.collidedWithSeahorse;
+    nibbling = rhs.nibbling;
+    justFinishedNibbling = rhs.justFinishedNibbling;
 
-    //Make sure if any shared_ptr's are added that they are also check in this if
-    if( tmpOcean ) 
-    {
-        dispose();
-        initialize(*(rhs.position), rhs.startingDepth, tmpOcean, rhs.glowing);
-        fishSize = rhs.fishSize;
-        mouthSize = rhs.mouthSize;
-        live = rhs.live;
-        collidedWithSeahorse = rhs.collidedWithSeahorse;
-        behindSeahorse = rhs.behindSeahorse;
-        stayBehindSeahorse = rhs.stayBehindSeahorse;
-        nibbling = rhs.nibbling;
-        nibbleTime = rhs.nibbleTime;
-        justFinishedNibbling = rhs.justFinishedNibbling;
-    }
-    //Else throw exception?
+    positionFromSide();
+    updateMouthPosition();
+    resetTimes();
 
     return *this;
 }
@@ -142,28 +166,9 @@ Fish &Fish::operator=(const Fish &rhs)
 void Fish::initialize(const Point &newPosition,
     const Depth &newDepth, boost::shared_ptr<Ocean> &ocean, bool glowing)
 {
-    //The below hack is used because the shared pointer is not initialized
-    // in the initialization block of the ctor. The shared_ptr assignment
-    // operator only takes another shared pointer, so we construct a
-    // temporary one here.
-    boost::shared_ptr<Point> tmpPosition(new Point(newPosition));
-    position = tmpPosition;
-    this->ocean = ocean;
     positionFromSide();
-    this->startingDepth = newDepth;
-    boost::shared_ptr<Point> tmpMouthPosition(new Point);
-    mouthPosition = tmpMouthPosition;
     updateMouthPosition();
-    boost::shared_ptr<Dimension> tmpSize(new Dimension(SIZE()));
-    boost::shared_ptr<Dimension> tmpMouthSize(new Dimension(MOUTH_SIZE()));
-    fishSize = tmpSize;
-    mouthSize = tmpMouthSize;
-    BoundingBox tmpFishBox(position, fishSize);
-    BoundingBox tmpMouthBox(mouthPosition, mouthSize);
-    fishBox = tmpFishBox;
-    mouthBox = tmpMouthBox;
-    this->glowing = glowing;
-    resetTimes(); //Also sets shouldResetTime
+    resetTimes();
 }
 
 //Note:_MUST_ be called IMMEDIATELY after ctor
@@ -577,28 +582,31 @@ void Fish::doNibble()
 }
 
 //Inner class FreeState
-Fish::FreeState::FreeState()
+Fish::FreeState::FreeState() : fishOwner(), velocity(0.0), spurtPhase(
+    Math::random(0, 9999))
+
 {
     //Fish owner is not in a valid state!
 }
 
-Fish::FreeState::FreeState(boost::weak_ptr<Fish> fishOwner)
+Fish::FreeState::FreeState(boost::weak_ptr<Fish> fishOwner) : fishOwner(
+    fishOwner), velocity(0.0), spurtPhase(Math::random(0, 9999))
 {
-    initialize(fishOwner);
 }
 
-Fish::FreeState::FreeState(const Fish::FreeState &rhs)
+Fish::FreeState::FreeState(const Fish::FreeState &rhs) : fishOwner(
+    rhs.fishOwner), velocity(rhs.velocity), spurtPhase(rhs.spurtPhase)
 {
-    initialize(rhs.fishOwner);
 }
 
 Fish::FreeState &Fish::FreeState::operator=(const Fish::FreeState &rhs)
 {
     if( this == &rhs )
         return *this;
-    
-    dispose();
-    initialize(rhs.fishOwner);
+
+    fishOwner = rhs.fishOwner;
+    velocity = rhs.velocity;
+    spurtPhase = rhs.spurtPhase;
 
     return *this;
 }
@@ -938,28 +946,25 @@ const double &Fish::HookedState::HOOKED_FISH_VELOCITY()
 }
 
 //Inner class HookedState
-Fish::HookedState::HookedState()
+Fish::HookedState::HookedState() : fishOwner()
 {
     //fishOwner is not in a valid state!
 }
 
-Fish::HookedState::HookedState(boost::weak_ptr<Fish> fishOwner)
-{
-    initialize(fishOwner);
-}
+Fish::HookedState::HookedState(boost::weak_ptr<Fish> fishOwner) :
+    fishOwner(fishOwner)
+{ }
 
-Fish::HookedState::HookedState(const Fish::HookedState &rhs)
-{
-    initialize(rhs.fishOwner);
-}
+Fish::HookedState::HookedState(const Fish::HookedState &rhs) : fishOwner(
+    rhs.fishOwner)
+{ }
 
 Fish::HookedState &Fish::HookedState::operator=(const Fish::HookedState &rhs)
 {
     if ( this == &rhs )
         return *this;
 
-    dispose();
-    initialize(rhs.fishOwner);
+    fishOwner = rhs.fishOwner;
 
     return *this;
 }

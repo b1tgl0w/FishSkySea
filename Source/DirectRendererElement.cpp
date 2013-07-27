@@ -15,26 +15,32 @@
 
 DirectRendererElement::DirectRendererElement(const std::string &path, int layer,
     const Point &initialPosition, const Dimension &initialSize,
-    const boost::shared_ptr<DirectGraphicStrategy> &dgs)
-{
-    initialize(path, layer, initialPosition, initialSize,
-        Transformation::None(), dgs);
-}
+    const boost::shared_ptr<DirectGraphicStrategy> &dgs) : 
+    directGraphicStrategy(dgs), path(path), position(initialPosition),
+    originalLayer(layer), layer(layer), size(initialSize),
+    transformation(Transformation::None()), clipObject()
+{ }
 
-DirectRendererElement::DirectRendererElement(const DirectRendererElement &rhs)
-{
-    initialize(rhs.path, rhs.layer, rhs.position, rhs.size, rhs.transformation,
-        rhs.directGraphicStrategy);
-}
+DirectRendererElement::DirectRendererElement(const DirectRendererElement &rhs) :
+    directGraphicStrategy(rhs.directGraphicStrategy), path(rhs.path),
+    position(rhs.position), originalLayer(rhs.originalLayer), layer(rhs.layer),
+    size(rhs.size), transformation(rhs.transformation), clipObject(
+    rhs.clipObject)
+{ }
 
 DirectRendererElement &DirectRendererElement::operator=(const DirectRendererElement &rhs)
 {
     if( this == &rhs )
         return *this;
 
-    dispose();
-    initialize(rhs.path, rhs.layer, rhs.position, rhs.size, rhs.transformation,
-        rhs.directGraphicStrategy);
+    directGraphicStrategy = rhs.directGraphicStrategy;
+    path = rhs.path;
+    position = rhs.position;
+    originalLayer = rhs.originalLayer;
+    layer = rhs.layer;
+    size = rhs.size;
+    transformation = rhs.transformation;
+    clipObject = rhs.clipObject;
 
     return *this;
 }
