@@ -49,7 +49,6 @@ public:
     void moveTo(const Point &position);
 private:
     bool formLines();
-    boost::shared_ptr<TTF_Font> font;
     std::string text;
     Dimension size;
     Dimension lineSize;

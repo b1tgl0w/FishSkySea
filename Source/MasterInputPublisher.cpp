@@ -14,7 +14,7 @@
 bool MasterInputPublisher::instantiated = false;
 MasterInputPublisher *MasterInputPublisher::instance;
 
-MasterInputPublisher::MasterInputPublisher()
+MasterInputPublisher::MasterInputPublisher() : subscribers()
 {
     //no-op
 }

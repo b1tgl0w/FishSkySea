@@ -15,7 +15,7 @@ bool &MousePublisher::PRESSED()
     return TMP_PRESSED;
 }
 
-MousePublisher::MousePublisher()
+MousePublisher::MousePublisher() : subscribers()
 {
 }
 

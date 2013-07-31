@@ -38,13 +38,14 @@ done Source/Layer.cpp
 done Source/LayeredLayout.cpp
 done Source/Line.cpp
 
-Source/MainGameScene.cpp
-Source/MasterClockPublisher.cpp
-Source/MasterInputPublisher.cpp
-Source/Math.cpp
-Source/MessageBox.cpp
-Source/MessageBoxLine.cpp
-Source/MousePublisher.cpp
+done Source/MainGameScene.cpp
+done Source/MasterClockPublisher.cpp
+done Source/MasterInputPublisher.cpp
+done Source/Math.cpp
+done Source/MessageBox.cpp
+done Source/MessageBoxLine.cpp
+done Source/MousePublisher.cpp
+
 Source/Ocean.cpp
 Source/OceanMode.cpp
 Source/PlayerGiveLineAction.cpp
@@ -75,3 +76,5 @@ Source/TitleMenu.cpp
 Source/TitleScene.cpp
 Source/Transformation.cpp
 Source/Weight.cpp
+
+- Check that all ctors in header have impl

@@ -82,9 +82,33 @@ void MasterClockPublisher::pollClock()
 //Method: ctor
 //Purpose:  Initialize lastTicks and currentTicks so there is not a gap from the
 //          time the game is started to the time the timer constructed
-MasterClockPublisher::MasterClockPublisher()
+MasterClockPublisher::MasterClockPublisher() : subscribers(), lastTicks(SDL_GetTicks()),
+    currentTicks(lastTicks), fastForward(1.0), fastForwardCompensation(0),
+    pause(false), justPaused(false)
+{ }
+
+MasterClockPublisher::MasterClockPublisher(const MasterClockPublisher &rhs) : 
+    subscribers(rhs.subscribers), lastTicks(rhs.lastTicks),
+    currentTicks(rhs.currentTicks), fastForward(rhs.fastForward),
+    fastForwardCompensation(rhs.fastForwardCompensation), pause(rhs.pause),
+    justPaused(rhs.justPaused)
+{ }
+
+MasterClockPublisher &MasterClockPublisher::operator=(const MasterClockPublisher
+    &rhs)
 {
-    initialize();
+    if( &rhs == this )
+        return *this;
+
+    subscribers = rhs.subscribers;
+    lastTicks = rhs.lastTicks;
+    currentTicks = rhs.currentTicks;
+    fastForward = rhs.fastForward;
+    fastForwardCompensation = rhs.fastForwardCompensation;
+    pause = rhs.pause;
+    justPaused = rhs.justPaused;
+
+    return *this;
 }
 
 //Method:   initialize()

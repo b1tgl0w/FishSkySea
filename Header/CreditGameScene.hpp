@@ -48,6 +48,7 @@ public:
         &screenResolution);
     CreditGameScene(const CreditGameScene &rhs);
     CreditGameScene &operator=(const CreditGameScene &rhs);
+    ~CreditGameScene();
     void enter();
     void run();
     void exit(); //exit scene

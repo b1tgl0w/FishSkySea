@@ -21,7 +21,7 @@ MessageBoxLine::MessageBoxLine(const Point &position, const Dimension &messageBo
     const Dimension &lineSize, const Layer &layer, Uint32 bgColor,
     const FontSize &fontSize) :
     position(position), messageBoxSize(messageBoxSize), lineSize(lineSize),
-    layer(layer), uuid(boost::uuids::random_generator()()),
+    layer(layer), line(), uuid(boost::uuids::random_generator()()),
     identifier(boost::uuids::to_string(uuid)), bgColor(bgColor),
     fontSize(fontSize), originalLineSize(lineSize)
     //identifier(boost::lexical_cast<std::string>(uuid)), bgColor(bgColor) //for debian, old boost

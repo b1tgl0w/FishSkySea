@@ -212,6 +212,10 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     return *this;
 }
 
+CreditGameScene::~CreditGameScene()
+{
+}
+
 //NOTE: BEWARE OF SUBSCRIBING TWICE! SCENE MUST BE IN A VALID STATE TO BE
 //      ENTERED(...) INTO AGAIN!
 void CreditGameScene::enter()
