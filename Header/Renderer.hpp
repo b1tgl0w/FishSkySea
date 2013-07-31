@@ -139,11 +139,11 @@ private:
     std::list<boost::shared_ptr<Layout> > layouts;
     SDL_Surface *screen;
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher;
+    std::string fontPath;
     TTF_Font *fontHuge;
     TTF_Font *fontBig;
     TTF_Font *fontMedium;
     TTF_Font *fontSmall;
-    std::string fontPath;
     //Constants
     static const std::string &TRANSFORMATION_KEY();
     static const std::string &WIDTH_KEY();

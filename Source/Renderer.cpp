@@ -51,33 +51,82 @@ int &Renderer::numberOfInstances()
     return tmpNumberOfInstances;
 }
 
+//Note screen intentionally uninitialized
 Renderer::Renderer(const Dimension &screenResolution, int screenBpp,
     Uint32 flags, const std::string &fontPath, 
     const boost::shared_ptr<FrameCleanupPublisher> 
-    &frameCleanupPublisher)
+    &frameCleanupPublisher) : images(), toDraw(), texts(), textColors(),
+    textBorderSizes(), graphicEffects(), unusedKeys(), unusedTexts(),
+    layouts(), /*screen intentionally uninitialied*/ frameCleanupPublisher(
+    frameCleanupPublisher), 
+    fontPath(fontPath) /*fonts intentionally uninitialized*/
 {
-    initialize(screenResolution, screenBpp, flags, fontPath, 
-        frameCleanupPublisher);
+    //Update Font size as big as height of largest text surface (manual update)
+    const int FONT_SIZE_HUGE = 88; //Text surfaces will be scaled
+    const int FONT_SIZE_BIG = 60; //Text surfaces will be scaled
+    const int FONT_SIZE_MEDIUM = 32; //Text surfaces will be scaled
+    const int FONT_SIZE_SMALL = 12; //Text surfaces will be scaled
+    const int FONT_BORDER_SIZE = 3; //3 so even scaled text will have outline
+    numberOfInstances()++;
+    if( SDL_WasInit(SDL_INIT_VIDEO) == 0 )
+        SDL_Init(SDL_INIT_VIDEO);
+
+    //There is no IMG_WasInit and IMG_Init(0) does not work as expected
+    //Multiple calls to IMG_Init(...) only need one call to IMG_Quit, so
+    //even though there is a performance cost, I'm going to allow multiple
+    //calls to IMG_Init(IMG_INIT_PNG);
+    IMG_Init(IMG_INIT_PNG);
+    TTF_Init();
+
+    screen = SDL_GetVideoSurface();
+    if( screen == NULL )
+        screen = SDL_SetVideoMode(screenResolution.width, screenResolution.height,
+            screenBpp, flags);
+
+    this->frameCleanupPublisher = frameCleanupPublisher;
+    fontHuge = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_HUGE);
+    fontBig = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_BIG);
+    fontMedium = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_MEDIUM);
+    fontSmall = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_SMALL);
+    //Commenting out due to compile issues
+    //TTF_SetFontOutline(font, FONT_BORDER_SIZE);
+    this->fontPath = fontPath;
+
+    //Should I call images.clear() and toDraw.clear() or is that a task for
+    // void dispose(...)? At any rate, they don't need to be assigned to
+    // anything here
 }
 
-Renderer::Renderer(const Renderer &rhs)
-{
-    Dimension rhsScreenResolution(rhs.screen->w, rhs.screen->h);
-    //Cast Uint8 to int BitsPerPixel
-    initialize(rhsScreenResolution, rhs.screen->format->BitsPerPixel,
-        rhs.screen->flags, rhs.fontPath, rhs.frameCleanupPublisher);
-}
+Renderer::Renderer(const Renderer &rhs) : images(rhs.images), toDraw(rhs.toDraw),
+    texts(rhs.texts), textColors(rhs.textColors), textBorderSizes(
+    rhs.textBorderSizes), graphicEffects(rhs.graphicEffects), unusedKeys(
+    rhs.unusedKeys), unusedTexts(rhs.unusedTexts), layouts(rhs.layouts),
+    screen(rhs.screen), frameCleanupPublisher(rhs.frameCleanupPublisher),
+    fontPath(rhs.fontPath), fontHuge(rhs.fontHuge), fontBig(rhs.fontBig),
+    fontMedium(rhs.fontMedium), fontSmall(rhs.fontSmall)
+{ }
 
 Renderer &Renderer::operator=(const Renderer &rhs)
 {
     if( this == &rhs )
         return *this;
 
-    dispose();
-    Dimension rhsScreenResolution(rhs.screen->w, rhs.screen->h);
-    //Cast Uint8 to int BitsPerPixel
-    initialize(rhsScreenResolution, rhs.screen->format->BitsPerPixel,
-        rhs.screen->flags, rhs.fontPath, rhs.frameCleanupPublisher);
+    images = rhs.images;
+    toDraw = rhs.toDraw;
+    texts = rhs.texts;
+    textColors = rhs.textColors;
+    textBorderSizes = rhs.textBorderSizes;
+    graphicEffects = rhs.graphicEffects;
+    unusedKeys = rhs.unusedKeys;
+    unusedTexts = rhs.unusedTexts;
+    layouts = rhs.layouts;
+    screen = rhs.screen;
+    frameCleanupPublisher = rhs.frameCleanupPublisher;
+    fontPath = rhs.fontPath;
+    fontHuge = rhs.fontHuge;
+    fontBig = rhs.fontBig;
+    fontMedium = rhs.fontMedium;
+    fontSmall = rhs.fontSmall;
 
     return *this;
 }

@@ -154,6 +154,16 @@ private:
         boost::weak_ptr<Ocean> oceanOwner;
     };
 
+    static double &OCEAN_EDGE_X();
+    static double &OCEAN_EDGE_Y();
+    const static double &OCEAN_SURFACE_WIDTH();
+    const static double &OCEAN_SURFACE_HEIGHT();
+    const static double &OCEAN_FLOOR_Y();
+    const static double &OCEAN_FLOOR_WIDTH();
+    const static double &OCEAN_FLOOR_HEIGHT();
+    const static Point &SEA_SNAIL_POSITION();
+    const static Point &SEA_HORSE_POSITION();
+    const static Point &SHARK_POSITION();
     void addFish(const Depth &depth); //Overloaded from public
     double getDepthY(const Depth &depth);
     double getRandomDepthY();
@@ -166,16 +176,6 @@ private:
     boost::shared_ptr<Seahorse> seahorse;
     boost::shared_ptr<Shark> shark;
     std::map<Depth, double> depthCoordinates;
-    static double &OCEAN_EDGE_X();
-    static double &OCEAN_EDGE_Y();
-    const static double &OCEAN_SURFACE_WIDTH();
-    const static double &OCEAN_SURFACE_HEIGHT();
-    const static double &OCEAN_FLOOR_Y();
-    const static double &OCEAN_FLOOR_WIDTH();
-    const static double &OCEAN_FLOOR_HEIGHT();
-    const static Point &SEA_SNAIL_POSITION();
-    const static Point &SEA_HORSE_POSITION();
-    const static Point &SHARK_POSITION();
     boost::shared_ptr<OceanState> state;
     boost::shared_ptr<GameState> gameState;
     boost::shared_ptr<CreditState> creditState;

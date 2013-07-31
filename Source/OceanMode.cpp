@@ -18,10 +18,8 @@ const OceanMode OceanMode::CREDIT_MODE()
     return OceanMode(1 << 1);
 }
 
-OceanMode::OceanMode(int initialValue)
-{
-    value = initialValue;
-}
+OceanMode::OceanMode(int initialValue) : value(initialValue)
+{ }
 
 bool OceanMode::operator==(const OceanMode &rhs) const
 {
@@ -33,15 +31,11 @@ bool OceanMode::operator!=(const OceanMode &rhs) const
     return value != rhs.value;
 }
 
-OceanMode::OceanMode()
-{
-    value = 0;
-}
+OceanMode::OceanMode() : value(0)
+{ }
 
-OceanMode::OceanMode(const OceanMode &rhs)
-{
-    value = rhs.value;
-}
+OceanMode::OceanMode(const OceanMode &rhs) : value(rhs.value)
+{ }
 
 OceanMode &OceanMode::operator=(const OceanMode &rhs)
 {

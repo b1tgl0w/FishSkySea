@@ -46,17 +46,19 @@ done Source/MessageBox.cpp
 done Source/MessageBoxLine.cpp
 done Source/MousePublisher.cpp
 
-Source/Ocean.cpp
-Source/OceanMode.cpp
-Source/PlayerGiveLineAction.cpp
-Source/PlayerKeyTranslater.cpp
-Source/PlayerLengthenPoleAction.cpp
-Source/PlayerReelInAction.cpp
-Source/PlayerSetHookAction.cpp
-Source/PlayerShortenPoleAction.cpp
-Source/Point.cpp
-Source/RandomBlock.cpp
-Source/Renderer.cpp
+done Source/Ocean.cpp
+done Source/OceanMode.cpp
+done Source/PlayerGiveLineAction.cpp
+done Source/PlayerKeyTranslater.cpp
+done Source/PlayerLengthenPoleAction.cpp
+done Source/PlayerReelInAction.cpp
+done Source/PlayerSetHookAction.cpp
+done Source/PlayerShortenPoleAction.cpp
+done Source/Point.cpp
+done Source/RandomBlock.cpp
+
+done but screen and other not initialized  Source/Renderer.cpp
+
 Source/RendererElement.cpp
 Source/ScaleClipFit.cpp
 Source/Scene.cpp

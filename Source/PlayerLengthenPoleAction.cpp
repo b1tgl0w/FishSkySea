@@ -11,16 +11,12 @@
 #include "../Header/Player.hpp"
 
 PlayerLengthenPoleAction::PlayerLengthenPoleAction(const boost::shared_ptr<Player>
-    &player)
-{
-    initialize(player);
-}
+    &player) : player(player)
+{ }
 
 PlayerLengthenPoleAction::PlayerLengthenPoleAction(const
-    PlayerLengthenPoleAction &rhs)
-{
-    initialize(rhs.player);
-}
+    PlayerLengthenPoleAction &rhs) : player(rhs.player)
+{ }
 
 PlayerLengthenPoleAction &PlayerLengthenPoleAction::operator=(const
     PlayerLengthenPoleAction &rhs)
@@ -28,8 +24,7 @@ PlayerLengthenPoleAction &PlayerLengthenPoleAction::operator=(const
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.player);
+    player = rhs.player;
 
     return *this;
 }

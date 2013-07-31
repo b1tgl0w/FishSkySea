@@ -188,6 +188,11 @@ Renderer::manipulateImage?
 Important:  If you pass a const shared_ptr, and set a member shared_ptr equal
 to the param, will the reference count of the const shared_ptr be incremented?
 
+Important:  Failed to make sure ctors don't allocate memory, check this. boost
+shared ptrs are safe to allocate, however
+
+Note:   Renderer ctor does not initialize screen and font
+
 The behavior of an offscreen fish is that it should face toward the screen
 
 The behavior of a respawned fish is that it should swim in from the side.

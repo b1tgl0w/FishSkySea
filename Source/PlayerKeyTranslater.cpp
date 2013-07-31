@@ -21,11 +21,14 @@ PlayerKeyTranslater::PlayerKeyTranslater()
     //Don't use until initializePlayer() is called
 }
 
-PlayerKeyTranslater::PlayerKeyTranslater(const PlayerKeyTranslater &rhs)
-{
-    initialize(rhs.player);
-    initialize(rhs.actions);
-}
+PlayerKeyTranslater::PlayerKeyTranslater(const PlayerKeyTranslater &rhs) : 
+    actions(rhs.actions), player(rhs.player), REEL_IN_DEFAULT_KEY_P1(
+    rhs.REEL_IN_DEFAULT_KEY_P1), GIVE_LINE_DEFAULT_KEY_P1(
+    rhs.GIVE_LINE_DEFAULT_KEY_P1), LENGTHEN_POLE_DEFAULT_KEY_P1(
+    rhs.LENGTHEN_POLE_DEFAULT_KEY_P1), SHORTEN_POLE_DEFAULT_KEY_P1(
+    rhs.SHORTEN_POLE_DEFAULT_KEY_P1), SET_HOOK_DEFAULT_KEY_P1(
+    rhs.SET_HOOK_DEFAULT_KEY_P1)
+{ }
 
 PlayerKeyTranslater &PlayerKeyTranslater::operator=(const
     PlayerKeyTranslater &rhs)
@@ -33,9 +36,13 @@ PlayerKeyTranslater &PlayerKeyTranslater::operator=(const
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.player);
-    initialize(rhs.actions);
+    actions = rhs.actions;
+    player = rhs.player;
+    REEL_IN_DEFAULT_KEY_P1 =  rhs.REEL_IN_DEFAULT_KEY_P1;
+    GIVE_LINE_DEFAULT_KEY_P1 = rhs.GIVE_LINE_DEFAULT_KEY_P1;
+    LENGTHEN_POLE_DEFAULT_KEY_P1 = rhs.LENGTHEN_POLE_DEFAULT_KEY_P1;
+    SHORTEN_POLE_DEFAULT_KEY_P1 = rhs.SHORTEN_POLE_DEFAULT_KEY_P1;
+    SET_HOOK_DEFAULT_KEY_P1 = rhs.SET_HOOK_DEFAULT_KEY_P1;
 
     return *this;
 }

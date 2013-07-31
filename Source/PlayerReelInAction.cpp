@@ -11,14 +11,12 @@
 #include "../Header/Player.hpp"
 
 PlayerReelInAction::PlayerReelInAction(const boost::shared_ptr<Player> &player)
-{
-    initialize(player);
-}
+    : player(player)
+{ } 
 
-PlayerReelInAction::PlayerReelInAction(const PlayerReelInAction &rhs)
-{
-    initialize(rhs.player);
-}
+PlayerReelInAction::PlayerReelInAction(const PlayerReelInAction &rhs) : player(
+    rhs.player)
+{ }
 
 PlayerReelInAction &PlayerReelInAction::operator=(const PlayerReelInAction
     &rhs)
@@ -26,8 +24,7 @@ PlayerReelInAction &PlayerReelInAction::operator=(const PlayerReelInAction
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.player);
+    player = rhs.player;
 
     return *this;
 }

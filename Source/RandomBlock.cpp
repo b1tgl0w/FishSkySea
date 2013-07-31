@@ -13,8 +13,8 @@
 #include "../Header/Math.hpp"
 
 RandomBlock::RandomBlock(const int rangeMin, const int rangeMax, const int gapSize,
-    const int blockSize) : rangeMin(rangeMin), rangeMax(rangeMax), gapSize(
-    gapSize)
+    const int blockSize) : randomNumbers(), rangeMin(rangeMin), 
+    rangeMax(rangeMax), gapSize(gapSize)
 { 
     //Seed rng, because this class is used as a static member of another class
     static bool seeded = false;
@@ -28,9 +28,8 @@ RandomBlock::RandomBlock(const int rangeMin, const int rangeMax, const int gapSi
     generateRandomNumbers(blockSize);
 }
 
-RandomBlock::RandomBlock(const RandomBlock &rhs) : rangeMin(rhs.rangeMin),
-    rangeMax(rhs.rangeMax), gapSize(rhs.gapSize), randomNumbers(
-    rhs.randomNumbers)
+RandomBlock::RandomBlock(const RandomBlock &rhs) : randomNumbers(rhs.randomNumbers),
+    rangeMin(rhs.rangeMin), rangeMax(rhs.rangeMax), gapSize(rhs.gapSize)
 { }
 
 RandomBlock RandomBlock::operator=(const RandomBlock &rhs)
@@ -38,10 +37,10 @@ RandomBlock RandomBlock::operator=(const RandomBlock &rhs)
     if( &rhs == this )
         return *this;
 
+    randomNumbers = rhs.randomNumbers;
     rangeMin = rhs.rangeMin;
     rangeMax = rhs.rangeMax;
     gapSize = rhs.gapSize;
-    randomNumbers = rhs.randomNumbers;
 
     return *this;
 }

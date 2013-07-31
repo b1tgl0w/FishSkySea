@@ -85,26 +85,72 @@ const Point &Ocean::SHARK_POSITION()
 }
 
 Ocean::Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer)
-    : renderer(renderer)
+    : collidables(), creditCollidables(), fishes(), seaSnail(), seahorse(),
+    shark(), depthCoordinates(), state(), gameState(), creditState(),
+    screenSize(screenSize), oceanEdgePosition(new Point(OCEAN_EDGE_X(),
+    OCEAN_EDGE_Y())), oceanEdgeSize(new Dimension(screenSize)), 
+    oceanSurfacePosition(new Point(OCEAN_EDGE_X(), OCEAN_EDGE_Y())), oceanSurfaceSize(
+    new Dimension(OCEAN_SURFACE_WIDTH(), OCEAN_SURFACE_HEIGHT())), oceanFloorPosition(
+    new Point(OCEAN_EDGE_X(), OCEAN_FLOOR_Y())), oceanFloorSize(new Dimension(
+    OCEAN_FLOOR_WIDTH(), OCEAN_FLOOR_HEIGHT())), oceanBox(oceanEdgePosition,
+    oceanEdgeSize), oceanSurfaceBox(oceanSurfacePosition, oceanSurfaceSize),
+    oceanFloorBox(oceanFloorPosition, oceanFloorSize), clouds(), renderer(
+    renderer)
 {
-    initialize(screenSize);
+    const double DEPTH_DISTANCE = 33;
+    double currentDepthCoordinate = 343.0;
+    depthCoordinates[Depth::ROW1()] = currentDepthCoordinate;
+    currentDepthCoordinate += DEPTH_DISTANCE;
+    depthCoordinates[Depth::ROW2()] = currentDepthCoordinate;
+    currentDepthCoordinate += DEPTH_DISTANCE;
+    depthCoordinates[Depth::ROW3()] = currentDepthCoordinate;
+    currentDepthCoordinate += DEPTH_DISTANCE;
+    depthCoordinates[Depth::ROW4()] = currentDepthCoordinate;
+    currentDepthCoordinate += DEPTH_DISTANCE;
+    depthCoordinates[Depth::ROW5()] = currentDepthCoordinate;
+    currentDepthCoordinate += DEPTH_DISTANCE;
+    depthCoordinates[Depth::ROW6()] = currentDepthCoordinate;
 }
 
-Ocean::Ocean(const Ocean &rhs) : screenSize(rhs.screenSize),
+Ocean::Ocean(const Ocean &rhs) : collidables(rhs.collidables),
+    creditCollidables(rhs.creditCollidables), fishes(rhs.fishes),
+    creditFishes(rhs.creditFishes), seaSnail(rhs.seaSnail), seahorse(
+    rhs.seahorse), shark(rhs.shark), depthCoordinates(rhs.depthCoordinates),
+    state(rhs.state), gameState(rhs.gameState), creditState(rhs.creditState),
+    screenSize(rhs.screenSize), oceanEdgePosition(rhs.oceanEdgePosition),
+    oceanEdgeSize(rhs.oceanEdgeSize), oceanFloorPosition(rhs.oceanFloorPosition),
+    oceanFloorSize(rhs.oceanFloorSize), oceanBox(rhs.oceanBox), oceanSurfaceBox(
+    rhs.oceanSurfaceBox), oceanFloorBox(rhs.oceanFloorBox), clouds(rhs.clouds),
     renderer(rhs.renderer)
-{
-    initialize(rhs.screenSize);
-}
+{ }
 
 Ocean &Ocean::operator=(const Ocean &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    dispose();
+    collidables = rhs.collidables;
+    creditCollidables = rhs.creditCollidables;
+    fishes = rhs.fishes;
+    creditFishes = rhs.creditFishes;
+    seaSnail = rhs.seaSnail;
+    seahorse = rhs.seahorse;
+    shark = rhs.shark;
+    depthCoordinates = rhs.depthCoordinates;
+    state = rhs.state;
+    gameState = rhs.gameState;
     screenSize = rhs.screenSize;
+    oceanEdgePosition = rhs.oceanEdgePosition;
+    oceanEdgeSize = rhs.oceanEdgeSize;
+    oceanSurfacePosition = rhs.oceanSurfacePosition;
+    oceanSurfaceSize = rhs.oceanSurfaceSize;
+    oceanFloorPosition = rhs.oceanFloorPosition;
+    oceanFloorSize = rhs.oceanFloorSize;
+    oceanBox = rhs.oceanBox;
+    oceanSurfaceBox = rhs.oceanSurfaceBox;
+    oceanFloorBox = rhs.oceanFloorBox;
+    clouds = rhs.clouds;
     renderer = rhs.renderer;
-    initialize(rhs.screenSize);
 
     return *this;
 }
@@ -531,15 +577,12 @@ void Ocean::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
 
 
-Ocean::GameState::GameState(boost::shared_ptr<Ocean> &oceanOwner)
-{
-    this->oceanOwner = oceanOwner;
-}
+Ocean::GameState::GameState(boost::shared_ptr<Ocean> &oceanOwner) :
+    oceanOwner(oceanOwner)
+{ }
 
-Ocean::GameState::GameState(const GameState &rhs)
-{
-    oceanOwner = rhs.oceanOwner;
-}
+Ocean::GameState::GameState(const GameState &rhs) : oceanOwner(rhs.oceanOwner)
+{ }
 
 Ocean::GameState &Ocean::GameState::operator=(const GameState &rhs)
 {
@@ -631,15 +674,13 @@ void Ocean::GameState::gameLive(bool live)
     sharedOceanOwner->clouds->gameLive(live);
 }
 
-Ocean::CreditState::CreditState(boost::shared_ptr<Ocean> &oceanOwner)
-{
-    this->oceanOwner = oceanOwner;
-}
+Ocean::CreditState::CreditState(boost::shared_ptr<Ocean> &oceanOwner) : 
+    oceanOwner(oceanOwner)
+{ }
 
-Ocean::CreditState::CreditState(const CreditState &rhs)
-{
-    oceanOwner = rhs.oceanOwner;
-}
+Ocean::CreditState::CreditState(const CreditState &rhs) : oceanOwner(
+    rhs.oceanOwner)
+{ }
 
 Ocean::CreditState &Ocean::CreditState::operator=(const CreditState &rhs)
 {

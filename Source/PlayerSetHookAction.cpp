@@ -10,25 +10,20 @@
 #include "../Header/Player.hpp"
 
 PlayerSetHookAction::PlayerSetHookAction(const boost::shared_ptr<Player>
-    &player)
-{
-    initialize(player);
-}
+    &player) : player(player)
+{ }
 
 PlayerSetHookAction::PlayerSetHookAction(const PlayerSetHookAction
-    &rhs)
-{
-    initialize(rhs.player);
-}
+    &rhs) : player(rhs.player)
+{ }
 
 PlayerSetHookAction &PlayerSetHookAction::operator=(const
     PlayerSetHookAction &rhs)
 {
     if( &rhs == this )
         return *this;
-
-    dispose();
-    initialize(rhs.player);
+    
+    player = rhs.player;
     
     return *this;
 }

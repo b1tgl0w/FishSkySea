@@ -11,25 +11,20 @@
 #include "../Header/Player.hpp"
 
 PlayerShortenPoleAction::PlayerShortenPoleAction(const boost::shared_ptr<Player>
-    &player)
-{
-    initialize(player);
-}
+    &player) : player(player)
+{ }
 
 PlayerShortenPoleAction::PlayerShortenPoleAction(const PlayerShortenPoleAction
-    &rhs)
-{
-    initialize(rhs.player);
-}
+    &rhs) : player(rhs.player)
+{ }
 
 PlayerShortenPoleAction &PlayerShortenPoleAction::operator=(const
     PlayerShortenPoleAction &rhs)
 {
     if( &rhs == this )
         return *this;
-
-    dispose();
-    initialize(rhs.player);
+    
+    player = rhs.player;
     
     return *this;
 }

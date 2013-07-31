@@ -11,14 +11,13 @@
 #include "../Header/Player.hpp"
 
 PlayerGiveLineAction::PlayerGiveLineAction(const boost::shared_ptr<Player> &player)
+    : player(player)
 {
-    initialize(player);
 }
 
-PlayerGiveLineAction::PlayerGiveLineAction(const PlayerGiveLineAction &rhs)
-{
-    initialize(rhs.player);
-}
+PlayerGiveLineAction::PlayerGiveLineAction(const PlayerGiveLineAction &rhs) :
+    player(rhs.player)
+{ }
 
 PlayerGiveLineAction &PlayerGiveLineAction::operator=(const
     PlayerGiveLineAction &rhs)
@@ -26,8 +25,7 @@ PlayerGiveLineAction &PlayerGiveLineAction::operator=(const
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.player);
+    player = rhs.player;
 
     return *this;
 }
