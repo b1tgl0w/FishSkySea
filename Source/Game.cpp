@@ -22,8 +22,28 @@ const Score &Game::WIN_SCORE()
 
 Game::Game(boost::shared_ptr<Score> &player1Score, boost::shared_ptr<Score> &
     player2Score) : quit(false), player1Score(player1Score), player2Score(
-    player2Score)
+    player2Score), winnerText(), player1WinText(), player2WinText()
 {
+}
+
+Game::Game(const Game &rhs) : quit(rhs.quit), player1Score(rhs.player1Score),
+    player2Score(rhs.player2Score), winnerText(rhs.winnerText), player1WinText(
+    rhs.player1WinText), player2WinText(rhs.player2WinText)
+{ }
+
+Game &Game::operator=(const Game &rhs)
+{
+    if( &rhs == this )
+        return *this;
+    
+    quit = rhs.quit;
+    player1Score = rhs.player1Score;
+    player2Score = rhs.player2Score;
+    winnerText = rhs.winnerText;
+    player1WinText = rhs.player1WinText;
+    player2WinText = rhs.player2WinText;
+
+    return *this;
 }
 
 bool Game::shouldQuit()

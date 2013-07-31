@@ -24,10 +24,11 @@ Done Source/EmptyLayout.cpp
 Done Source/FillClipFit.cpp
 Done Source/Fish.cpp
 
-Source/FontSize.cpp
-Source/FrameCleanupPublisher.cpp
-Source/Game.cpp
-Source/GraphicEffect.cpp
+done Source/FontSize.cpp
+done Source/FrameCleanupPublisher.cpp
+done Source/Game.cpp
+Done Source/GraphicEffect.cpp
+
 Source/GridLayout.cpp
 Source/HumanPlayer.cpp
 Source/ImageRendererElement.cpp

@@ -11,14 +11,14 @@
 #include "../Header/FrameCleanupPublisher.hpp"
 #include "../Header/FrameCleanupSubscriber.hpp"
 
-FrameCleanupPublisher::FrameCleanupPublisher()
+FrameCleanupPublisher::FrameCleanupPublisher() : subscribers()
 {
     //No-op
 }
 
 FrameCleanupPublisher::FrameCleanupPublisher(const FrameCleanupPublisher &rhs)
+    : subscribers(rhs.subscribers)
 {
-    initialize(rhs.subscribers);
 }
 
 FrameCleanupPublisher &FrameCleanupPublisher::operator=(const
@@ -27,7 +27,7 @@ FrameCleanupPublisher &FrameCleanupPublisher::operator=(const
     if( &rhs == this )
         return *this;
 
-    initialize(rhs.subscribers);
+    subscribers = rhs.subscribers;
 
     return *this;
 }

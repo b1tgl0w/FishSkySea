@@ -34,9 +34,8 @@ const FontSize FontSize::Small()
     return TMP4;
 }
 
-FontSize::FontSize(const FontSize &rhs)
+FontSize::FontSize(const FontSize &rhs) : value(rhs.value)
 {
-    initialize(rhs.value);
 }
 
 FontSize &FontSize::operator=(const FontSize &rhs)
@@ -44,9 +43,8 @@ FontSize &FontSize::operator=(const FontSize &rhs)
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.value);
-    
+    value = rhs.value;
+
     return *this;
 }
 
@@ -74,9 +72,8 @@ bool FontSize::operator<(const FontSize &rhs) const
     return value < rhs.value;
 }
 
-FontSize::FontSize(int initialValue)
+FontSize::FontSize(int initialValue) : value(initialValue)
 {
-    initialize(initialValue);
 }
 
 FontSize::FontSize() : value(0)

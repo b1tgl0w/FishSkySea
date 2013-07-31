@@ -27,6 +27,8 @@ class Game : public Graphic
 public:
     explicit Game(boost::shared_ptr<Score> &player1Score, 
         boost::shared_ptr<Score> &player2Score);
+    Game(const Game &rhs);
+    Game &operator=(const Game &rhs);
     bool shouldQuit();
     bool checkWinner();
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);

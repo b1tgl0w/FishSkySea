@@ -16,11 +16,9 @@ const bool GraphicEffect::COLOR_KEYED = false;
 const int GraphicEffect::ALPHA_MIN = 0x11;
 const int GraphicEffect::ALPHA_MAX = 0x99;
 
-GraphicEffect::GraphicEffect(SDL_Surface *sprite) : alpha(syncAlpha()),
-    alphaDirection(.15)
+GraphicEffect::GraphicEffect(SDL_Surface *sprite) : inverseSprite(NULL),
+    inverseGlowRectangle(NULL), alpha(syncAlpha()), alphaDirection(.15)
 {
-    inverseGlowRectangle = 0x00;
-    inverseSprite = 0x00;
     clipGlowRectangle(sprite);
 }
 
@@ -30,8 +28,7 @@ GraphicEffect::GraphicEffect(const GraphicEffect &rhs) :
     inverseSprite(SDL_DisplayFormatAlpha(rhs.inverseSprite)), 
     inverseGlowRectangle(SDL_DisplayFormatAlpha(rhs.inverseGlowRectangle)),
     alpha(rhs.alpha), alphaDirection(rhs.alphaDirection)
-{
-}
+{ }
 
 //Deep copy since not using shared_ptrs
 //A better way?
