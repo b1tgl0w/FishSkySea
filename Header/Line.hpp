@@ -297,9 +297,6 @@ private:
     boost::shared_ptr<NotHookedState> notHookedState;
     boost::shared_ptr<HookedState> hookedState;
     int lineIDNumber;
-    BoundingBox poleBox;
-    BoundingBox hookBox;
-    BoundingBox biteBox;
     boost::weak_ptr<Player> owner;
     boost::weak_ptr<Ocean> ocean;
     boost::shared_ptr<Point> polePoint;
@@ -313,6 +310,9 @@ private:
     boost::weak_ptr<CreditFish> nibbleCreditFishObj;
     Point initialPolePoint;
     Point initialHookPoint;
+    BoundingBox poleBox;
+    BoundingBox hookBox;
+    BoundingBox biteBox;
     bool reelInOn;
     bool giveLineOn;
     bool lengthenPoleOn;

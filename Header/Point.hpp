@@ -13,6 +13,8 @@ struct Point
 {
     Point();
     Point(double x, double y);
+    Point(const Point &rhs);
+    Point &operator=(const Point &rhs);
     static bool sortByXAscending(const Point &first, const Point &second);
     static bool sortByYAscending(const Point &first, const Point &second);
     double x;

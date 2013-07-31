@@ -10,34 +10,30 @@
 #include "../Header/EmptyLayout.hpp"
 
 LayeredLayout::LayeredLayout(const int
-    numberOfLayers, boost::shared_ptr<FitStrategy> &fitStrategy)
-{
-    boost::shared_ptr<Clip> clipObject(new Clip);
-    Point tmpPosition(0.0, 0.0);
-    position = tmpPosition;
-    Dimension tmpSize(0.0, 0.0);
-    size = tmpSize;
-    initialize(numberOfLayers, fitStrategy, clipObject);
-}
+    numberOfLayers, boost::shared_ptr<FitStrategy> &fitStrategy) :
+    owner(), layers(), toDraw(), fitStrategy(fitStrategy), position(0.0, 0.0),
+    size(0.0, 0.0), emptyList(), clipObject(new Clip)
+{ }
 
-LayeredLayout::LayeredLayout(const LayeredLayout &rhs) : position(rhs.position),
-size(rhs.size)
-{
-    dispose();
-    initialize(rhs.layers.size(), rhs.fitStrategy,
-        rhs.clipObject);
-}
+LayeredLayout::LayeredLayout(const LayeredLayout &rhs) : owner(rhs.owner),
+    layers(rhs.layers), toDraw(rhs.toDraw), fitStrategy(rhs.fitStrategy),
+    position(rhs.position), size(rhs.size), emptyList(rhs.emptyList),
+    clipObject(rhs.clipObject)
+{ }
 
 LayeredLayout &LayeredLayout::operator=(const LayeredLayout &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    dispose();
+    owner = rhs.owner;
+    layers = rhs.layers;
+    toDraw = rhs.toDraw;
+    fitStrategy = rhs.fitStrategy;
     position = rhs.position;
     size = rhs.size;
-    initialize(rhs.layers.size(), rhs.fitStrategy,
-        rhs.clipObject);
+    emptyList = rhs.emptyList;
+    clipObject = rhs.clipObject;
 
     return *this;
 }

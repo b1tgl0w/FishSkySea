@@ -29,13 +29,15 @@ done Source/FrameCleanupPublisher.cpp
 done Source/Game.cpp
 Done Source/GraphicEffect.cpp
 
-Source/GridLayout.cpp
-Source/HumanPlayer.cpp
-Source/ImageRendererElement.cpp
-Source/KeyboardPublisher.cpp
-Source/Layer.cpp
-Source/LayeredLayout.cpp
-Source/Line.cpp
+done Source/GridLayout.cpp
+
+done Source/HumanPlayer.cpp
+done Source/ImageRendererElement.cpp
+done Source/KeyboardPublisher.cpp
+done Source/Layer.cpp
+done Source/LayeredLayout.cpp
+done Source/Line.cpp
+
 Source/MainGameScene.cpp
 Source/MasterClockPublisher.cpp
 Source/MasterInputPublisher.cpp

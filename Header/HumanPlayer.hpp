@@ -102,9 +102,9 @@ private:
     Point polePoint;
     Point hookPoint;
     boost::weak_ptr<Score> score;
-    BoundingBox poleAreaBox;
     boost::shared_ptr<Point> poleAreaPoint;
     boost::shared_ptr<Dimension> poleAreaSize;
+    BoundingBox poleAreaBox;
     bool playerNumber;
 };
 

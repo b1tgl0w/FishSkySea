@@ -17,28 +17,23 @@ bool &KeyboardPublisher::PRESSED()
     return TMP_PRESSED;
 }
 
-KeyboardPublisher::KeyboardPublisher()
-{
-}
+KeyboardPublisher::KeyboardPublisher() : subscribers()
+{ }
 
 KeyboardPublisher::KeyboardPublisher(std::list<boost::weak_ptr<KeyboardSubscriber> >
-    subscribers)
-{
-    initialize(subscribers);
-}
+    subscribers) : subscribers(subscribers)
+{ }
 
-KeyboardPublisher::KeyboardPublisher(const KeyboardPublisher &rhs)
-{
-    initialize(rhs.subscribers);
-}
+KeyboardPublisher::KeyboardPublisher(const KeyboardPublisher &rhs) :
+    subscribers(rhs.subscribers)
+{ }
 
 KeyboardPublisher &KeyboardPublisher::operator=(const KeyboardPublisher &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.subscribers);
+    subscribers = rhs.subscribers;
 
     return *this;
 }

@@ -63,8 +63,8 @@ private:
     std::string getPath() const;
     std::string path;
     Point position;
-    int originalLayer;
     int layer;
+    int originalLayer;
     Dimension size;
     Transformation transformation;
     Clip clipObject;

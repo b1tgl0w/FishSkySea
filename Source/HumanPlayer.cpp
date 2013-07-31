@@ -31,9 +31,14 @@ const bool &HumanPlayer::PLAYER_TWO()
 
 HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     &hookPoint, boost::weak_ptr<Ocean> ocean, boost::weak_ptr<Score>
-    score, bool playerNumber) : playerNumber(playerNumber)
+    score, bool playerNumber) : playerKeyTranslater(), line(),
+    ocean(ocean), polePoint(polePoint), hookPoint(hookPoint),
+    score(score), poleAreaPoint(), poleAreaSize(), poleAreaBox(),
+    playerNumber(playerNumber)
 {
     boost::shared_ptr<Line> null;
+    line = null;
+
     if( playerNumber == PLAYER_ONE() )
     {
         Point tmpPoint(130.0, polePoint.y);
@@ -55,26 +60,29 @@ HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     poleAreaSize = tmpPoleAreaSize;
     BoundingBox tmpBox(poleAreaPoint, poleAreaSize);
     poleAreaBox = tmpBox;
-    initialize(polePoint, hookPoint, ocean, null, score);
 }
 
-HumanPlayer::HumanPlayer(const HumanPlayer &rhs) : poleAreaBox(rhs.poleAreaBox),
-    poleAreaPoint(rhs.poleAreaPoint), poleAreaSize(rhs.poleAreaSize), 
-    playerNumber(rhs.playerNumber)
-{
-    initialize(rhs.polePoint, rhs.hookPoint, rhs.ocean, rhs.line, rhs.score);
-}
+HumanPlayer::HumanPlayer(const HumanPlayer &rhs) : playerKeyTranslater(
+    rhs.playerKeyTranslater), line(rhs.line), ocean(rhs.ocean), polePoint(
+    rhs.polePoint), hookPoint(rhs.hookPoint), score(rhs.score), poleAreaPoint(
+    rhs.poleAreaPoint), poleAreaSize(rhs.poleAreaSize), poleAreaBox(
+    rhs.poleAreaBox), playerNumber(rhs.playerNumber)
+{ }
 
 HumanPlayer &HumanPlayer::operator=(const HumanPlayer &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.polePoint, rhs.hookPoint, rhs.ocean, rhs.line, rhs.score);
-    poleAreaBox = rhs.poleAreaBox;
+    playerKeyTranslater = rhs.playerKeyTranslater;
+    line = rhs.line;
+    ocean = rhs.ocean;
+    polePoint = rhs.polePoint;
+    hookPoint = rhs.hookPoint;
+    score = rhs.score;
     poleAreaPoint = rhs.poleAreaPoint;
     poleAreaSize = rhs.poleAreaSize;
+    poleAreaBox = rhs.poleAreaBox;
     playerNumber = rhs.playerNumber;
 
     return *this;

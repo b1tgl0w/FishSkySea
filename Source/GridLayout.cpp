@@ -10,41 +10,28 @@
 #include "../Header/GridLayout.hpp"
 #include "../Header/Math.hpp"
 
-GridLayout::GridLayout(int rows, int cols)
+GridLayout::GridLayout(int rows, int cols) : owner(), cells(), toDraw(),
+    fitStrategy(), position(0.0, 0.0), size(0.0, 0.0)
 {
-    Point tmpPosition(0.0, 0.0);
-    position = tmpPosition;
-    Dimension tmpSize(0.0, 0.0);
-    size = tmpSize;
-    initialize(rows, cols);
+    initializeCells(rows, cols);
 }
 
-GridLayout::GridLayout(const GridLayout &rhs) : position(rhs.position),
-size(rhs.size)
-{
-    if( rhs.cells.size() > 0 )
-    {
-        dispose();
-        int rows = rhs.cells.size();
-        int cols = rhs.cells[0].size();
-        initialize(rows, cols);
-    }
-}
+GridLayout::GridLayout(const GridLayout &rhs) : owner(rhs.owner), cells(rhs.cells),
+    toDraw(rhs.toDraw), fitStrategy(rhs.fitStrategy), position(rhs.position),
+    size(rhs.size)
+{ }
 
 GridLayout &GridLayout::operator=(const GridLayout &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    if(rhs.cells.size() > 0)
-    {
-        dispose();
-        int rows = rhs.cells.size();
-        int cols = rhs.cells[0].size();
-        position = rhs.position;
-        size = rhs.size;
-        initialize(rows, cols);
-    }
+    owner = rhs.owner;
+    cells = rhs.cells;
+    toDraw = rhs.toDraw;
+    fitStrategy = rhs.fitStrategy;
+    position = rhs.position;
+    size = rhs.size;
 
     return *this;
 }
@@ -373,31 +360,28 @@ void GridLayout::own(const boost::weak_ptr<Layout> &owner)
 
 
 //GridCell inner class
-GridLayout::GridCell::GridCell() : merged(false)
-{
-    Point tmpPosition(0.0, 0.0);
-    position = tmpPosition;
-    Dimension tmpSize(0.0, 0.0);
-    size = tmpSize;
-    initialize();
-}
+GridLayout::GridCell::GridCell() : owner(), cellsOccupied(), layout(),
+    toDraw(), position(0.0, 0.0), size(0.0, 0.0), merged(false)
 
-GridLayout::GridCell::GridCell(const GridCell &rhs) : merged(rhs.merged),
-    position(rhs.position), size(rhs.size)
-{
-    initialize();
-}
+{ }
+
+GridLayout::GridCell::GridCell(const GridCell &rhs) : owner(rhs.owner),
+    cellsOccupied(rhs.cellsOccupied), layout(rhs.layout), toDraw(rhs.toDraw),
+    position(rhs.position), size(rhs.size), merged(rhs.merged)
+{ }
 
 GridLayout::GridCell &GridLayout::GridCell::operator=(const GridCell &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize();
-    merged = rhs.merged;
+    owner = rhs.owner;
+    cellsOccupied = rhs.cellsOccupied;
+    layout = rhs.layout;
+    toDraw = rhs.toDraw;
     position = rhs.position;
     size = rhs.size;
+    merged = rhs.merged;
 
     return *this;
 }

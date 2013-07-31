@@ -204,16 +204,37 @@ const Uint32 &Line::SET_HOOK_RECOVER_TIME()
 
 Line::Line(boost::shared_ptr<Player> &initialPlayer,
     const Point &initialPolePoint,
-    const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean) : live(false),
+    const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean) : state(),
+    notHookedState(), hookedState(), lineIDNumber(highestIdNumberGiven()++),
+    owner(initialPlayer), ocean(ocean), polePoint(new Point(initialPolePoint)),
+    poleSize(new Dimension(POLE_DIMENSION())),
+    hookPoint(new Point(initialHookPoint)), hookSize(new Dimension(HOOK_DIMENSION())),
+    bitePoint(new Point), hookedFish(), nibbleFish(), hookedCreditFishObj(),
+    nibbleCreditFishObj(), initialPolePoint(initialPolePoint), initialHookPoint(
+    initialHookPoint), poleBox(polePoint, poleSize),
+    hookBox(hookPoint, hookSize), biteBox(bitePoint, hookSize), reelInOn(
+    INITIAL_REEL_IN_ON()), giveLineOn(INITIAL_GIVE_LINE_ON()),
+    lengthenPoleOn(INITIAL_LENGTHEN_POLE_ON()), shortenPoleOn(
+    INITIAL_SHORTEN_POLE_ON()), pullLeftOn(INITIAL_PULL_LEFT_ON()),
+    pullRightOn(INITIAL_PULL_RIGHT_ON()), setHookOn(false), fishHooked(
+    INITIAL_FISH_HOOKED()), live(false), fishIsNibbling(false),
+    creditFishIsNibbling(false), setHookTime(0), 
     rippleAnimation(new Animation(RIPPLE_INITIAL_POSITION(), 
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
     rippleAnimationNotHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
     rippleAnimationHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
-    setHookOn(false), setHookTime(0), fishIsNibbling(false),
-    creditFishIsNibbling(false), foremostNibbleLayer(-9999)
+    foremostNibbleLayer(-9999)
 {
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+
+    if( !sharedOcean )
+        return;
+
+    sharedOcean->alignWithSurface(this->hookPoint->y, 50.0);
+    this->initialHookPoint.y = hookPoint->y;
+
     Uint32 rippleFrameTimeNotHooked = 500;
     Uint32 rippleFrameTimeHooked = 100;
     /*std::pair<std::string, Uint32> ripplePair1(RIPPLE_PATH1(), rippleFrameTime);
@@ -247,49 +268,67 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
         ocean);
 }
 
-Line::Line(const Line &rhs) : live(rhs.live), rippleAnimation(
-    rhs.rippleAnimation), setHookOn(rhs.setHookOn), setHookTime(rhs.setHookTime),
-    fishIsNibbling(rhs.fishIsNibbling), creditFishIsNibbling(
-    rhs.creditFishIsNibbling), foremostNibbleLayer(rhs.foremostNibbleLayer)
-{
-    boost::shared_ptr<Player> tmpOwner= rhs.owner.lock();
-
-    //Make sure that to check all added shared_ptr's that were obtained
-    //above. You may add more in the future, so synchronize this if statement
-    if( tmpOwner )
-    {
-        initialize(tmpOwner, *(rhs.polePoint), *(rhs.hookPoint),
-            rhs.ocean);
-        lineIDNumber = rhs.lineIDNumber; //This is the correct behavior for copying
-    }
-            
-    //Else throw exception?
-}
+Line::Line(const Line &rhs) : state(rhs.state), notHookedState(
+    rhs.notHookedState), hookedState(rhs.hookedState), lineIDNumber(
+    rhs.lineIDNumber), owner(rhs.owner), ocean(rhs.ocean), polePoint(
+    rhs.polePoint), poleSize(rhs.poleSize), hookPoint(rhs.hookPoint),
+    hookSize(rhs.hookSize), bitePoint(rhs.bitePoint), hookedFish(rhs.hookedFish),
+    nibbleFish(rhs.nibbleFish), hookedCreditFishObj(rhs.hookedCreditFishObj),
+    nibbleCreditFishObj(rhs.nibbleCreditFishObj), initialPolePoint(
+    rhs.initialPolePoint), initialHookPoint(rhs.initialHookPoint), poleBox(
+    rhs.poleBox), hookBox(rhs.hookBox), biteBox(rhs.biteBox), reelInOn(
+    rhs.reelInOn), giveLineOn(rhs.giveLineOn), lengthenPoleOn(
+    rhs.lengthenPoleOn), shortenPoleOn(rhs.shortenPoleOn), pullLeftOn(
+    rhs.pullLeftOn), pullRightOn(rhs.pullRightOn), setHookOn(rhs.setHookOn),
+    fishHooked(rhs.fishHooked), live(rhs.live), fishIsNibbling(
+    rhs.fishIsNibbling), creditFishIsNibbling(rhs.creditFishIsNibbling),
+    setHookTime(rhs.setHookTime), rippleAnimation(rhs.rippleAnimation),
+    rippleAnimationNotHooked(rhs.rippleAnimationNotHooked),
+    rippleAnimationHooked(rhs.rippleAnimationHooked), foremostNibbleLayer(
+    rhs.foremostNibbleLayer)
+{ }
 
 Line &Line::operator=(const Line &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    boost::shared_ptr<Player> tmpOwner= rhs.owner.lock();
-
-    //Make sure that to check all added shared_ptr's that were obtained
-    //above. You may add more in the future, so synchronize this if statement
-    if( tmpOwner )
-    {
-        dispose();
-        initialize(tmpOwner, *(rhs.polePoint), *(rhs.hookPoint),
-            rhs.ocean);
-        lineIDNumber = rhs.lineIDNumber; //This is the correct behavior for copying
-        live = rhs.live;
-        rippleAnimation = rhs.rippleAnimation;
-        setHookOn = rhs.setHookOn;
-        setHookTime = rhs.setHookTime;
-        fishIsNibbling = rhs.fishIsNibbling;
-        creditFishIsNibbling = rhs.creditFishIsNibbling;
-        foremostNibbleLayer = rhs.foremostNibbleLayer;
-    }
-    //Else throw exception?
+    state = rhs.state;
+    notHookedState = rhs.notHookedState;
+    hookedState = rhs.hookedState;
+    lineIDNumber = rhs.lineIDNumber;
+    owner = rhs.owner;
+    ocean = rhs.ocean;
+    polePoint = rhs.polePoint;
+    poleSize = rhs.poleSize;
+    hookPoint = rhs.hookPoint;
+    hookSize = rhs.hookSize;
+    bitePoint = rhs.bitePoint;
+    hookedFish = rhs.hookedFish;
+    nibbleFish = rhs.nibbleFish;
+    hookedCreditFishObj = rhs.hookedCreditFishObj;
+    nibbleCreditFishObj = rhs.nibbleCreditFishObj;
+    initialPolePoint = rhs.initialPolePoint;
+    initialHookPoint = rhs.initialHookPoint;
+    poleBox = rhs.poleBox;
+    hookBox = rhs.hookBox;
+    biteBox = rhs.biteBox;
+    reelInOn = rhs.reelInOn;
+    giveLineOn = rhs.giveLineOn;
+    lengthenPoleOn = rhs.lengthenPoleOn;
+    shortenPoleOn = rhs.shortenPoleOn;
+    pullLeftOn = rhs.pullLeftOn;
+    pullRightOn = rhs.pullRightOn;
+    setHookOn = rhs.setHookOn;
+    fishHooked = rhs.fishHooked;
+    live = rhs.live;
+    fishIsNibbling = rhs.fishIsNibbling;
+    creditFishIsNibbling = rhs.creditFishIsNibbling;
+    setHookTime = rhs.setHookTime;
+    rippleAnimation = rhs.rippleAnimation;
+    rippleAnimationNotHooked = rhs.rippleAnimationNotHooked;
+    rippleAnimationHooked = rhs.rippleAnimationHooked;
+    foremostNibbleLayer = rhs.foremostNibbleLayer;
 
     return *this;
 }
@@ -803,23 +842,20 @@ void Line::clockTick(Uint32 elapsedTime)
     state->clockTick(elapsedTime);
 }
 
-Line::NotHookedState::NotHookedState(boost::weak_ptr<Line> owner)
-{
-    initialize(owner);
-}
+Line::NotHookedState::NotHookedState(boost::weak_ptr<Line> owner) : lineOwner(
+    owner)
+{ }
 
-Line::NotHookedState::NotHookedState(const NotHookedState &rhs)
-{
-    initialize(rhs.lineOwner);
-}
+Line::NotHookedState::NotHookedState(const NotHookedState &rhs) : lineOwner(
+    rhs.lineOwner)
+{ }
 
 Line::NotHookedState &Line::NotHookedState::operator=(const NotHookedState &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.lineOwner);
+    lineOwner = rhs.lineOwner;
 
     return *this;
 }
@@ -1170,23 +1206,20 @@ void Line::NotHookedState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
 void Line::NotHookedState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
 
-Line::HookedState::HookedState(boost::weak_ptr<Line> owner)
-{
-    initialize(owner);
-}
+Line::HookedState::HookedState(boost::weak_ptr<Line> owner) : lineOwner(
+    owner)
+{ }
 
-Line::HookedState::HookedState(const HookedState &rhs)
-{
-    initialize(rhs.lineOwner);
-}
+Line::HookedState::HookedState(const HookedState &rhs) : lineOwner(
+    rhs.lineOwner)
+{ }
 
 Line::HookedState &Line::HookedState::operator=(const HookedState &rhs)
 {
     if( &rhs == this )
         return *this;
 
-    dispose();
-    initialize(rhs.lineOwner);
+    lineOwner = rhs.lineOwner;
 
     return *this;
 }

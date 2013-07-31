@@ -15,6 +15,20 @@ Point::Point(double x, double y) : x(x), y(y)
 {
 }
 
+Point::Point(const Point &rhs) : x(rhs.x), y(rhs.y)
+{ }
+
+Point &Point::operator=(const Point &rhs)
+{
+    if( &rhs == this )
+        return *this;
+
+    x = rhs.x;
+    y = rhs.y;
+
+    return *this;
+}
+
 bool Point::sortByXAscending(const Point &first, const Point &second)
 {
     if( first.x < second.x )

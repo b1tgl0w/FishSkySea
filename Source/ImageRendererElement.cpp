@@ -15,24 +15,29 @@
 #include "../Header/FontSize.hpp"
 
 ImageRendererElement::ImageRendererElement(const std::string &path, int layer,
-    const Point &initialPosition, const Dimension &initialSize)
-{
-    initialize(path, layer, initialPosition, initialSize,
-        Transformation::None());
-}
+    const Point &initialPosition, const Dimension &initialSize) : path(path),
+    position(initialPosition), layer(layer), originalLayer(layer), size(
+    initialSize), transformation(Transformation::None()), clipObject()
+{ }
 
-ImageRendererElement::ImageRendererElement(const ImageRendererElement &rhs)
-{
-    initialize(rhs.path, rhs.layer, rhs.position, rhs.size, rhs.transformation);
-}
+ImageRendererElement::ImageRendererElement(const ImageRendererElement &rhs) :
+    path(rhs.path), position(rhs.position), layer(rhs.layer), originalLayer(
+    rhs.originalLayer), size(rhs.size), transformation(rhs.transformation),
+    clipObject(rhs.clipObject)
+{ }
 
 ImageRendererElement &ImageRendererElement::operator=(const ImageRendererElement &rhs)
 {
     if( this == &rhs )
         return *this;
 
-    dispose();
-    initialize(rhs.path, rhs.layer, rhs.position, rhs.size, rhs.transformation);
+    path = rhs.path;
+    position = rhs.position;
+    layer = rhs.layer;
+    originalLayer = rhs.originalLayer;
+    size = rhs.size;
+    transformation = rhs.transformation;
+    clipObject = rhs.clipObject;
 
     return *this;
 }
