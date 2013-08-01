@@ -51,26 +51,53 @@ const Uint32 &Shark::MINIMUM_TIME_TO_RANDOM_ABOUT_FACE()
 }
 
 Shark::Shark(boost::weak_ptr<Ocean> ocean,
-    const Point &initialPosition) : live(false)
+    const Point &initialPosition) : state(), attackState(), glowState(),
+    patrolState(), ocean(ocean), position(new Point(initialPosition)),
+    size(new Dimension(SIZE())), visionPosition(new Point(0.0, initialPosition.y)),
+    visionSize(new Dimension(0.0, SIZE().height)), backPosition(new Point(0.0,
+    initialPosition.y)), backSize(new Dimension(0.0, SIZE().height)), 
+    timeSinceAboutFace(0), facing(Direction::LEFT()), sharkBox(position, size),
+    visionBox(visionPosition, visionSize), backBox(backPosition, backSize),
+    continueAttack(false), justAte(false), live(false)
 {
-    initialize(ocean, initialPosition);
+    faceRandomDirection();
+    adjustVisionBox();
 }
 
-Shark::Shark(const Shark &rhs) : live(rhs.live)
-{
-    initialize(rhs.ocean, *(rhs.position));
-    //Else, throw exception?
-}
+Shark::Shark(const Shark &rhs) : state(rhs.state), attackState(rhs.attackState),
+    glowState(rhs.glowState), patrolState(rhs.patrolState), ocean(rhs.ocean),
+    position(rhs.position), size(rhs.size), visionPosition(rhs.visionPosition),
+    visionSize(rhs.visionSize), backPosition(rhs.backPosition), backSize(rhs.
+    backSize), timeSinceAboutFace(rhs.timeSinceAboutFace), facing(rhs.facing),
+    sharkBox(rhs.sharkBox), visionBox(rhs.visionBox), backBox(rhs.backBox),
+    continueAttack(rhs.continueAttack), justAte(rhs.justAte), live(rhs.live)
+{ }
 
 Shark &Shark::operator=(const Shark &rhs)
 {
     if( &rhs == this )
         return *this;
-    
-    dispose();
-    initialize(rhs.ocean, *(rhs.position));
+        
+    state = rhs.state;
+    attackState = rhs.attackState;
+    glowState = rhs.glowState;
+    patrolState = rhs.patrolState;
+    ocean = rhs.ocean;
+    position = rhs.position;
+    size = rhs.size;
+    visionPosition = rhs.visionPosition;
+    visionSize = rhs.visionSize;
+    backPosition = rhs.backPosition;
+    backSize = rhs.backSize;
+    timeSinceAboutFace = rhs.timeSinceAboutFace;
+    facing = rhs.facing;
+    sharkBox = rhs.sharkBox;
+    visionBox = rhs.visionBox;
+    backBox = rhs.backBox;
+    continueAttack = rhs.continueAttack;
+    justAte = rhs.justAte;
     live = rhs.live;
-
+    
     return *this;
 }
 
@@ -393,28 +420,25 @@ void Shark::clockTick(Uint32 elapsedTime)
 }
 
 //Attack State
-Shark::AttackState::AttackState()
+Shark::AttackState::AttackState() : sharkOwner()
 {
     //sharkOwner is not in a valid state!
 }
 
-Shark::AttackState::AttackState(boost::weak_ptr<Shark> sharkOwner)
-{
-    initialize(sharkOwner);
-}
+Shark::AttackState::AttackState(boost::weak_ptr<Shark> sharkOwner) :
+    sharkOwner(sharkOwner)
+{ }
 
-Shark::AttackState::AttackState(const Shark::AttackState &rhs)
-{ 
-    initialize(rhs.sharkOwner);
-}
+Shark::AttackState::AttackState(const Shark::AttackState &rhs) :
+    sharkOwner(rhs.sharkOwner)
+{ }
 
 Shark::AttackState &Shark::AttackState::operator=(const Shark::AttackState &rhs)
 {
     if (this == &rhs)
         return *this;
 
-    dispose();
-    initialize(rhs.sharkOwner);
+    sharkOwner = rhs.sharkOwner;
 
     return *this;
 }
@@ -574,28 +598,25 @@ void Shark::AttackState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
 
 //Patrol State
-Shark::PatrolState::PatrolState()
+Shark::PatrolState::PatrolState() : sharkOwner()
 {
     //sharkOwner is not in a valid state
 }
 
-Shark::PatrolState::PatrolState(boost::weak_ptr<Shark> sharkOwner)
-{
-    initialize(sharkOwner);
-}
+Shark::PatrolState::PatrolState(boost::weak_ptr<Shark> sharkOwner) :
+    sharkOwner(sharkOwner)
+{ }
 
-Shark::PatrolState::PatrolState(const Shark::PatrolState &rhs)
-{
-    initialize(rhs.sharkOwner);
-}
+Shark::PatrolState::PatrolState(const Shark::PatrolState &rhs) : sharkOwner(
+    rhs.sharkOwner)
+{ }
 
 Shark::PatrolState &Shark::PatrolState::operator=(const Shark::PatrolState &rhs)
 {
     if( this == &rhs )
         return *this;
 
-    dispose();
-    initialize(rhs.sharkOwner);
+    sharkOwner = rhs.sharkOwner;
 
     return *this;
 }
@@ -762,28 +783,25 @@ void Shark::PatrolState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
 
 //Attack State
-Shark::GlowState::GlowState()
+Shark::GlowState::GlowState() : sharkOwner()
 {
     //sharkOwner is not in a valid state!
 }
 
-Shark::GlowState::GlowState(boost::weak_ptr<Shark> sharkOwner)
-{
-    initialize(sharkOwner);
-}
+Shark::GlowState::GlowState(boost::weak_ptr<Shark> sharkOwner) : sharkOwner(
+    sharkOwner)
+{ }
 
-Shark::GlowState::GlowState(const Shark::GlowState &rhs)
-{ 
-    initialize(rhs.sharkOwner);
-}
+Shark::GlowState::GlowState(const Shark::GlowState &rhs) : sharkOwner(
+    rhs.sharkOwner)
+{ }
 
 Shark::GlowState &Shark::GlowState::operator=(const Shark::GlowState &rhs)
 {
     if (this == &rhs)
         return *this;
 
-    dispose();
-    initialize(rhs.sharkOwner);
+    sharkOwner = rhs.sharkOwner;
 
     return *this;
 }

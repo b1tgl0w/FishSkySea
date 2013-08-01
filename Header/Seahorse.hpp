@@ -326,6 +326,10 @@ private:
     boost::shared_ptr<FloatingState> floatingState;
     boost::shared_ptr<Point> position;
     boost::shared_ptr<Dimension> seahorseSize;
+    boost::shared_ptr<Point> leftPosition;
+    boost::shared_ptr<Dimension> leftSize;
+    boost::shared_ptr<Point> rightPosition;
+    boost::shared_ptr<Dimension> rightSize;
     BoundingBox seahorseBox;
     BoundingBox seahorseLeftBox;
     BoundingBox seahorseRightBox;
@@ -340,10 +344,6 @@ private:
     double floatX;
     bool floatedOnce;
     Uint32 floatTime;
-    boost::shared_ptr<Point> leftPosition;
-    boost::shared_ptr<Dimension> leftSize;
-    boost::shared_ptr<Point> rightPosition;
-    boost::shared_ptr<Dimension> rightSize;
     bool collidedWithOceanEdge;
     int seaSnailRetreatCount;
     bool proceed;

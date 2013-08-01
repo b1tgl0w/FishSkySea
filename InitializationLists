@@ -59,16 +59,18 @@ done Source/RandomBlock.cpp
 
 done but screen and other not initialized  Source/Renderer.cpp
 
-Source/RendererElement.cpp
-Source/ScaleClipFit.cpp
-Source/Scene.cpp
-Source/SceneLabel.cpp
-Source/SceneMenuItem.cpp
-Source/Score.cpp
-Source/SeaBassShowdown.cpp
-Source/Seahorse.cpp
-Source/SeaSnail.cpp
-Source/Shark.cpp
+done Source/RendererElement.cpp
+done Source/ScaleClipFit.cpp
+done Source/Scene.cpp
+done Source/SceneLabel.cpp
+done Source/SceneMenuItem.cpp
+done Source/Score.cpp
+done Source/SeaBassShowdown.cpp
+
+done Source/Seahorse.cpp
+done Source/SeaSnail.cpp
+done Source/Shark.cpp
+
 Source/SpilloverFit.cpp
 Source/StringUtility.cpp
 Source/TextRendererElement.cpp

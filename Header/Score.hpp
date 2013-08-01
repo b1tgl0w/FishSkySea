@@ -30,7 +30,6 @@ private:
     Score();
     int score;
     int renderedScore;
-    Dimension size;
 };
 
 #endif

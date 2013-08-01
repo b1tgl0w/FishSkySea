@@ -37,48 +37,77 @@ const Dimension &Seahorse::SIZE()
 }
 
 Seahorse::Seahorse(const Point &initialPosition,
-    boost::shared_ptr<Ocean> &ocean) : live(false), floatedOnce(false),
-    floatTime(0), collidedWithOceanEdge(true), seaSnailRetreatCount(-1),
-    proceed(false)
+    boost::shared_ptr<Ocean> &ocean) : state(), swimmingState(), floatingState(),
+    position(new Point(initialPosition)), seahorseSize(new Dimension(SIZE())),
+    leftPosition(new Point), leftSize(new Dimension), rightPosition(new Point),
+    rightSize(new Dimension), seahorseBox(position, seahorseSize), 
+    seahorseLeftBox(leftPosition, leftSize), seahorseRightBox(rightPosition,
+    rightSize), facing(Direction::LEFT()), ocean(ocean), shouldResetTimes(false),
+    live(false), bobRemaining(0), bobDirection(Direction::UP()), depth(
+    Depth::random()), verticalFacing(Direction::DOWN()), floatX(0.0),
+    floatedOnce(false), floatTime(0), collidedWithOceanEdge(true),
+    seaSnailRetreatCount(-1), proceed(false)
 {
-    initialize(initialPosition, ocean);
+    Point tmpOceanFloor(0.0, 0.0);
+    ocean->alignWithBoundary(tmpOceanFloor.y, Direction::DOWN(), 0.0);
+    ocean->alignWithBoundary(leftPosition->y, Direction::UP(), 0.0);
+    leftSize->height = tmpOceanFloor.y - leftPosition->y;
+    ocean->alignWithBoundary(rightPosition->y, Direction::UP(), 0.0);
+    rightSize->height = tmpOceanFloor.y - rightPosition->y;
+
+    turnBob();
+    adjustBoxes();
+
+    positionFromSide();
+    resetTimes(); //Also sets shouldResetTime
+    resetFloat();
 }
 
-Seahorse::Seahorse(const Seahorse &rhs) : seahorseSize(rhs.seahorseSize),
-    live(rhs.live), floatedOnce(rhs.floatedOnce), floatTime(rhs.floatTime),
-    collidedWithOceanEdge(rhs.collidedWithOceanEdge),
-    seaSnailRetreatCount(rhs.seaSnailRetreatCount),
+Seahorse::Seahorse(const Seahorse &rhs) : state(rhs.state), swimmingState(
+    rhs.swimmingState), floatingState(rhs.floatingState), position(rhs.position),
+    seahorseSize(rhs.seahorseSize), leftPosition(rhs.leftPosition), leftSize(
+    rhs.leftSize), rightPosition(rhs.rightPosition),
+    rightSize(rhs.rightSize), seahorseBox(rhs.seahorseBox),
+    seahorseLeftBox(rhs.seahorseLeftBox), seahorseRightBox(rhs.seahorseRightBox),
+    facing(rhs.facing), ocean(rhs.ocean), shouldResetTimes(rhs.shouldResetTimes),
+    live(rhs.live), bobRemaining(rhs.bobRemaining), bobDirection(rhs.bobDirection),
+    depth(rhs.depth), verticalFacing(rhs.verticalFacing), floatX(rhs.floatX),
+    floatedOnce(rhs.floatedOnce), floatTime(rhs.floatTime), collidedWithOceanEdge(
+    rhs.collidedWithOceanEdge), seaSnailRetreatCount(rhs.seaSnailRetreatCount),
     proceed(rhs.proceed)
-{
-    boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
-
-    //Make sure if any shared_ptr's are added that they are also check in this if
-    if( tmpOcean )
-        initialize(*(rhs.position), tmpOcean);
-    //Else throw exception?
-}
+{ }
 
 Seahorse &Seahorse::operator=(const Seahorse &rhs)
 {
     if( this == &rhs )
         return *this;
 
-    boost::shared_ptr<Ocean> tmpOcean = rhs.ocean.lock();
-
-    //Make sure if any shared_ptr's are added that they are also check in this if
-    if( tmpOcean ) 
-    {
-        dispose();
-        initialize(*(rhs.position), tmpOcean);
-        seahorseSize = rhs.seahorseSize;
-        live = rhs.live;
-        floatedOnce = rhs.floatedOnce;
-        floatTime = rhs.floatTime;
-        collidedWithOceanEdge = rhs.collidedWithOceanEdge;
-        seaSnailRetreatCount = rhs.seaSnailRetreatCount;
-        proceed = rhs.proceed;
-    }
-    //Else throw exception?
+    state = rhs.state;
+    swimmingState = rhs.swimmingState;
+    floatingState = rhs.floatingState;
+    position = rhs.position;
+    seahorseSize = rhs.seahorseSize;
+    leftPosition = rhs.leftPosition;
+    leftSize = rhs.leftSize;
+    rightPosition = rhs.rightPosition;
+    rightSize = rhs.rightSize;
+    seahorseBox = rhs.seahorseBox;
+    seahorseLeftBox = rhs.seahorseLeftBox;
+    seahorseRightBox = rhs.seahorseRightBox;
+    facing = rhs.facing;
+    ocean = rhs.ocean;
+    shouldResetTimes = rhs.shouldResetTimes;
+    live = rhs.live;
+    bobRemaining = rhs.bobRemaining;
+    bobDirection = rhs.bobDirection;
+    depth = rhs.depth;
+    verticalFacing = rhs.verticalFacing;
+    floatX = rhs.floatX;
+    floatedOnce = rhs.floatedOnce;
+    floatTime = rhs.floatTime;
+    collidedWithOceanEdge = rhs.collidedWithOceanEdge;
+    seaSnailRetreatCount = rhs.seaSnailRetreatCount;
+    proceed = rhs.proceed;
 
     return *this;
 }
@@ -434,29 +463,26 @@ void Seahorse::notifySeaSnailRetreat()
 }
 
 //Inner class FreeState
-Seahorse::SwimmingState::SwimmingState()
+Seahorse::SwimmingState::SwimmingState() : seahorseOwner()
 {
     //SeahorseOwneris not in a valid state!
 }
 
-Seahorse::SwimmingState::SwimmingState(boost::weak_ptr<Seahorse> seahorseOwner)
-{
-    initialize(seahorseOwner);
-}
+Seahorse::SwimmingState::SwimmingState(boost::weak_ptr<Seahorse> seahorseOwner) :
+    seahorseOwner(seahorseOwner)
+{ }
 
-Seahorse::SwimmingState::SwimmingState(const Seahorse::SwimmingState &rhs)
-{
-    initialize(rhs.seahorseOwner);
-}
+Seahorse::SwimmingState::SwimmingState(const Seahorse::SwimmingState &rhs) :
+    seahorseOwner(rhs.seahorseOwner)
+{ }
 
 Seahorse::SwimmingState &Seahorse::SwimmingState::operator=(const Seahorse::SwimmingState &rhs)
 {
     if( this == &rhs )
         return *this;
-    
-    dispose();
-    initialize(rhs.seahorseOwner);
 
+    seahorseOwner = rhs.seahorseOwner;
+    
     return *this;
 }
 
@@ -790,28 +816,25 @@ void Seahorse::SwimmingState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &o
 }
 
 //Inner class FloatingState
-Seahorse::FloatingState::FloatingState()
+Seahorse::FloatingState::FloatingState() : seahorseOwner()
 {
     //seahorseOwner is not in a valid state!
 }
 
-Seahorse::FloatingState::FloatingState(boost::weak_ptr<Seahorse> seahorseOwner)
-{
-    initialize(seahorseOwner);
-}
+Seahorse::FloatingState::FloatingState(boost::weak_ptr<Seahorse> seahorseOwner) :
+    seahorseOwner(seahorseOwner)
+{ }
 
-Seahorse::FloatingState::FloatingState(const Seahorse::FloatingState &rhs)
-{
-    initialize(rhs.seahorseOwner);
-}
+Seahorse::FloatingState::FloatingState(const Seahorse::FloatingState &rhs) :
+    seahorseOwner(rhs.seahorseOwner)
+{ }
 
 Seahorse::FloatingState &Seahorse::FloatingState::operator=(const Seahorse::FloatingState &rhs)
 {
     if ( this == &rhs )
         return *this;
 
-    dispose();
-    initialize(rhs.seahorseOwner);
+    seahorseOwner = rhs.seahorseOwner;
 
     return *this;
 }
