@@ -36,7 +36,7 @@ TitleScene::TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     boost::shared_ptr<Renderer> &renderer, const Dimension &screenSize) : 
     currentScene(currentScene), titleMenu(new TitleMenu(currentScene, 
     mainGameScene, creditGameScene)), keyboardPublisher(keyboardPublisher), 
-    transition(false), scaleClip(new ScaleClipFit), 
+    transition(false), toScene(), scaleClip(new ScaleClipFit), 
     layeredLayout(new LayeredLayout(2, scaleClip)), 
     centerLayout(new CenterLayout(scaleClip)), gridLayout( new 
     GridLayout(2, 3)), borderLayout(new BorderLayout(BorderSize::Medium())),
@@ -84,6 +84,8 @@ TitleScene &TitleScene::operator=(const TitleScene &rhs)
     superGridLayout = rhs.superGridLayout;
     superBorderLayout = rhs.superBorderLayout;
     menuLayout = rhs.menuLayout;
+    masterInputPublisher = rhs.masterInputPublisher;
+    masterClockPublisher = rhs.masterClockPublisher;
     clockSubscriber = rhs.clockSubscriber;
     MiSubscriber = rhs.MiSubscriber;
     renderer = rhs.renderer;

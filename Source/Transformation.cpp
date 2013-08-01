@@ -10,15 +10,11 @@
 #include "../Header/Transformation.hpp"
 #include "../Header/StringUtility.hpp"
 
-Transformation::Transformation()
-{
-    value = None().value;
-}
+Transformation::Transformation() : value(Transformation::None().value)
+{ }
 
-Transformation::Transformation(const Transformation &rhs)
-{
-    value = rhs.value;
-}
+Transformation::Transformation(const Transformation &rhs) : value(rhs.value)
+{ }
 
 Transformation &Transformation::operator=(const Transformation &rhs)
 {
@@ -80,10 +76,8 @@ std::string Transformation::tellTransformations() const
     return StringUtility::toString(value);
 }
 
-Transformation::Transformation(int initialValue)
-{
-    value = initialValue;
-}
+Transformation::Transformation(int initialValue) : value(initialValue)
+{ }
 
 bool Transformation::operator==(const Transformation &rhs) const
 {

@@ -48,7 +48,8 @@ const Uint32 &TitleMenu::PRESSED_TIME_THRESHOLD()
 
 TitleMenu::TitleMenu(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
     boost::shared_ptr<Scene> &mainGameScene, boost::shared_ptr<Scene> 
-    &creditGameScene) : cycle(STOP()), pressedTime(0)
+    &creditGameScene) : menuItems(), textRendererElements(), menuGrid(),
+    layouts(), cycle(STOP()), pressedTime(0)
 {
     createMenuItems(currentScene, mainGameScene, creditGameScene);
     createLayouts();
@@ -58,9 +59,8 @@ TitleMenu::TitleMenu(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
 TitleMenu::TitleMenu(const TitleMenu &rhs) : menuItems(rhs.menuItems),
     currentMenuItem(rhs.currentMenuItem), 
     textRendererElements(rhs.textRendererElements), menuGrid(rhs.menuGrid),
-    cycle(rhs.cycle), pressedTime(rhs.pressedTime)
-{
-}
+    layouts(rhs.layouts), cycle(rhs.cycle), pressedTime(rhs.pressedTime)
+{ }
 
 TitleMenu &TitleMenu::operator=(const TitleMenu &rhs)
 {
@@ -71,6 +71,7 @@ TitleMenu &TitleMenu::operator=(const TitleMenu &rhs)
     currentMenuItem = rhs.currentMenuItem;
     textRendererElements = rhs.textRendererElements;
     menuGrid = rhs.menuGrid;
+    layouts = rhs.layouts;
     cycle = rhs.cycle;
     pressedTime = rhs.pressedTime;
 

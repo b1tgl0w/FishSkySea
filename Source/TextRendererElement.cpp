@@ -14,7 +14,8 @@ TextRendererElement::TextRendererElement(const std::string &text, int
     layer, const Point &initialPosition, const Dimension &initialSize,
     const FontSize &fontSize) : 
     text(text), position(initialPosition), originalLayer(layer), layer(layer),
-    size(initialSize), fontSize(fontSize)
+    size(initialSize), transformation(Transformation::None()),
+    clipObject(), fontSize(fontSize)
 {
 }
     
@@ -36,8 +37,8 @@ TextRendererElement &TextRendererElement::operator=(const TextRendererElement
     originalLayer = rhs.originalLayer;
     layer = rhs.layer;
     size = rhs.size;
-    clipObject = rhs.clipObject;
     transformation = rhs.transformation;
+    clipObject = rhs.clipObject;
     fontSize = rhs.fontSize;
 
     return *this;

@@ -71,14 +71,14 @@ done Source/Seahorse.cpp
 done Source/SeaSnail.cpp
 done Source/Shark.cpp
 
-Source/SpilloverFit.cpp
-Source/StringUtility.cpp
-Source/TextRendererElement.cpp
-Source/TimerAction.cpp
-Source/Timer.cpp
-Source/TitleMenu.cpp
-Source/TitleScene.cpp
-Source/Transformation.cpp
-Source/Weight.cpp
+done Source/SpilloverFit.cpp
+done Source/StringUtility.cpp
+done Source/TextRendererElement.cpp
+done Source/TimerAction.cpp
+done Source/Timer.cpp
+done Source/TitleMenu.cpp
+done Source/TitleScene.cpp
+done Source/Transformation.cpp
+done Source/Weight.cpp
 
-- Check that all ctors in header have impl
+- Check that all ctors in header have impl!

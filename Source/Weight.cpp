@@ -40,20 +40,14 @@ const Weight Weight::MYTHICAL()
     return Weight(6);
 }
 
-Weight::Weight(int initialValue)
-{
-    value = initialValue;
-}
+Weight::Weight(int initialValue) : value(initialValue)
+{ }
 
-Weight::Weight()
-{
-    value = 0;
-}
+Weight::Weight() : value(0)
+{ }
 
-Weight::Weight(const Weight &rhs)
-{
-    value = rhs.value;
-}
+Weight::Weight(const Weight &rhs) : value(rhs.value)
+{ }
 
 Weight &Weight::operator=(const Weight &rhs)
 {
