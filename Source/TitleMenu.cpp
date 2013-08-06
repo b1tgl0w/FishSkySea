@@ -69,10 +69,11 @@ const Uint32 &TitleMenu::PRESSED_TIME_THRESHOLD()
 
 TitleMenu::TitleMenu(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
     boost::shared_ptr<Scene> &mainGameScene, boost::shared_ptr<Scene> 
-    &creditGameScene) : menuItems(), textRendererElements(), menuGrid(),
+    &creditGameScene, boost::shared_ptr<Scene> &storyScene) : menuItems(), 
+    textRendererElements(), menuGrid(),
     layouts(), cycle(STOP()), pressedTime(0)
 {
-    createMenuItems(currentScene, mainGameScene, creditGameScene);
+    createMenuItems(currentScene, mainGameScene, creditGameScene, storyScene);
     createLayouts();
     reset();
 }
@@ -175,15 +176,17 @@ boost::shared_ptr<Layout> TitleMenu::layoutToAttach()
 
 void TitleMenu::createMenuItems(boost::shared_ptr<boost::shared_ptr<Scene> >
     &currentScene, boost::shared_ptr<Scene> &mainGameScene, boost::shared_ptr<Scene>
-    &creditGameScene)
+    &creditGameScene, boost::shared_ptr<Scene> &storyScene)
 {
     boost::shared_ptr<MenuItem> play(new SceneMenuItem(currentScene,
         mainGameScene, "Play"));
     boost::shared_ptr<MenuItem> credits(new SceneMenuItem(currentScene,
         creditGameScene, "Credits"));
+    boost::shared_ptr<MenuItem> story(new SceneMenuItem(currentScene,
+        storyScene, "Story"));
     menuItems.push_back(play);
     menuItems.push_back(credits);
-    menuItems.push_back(play);
+    menuItems.push_back(story);
     menuItems.push_back(play);
 }
 

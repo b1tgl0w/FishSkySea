@@ -3,9 +3,9 @@
 //CurrentToDo is specifications of current task, this is implementation of task
 
 Done - Fix art so cloud bg is separate from fishermen graphics
-- Create StoryScene class
+Done - Create StoryScene class
 - Load story text file
 - Create message boxes
 - Configure message box control
-- Add Story to main menu
+Done - Add Story to main menu
 

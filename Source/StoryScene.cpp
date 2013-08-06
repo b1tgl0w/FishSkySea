@@ -1,6 +1,6 @@
 //File: StoryScene.cpp
 //Author:   John Miner
-//Created:  09/05/12
+//Created:  08/05/13
 //Purpose:  Show the title menu and allow player to select menu items.
 //Copyright 2012 John Miner
 //This program is distributed under the terms of the GNU General Public License.
@@ -24,123 +24,112 @@ PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
 EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
-/*
 
-#include "../Header/TitleScene.hpp"
-#include "../Header/TitleMenu.hpp"
+#include "../Header/StoryScene.hpp"
 #include "../Header/KeyboardPublisher.hpp"
 #include "../Header/KeyboardSubscriber.hpp"
 #include "../Header/MasterInputPublisher.hpp"
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/MasterClockSubscriber.hpp"
 #include "../Header/FitStrategy.hpp"
-#include "../Header/ClipFit.hpp"
 #include "../Header/ScaleClipFit.hpp"
 #include "../Header/LayeredLayout.hpp"
 #include "../Header/CenterLayout.hpp"
-#include "../Header/GridLayout.hpp"
 #include "../Header/BorderLayout.hpp"
 #include "../Header/Layout.hpp"
 #include "../Header/MasterInputSubscriber.hpp"
 #include "../Header/Renderer.hpp"
 
-const Point &TitleScene::BACKGROUND_POSITION()
+const Point &StoryScene::BACKGROUND_POSITION()
 {
     static const Point TMP_BACKGROUND_POSITION(0.0, 0.0);
     return TMP_BACKGROUND_POSITION;
 }
 
-TitleScene::TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> > 
-    &currentScene, boost::shared_ptr<Scene> &mainGameScene,
-    boost::shared_ptr<Scene> &creditGameScene,
+StoryScene::StoryScene(boost::shared_ptr<boost::shared_ptr<Scene> > 
+    &currentScene, 
     boost::shared_ptr<KeyboardPublisher> &keyboardPublisher,
     boost::shared_ptr<Renderer> &renderer, const Dimension &screenSize) : 
-    currentScene(currentScene), titleMenu(new TitleMenu(currentScene, 
-    mainGameScene, creditGameScene)), keyboardPublisher(keyboardPublisher), 
+    currentScene(currentScene), keyboardPublisher(keyboardPublisher), 
     transition(false), toScene(), scaleClip(new ScaleClipFit), 
     layeredLayout(new LayeredLayout(2, scaleClip)), 
-    centerLayout(new CenterLayout(scaleClip)), gridLayout( new 
-    GridLayout(2, 3)), borderLayout(new BorderLayout(BorderSize::Medium())),
-    superLayeredLayout(layeredLayout), superCenterLayout(centerLayout), 
-    superGridLayout(gridLayout), superBorderLayout(borderLayout), 
-    menuLayout(titleMenu->layoutToAttach()), masterInputPublisher(
+    centerLayoutBg(new CenterLayout(scaleClip)),  centerLayoutFg(new CenterLayout(scaleClip)),
+    borderLayout(new BorderLayout(BorderSize::Thick())),
+    superLayeredLayout(layeredLayout), superCenterLayoutBg(centerLayoutBg), 
+    superCenterLayoutFg(centerLayoutFg), superBorderLayout(borderLayout),
+    masterInputPublisher(
     MasterInputPublisher::getInstance()), 
     masterClockPublisher(MasterClockPublisher::getInstance()), clockSubscriber(
     masterClockPublisher, MasterClockPublisher::customDeleter), MiSubscriber(
-    keyboardPublisher), renderer(renderer), titleBackground(
-    "../Media/TitleBackground.png", 0, BACKGROUND_POSITION(), screenSize)
+    keyboardPublisher), renderer(renderer), storySceneBg(
+    "../Media/SbsStoryBg.png", 0, BACKGROUND_POSITION(), screenSize),
+    storySceneFg("../Media/SbsStoryFg.png", 0, BACKGROUND_POSITION(),
+    screenSize)
 {
 }
 
-TitleScene::TitleScene(const TitleScene &rhs) : currentScene(rhs.currentScene),
-    titleMenu(rhs.titleMenu), keyboardPublisher(rhs.keyboardPublisher),
+StoryScene::StoryScene(const StoryScene &rhs) : currentScene(rhs.currentScene),
+    keyboardPublisher(rhs.keyboardPublisher),
     transition(rhs.transition), toScene(rhs.toScene), scaleClip(rhs.scaleClip),
-    layeredLayout(rhs.layeredLayout), centerLayout(rhs.centerLayout),
-    gridLayout(rhs.gridLayout), borderLayout(rhs.borderLayout),
-    superLayeredLayout(rhs.layeredLayout), superCenterLayout(
-    rhs.superCenterLayout), superGridLayout(rhs.superGridLayout), 
-    superBorderLayout(rhs.superBorderLayout), menuLayout(rhs.menuLayout), 
+    layeredLayout(rhs.layeredLayout), centerLayoutBg(rhs.centerLayoutBg),
+    centerLayoutFg(rhs.centerLayoutFg),
+    borderLayout(rhs.borderLayout),
+    superLayeredLayout(rhs.layeredLayout), superCenterLayoutBg(
+    rhs.superCenterLayoutBg),  superCenterLayoutFg(rhs.superCenterLayoutFg),
+    superBorderLayout(rhs.superBorderLayout), masterInputPublisher(rhs.masterInputPublisher),
+    masterClockPublisher(rhs.masterClockPublisher),
     clockSubscriber(rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), 
-    renderer(rhs.renderer), titleBackground(rhs.titleBackground)
+    renderer(rhs.renderer), storySceneBg(rhs.storySceneBg), storySceneFg(
+    rhs.storySceneFg)
 {
 }
 
-TitleScene &TitleScene::operator=(const TitleScene &rhs)
+StoryScene &StoryScene::operator=(const StoryScene &rhs)
 {
     if( &rhs == this )
         return *this;
 
     currentScene = rhs.currentScene;
-    titleMenu = rhs.titleMenu;
     keyboardPublisher = rhs.keyboardPublisher;
     transition = rhs.transition;
     toScene = rhs.toScene;
     scaleClip = rhs.scaleClip;
     layeredLayout = rhs.layeredLayout;
-    centerLayout = rhs.centerLayout;
-    gridLayout = rhs.gridLayout;
+    centerLayoutBg = rhs.centerLayoutBg;
+    centerLayoutFg = rhs.centerLayoutFg;
     borderLayout = rhs.borderLayout;
     superLayeredLayout = rhs.superLayeredLayout;
-    superCenterLayout = rhs.superCenterLayout;
-    superGridLayout = rhs.superGridLayout;
+    superCenterLayoutBg = rhs.superCenterLayoutBg;
+    superCenterLayoutFg = rhs.superCenterLayoutFg;
     superBorderLayout = rhs.superBorderLayout;
-    menuLayout = rhs.menuLayout;
     masterInputPublisher = rhs.masterInputPublisher;
     masterClockPublisher = rhs.masterClockPublisher;
     clockSubscriber = rhs.clockSubscriber;
     MiSubscriber = rhs.MiSubscriber;
     renderer = rhs.renderer;
-    titleBackground = rhs.titleBackground;
+    storySceneBg = rhs.storySceneBg;
+    storySceneFg = rhs.storySceneFg;
 
     return *this;
 }
 
-void TitleScene::enter()
+void StoryScene::enter()
 {
-    Point cell(1, 1);
-    boost::shared_ptr<KeyboardSubscriber> titleMenuKeySubscriber(titleMenu);
-    boost::shared_ptr<MasterClockSubscriber> titleMenuClockSubscriber(titleMenu);
     transition = false;
-    keyboardPublisher->subscribe(titleMenuKeySubscriber);
-    masterClockPublisher->subscribe(titleMenuClockSubscriber);
-    layeredLayout->addLayout(superCenterLayout, 0);
-    layeredLayout->addLayout(superGridLayout, 1);
-    gridLayout->addLayout(superBorderLayout, cell);
-    borderLayout->addLayout(menuLayout, BorderCell::Center());
+    layeredLayout->addLayout(superCenterLayoutBg, 0);
+    layeredLayout->addLayout(superBorderLayout, 1);
+    borderLayout->addLayout(superCenterLayoutFg, BorderCell::Center());
     renderer->addLayout(superLayeredLayout);
-    //keyboardPublisher->subscribe(clockSubscriber);
     masterInputPublisher->subscribe(MiSubscriber);
     loadImage(*renderer);
-    titleMenu->loadImage(*renderer);
-    titleMenu->reset();
 }
 
-void TitleScene::run()
+void StoryScene::run()
 {
     masterInputPublisher->pollInput();
     masterClockPublisher->pollClock();
-    draw(superCenterLayout, *renderer);
-    titleMenu->draw(superBorderLayout, *renderer);
+    superCenterLayoutBg->drawWhenReady(storySceneBg);
+    superCenterLayoutFg->drawWhenReady(storySceneFg);
     renderer->render();
 
     if( transition )
@@ -151,35 +140,29 @@ void TitleScene::run()
     }
 }
 
-void TitleScene::exit()
+void StoryScene::exit()
 {
-    Point cell(1, 1);
-    boost::shared_ptr<KeyboardSubscriber> titleMenuSubscriber(titleMenu);
-    boost::shared_ptr<MasterClockSubscriber> titleMenuClockSubscriber(titleMenu);
-    keyboardPublisher->unsubscribe(titleMenuSubscriber);
-    masterClockPublisher->unsubscribe(titleMenuClockSubscriber);
-    layeredLayout->removeLayout(superCenterLayout, 0);
-    layeredLayout->removeLayout(superGridLayout, 1);
-    gridLayout->removeLayout(superBorderLayout, cell);
-    borderLayout->removeLayout(menuLayout, BorderCell::Center());
+    layeredLayout->removeLayout(superCenterLayoutBg, 0);
+    layeredLayout->removeLayout(superBorderLayout, 1);
+    borderLayout->removeLayout(superCenterLayoutFg, BorderCell::Center());
     renderer->removeLayout(superLayeredLayout);
-    //keyboardPublisher->unsubscribe(clockSubscriber);
     masterInputPublisher->unsubscribe(MiSubscriber);
 }
 
-void TitleScene::transitionTo(boost::shared_ptr<Scene> &scene)
+void StoryScene::transitionTo(boost::shared_ptr<Scene> &scene)
 {
     transition = true;
     toScene = scene;
 }
 
-void TitleScene::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
+void StoryScene::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    layout->drawWhenReady(titleBackground);
+    //Handled in StoryScene::run, because there are two layouts to draw to
 }
 
-void TitleScene::loadImage(Renderer &renderer)
+void StoryScene::loadImage(Renderer &renderer)
 {
-    renderer.loadImage("../Media/TitleBackground.png");
+    renderer.loadImage("../Media/SbsStoryBg.png");
+    renderer.loadImage("../Media/SbsStoryFg.png");
 }
-*/
+

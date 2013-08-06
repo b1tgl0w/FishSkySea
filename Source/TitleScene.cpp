@@ -54,9 +54,10 @@ TitleScene::TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     &currentScene, boost::shared_ptr<Scene> &mainGameScene,
     boost::shared_ptr<Scene> &creditGameScene,
     boost::shared_ptr<KeyboardPublisher> &keyboardPublisher,
-    boost::shared_ptr<Renderer> &renderer, const Dimension &screenSize) : 
+    boost::shared_ptr<Renderer> &renderer, const Dimension &screenSize,
+    boost::shared_ptr<Scene> &storyScene) : 
     currentScene(currentScene), titleMenu(new TitleMenu(currentScene, 
-    mainGameScene, creditGameScene)), keyboardPublisher(keyboardPublisher), 
+    mainGameScene, creditGameScene, storyScene)), keyboardPublisher(keyboardPublisher), 
     transition(false), toScene(), scaleClip(new ScaleClipFit), 
     layeredLayout(new LayeredLayout(2, scaleClip)), 
     centerLayout(new CenterLayout(scaleClip)), gridLayout( new 
@@ -80,6 +81,8 @@ TitleScene::TitleScene(const TitleScene &rhs) : currentScene(rhs.currentScene),
     superLayeredLayout(rhs.layeredLayout), superCenterLayout(
     rhs.superCenterLayout), superGridLayout(rhs.superGridLayout), 
     superBorderLayout(rhs.superBorderLayout), menuLayout(rhs.menuLayout), 
+    masterInputPublisher(rhs.masterInputPublisher), masterClockPublisher(rhs.
+    masterClockPublisher),
     clockSubscriber(rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), 
     renderer(rhs.renderer), titleBackground(rhs.titleBackground)
 {

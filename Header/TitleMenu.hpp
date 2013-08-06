@@ -50,7 +50,7 @@ class TitleMenu : public Menu, public Graphic, public KeyboardSubscriber,
 public:
     TitleMenu(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
     boost::shared_ptr<Scene> &mainGameScene, boost::shared_ptr<Scene> &
-    creditGameScene);
+    creditGameScene, boost::shared_ptr<Scene> &storyScene);
     TitleMenu(const TitleMenu &rhs);
     TitleMenu &operator=(const TitleMenu &rhs);
     void next();
@@ -67,7 +67,8 @@ private:
     TitleMenu();
     void createMenuItems(boost::shared_ptr<boost::shared_ptr<Scene> > 
         &currentScene, boost::shared_ptr<Scene> &mainGameScene,
-        boost::shared_ptr<Scene> &creditGameScene);
+        boost::shared_ptr<Scene> &creditGameScene, boost::shared_ptr<Scene>
+        &storyScene);
     void createLayouts();
     void highlightCurrentMenuItem(bool highlight);
     static const int &STOP();

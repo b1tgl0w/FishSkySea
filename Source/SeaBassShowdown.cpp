@@ -72,6 +72,7 @@ SUCH DAMAGES.
 #include "../Header/SceneLabel.hpp"
 #include "../Header/Scene.hpp"
 #include "../Header/TitleScene.hpp"
+#include "../Header/StoryScene.hpp"
 
 void handleQuit( bool &quit );
 
@@ -92,11 +93,14 @@ int main(int argc, char **argv)
         currentScene, renderer, keyboardPublisher, screenResolution));
     boost::shared_ptr<CreditGameScene> creditGameScene(new CreditGameScene(
         currentScene, renderer, keyboardPublisher, screenResolution));
+    boost::shared_ptr<StoryScene> storyScene(new StoryScene(
+        currentScene, keyboardPublisher, renderer, screenResolution));
     boost::shared_ptr<Scene> superMainGameScene(mainGameScene);
     boost::shared_ptr<Scene> superCreditGameScene(creditGameScene);
+    boost::shared_ptr<Scene> superStoryScene(storyScene);
     boost::shared_ptr<TitleScene> titleScene(new TitleScene(
         currentScene, superMainGameScene, superCreditGameScene, 
-        keyboardPublisher, renderer, screenResolution));
+        keyboardPublisher, renderer, screenResolution, superStoryScene));
 
     *currentScene = titleScene;
     (*currentScene)->enter();

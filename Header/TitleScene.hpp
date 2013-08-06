@@ -54,7 +54,8 @@ public:
         boost::shared_ptr<Scene> &mainGameScene, boost::shared_ptr<Scene>
         &creditGamescene, boost::shared_ptr<KeyboardPublisher> 
         &keyboardPublisher, boost::shared_ptr<Renderer> 
-        &renderer, const Dimension &screenSize);
+        &renderer, const Dimension &screenSize, boost::shared_ptr<Scene> &
+        storyScene);
     TitleScene(const TitleScene &rhs);
     TitleScene &operator=(const TitleScene &rhs);
     void enter();
