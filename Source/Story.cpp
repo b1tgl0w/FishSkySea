@@ -1,12 +1,9 @@
-//File: Item4Bar.cpp
+//File: Story.cpp
 //Author:   John Miner
-//Created:  09/25/11
-//Modified: 09/25/11
-//Purpose:  Test out Scott Meyers' advice in Effective C++ for non-local
-//static objects of different translation units, specifically for class-wide
-//static constants
-//Copyright 2012 John Miner
-//This program is distributed under the terms of the GNU General Public License
+//Created:  08/06/13
+//Purpose:  Work with message box and fading in/out to control story
+//Copyright 2013 John Miner
+//This program is distributed under the terms of the GNU General Public License.
 /*
 THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
 APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
@@ -28,11 +25,4 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
-#include "Item4Bar.hpp"
-
-const int &Bar::MY_VAR()
-{
-    static const int TMP_MY_VAR = 32;
-    return TMP_MY_VAR;
-}
 
