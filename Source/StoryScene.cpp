@@ -39,6 +39,7 @@ SUCH DAMAGES.
 #include "../Header/Layout.hpp"
 #include "../Header/MasterInputSubscriber.hpp"
 #include "../Header/Renderer.hpp"
+#include "../Header/BorderCorner.hpp"
 
 const Point &StoryScene::BACKGROUND_POSITION()
 {
@@ -64,7 +65,8 @@ StoryScene::StoryScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     keyboardPublisher), renderer(renderer), storySceneBg(
     "../Media/SbsStoryBg.png", 0, BACKGROUND_POSITION(), screenSize),
     storySceneFg("../Media/SbsStoryFg.png", 0, BACKGROUND_POSITION(),
-    screenSize)
+    screenSize), story(new Story("../Story/MainStoryScene.txt", renderer)),
+    storySubscriber(story)
 {
 }
 
@@ -80,7 +82,7 @@ StoryScene::StoryScene(const StoryScene &rhs) : currentScene(rhs.currentScene),
     masterClockPublisher(rhs.masterClockPublisher),
     clockSubscriber(rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), 
     renderer(rhs.renderer), storySceneBg(rhs.storySceneBg), storySceneFg(
-    rhs.storySceneFg)
+    rhs.storySceneFg), story(rhs.story), storySubscriber(rhs.storySubscriber)
 {
 }
 
@@ -109,6 +111,8 @@ StoryScene &StoryScene::operator=(const StoryScene &rhs)
     renderer = rhs.renderer;
     storySceneBg = rhs.storySceneBg;
     storySceneFg = rhs.storySceneFg;
+    story = rhs.story;
+    storySubscriber = rhs.storySubscriber;
 
     return *this;
 }
@@ -118,10 +122,17 @@ void StoryScene::enter()
     transition = false;
     layeredLayout->addLayout(superCenterLayoutBg, 0);
     layeredLayout->addLayout(superBorderLayout, 1);
+    borderLayout->useCorners(BorderCorner::TopBottom());
     borderLayout->addLayout(superCenterLayoutFg, BorderCell::Center());
     renderer->addLayout(superLayeredLayout);
     masterInputPublisher->subscribe(MiSubscriber);
+    keyboardPublisher->subscribe(storySubscriber);
+    
     loadImage(*renderer);
+    std::vector<boost::shared_ptr<Layout> > storyLayouts = story->layoutsToAttach();
+    for(std::vector<boost::shared_ptr<Layout> >::iterator it = storyLayouts.begin();
+        it != storyLayouts.end(); ++it )
+        borderLayout->addLayout(*it, BorderCell::Bottom());
 }
 
 void StoryScene::run()
@@ -130,6 +141,7 @@ void StoryScene::run()
     masterClockPublisher->pollClock();
     superCenterLayoutBg->drawWhenReady(storySceneBg);
     superCenterLayoutFg->drawWhenReady(storySceneFg);
+    story->draw(superBorderLayout, *renderer);
     renderer->render();
 
     if( transition )
@@ -147,6 +159,11 @@ void StoryScene::exit()
     borderLayout->removeLayout(superCenterLayoutFg, BorderCell::Center());
     renderer->removeLayout(superLayeredLayout);
     masterInputPublisher->unsubscribe(MiSubscriber);
+    keyboardPublisher->unsubscribe(storySubscriber);
+    std::vector<boost::shared_ptr<Layout> > storyLayouts = story->layoutsToAttach();
+    for(std::vector<boost::shared_ptr<Layout> >::iterator it = storyLayouts.begin();
+        it != storyLayouts.end(); ++it )
+        borderLayout->removeLayout(*it, BorderCell::Bottom());
 }
 
 void StoryScene::transitionTo(boost::shared_ptr<Scene> &scene)

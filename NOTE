@@ -55,6 +55,8 @@ Don't forget about sound effects
 
 To Do: Make seahorse bob even when swimming vertically
 
+BUG: Story sets messageBox size, not the border layout, as it should
+
 BUG: Make sure seasnail cannot appear at the same time as seahorse
 
 BUG: Shark never leaves the glow state. (Maybe fixed)
@@ -311,6 +313,9 @@ be at point (0,0) of the two bounding boxes. To fix the issue, store
 the offset of the two points when a collision first occurs. Then when you
 set the mouth position of the fish when the line pulls, adjust the position
 by the stored offset.
+
+BUG:    What happens when two credit fish occupy the same coordinate, what happens
+with the parent CoordinateLayout. Can it hold two sublayouts at the same coor?
 
 BUG: Hook point can go above pole point
 

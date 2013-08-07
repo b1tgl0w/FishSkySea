@@ -1,7 +1,7 @@
-//File: Story.hpp
+//File: File.hpp
 //Author:   John Miner
-//Created:  08/06/13
-//Purpose:  Work with message box and fading in/out to control story
+//Created:  06/19/12
+//Purpose:  Singleton utility for file io (everything static singleton)
 //Copyright 2013 John Miner
 //This program is distributed under the terms of the GNU General Public License.
 /*
@@ -25,36 +25,24 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
-#ifndef STORY_HPP_
-#define STORY_HPP_
+#ifndef FILE_HPP_
+#define FILE_HPP_
 
 #include <vector>
 #include <string>
-#include "boost/shared_ptr.hpp"
-#include "Graphic.hpp"
-#include "KeyboardSubscriber.hpp"
-#include "MessageBox.hpp"
+#include <fstream>
 
-class Layout;
-
-class Story : public KeyboardSubscriber, public Graphic
+class File
 {
 public:
-    Story(const std::string &fileName, boost::shared_ptr<Renderer> &renderer);
-    Story(const Story &rhs);
-    Story &operator=(const Story &rhs);
-    bool done();
-    void keyPressed(const SDLKey &key);
-    void keyReleased(const SDLKey &key);
-    std::vector<boost::shared_ptr<Layout> > layoutsToAttach();
-    void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
-    void loadImage(Renderer &renderer);
+    static bool sectionToLines(std::string &line,
+        std::istream &file, const std::string &sectionHeader,
+        const std::string &sectionFooter);
+    static bool sectionToLines(std::vector<std::string> &lines,
+        std::istream &file, const std::string &sectionHeader,
+        const std::string &sectionFooter);
 private:
-    Story();
-    void createMessageBoxes(const std::string &fileName, boost::shared_ptr<
-        Renderer> &renderer);
-    std::vector<MessageBox> messageBoxes;
-    std::vector<MessageBox>::iterator mbIterator;
+    File();
 };
 
 #endif

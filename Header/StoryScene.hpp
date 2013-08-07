@@ -32,6 +32,7 @@ SUCH DAMAGES.
 #include "Scene.hpp"
 #include "Graphic.hpp"
 #include "ImageRendererElement.hpp"
+#include "Story.hpp"
 
 class KeyboardPublisher;
 class FitStrategy;
@@ -83,6 +84,8 @@ private:
     boost::shared_ptr<Renderer> renderer;
     ImageRendererElement storySceneBg;
     ImageRendererElement storySceneFg;
+    boost::shared_ptr<Story> story;
+    boost::shared_ptr<KeyboardSubscriber> storySubscriber;
 };
 
 #endif

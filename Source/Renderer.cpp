@@ -587,6 +587,7 @@ void Renderer::sizeText(const std::string &str,  int &width, int &height,
         TTF_SizeText(fontMedium, str.c_str(), &width, &height);
     else
         TTF_SizeText(fontSmall, str.c_str(), &width, &height);
+
 }
 
 std::string Renderer::makeKey(const std::string &path, const Transformation

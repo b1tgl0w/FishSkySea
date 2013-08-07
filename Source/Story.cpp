@@ -25,4 +25,101 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include <fstream>
+#include "boost/spirit/home/phoenix/core.hpp"
+#include "boost/spirit/home/phoenix/function.hpp"
+#include "../Header/Story.hpp"
+#include "../Header/File.hpp"
+#include "../Header/Layout.hpp"
+#include "../Header/FontSize.hpp"
+#include "../Header/Layout.hpp"
+
+Story::Story(const std::string &fileName, boost::shared_ptr<Renderer> &renderer)
+{
+    createMessageBoxes(fileName, renderer);
+}
+
+Story::Story(const Story &rhs) : messageBoxes(rhs.messageBoxes), mbIterator(
+    rhs.mbIterator)
+{ }
+
+Story &Story::operator=(const Story &rhs)
+{
+    if( &rhs == this )
+        return *this;
+
+    messageBoxes = rhs.messageBoxes;
+    mbIterator = rhs.mbIterator;
+
+    return *this;
+}
+
+bool Story::done()
+{
+    return mbIterator == messageBoxes.end();
+}
+
+void Story::createMessageBoxes(const std::string &fileName, boost::shared_ptr<
+    Renderer> &renderer)
+{
+    const Dimension LINE_SIZE(800.0, 60.0);
+    const Uint32 BG_COLOR = 0x00000000;
+    std::ifstream storyFile(fileName.c_str());
+    std::vector<std::string> lines;
+    std::string header("BEGIN_STORY_SECTION");
+    std::string footer("END_STORY_SECTION");
+
+    File::sectionToLines(lines, storyFile, header, footer);
+    storyFile.close();
+    for( std::vector<std::string>::iterator it = lines.begin(); it != lines.end();
+        ++it )
+    {
+        MessageBox tmpMb(*it, LINE_SIZE, BG_COLOR, false, Layer::FOREGROUND(),
+            renderer, FontSize::Medium(), 1);
+
+        messageBoxes.push_back(tmpMb);
+    }
+
+    mbIterator = messageBoxes.begin();
+}
+
+void Story::keyPressed(const SDLKey &key)
+{
+}
+
+void Story::keyReleased(const SDLKey &key)
+{
+    if( done() ) 
+        return;
+
+    //hard coded for now, but if configurable controls allowed, change
+    if( key == SDLK_e || key == SDLK_SPACE || key == SDLK_RETURN )
+    {
+        if( !mbIterator->advance() )
+            ++mbIterator;
+    }
+}
+
+std::vector<boost::shared_ptr<Layout> > Story::layoutsToAttach()
+{
+    std::vector<boost::shared_ptr<Layout> > layouts;
+    
+    for(std::vector<MessageBox>::iterator it = messageBoxes.begin(); it != 
+        messageBoxes.end(); ++it )
+        layouts.push_back(it->layoutToAttach());
+
+    return layouts;
+}
+
+void Story::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
+{
+    if( done() )
+        return;
+
+    mbIterator->draw(layout, renderer);
+}
+
+void Story::loadImage(Renderer &renderer)
+{
+}
 

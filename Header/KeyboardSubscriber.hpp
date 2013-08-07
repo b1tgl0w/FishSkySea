@@ -30,6 +30,8 @@ SUCH DAMAGES.
 #ifndef KEYBOARD_SUBSCRIBER_HPP_
 #define KEYBOARD_SUBSCRIBER_HPP_
 
+#include <SDL/SDL.h>
+
 class KeyboardSubscriber
 {
 public:

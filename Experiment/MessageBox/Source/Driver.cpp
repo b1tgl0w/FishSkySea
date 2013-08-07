@@ -44,17 +44,17 @@ SUCH DAMAGES.
 
 int main(int argc, char **argv)
 {
-    Dimension screenResolution = { 800, 600 };
+    Dimension screenResolution(800, 600);
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher(new
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
         new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
         "../Media/Fonts/gentium/Gentium-R.ttf", frameCleanupPublisher));
 
-    Dimension messageBoxSize = { 800, 40 };
-    Dimension lineSize = { 800, 40};
+    Dimension messageBoxSize(800, 40);
+    Dimension lineSize(800, 40);
     Uint32 BLACK = 0x00000000;
-    Point origin = { 0.0, 1.0 };
+    Point origin(0.0, 1.0);
     Layer layer = Layer::FOREGROUND();
     MessageBox messageBox("The tears I cry are only fragments of the suffering I endure. They soak my soul. I call out to the ocean and drift away... I'm going to put some filler text in here... kinda ruins the moment, doesn't it? I neeeeed more filler. I'm not sure how much. Maybe this is enough",
         lineSize, BLACK, false, layer, renderer, FontSize::Medium(), 1);
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
     boost::shared_ptr<FitStrategy> scaleClipFit(new ScaleClipFit);
     boost::shared_ptr<Layout> superMbLayout(messageBox.layoutToAttach());
     boost::shared_ptr<CoordinateLayout> coordLayout(new CoordinateLayout(scaleClipFit));
-    Point coordPoint = {0, 0};
+    Point coordPoint(0, 0);
     coordLayout->addLayout(superMbLayout, coordPoint);
     boost::shared_ptr<Layout>  superCLayout(coordLayout);
     boost::shared_ptr<GridLayout> gridLayout(new GridLayout(3, 1));

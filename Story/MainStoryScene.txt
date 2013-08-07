@@ -1,6 +1,7 @@
 //Note this document must be updated to adhere to the Story file format
 //  specified for and loaded by the game
 
+BEGIN_STORY_SECTION
 [Black screen]
 Narrator: A white-haried fisherman sits at the usual spot. He is approached by a
 younger fellow.
@@ -16,8 +17,7 @@ Wes: You should retire that mouth.
 Rad: *speechless*
 Wes: What say you, young man, that we make a wager?
 Rad: Sure, it'll be a showdown! You don't even have to tell me the conditions!
-Wes: Well hear them anyway because you may not like them: The first fisherman to
-catch 100 lbs of giant sea bass wins. The loser must clean the fish.
+Wes: Well hear them anyway because you may not like them: The first fisherman to catch 100 lbs of giant sea bass wins. The loser must clean the fish.
 Wes: And if you lose, I'm going to clean out your mouth.
 Rad: Wha-wha-what!?
 Wes: (Looking Rad in the eyes) You're going to learn some respect.
@@ -25,6 +25,6 @@ Rad: (While storming off) Just letting you know ... I'll win!
 Rad: (Shouting over shoulder) And I'll make sure this is a wager you regret.
 Wes: (To himself) Then let the Sea Bass Showdown begin.
 [Fade to black]
-Narrator: Will this, indeed, be a wager the elder fisherman regrets? Or will the
-arrogant youth clean up the fish ... and his mouth? Let's find out.
+Narrator: Will this, indeed, be a wager the elder fisherman regrets? Or will the arrogant youth clean up the fish ... and his mouth? Let's find out.
+END_STORY_SECTION
 
