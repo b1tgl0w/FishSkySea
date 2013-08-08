@@ -69,7 +69,8 @@ TitleScene::TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     masterClockPublisher(MasterClockPublisher::getInstance()), clockSubscriber(
     masterClockPublisher, MasterClockPublisher::customDeleter), MiSubscriber(
     keyboardPublisher), renderer(renderer), titleBackground(
-    "../Media/TitleBackground.png", 0, BACKGROUND_POSITION(), screenSize)
+    "../Media/TitleBackground.png", 0, BACKGROUND_POSITION(), screenSize),
+    quit(false)
 {
 }
 
@@ -84,7 +85,8 @@ TitleScene::TitleScene(const TitleScene &rhs) : currentScene(rhs.currentScene),
     masterInputPublisher(rhs.masterInputPublisher), masterClockPublisher(rhs.
     masterClockPublisher),
     clockSubscriber(rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), 
-    renderer(rhs.renderer), titleBackground(rhs.titleBackground)
+    renderer(rhs.renderer), titleBackground(rhs.titleBackground),
+    quit(rhs.quit)
 {
 }
 
@@ -114,6 +116,7 @@ TitleScene &TitleScene::operator=(const TitleScene &rhs)
     MiSubscriber = rhs.MiSubscriber;
     renderer = rhs.renderer;
     titleBackground = rhs.titleBackground;
+    quit = rhs.quit;
 
     return *this;
 }
@@ -136,6 +139,9 @@ void TitleScene::enter()
     loadImage(*renderer);
     titleMenu->loadImage(*renderer);
     titleMenu->reset();
+    boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
+        shared_from_this());
+    keyboardPublisher->subscribe(sharedThisSubscriber);
 }
 
 void TitleScene::run()
@@ -168,6 +174,10 @@ void TitleScene::exit()
     renderer->removeLayout(superLayeredLayout);
     //keyboardPublisher->unsubscribe(clockSubscriber);
     masterInputPublisher->unsubscribe(MiSubscriber);
+    boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
+        shared_from_this());
+    keyboardPublisher->unsubscribe(sharedThisSubscriber);
+    quit = false;
 }
 
 void TitleScene::transitionTo(boost::shared_ptr<Scene> &scene)
@@ -184,5 +194,20 @@ void TitleScene::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 void TitleScene::loadImage(Renderer &renderer)
 {
     renderer.loadImage("../Media/TitleBackground.png");
+}
+
+bool TitleScene::shouldExit()
+{
+    return quit;
+}
+
+void TitleScene::keyPressed(const SDLKey &key)
+{
+    if( key == SDLK_ESCAPE )
+        quit = true;
+}
+
+void TitleScene::keyReleased(const SDLKey &key)
+{
 }
 

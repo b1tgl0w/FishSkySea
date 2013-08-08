@@ -29,9 +29,11 @@ SUCH DAMAGES.
 #define TITLE_SCENE_HPP_
 
 #include "boost/shared_ptr.hpp"
+#include "boost/enable_shared_from_this.hpp"
 #include "Scene.hpp"
 #include "Graphic.hpp"
 #include "ImageRendererElement.hpp"
+#include "KeyboardSubscriber.hpp"
 
 class TitleMenu;
 class KeyboardPublisher;
@@ -47,7 +49,8 @@ class KeyboardSubscriber;
 class MasterInputSubscriber;
 class Renderer;
 
-class TitleScene : public Scene, public Graphic
+class TitleScene : public Scene, public Graphic, public KeyboardSubscriber,
+    public boost::enable_shared_from_this<TitleScene>
 {
 public:
     TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
@@ -64,6 +67,9 @@ public:
     void transitionTo(boost::shared_ptr<Scene> &scene);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
+    bool shouldExit(); 
+    void keyPressed(const SDLKey &key);
+    void keyReleased(const SDLKey &key);
 private:
     TitleScene();
     static const Point &BACKGROUND_POSITION();
@@ -88,6 +94,7 @@ private:
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber;
     boost::shared_ptr<Renderer> renderer;
     ImageRendererElement titleBackground;
+    bool quit;
 };
 
 #endif

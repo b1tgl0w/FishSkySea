@@ -3,27 +3,24 @@
 
 BEGIN_STORY_SECTION
 [Black screen]
-Narrator: A white-haried fisherman sits at the usual spot. He is approached by a
-younger fellow.
+Narrator: A gray-haried fisherman sits at his usual spot. He is approached by a younger fellow.
 [Fade-in to scene graphic]
-Rad: You've been parked there for ages and haven't caught a thing, old man.
-Wes: Patience is a fisherman's strength.
-Rad: You must think you're some kind of mighty man then.
-Wes: I just fish.
-Rad: You just miss.
-Wes: *ignore*
-Rad: You should see what I catch. It'll make you want to retire.
-Wes: You should retire that mouth.
-Rad: *speechless*
+Rad: You've sat there for ages and haven't caught a thing, old man.
+Wes: Fishermen need patience.
+Rad: I catch fish as soon as I cast.
+Wes: *Ignore*
+Rad: I mean, really, you should see what I catch. It'll make you want to retire.
+Wes: You should retire your mouth.
+Rad: *Speechless*
 Wes: What say you, young man, that we make a wager?
-Rad: Sure, it'll be a showdown! You don't even have to tell me the conditions!
-Wes: Well hear them anyway because you may not like them: The first fisherman to catch 100 lbs of giant sea bass wins. The loser must clean the fish.
+Rad: Fine!
+Wes: The first fisherman to catch 100 lbs of giant sea bass wins. The loser must clean the fish.
 Wes: And if you lose, I'm going to clean out your mouth.
-Rad: Wha-wha-what!?
-Wes: (Looking Rad in the eyes) You're going to learn some respect.
-Rad: (While storming off) Just letting you know ... I'll win!
-Rad: (Shouting over shoulder) And I'll make sure this is a wager you regret.
-Wes: (To himself) Then let the Sea Bass Showdown begin.
+Rad: What!
+Wes (Looking Rad in the eyes): You're going to learn some respect.
+Rad (While storming off): You old man!
+Rad (Over his shoulder): You'll regret this wager!
+Wes (To himself): Then let the fishing showdown begin.
 [Fade to black]
 Narrator: Will this, indeed, be a wager the elder fisherman regrets? Or will the arrogant youth clean up the fish ... and his mouth? Let's find out.
 END_STORY_SECTION

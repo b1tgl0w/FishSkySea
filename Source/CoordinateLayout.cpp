@@ -164,6 +164,12 @@ void CoordinateLayout::moveBy(const Point &offset)
 
 void CoordinateLayout::moveTo(const Point &newPosition)
 {
+    Point offset(newPosition.x - position.x, newPosition.y - position.y);
+
+    for(std::list<boost::shared_ptr<Layout> >::iterator it = sublayouts.begin();
+        it != sublayouts.end(); ++it )
+        (*it)->moveTo(newPosition); //(*it)->moveBy(offset);
+
     position = newPosition;
 }
 

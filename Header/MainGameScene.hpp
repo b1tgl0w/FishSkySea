@@ -31,6 +31,7 @@ SUCH DAMAGES.
 #include <string>
 #include "boost/shared_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
+#include "boost/weak_ptr.hpp"
 #include "Scene.hpp"
 #include "Dimension.hpp"
 #include "ImageRendererElement.hpp"
@@ -77,6 +78,7 @@ public:
     bool shouldExit(); //Note exit game, not scene
     void keyPressed(const SDLKey &key);
     void keyReleased(const SDLKey &key);
+    void registerParentScene(boost::weak_ptr<Scene> parentScene);
 private:
     MainGameScene();
     void displayReady();
@@ -128,6 +130,7 @@ private:
     boost::shared_ptr<Timer<MainGameScene> > readyTimer;
     boost::shared_ptr<Timer<MainGameScene> > goTimer;
     boost::shared_ptr<Game> game;
+    boost::weak_ptr<Scene> titleScene;
 };
 
 #endif

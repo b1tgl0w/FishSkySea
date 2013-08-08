@@ -158,7 +158,7 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     GridLayout(1, 3)), superGridLayout(gridLayout), superLayeredLayout(
     layeredLayout), currentScene(currentScene), transition(false),
     toScene(), statusElement(), readyTimer(), goTimer(),
-    game(new Game(score1, score1))
+    game(new Game(score1, score1)), titleScene()
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
@@ -184,7 +184,8 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     rhs.superGridLayout), superLayeredLayout(rhs.superLayeredLayout),
     currentScene(rhs.currentScene), transition(rhs.transition),
     toScene(rhs.toScene), statusElement(rhs.statusElement),
-    readyTimer(rhs.readyTimer), goTimer(rhs.goTimer), game(rhs.game)
+    readyTimer(rhs.readyTimer), goTimer(rhs.goTimer), game(rhs.game),
+    titleScene(rhs.titleScene)
 { }
 
 CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
@@ -228,6 +229,7 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     readyTimer = rhs.readyTimer;
     goTimer = rhs.goTimer;
     game = rhs.game;
+    titleScene = rhs.titleScene;
 
     return *this;
 }
@@ -406,6 +408,16 @@ void CreditGameScene::keyPressed(const SDLKey &key)
 void CreditGameScene::keyReleased(const SDLKey &key)
 {
     if( key == SDLK_ESCAPE )
-        quit = true;
+    {
+        boost::shared_ptr<Scene> sharedTitleScene = titleScene.lock();
+
+        if( sharedTitleScene )
+            transitionTo(sharedTitleScene);
+    }
+}
+
+void CreditGameScene::registerParentScene(boost::weak_ptr<Scene> parentScene)
+{
+    titleScene = parentScene;
 }
 

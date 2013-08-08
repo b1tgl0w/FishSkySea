@@ -62,6 +62,7 @@ bool Story::done()
 void Story::createMessageBoxes(const std::string &fileName, boost::shared_ptr<
     Renderer> &renderer)
 {
+    //Note: for some reason, this size overrides border layout size. bug
     const Dimension LINE_SIZE(800.0, 60.0);
     const Uint32 BG_COLOR = 0x00000000;
     std::ifstream storyFile(fileName.c_str());
@@ -85,10 +86,6 @@ void Story::createMessageBoxes(const std::string &fileName, boost::shared_ptr<
 
 void Story::keyPressed(const SDLKey &key)
 {
-}
-
-void Story::keyReleased(const SDLKey &key)
-{
     if( done() ) 
         return;
 
@@ -98,6 +95,10 @@ void Story::keyReleased(const SDLKey &key)
         if( !mbIterator->advance() )
             ++mbIterator;
     }
+}
+
+void Story::keyReleased(const SDLKey &key)
+{
 }
 
 std::vector<boost::shared_ptr<Layout> > Story::layoutsToAttach()

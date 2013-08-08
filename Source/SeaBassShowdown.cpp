@@ -101,6 +101,9 @@ int main(int argc, char **argv)
     boost::shared_ptr<TitleScene> titleScene(new TitleScene(
         currentScene, superMainGameScene, superCreditGameScene, 
         keyboardPublisher, renderer, screenResolution, superStoryScene));
+    mainGameScene->registerParentScene(titleScene);
+    creditGameScene->registerParentScene(titleScene);
+    storyScene->registerParentScene(titleScene);
 
     *currentScene = titleScene;
     (*currentScene)->enter();

@@ -158,7 +158,8 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     BorderSize::Thick())), superBorderLayout(borderLayout), gridLayout(new
     GridLayout(1, 3)), superGridLayout(gridLayout), superLayeredLayout(
     layeredLayout), currentScene(currentScene), transition(false), toScene(),
-    statusElement(), readyTimer(), goTimer(), game(new Game(score1, score1))
+    statusElement(), readyTimer(), goTimer(), game(new Game(score1, score1)),
+    titleScene()
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
@@ -184,7 +185,8 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     rhs.superGridLayout), superLayeredLayout(rhs.superLayeredLayout),
     currentScene(rhs.currentScene), transition(rhs.transition),
     toScene(rhs.toScene), statusElement(rhs.statusElement), readyTimer(
-    rhs.readyTimer), goTimer(rhs.goTimer), game(rhs.game)
+    rhs.readyTimer), goTimer(rhs.goTimer), game(rhs.game), titleScene(rhs.
+    titleScene)
 {
 }
 
@@ -229,6 +231,7 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     readyTimer = rhs.readyTimer;
     goTimer = rhs.goTimer;
     game = rhs.game;
+    titleScene = rhs.titleScene;
 
     return *this;
 }
@@ -385,7 +388,7 @@ void MainGameScene::displayGoComplete()
 
 bool MainGameScene::shouldExit()
 {
-    return quit;
+    return false;
 }
 
 void MainGameScene::keyPressed(const SDLKey &key)
@@ -395,6 +398,16 @@ void MainGameScene::keyPressed(const SDLKey &key)
 void MainGameScene::keyReleased(const SDLKey &key)
 {
     if( key == SDLK_ESCAPE )
-        quit = true;
+    {
+        boost::shared_ptr<Scene> sharedTitleScene = titleScene.lock();
+
+        if( sharedTitleScene )
+            transitionTo(sharedTitleScene);
+    }
+}
+
+void MainGameScene::registerParentScene(boost::weak_ptr<Scene> parentScene)
+{
+    titleScene = parentScene;
 }
 

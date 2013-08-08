@@ -150,9 +150,14 @@ void CenterLayout::scale(const DimensionPercent &dimensionPercent)
 //          when render(...) is called
 void CenterLayout::moveTo(const Point &newPosition)
 {
-    this->position = newPosition;
+        //uncomment when CenterLayouts can have sub-layouts
+/*    Point offset(newPosition.x - position.x, newPosition.y - position.y);
 
-    //To do: move sublayouts
+    for(std::list<boost::shared_ptr<Layout> >::iterator it = sublayouts.begin();
+        it != sublayouts.end(); ++it )
+        (*it)->moveBy(offset);*/
+
+    position = newPosition;
 }
 
 //Method:   moveBy(...)

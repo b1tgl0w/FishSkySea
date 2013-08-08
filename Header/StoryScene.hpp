@@ -45,6 +45,7 @@ class MasterInputPublisher;
 class KeyboardSubscriber;
 class MasterInputSubscriber;
 class Renderer;
+class CoordinateLayout;
 
 class StoryScene : public Scene, public Graphic
 {
@@ -61,6 +62,7 @@ public:
     void transitionTo(boost::shared_ptr<Scene> &scene);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
+    void registerParentScene(boost::weak_ptr<Scene> parentScene);
 private:
     StoryScene();
     static const Point &BACKGROUND_POSITION();
@@ -86,6 +88,9 @@ private:
     ImageRendererElement storySceneFg;
     boost::shared_ptr<Story> story;
     boost::shared_ptr<KeyboardSubscriber> storySubscriber;
+    boost::shared_ptr<CoordinateLayout> mbLayout;
+    boost::shared_ptr<Layout> superMbLayout;
+    boost::weak_ptr<Scene> titleScene;
 };
 
 #endif
