@@ -5,10 +5,8 @@
 Done - Fix art so cloud bg is separate from fishermen graphics
 Done - Create StoryScene class
 Done - Load story text file
-- Fix border layout so it can hold multiple layouts? Link only one mb at a time?
-- Don't use Story::draw
-- Create message boxes
-- Configure message box control
+Done - Create message boxes
+Done - Configure message box control
 Done - Add Story to main menu
 - Fade in/out
 

@@ -21,6 +21,8 @@ Note:   Manually update loaded font size in Renderer
 Note:   If smaller text is desired, font size MUST be reduced. Use multiple
 fonts if necessary.
 
+Bug:    Returning to title screen from main game before "GO" segfaults
+
 Bug:    BorderLayout inside a grid cell doesn't position correctly.
 
 Bug:    Seahorse can barely touch shark

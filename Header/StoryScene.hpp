@@ -29,10 +29,12 @@ SUCH DAMAGES.
 #define STORY_SCENE_HPP_
 
 #include "boost/shared_ptr.hpp"
+#include "boost/enable_shared_from_this.hpp"
 #include "Scene.hpp"
 #include "Graphic.hpp"
 #include "ImageRendererElement.hpp"
 #include "Story.hpp"
+#include "KeyboardSubscriber.hpp"
 
 class KeyboardPublisher;
 class FitStrategy;
@@ -42,12 +44,12 @@ class BorderLayout;
 class Layout;
 class MasterClockPublisher;
 class MasterInputPublisher;
-class KeyboardSubscriber;
 class MasterInputSubscriber;
 class Renderer;
 class CoordinateLayout;
 
-class StoryScene : public Scene, public Graphic
+class StoryScene : public Scene, public Graphic, public KeyboardSubscriber,
+    public boost::enable_shared_from_this<StoryScene>
 {
 public:
     StoryScene(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
@@ -63,6 +65,8 @@ public:
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
     void registerParentScene(boost::weak_ptr<Scene> parentScene);
+    void keyPressed(const SDLKey &key);
+    void keyReleased(const SDLKey &key);
 private:
     StoryScene();
     static const Point &BACKGROUND_POSITION();

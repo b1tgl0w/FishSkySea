@@ -140,6 +140,11 @@ void StoryScene::enter()
     renderer->addLayout(superLayeredLayout);
     masterInputPublisher->subscribe(MiSubscriber);
     keyboardPublisher->subscribe(storySubscriber);
+    boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(shared_from_this());
+
+    if( sharedThisSubscriber )
+        keyboardPublisher->subscribe(sharedThisSubscriber);
+
     loadImage(*renderer);
 }
 
@@ -183,6 +188,11 @@ void StoryScene::exit()
     for(std::vector<boost::shared_ptr<Layout> >::iterator it = storyLayouts.begin();
         it != storyLayouts.end(); ++it )
         mbLayout->removeLayout(*it, origin); 
+    boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(shared_from_this());
+
+    if( sharedThisSubscriber )
+        keyboardPublisher->unsubscribe(sharedThisSubscriber);
+
 }
 
 void StoryScene::transitionTo(boost::shared_ptr<Scene> &scene)
@@ -206,4 +216,18 @@ void StoryScene::registerParentScene(boost::weak_ptr<Scene> parentScene)
 {
     titleScene = parentScene;
 }
+
+void StoryScene::keyPressed(const SDLKey &key)
+{
+    if( key == SDLK_ESCAPE )
+    {
+        boost::shared_ptr<Scene> sharedTitleScene = titleScene.lock();
+
+        if( sharedTitleScene )
+            transitionTo(sharedTitleScene);
+    }
+}
+
+void StoryScene::keyReleased(const SDLKey &key)
+{ }
 
