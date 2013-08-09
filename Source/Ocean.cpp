@@ -117,8 +117,8 @@ Ocean::Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer)
     oceanFloorBox(oceanFloorPosition, oceanFloorSize), clouds(), renderer(
     renderer)
 {
-    const double DEPTH_DISTANCE = 33;
-    double currentDepthCoordinate = 343.0;
+    const double DEPTH_DISTANCE = 30;
+    double currentDepthCoordinate = 361.0;
     depthCoordinates[Depth::ROW1()] = currentDepthCoordinate;
     currentDepthCoordinate += DEPTH_DISTANCE;
     depthCoordinates[Depth::ROW2()] = currentDepthCoordinate;

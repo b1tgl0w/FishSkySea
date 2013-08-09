@@ -21,6 +21,9 @@ Note:   Manually update loaded font size in Renderer
 Note:   If smaller text is desired, font size MUST be reduced. Use multiple
 fonts if necessary.
 
+Bug:    Don't remove items for collection when iterating through it. Fix in
+MasterInputPublisher, KeyboardPublisher, MasterClockPublisher and everywhere else
+
 Bug:    Returning to title screen from main game before "GO" segfaults
 
 Bug:    BorderLayout inside a grid cell doesn't position correctly.

@@ -98,7 +98,7 @@ const Uint32 &Fish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 
 const double &Fish::YANK_PIXELS()
 {
-    static const double TMP_YANK_PIXELS = 15.0;
+    static const double TMP_YANK_PIXELS = 10.0;
     return TMP_YANK_PIXELS;
 }
 

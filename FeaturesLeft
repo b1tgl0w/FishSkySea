@@ -13,26 +13,25 @@
     - AI
 - Media
     - Music
-    - Finish Art
+- Finish and Polish art
 - Title screen
-    - Art
+    Unfinished - Art
     Done - Menu //Done
 Done - Scene class
     Done - Polymorphic with setup() and run() pure virtual functions //Done
     Done - Some way to transition //Done
-- Tutorial "video"
-    - Run through game
-    - Store rand number seed
-    - Store inputs
-    - Replay
-    - Add pauses and text
+- Tutorial minigame 
+    - One fish that doesn't move
+    - Instructions in the sky
+    - Instructions progress when correct action/button is pressed
+    - Return to title screen
 - Story
-    - There will be a drawing of the old fisherman and his rival
-    - Add a story scene with a text message box
+    Done - There will be a drawing of the old fisherman and his rival
+    Done - Add a story scene with a text message box
 - Credits
     - Fishing minigame
-        - No Shark
-        - Fish are names and job titles
+        Done - No Shark
+        Done - Fish are names and job titles
         - When caught, show picture and brief bio (cartoonized picture)
 Done - Fishing line
     Done - Hook //Done

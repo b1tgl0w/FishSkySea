@@ -2,11 +2,17 @@
 //This file complements CurrentToDo. 
 //CurrentToDo is specifications of current task, this is implementation of task
 
-Done - Fix art so cloud bg is separate from fishermen graphics
-Done - Create StoryScene class
-Done - Load story text file
-Done - Create message boxes
-Done - Configure message box control
-Done - Add Story to main menu
-- Fade in/out
-
+- Fill in title scene
+- Shade title menu
+- Shade story scene
+- Shade sprites
+    - Rad
+    - Wes
+- Cleanup and make sure sprites are opaquely colored
+    - Rad
+    - Wes
+    - Shark
+    - SeaSnail
+    - Seahorse
+- Clean up title menu and story scene
+- UI Graphics

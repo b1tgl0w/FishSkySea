@@ -614,7 +614,7 @@ void CreditFish::doNibble()
 
 void CreditFish::yank()
 {
-    const double YANK_PIXELS = 15.0;
+    const double YANK_PIXELS = 10.0;
     position->y -= YANK_PIXELS;
 }
 

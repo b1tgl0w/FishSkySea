@@ -245,7 +245,7 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
     rippleAnimationHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
-    foremostNibbleLayer(-9999)
+    foremostNibbleLayer(-9999), normalSpeedThreshold(0)
 {
     boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
 
@@ -305,7 +305,7 @@ Line::Line(const Line &rhs) : state(rhs.state), notHookedState(
     setHookTime(rhs.setHookTime), rippleAnimation(rhs.rippleAnimation),
     rippleAnimationNotHooked(rhs.rippleAnimationNotHooked),
     rippleAnimationHooked(rhs.rippleAnimationHooked), foremostNibbleLayer(
-    rhs.foremostNibbleLayer)
+    rhs.foremostNibbleLayer), normalSpeedThreshold(rhs.normalSpeedThreshold)
 { }
 
 Line &Line::operator=(const Line &rhs)
@@ -349,6 +349,7 @@ Line &Line::operator=(const Line &rhs)
     rippleAnimationNotHooked = rhs.rippleAnimationNotHooked;
     rippleAnimationHooked = rhs.rippleAnimationHooked;
     foremostNibbleLayer = rhs.foremostNibbleLayer;
+    normalSpeedThreshold = rhs.normalSpeedThreshold;
 
     return *this;
 }
@@ -549,6 +550,7 @@ void Line::move(Uint32 elapsedTime, double &coordinate, double velocity)
         return;
 
     coordinate += velocity * elapsedTime;
+
     boost::shared_ptr<Collidable> sharedThis( shared_from_this() );
     sharedOcean->checkCollisions(sharedThis, poleBox);
     sharedOcean->checkCollisions(sharedThis, hookBox);
@@ -901,21 +903,37 @@ void Line::NotHookedState::move(Uint32 elapsedTime)
     if( !sharedLineOwner )
         return;
 
+    const Uint32 NORMAL_SPEED_THRESHOLD = 75;
+    double slowdownFactor = 1.0;
+
+    if( sharedLineOwner->normalSpeedThreshold + elapsedTime < NORMAL_SPEED_THRESHOLD )
+    {
+        sharedLineOwner->normalSpeedThreshold += elapsedTime;
+        slowdownFactor = .4;
+    }
+
     if(sharedLineOwner->reelInOn)
         sharedLineOwner->move(elapsedTime, sharedLineOwner->hookPoint->y,
-            -sharedLineOwner->LINE_Y_VELOCITY());
+            -sharedLineOwner->LINE_Y_VELOCITY() * slowdownFactor);
 
     if(sharedLineOwner->giveLineOn)
         sharedLineOwner->move(elapsedTime, sharedLineOwner->hookPoint->y,
-            sharedLineOwner->LINE_Y_VELOCITY());
+            sharedLineOwner->LINE_Y_VELOCITY() *slowdownFactor );
 
     if(sharedLineOwner->lengthenPoleOn)
         sharedLineOwner->move(elapsedTime, sharedLineOwner->polePoint->x,
-            sharedLineOwner->POLE_X_VELOCITY());
+            sharedLineOwner->POLE_X_VELOCITY() * slowdownFactor);
 
     if(sharedLineOwner->shortenPoleOn)
         sharedLineOwner->move(elapsedTime, sharedLineOwner->polePoint->x,
-            -sharedLineOwner->POLE_X_VELOCITY());
+            -sharedLineOwner->POLE_X_VELOCITY() * slowdownFactor);
+
+    if( sharedLineOwner->reelInOn == false &&
+        sharedLineOwner->giveLineOn == false &&
+        sharedLineOwner->lengthenPoleOn == false &&
+        sharedLineOwner->shortenPoleOn == false )
+        sharedLineOwner->normalSpeedThreshold = 0;
+
 
     /*Uncomment*//*move(elapsedTime, hookPoint.x,
         hookedFish.HOOKED_FISH_X_VELOCITY);

@@ -82,9 +82,9 @@ Renderer::Renderer(const Dimension &screenResolution, int screenBpp,
     fontPath(fontPath) /*fonts intentionally uninitialized*/
 {
     //Update Font size as big as height of largest text surface (manual update)
-    const int FONT_SIZE_HUGE = 88; //Text surfaces will be scaled
+    const int FONT_SIZE_HUGE = 100; //Text surfaces will be scaled
     const int FONT_SIZE_BIG = 60; //Text surfaces will be scaled
-    const int FONT_SIZE_MEDIUM = 32; //Text surfaces will be scaled
+    const int FONT_SIZE_MEDIUM = 26; //Text surfaces will be scaled
     const int FONT_SIZE_SMALL = 12; //Text surfaces will be scaled
     const int FONT_BORDER_SIZE = 3; //3 so even scaled text will have outline
     numberOfInstances()++;

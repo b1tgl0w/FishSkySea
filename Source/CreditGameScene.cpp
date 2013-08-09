@@ -258,7 +258,7 @@ void CreditGameScene::enter()
     renderer->loadImage("../Media/MowhawkFisher2.png");
     renderer->loadImage("../Media/ElderFisher2.png");
     renderer->loadImage("../Media/DockSupports3.png");
-    renderer->loadText("Ready", COLOR, BORDER_SIZE, FontSize::Huge());
+    renderer->loadText("Ready", COLOR, BORDER_SIZE, FontSize::Big());
     renderer->loadText("Go", COLOR, BORDER_SIZE, FontSize::Huge());
     game->loadImage(*renderer);
     player1->sendCollidable(ocean);
@@ -351,7 +351,7 @@ void CreditGameScene::displayReady()
     Point origin(0.0, 0.0);
     Dimension textSize(150.0, 50.0);
     boost::shared_ptr<TextRendererElement> readyElement(new TextRendererElement(
-        "Ready", 0, origin, textSize, FontSize::Huge()));
+        "Ready", 0, origin, textSize, FontSize::Big()));
     statusElement = readyElement;
     boost::shared_ptr<Timer<CreditGameScene> > tmpTimer(new Timer<CreditGameScene>
         (3000));
