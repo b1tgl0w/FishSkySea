@@ -1,4 +1,4 @@
-- Accelerate line and hook for fine movements
+- Title screen shown before title menu. Menu shown at button press
 - Fix fish graphic mouth
 - Work on colors
 - Don't allow the player to keep the fish on the line too long. Either use
@@ -38,4 +38,5 @@ is a "recover" period between being able to set the hook again.
 obviously)
 //Done - Ripples when line is in water
 //Done - Slow moving clouds
+//Done - Accelerate line and hook for fine movements
 
