@@ -922,16 +922,14 @@ void Line::NotHookedState::move(Uint32 elapsedTime)
 
     if(sharedLineOwner->lengthenPoleOn)
         sharedLineOwner->move(elapsedTime, sharedLineOwner->polePoint->x,
-            sharedLineOwner->POLE_X_VELOCITY() * slowdownFactor);
+            sharedLineOwner->POLE_X_VELOCITY());
 
     if(sharedLineOwner->shortenPoleOn)
         sharedLineOwner->move(elapsedTime, sharedLineOwner->polePoint->x,
-            -sharedLineOwner->POLE_X_VELOCITY() * slowdownFactor);
+            -sharedLineOwner->POLE_X_VELOCITY());
 
     if( sharedLineOwner->reelInOn == false &&
-        sharedLineOwner->giveLineOn == false &&
-        sharedLineOwner->lengthenPoleOn == false &&
-        sharedLineOwner->shortenPoleOn == false )
+        sharedLineOwner->giveLineOn == false )
         sharedLineOwner->normalSpeedThreshold = 0;
 
 
