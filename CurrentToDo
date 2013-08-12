@@ -3,23 +3,22 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Fill in title scene
+Left off on: Bio and pic
 
-General Task: Fix all art
+General Task: Finish credits minigame (for the contributers known now)
 
 Specific Steps:
-- Fill in title scene
-- Shade title menu
-- Shade story scene
-- Shade sprites
-    - Rad
-    - Wes
-- Cleanup and make sure sprites are opaquely colored
-    - Rad
-    - Wes
-    - Shark
-    - SeaSnail
-    - Seahorse
-- Clean up title menu and story scene
-- UI Graphics
+    - Show bio and picture
+    Done - Make creditfish on top layer be hooked, in the case that two overlap
+    Done -Fix bug that allows credit fish to occupy the same layer
+    Postponed - Figure out how to fit in all the names and still be a game
+    Done - Catch credit fish
+    Done - Allow setting number of message box lines
+    Done - Nibble and hook credit fish
+    Done - Make credit fish smaller
+    Done - Make move vertically
+    Done - Make start at random location
+    Done - Layering so that creative commons license is not violated (i.e. names not obscured)
+    Done - Just use names, not titles? (until caught) (fit names on one line)
+
 

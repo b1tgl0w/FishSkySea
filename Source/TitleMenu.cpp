@@ -179,7 +179,7 @@ void TitleMenu::createMenuItems(boost::shared_ptr<boost::shared_ptr<Scene> >
     &creditGameScene, boost::shared_ptr<Scene> &storyScene)
 {
     boost::shared_ptr<MenuItem> play(new SceneMenuItem(currentScene,
-        mainGameScene, "Play"));
+        mainGameScene, "2 Play"));
     boost::shared_ptr<MenuItem> credits(new SceneMenuItem(currentScene,
         creditGameScene, "Credits"));
     boost::shared_ptr<MenuItem> story(new SceneMenuItem(currentScene,

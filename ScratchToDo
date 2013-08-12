@@ -2,17 +2,4 @@
 //This file complements CurrentToDo. 
 //CurrentToDo is specifications of current task, this is implementation of task
 
-- Fill in title scene
-- Shade title menu
-- Shade story scene
-- Shade sprites
-    - Rad
-    - Wes
-- Cleanup and make sure sprites are opaquely colored
-    - Rad
-    - Wes
-    - Shark
-    - SeaSnail
-    - Seahorse
-- Clean up title menu and story scene
-- UI Graphics
+

@@ -143,7 +143,7 @@ void HumanPlayer::initializeLine()
 void HumanPlayer::initializePlayerKeyTranslater()
 {
     boost::shared_ptr<Player> sharedThis(shared_from_this());
-    playerKeyTranslater.initializePlayer(sharedThis);
+    playerKeyTranslater.initializePlayer(sharedThis, playerNumber);
 }
 
 void HumanPlayer::dispose()

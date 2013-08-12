@@ -35,6 +35,7 @@ SUCH DAMAGES.
 #include "../Header/PlayerLengthenPoleAction.hpp"
 #include "../Header/PlayerShortenPoleAction.hpp"
 #include "../Header/PlayerSetHookAction.hpp"
+#include "../Header/HumanPlayer.hpp"
 
 PlayerKeyTranslater::PlayerKeyTranslater()
 {
@@ -47,7 +48,12 @@ PlayerKeyTranslater::PlayerKeyTranslater(const PlayerKeyTranslater &rhs) :
     rhs.GIVE_LINE_DEFAULT_KEY_P1), LENGTHEN_POLE_DEFAULT_KEY_P1(
     rhs.LENGTHEN_POLE_DEFAULT_KEY_P1), SHORTEN_POLE_DEFAULT_KEY_P1(
     rhs.SHORTEN_POLE_DEFAULT_KEY_P1), SET_HOOK_DEFAULT_KEY_P1(
-    rhs.SET_HOOK_DEFAULT_KEY_P1)
+    rhs.SET_HOOK_DEFAULT_KEY_P1), REEL_IN_DEFAULT_KEY_P2(
+    rhs.REEL_IN_DEFAULT_KEY_P2), GIVE_LINE_DEFAULT_KEY_P2(
+    rhs.GIVE_LINE_DEFAULT_KEY_P2), LENGTHEN_POLE_DEFAULT_KEY_P2(
+    rhs.LENGTHEN_POLE_DEFAULT_KEY_P2), SHORTEN_POLE_DEFAULT_KEY_P2(
+    rhs.SHORTEN_POLE_DEFAULT_KEY_P2), SET_HOOK_DEFAULT_KEY_P2(
+    rhs.SET_HOOK_DEFAULT_KEY_P2)
 { }
 
 PlayerKeyTranslater &PlayerKeyTranslater::operator=(const
@@ -63,6 +69,11 @@ PlayerKeyTranslater &PlayerKeyTranslater::operator=(const
     LENGTHEN_POLE_DEFAULT_KEY_P1 = rhs.LENGTHEN_POLE_DEFAULT_KEY_P1;
     SHORTEN_POLE_DEFAULT_KEY_P1 = rhs.SHORTEN_POLE_DEFAULT_KEY_P1;
     SET_HOOK_DEFAULT_KEY_P1 = rhs.SET_HOOK_DEFAULT_KEY_P1;
+    REEL_IN_DEFAULT_KEY_P2 =  rhs.REEL_IN_DEFAULT_KEY_P2;
+    GIVE_LINE_DEFAULT_KEY_P2 = rhs.GIVE_LINE_DEFAULT_KEY_P2;
+    LENGTHEN_POLE_DEFAULT_KEY_P2 = rhs.LENGTHEN_POLE_DEFAULT_KEY_P2;
+    SHORTEN_POLE_DEFAULT_KEY_P2 = rhs.SHORTEN_POLE_DEFAULT_KEY_P2;
+    SET_HOOK_DEFAULT_KEY_P2 = rhs.SET_HOOK_DEFAULT_KEY_P2;
 
     return *this;
 }
@@ -72,9 +83,10 @@ PlayerKeyTranslater::~PlayerKeyTranslater()
     dispose();
 }
 
-void PlayerKeyTranslater::initializePlayer(boost::shared_ptr<Player> &player)
+void PlayerKeyTranslater::initializePlayer(boost::shared_ptr<Player> &player,
+    bool playerNumber)
 {
-    initialize(player);
+    initialize(player, playerNumber);
 }
 
 void PlayerKeyTranslater::act(SDLKey key, bool pressed)
@@ -94,7 +106,8 @@ void PlayerKeyTranslater::switchKey(SDLKey, boost::shared_ptr<PlayerAction>
     //Refactor class to use boost::bimap
 }
 
-void PlayerKeyTranslater::initialize(const boost::shared_ptr<Player> &player)
+void PlayerKeyTranslater::initialize(const boost::shared_ptr<Player> &player,
+    bool playerNumber)
 {
     this->player = player;
     boost::shared_ptr<PlayerReelInAction> tmpPlayerReelInAction(
@@ -107,19 +120,39 @@ void PlayerKeyTranslater::initialize(const boost::shared_ptr<Player> &player)
         new PlayerShortenPoleAction(player));
     boost::shared_ptr<PlayerSetHookAction> tmpPlayerSetHookAction(
         new PlayerSetHookAction(player));
-    REEL_IN_DEFAULT_KEY_P1 = std::make_pair(SDLK_w, tmpPlayerReelInAction);
-    GIVE_LINE_DEFAULT_KEY_P1 = std::make_pair(SDLK_s, tmpPlayerGiveLineAction);
-    LENGTHEN_POLE_DEFAULT_KEY_P1 = std::make_pair(SDLK_d,
-        tmpPlayerLengthenPoleAction);
-    SHORTEN_POLE_DEFAULT_KEY_P1 = std::make_pair(SDLK_a,
-        tmpPlayerShortenPoleAction);
-    SET_HOOK_DEFAULT_KEY_P1 = std::make_pair(SDLK_e,
-        tmpPlayerSetHookAction);
-    actions.insert(REEL_IN_DEFAULT_KEY_P1);
-    actions.insert(GIVE_LINE_DEFAULT_KEY_P1);
-    actions.insert(LENGTHEN_POLE_DEFAULT_KEY_P1);
-    actions.insert(SHORTEN_POLE_DEFAULT_KEY_P1);
-    actions.insert(SET_HOOK_DEFAULT_KEY_P1);
+
+    if( playerNumber == HumanPlayer::PLAYER_ONE() )
+    {
+        REEL_IN_DEFAULT_KEY_P1 = std::make_pair(SDLK_w, tmpPlayerReelInAction);
+        GIVE_LINE_DEFAULT_KEY_P1 = std::make_pair(SDLK_s, tmpPlayerGiveLineAction);
+        LENGTHEN_POLE_DEFAULT_KEY_P1 = std::make_pair(SDLK_d,
+            tmpPlayerLengthenPoleAction);
+        SHORTEN_POLE_DEFAULT_KEY_P1 = std::make_pair(SDLK_a,
+            tmpPlayerShortenPoleAction);
+        SET_HOOK_DEFAULT_KEY_P1 = std::make_pair(SDLK_e,
+            tmpPlayerSetHookAction);
+        actions.insert(REEL_IN_DEFAULT_KEY_P1);
+        actions.insert(GIVE_LINE_DEFAULT_KEY_P1);
+        actions.insert(LENGTHEN_POLE_DEFAULT_KEY_P1);
+        actions.insert(SHORTEN_POLE_DEFAULT_KEY_P1);
+        actions.insert(SET_HOOK_DEFAULT_KEY_P1);
+    }
+    else
+    {
+        REEL_IN_DEFAULT_KEY_P2 = std::make_pair(SDLK_UP, tmpPlayerReelInAction);
+        GIVE_LINE_DEFAULT_KEY_P2 = std::make_pair(SDLK_DOWN, tmpPlayerGiveLineAction);
+        LENGTHEN_POLE_DEFAULT_KEY_P2 = std::make_pair(SDLK_RIGHT,
+            tmpPlayerLengthenPoleAction);
+        SHORTEN_POLE_DEFAULT_KEY_P2 = std::make_pair(SDLK_LEFT,
+            tmpPlayerShortenPoleAction);
+        SET_HOOK_DEFAULT_KEY_P2 = std::make_pair(SDLK_KP0,
+            tmpPlayerSetHookAction);
+        actions.insert(REEL_IN_DEFAULT_KEY_P2);
+        actions.insert(GIVE_LINE_DEFAULT_KEY_P2);
+        actions.insert(LENGTHEN_POLE_DEFAULT_KEY_P2);
+        actions.insert(SHORTEN_POLE_DEFAULT_KEY_P2);
+        actions.insert(SET_HOOK_DEFAULT_KEY_P2);
+    }
 }
 
 void PlayerKeyTranslater::initialize(const std::map<SDLKey,

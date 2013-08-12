@@ -84,6 +84,8 @@ private:
     void displayReady();
     static const Point &POLE_POINT();
     static const Point &HOOK_POINT();
+    static const Point &POLE_POINT2();
+    static const Point &HOOK_POINT2();
     static const Point &BACKGROUND_POINT();
     static const Point &ELDER_FISHER_POINT();
     static const Point &MOWHAWK_FISHER_POINT();
@@ -101,7 +103,9 @@ private:
     MasterClockPublisher *masterClockPublisher;
     boost::shared_ptr<Ocean> ocean;
     boost::shared_ptr<Score> score1;
+    boost::shared_ptr<Score> score2;
     boost::shared_ptr<HumanPlayer> player1;
+    boost::shared_ptr<HumanPlayer> player2;
     ImageRendererElement background;
     ImageRendererElement dockSupports;
     ImageRendererElement elderFisher;
@@ -110,13 +114,16 @@ private:
     bool quit;
     boost::shared_ptr<CoordinateLayout> oceanLayout;
     boost::shared_ptr<CenterLayout> score1CenterLayout;
+    boost::shared_ptr<CenterLayout> score2CenterLayout;
     boost::shared_ptr<CenterLayout> statusLayout;
     boost::shared_ptr<Layout> superOceanLayout;
     boost::shared_ptr<Layout> superScore1Layout;
+    boost::shared_ptr<Layout> superScore2Layout;
     boost::shared_ptr<Layout> superStatusLayout;
     boost::shared_ptr<KeyboardSubscriber> clockSubscriber;
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber;
     boost::shared_ptr<KeyboardSubscriber> playerSubscriber;
+    boost::shared_ptr<KeyboardSubscriber> playerSubscriber2;
     boost::shared_ptr<LayeredLayout> layeredLayout;
     boost::shared_ptr<BorderLayout> borderLayout;
     boost::shared_ptr<Layout> superBorderLayout;

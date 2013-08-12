@@ -63,6 +63,18 @@ const Point &MainGameScene::HOOK_POINT()
     return TMP_HOOK_POINT;
 }
 
+const Point &MainGameScene::POLE_POINT2()
+{
+    static const Point TMP_POLE_POINT2(670.0, 205.0);
+    return TMP_POLE_POINT2;
+}
+
+const Point &MainGameScene::HOOK_POINT2()
+{
+    static const Point TMP_HOOK_POINT2(670.0, 550.0);
+    return TMP_HOOK_POINT2;
+}
+
 const Point &MainGameScene::BACKGROUND_POINT()
 {
     static const Point TMP_BACKGROUND_POINT(0.0, 0.0);
@@ -135,9 +147,11 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     screenResolution(screenResolution), 
     masterInputPublisher(MasterInputPublisher::getInstance()),
     masterClockPublisher(MasterClockPublisher::getInstance()),
-    ocean(new Ocean(screenResolution, renderer)), score1(new Score(0)),
+    ocean(new Ocean(screenResolution, renderer)), score1(new Score(0)), score2(new Score(0)),
     player1(new HumanPlayer(POLE_POINT(), HOOK_POINT(), ocean, score1,
         HumanPlayer::PLAYER_ONE())), 
+    player2(new HumanPlayer(POLE_POINT2(), HOOK_POINT2(), ocean, score2,
+        HumanPlayer::PLAYER_TWO())), 
     background(BACKGROUND_PATH(), Layer::BACKGROUND1().integer(), 
         BACKGROUND_POINT(), screenResolution), 
     dockSupports(DOCK_SUPPORTS_PATH(), Layer::DOCK_SUPPORTS().integer(),
@@ -148,38 +162,43 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
         MOWHAWK_FISHER_POINT(), MOWHAWK_FISHER_SIZE()), 
     clipFit(new ClipFit), 
     quit(false), oceanLayout(new CoordinateLayout(clipFit)), 
-    score1CenterLayout(new CenterLayout(clipFit)), statusLayout(new 
-    CenterLayout(clipFit)), superOceanLayout(oceanLayout),
-    superScore1Layout(score1CenterLayout), superStatusLayout(statusLayout),
-    clockSubscriber(masterClockPublisher,
+    score1CenterLayout(new CenterLayout(clipFit)), score2CenterLayout(new CenterLayout(clipFit)),
+    statusLayout(new CenterLayout(clipFit)), superOceanLayout(oceanLayout),
+    superScore1Layout(score1CenterLayout), superScore2Layout(score2CenterLayout),
+    superStatusLayout(statusLayout), clockSubscriber(masterClockPublisher,
     MasterClockPublisher::customDeleter), MiSubscriber(keyboardPublisher),
-    playerSubscriber(player1), 
+    playerSubscriber(player1), playerSubscriber2(player2),
     layeredLayout(new LayeredLayout(2, clipFit)), borderLayout(new BorderLayout(
     BorderSize::Thick())), superBorderLayout(borderLayout), gridLayout(new
     GridLayout(1, 3)), superGridLayout(gridLayout), superLayeredLayout(
     layeredLayout), currentScene(currentScene), transition(false), toScene(),
-    statusElement(), readyTimer(), goTimer(), game(new Game(score1, score1)),
+    statusElement(), readyTimer(), goTimer(), game(new Game(score1, score2)),
     titleScene()
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
     player1->initializeLine();
     player1->initializePlayerKeyTranslater();
+    player2->initializeLine();
+    player2->initializePlayerKeyTranslater();
 }
 
 MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     keyboardPublisher(rhs.keyboardPublisher), screenResolution(
     rhs.screenResolution), masterInputPublisher(
     rhs.masterInputPublisher), masterClockPublisher(rhs.masterClockPublisher),
-    ocean(rhs.ocean), score1(rhs.score1), player1(rhs.player1), background(
-    rhs.background), dockSupports(rhs.dockSupports), elderFisher(rhs.elderFisher), 
-    mowhawkFisher(rhs.mowhawkFisher), clipFit(rhs.clipFit), quit(rhs.quit), 
-    oceanLayout(rhs.oceanLayout), score1CenterLayout(rhs.score1CenterLayout), 
+    ocean(rhs.ocean), score1(rhs.score1), score2(rhs.score2),
+    player1(rhs.player1), player2(rhs.player2),
+    background(rhs.background), dockSupports(rhs.dockSupports), 
+    elderFisher(rhs.elderFisher), mowhawkFisher(rhs.mowhawkFisher), clipFit(rhs.clipFit), 
+    quit(rhs.quit), oceanLayout(rhs.oceanLayout), score1CenterLayout(rhs.score1CenterLayout), 
+    score2CenterLayout(rhs.score2CenterLayout),
     statusLayout(rhs.statusLayout), superOceanLayout(rhs.superOceanLayout), 
     superScore1Layout(rhs.superScore1Layout), 
+    superScore2Layout(rhs.superScore2Layout), 
     superStatusLayout(rhs.superStatusLayout), clockSubscriber(
     rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), playerSubscriber(
-    rhs.playerSubscriber), layeredLayout(
+    rhs.playerSubscriber), playerSubscriber2(rhs.playerSubscriber2), layeredLayout(
     rhs.layeredLayout), borderLayout(rhs.borderLayout), superBorderLayout(
     rhs.superBorderLayout), gridLayout(rhs.gridLayout), superGridLayout(
     rhs.superGridLayout), superLayeredLayout(rhs.superLayeredLayout),
@@ -202,7 +221,9 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     masterClockPublisher = rhs.masterClockPublisher;
     ocean = rhs.ocean;
     score1 = rhs.score1;
+    score2 = rhs.score2;
     player1 = rhs.player1;
+    player2 = rhs.player2;
     background = rhs.background;
     dockSupports = rhs.dockSupports;
     elderFisher = rhs.elderFisher;
@@ -211,13 +232,16 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     quit = rhs.quit;
     oceanLayout = rhs.oceanLayout;
     score1CenterLayout = rhs.score1CenterLayout,
+    score2CenterLayout = rhs.score2CenterLayout,
     statusLayout = rhs.statusLayout;
     superOceanLayout = rhs.superOceanLayout;
     superScore1Layout = rhs.superScore1Layout;
+    superScore2Layout = rhs.superScore2Layout;
     superStatusLayout = rhs.superStatusLayout;
     clockSubscriber = rhs.clockSubscriber;
     MiSubscriber = rhs.MiSubscriber;
     playerSubscriber = rhs.playerSubscriber;
+    playerSubscriber2 = rhs.playerSubscriber2;
     layeredLayout = rhs.layeredLayout;
     borderLayout = rhs.borderLayout;
     superBorderLayout = rhs.superBorderLayout;
@@ -249,8 +273,11 @@ void MainGameScene::enter()
     ocean->loadImage(*(renderer));
     ocean->addCollidable(ocean);
     boost::weak_ptr<Collidable> playerCollidable(player1);
+    boost::weak_ptr<Collidable> playerCollidable2(player2);
     ocean->addCollidable(playerCollidable);
+    ocean->addCollidable(playerCollidable2);
     player1->loadImage(*renderer);
+    player2->loadImage(*renderer);
     renderer->loadImage("../Media/Scene8.png");
     renderer->loadImage("../Media/MowhawkFisher2.png");
     renderer->loadImage("../Media/ElderFisher2.png");
@@ -259,15 +286,19 @@ void MainGameScene::enter()
     renderer->loadText("Go", COLOR, BORDER_SIZE, FontSize::Huge());
     game->loadImage(*renderer);
     player1->sendCollidable(ocean);
+    player2->sendCollidable(ocean);
     keyboardPublisher->subscribe(clockSubscriber);
     masterInputPublisher->subscribe(MiSubscriber);
     keyboardPublisher->subscribe(playerSubscriber);
+    keyboardPublisher->subscribe(playerSubscriber2);
     layeredLayout->addLayout(superOceanLayout, 0);
     layeredLayout->addLayout(superBorderLayout, 1);
     borderLayout->addLayout(superGridLayout, BorderCell::Top());
     gridLayout->addLayout(superScore1Layout, cell);
     cell.x = 1;
     gridLayout->addLayout(superStatusLayout, cell);
+    cell.x = 2;
+    gridLayout->addLayout(superScore2Layout, cell);
     renderer->addLayout(superLayeredLayout);
     displayReady();
     boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
@@ -281,12 +312,14 @@ void MainGameScene::run()
     masterClockPublisher->pollClock();
     game->checkWinner();
     player1->draw(superOceanLayout, *renderer);
+    player2->draw(superOceanLayout, *renderer);
     ocean->draw(superOceanLayout, *renderer);
     oceanLayout->drawWhenReady(background);
     oceanLayout->drawWhenReady(mowhawkFisher);
     oceanLayout->drawWhenReady(elderFisher);
     oceanLayout->drawWhenReady(dockSupports);
     score1->draw(superScore1Layout, *renderer);
+    score2->draw(superScore2Layout, *renderer);
     boost::shared_ptr<Layout> superStatusLayout(statusLayout);
     game->draw(superStatusLayout, *renderer);
 
@@ -312,17 +345,22 @@ void MainGameScene::exit()
     Point cell(0.0, 0.0);
     ocean->removeCollidable(ocean);
     boost::weak_ptr<Collidable> playerCollidable(player1);
-    ocean->removeCollidable(playerCollidable);
+    boost::weak_ptr<Collidable> playerCollidable2(player2);
+    ocean->removeCollidable(playerCollidable2);
     player1->sendCollidableRemove(ocean);
+    player2->sendCollidableRemove(ocean);
     keyboardPublisher->unsubscribe(clockSubscriber);
     masterInputPublisher->unsubscribe(MiSubscriber);
     keyboardPublisher->subscribe(playerSubscriber);
+    keyboardPublisher->subscribe(playerSubscriber2);
     layeredLayout->removeLayout(superOceanLayout, 0);
     layeredLayout->removeLayout(superBorderLayout, 1);
     borderLayout->removeLayout(superGridLayout, BorderCell::Top());
     gridLayout->removeLayout(superScore1Layout, cell);
     cell.x = 1;
     gridLayout->removeLayout(superStatusLayout, cell);
+    cell.x = 2;
+    gridLayout->removeLayout(superScore2Layout, cell);
     renderer->removeLayout(superLayeredLayout);
     ocean->gameLive(false);
     boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
@@ -361,6 +399,7 @@ void MainGameScene::displayGo()
 {
     ocean->gameLive(true);
     player1->gameLive(true);
+    player2->gameLive(true);
     Point origin (0.0, 0.0);
     Dimension textSize(150.0, 50.0);
     boost::shared_ptr<TextRendererElement> goElement(new TextRendererElement(

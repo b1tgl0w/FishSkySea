@@ -49,11 +49,11 @@ public:
     PlayerKeyTranslater(const PlayerKeyTranslater &rhs);
     PlayerKeyTranslater &operator=(const PlayerKeyTranslater &rhs);
     ~PlayerKeyTranslater();
-    void initializePlayer(boost::shared_ptr<Player> &player);
+    void initializePlayer(boost::shared_ptr<Player> &player, bool playerNumber);
     void act(SDLKey, bool pressed);
     void switchKey(SDLKey, boost::shared_ptr<PlayerAction> &action);
 protected:
-    void initialize(const boost::shared_ptr<Player> &player);
+    void initialize(const boost::shared_ptr<Player> &player, bool playerNumber);
     void initialize(const std::map<SDLKey, boost::shared_ptr<PlayerAction> >
         &actions);
     void dispose();
@@ -71,6 +71,16 @@ private:
         SHORTEN_POLE_DEFAULT_KEY_P1; //Treat as const
     std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
         SET_HOOK_DEFAULT_KEY_P1; //Treat as const
+    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+        REEL_IN_DEFAULT_KEY_P2; //Treat as const
+    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+        GIVE_LINE_DEFAULT_KEY_P2; //Treat as const
+    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+        LENGTHEN_POLE_DEFAULT_KEY_P2; //Treat as const
+    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+        SHORTEN_POLE_DEFAULT_KEY_P2; //Treat as const
+    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+        SET_HOOK_DEFAULT_KEY_P2; //Treat as const
 };
 
 #endif

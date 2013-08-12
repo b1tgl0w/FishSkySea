@@ -804,6 +804,14 @@ void Line::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
 void Line::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
     const BoundingBox &yourBox, const Direction &direction)
 {
+    boost::shared_ptr<Player> sharedOwner = owner.lock();
+
+    if( !sharedOwner )
+        return;
+
+    if( player != sharedOwner )
+        return;
+
     //Same for both states, so don't call current state's method
     double unused = 0.0;
     double *coordinate = &unused;
