@@ -67,6 +67,7 @@ public:
     void loadImage(Renderer &renderer);
     void createLayouts();
     void moveTo(const Point &position);
+    void show(bool shouldShow);
 private:
     bool formLines();
     std::string text;
@@ -84,6 +85,7 @@ private:
     boost::shared_ptr<Renderer> renderer;
     FontSize fontSize;
     int numberOfLines;
+    bool shouldShow;
 };
 
 #endif

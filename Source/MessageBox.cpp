@@ -59,7 +59,8 @@ MessageBox::MessageBox(const std::string &text,
     uuid(boost::uuids::random_generator()()),
     identifier(boost::uuids::to_string(uuid)),
     //identifier(boost::lexical_cast<std::string>(uuid)), //for debian, old boost
-    renderer(renderer), fontSize(fontSize), numberOfLines(numberOfLines)
+    renderer(renderer), fontSize(fontSize), numberOfLines(numberOfLines),
+    shouldShow(true)
 {
     formLines();
     createLayouts();
@@ -71,7 +72,7 @@ MessageBox::MessageBox(const MessageBox &rhs) : text(rhs.text),
     fitStrategy(rhs.fitStrategy),
     layer(rhs.layer), uuid(rhs.uuid), identifier(rhs.identifier),
     renderer(rhs.renderer), fontSize(rhs.fontSize), numberOfLines(
-    rhs.numberOfLines) 
+    rhs.numberOfLines), shouldShow(rhs.shouldShow)
 { }
 
 MessageBox &MessageBox::operator=(const MessageBox &rhs)
@@ -94,6 +95,7 @@ MessageBox &MessageBox::operator=(const MessageBox &rhs)
     renderer = rhs.renderer;
     fontSize = rhs.fontSize;
     numberOfLines = rhs.numberOfLines;
+    shouldShow = rhs.shouldShow;
 
     return *this;
 }
@@ -107,6 +109,9 @@ boost::shared_ptr<Layout> MessageBox::layoutToAttach()
 
 bool MessageBox::advance()
 {
+    if( shouldShow == false )
+        return true;
+
     if( lines.empty() )
         return false;
 
@@ -163,6 +168,9 @@ bool MessageBox::formLines()
 
 void MessageBox::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
+    if( shouldShow == false )
+        return;
+
     std::list<boost::shared_ptr<CenterLayout> >::iterator layoutIterator =
         layouts.begin();
 
@@ -182,5 +190,10 @@ void MessageBox::loadImage(Renderer &renderer)
 void MessageBox::moveTo(const Point &position)
 {
     gridLayout->moveTo(position);
+}
+
+void MessageBox::show(bool shouldShow)
+{
+    this->shouldShow = shouldShow;
 }
 
