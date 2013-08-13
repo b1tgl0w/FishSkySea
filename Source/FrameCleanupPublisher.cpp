@@ -28,6 +28,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include <vector>
 #include "../Header/FrameCleanupPublisher.hpp"
 #include "../Header/FrameCleanupSubscriber.hpp"
 
@@ -73,20 +74,19 @@ void FrameCleanupPublisher::unsubscribe(boost::shared_ptr<FrameCleanupSubscriber
     std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator
         itPlaceholder;
 
+    std::vector<std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator >
+        toRemove;
+
     for( std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator it =
         subscribers.begin(); it != subscribers.end(); ++it )
     {
         if( frameCleanupSubscriber == *it )
-        {
-            itPlaceholder = it;
-            ++itPlaceholder;
-            subscribers.erase(it);
-            it = itPlaceholder;
-
-            if( it == subscribers.end() )
-                break;
-        }
+            toRemove.push_back(it);
     }
+
+    for( std::vector<std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator >::iterator
+        it = toRemove.begin(); it != toRemove.end(); ++it )
+        subscribers.erase(*it);
 }
 
 void FrameCleanupPublisher::frameCleanup()

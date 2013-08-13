@@ -28,6 +28,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include <vector>
 #include "../Header/MasterInputPublisher.hpp"
 #include "../Header/MasterInputSubscriber.hpp"
 
@@ -99,21 +100,17 @@ void MasterInputPublisher::unsubscribe(boost::shared_ptr<MasterInputSubscriber>
     &subscriber)
 {
     std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator itPlaceholder;
+    std::vector<std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator >
+        toRemove;
 
     for( std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator it =
         subscribers.begin(); it != subscribers.end(); ++it )
-    {
         if( subscriber == it->lock() )
-        {
-            itPlaceholder = it;
-            ++itPlaceholder;
-            subscribers.erase(it);
-            it = itPlaceholder;
-            
-            if( it == subscribers.end() )
-                break;
-        }
-    }
+            toRemove.push_back(it);
+
+    for( std::vector<std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator >::
+        iterator it = toRemove.begin(); it != toRemove.end(); ++it )
+        subscribers.erase(*it);
 }
 
 MasterInputPublisher::~MasterInputPublisher()

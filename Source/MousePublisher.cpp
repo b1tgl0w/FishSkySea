@@ -26,6 +26,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include <vector>
 #include "../Header/MousePublisher.hpp"
 #include "../Header/Point.hpp"
 
@@ -134,21 +135,17 @@ void MousePublisher::subscribe(boost::weak_ptr<MouseSubscriber> &subscriber)
 void MousePublisher::unsubscribe(boost::weak_ptr<MouseSubscriber> &subscriber)
 {
     std::list<boost::weak_ptr<MouseSubscriber> >::iterator itPlaceholder;
+    std::vector<std::list<boost::weak_ptr<MouseSubscriber> >::iterator>
+        toRemove;
 
     for( std::list<boost::weak_ptr<MouseSubscriber> >::iterator it =
         subscribers.begin(); it != subscribers.end(); ++it )
-    {
         if( subscriber.lock() == it->lock() )
-        {
-            itPlaceholder = it;
-            ++itPlaceholder;
-            subscribers.erase(it);
-            it = itPlaceholder;
+            toRemove.push_back(it);
 
-            if( it == subscribers.end() )
-                break;
-        }
-    }
+    for( std::vector<std::list<boost::weak_ptr<MouseSubscriber> >::iterator >::iterator 
+        it = toRemove.begin(); it != toRemove.end(); ++it )
+        subscribers.erase(*it);
 }
 
 void MousePublisher::notifyClick(Uint8 button, bool pressed, Point &position)

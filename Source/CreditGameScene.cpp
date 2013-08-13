@@ -49,6 +49,7 @@ SUCH DAMAGES.
 #include "../Header/TextRendererElement.hpp"
 #include "../Header/Timer.hpp"
 #include "../Header/OceanMode.hpp"
+#include "../Header/Biography.hpp"
 
 const Point &CreditGameScene::POLE_POINT()
 {
@@ -158,7 +159,7 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     GridLayout(1, 3)), superGridLayout(gridLayout), superLayeredLayout(
     layeredLayout), currentScene(currentScene), transition(false),
     toScene(), statusElement(), readyTimer(), goTimer(),
-    game(new Game(score1, score1)), titleScene()
+    game(new Game(score1, score1)), titleScene(), biographies()
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
@@ -185,7 +186,7 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     currentScene(rhs.currentScene), transition(rhs.transition),
     toScene(rhs.toScene), statusElement(rhs.statusElement),
     readyTimer(rhs.readyTimer), goTimer(rhs.goTimer), game(rhs.game),
-    titleScene(rhs.titleScene)
+    titleScene(rhs.titleScene), biographies(rhs.biographies)
 { }
 
 CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
@@ -230,6 +231,7 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     goTimer = rhs.goTimer;
     game = rhs.game;
     titleScene = rhs.titleScene;
+    biographies = rhs.biographies;
 
     return *this;
 }
@@ -283,6 +285,12 @@ void CreditGameScene::enter()
     boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
         shared_from_this());
     keyboardPublisher->subscribe(sharedThisSubscriber);
+    
+    boost::shared_ptr<Biography> johnBio(new Biography("../Media/JohnBioPicture.png", 
+        "Testing biography text", "John Miner", "Designer Coder Writer", renderer));
+    johnBio->show(true);
+
+    biographies.push_back(johnBio);
 }
 
 void CreditGameScene::run()

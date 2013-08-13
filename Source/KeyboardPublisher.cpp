@@ -28,6 +28,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include <vector>
 #include "../Header/KeyboardPublisher.hpp"
 #include "../Header/KeyboardSubscriber.hpp"
 
@@ -82,21 +83,19 @@ void KeyboardPublisher::subscribe(boost::shared_ptr<KeyboardSubscriber> &subscri
 void KeyboardPublisher::unsubscribe(boost::shared_ptr<KeyboardSubscriber> &subscriber)
 {
     std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator itPlaceholder;
+    std::vector<std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator >
+        toRemove;
 
     for( std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator it =
         subscribers.begin(); it != subscribers.end(); ++it )
     {
         if( subscriber == (*it).lock() );
-        {
-            itPlaceholder = it;
-            ++itPlaceholder;
-            subscribers.erase(it);
-            it = itPlaceholder;
-            
-            if( it == subscribers.end() )
-                break;
-        }
+            toRemove.push_back(it);
     }
+
+    for( std::vector<std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator >::
+        iterator it = toRemove.begin(); it != toRemove.end(); ++it )
+        subscribers.erase(*it);
 }
 
 void KeyboardPublisher::inputEvent(const SDL_Event &e) 

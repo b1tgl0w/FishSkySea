@@ -51,6 +51,8 @@ public:
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
     void show(bool shouldShow);
+    void keyPressed(const SDLKey &key);
+    void keyReleased(const SDLKey &key);
 private:
     std::string picturePath;
     boost::shared_ptr<MessageBox> bio;

@@ -26,6 +26,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include <vector>
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/MasterClockSubscriber.hpp"
 #include "../Header/Math.hpp"
@@ -57,21 +58,17 @@ void MasterClockPublisher::unsubscribe(boost::shared_ptr<MasterClockSubscriber>
     &subscriber)
 {
     std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator itPlaceholder;
+    std::vector<std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator >
+        toRemove;
 
     for( std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator it =
         subscribers.begin(); it != subscribers.end(); ++it )
-    {
         if( subscriber == it->lock() )
-        {
-            itPlaceholder = it;
-            ++itPlaceholder;
-            subscribers.erase(it);
-            it = itPlaceholder;
-            
-            if( it == subscribers.end() )
-                break;
-        }
-    }
+            toRemove.push_back(it);
+
+    for( std::vector<std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator >::
+        iterator it = toRemove.begin(); it != toRemove.end(); ++it )
+        subscribers.erase(*it);
 }
 
 //Note: Since subscribers can unsubscribe themselves during a clockTick,

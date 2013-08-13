@@ -2,4 +2,9 @@
 //This file complements CurrentToDo. 
 //CurrentToDo is specifications of current task, this is implementation of task
 
+- Credit game scene owns the biography objects
+- Ocean or CF is a publisher that notifies subscribers of credit fish catch
+- Use boost::signals
+- The biographies subscribe to CF through ocean by passing name to connect with
+the right CF, perhaps the CF is created at this time too
 

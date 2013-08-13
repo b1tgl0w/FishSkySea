@@ -190,12 +190,18 @@ void CoordinateLayout::addLayout(boost::shared_ptr<Layout> &layout,
 void CoordinateLayout::removeLayout(boost::shared_ptr<Layout> &layout,
     const Point &position)
 {
+    std::vector<std::list<boost::shared_ptr<Layout> >::iterator> toRemove;
+
     for( std::list<boost::shared_ptr<Layout> >::iterator it = 
         sublayouts.begin(); it != sublayouts.end(); ++it )
     {
         if( (*it)->isHere(position) && layout == *it )
-            sublayouts.erase(it);
+            toRemove.push_back(it);
     }
+
+    for( std::vector<std::list<boost::shared_ptr<Layout> >::iterator>::iterator
+        it = toRemove.begin(); it != toRemove.end(); ++it )
+        sublayouts.erase(*it);
 }
 
 std::list<boost::shared_ptr<Layout> > CoordinateLayout::operator[](const

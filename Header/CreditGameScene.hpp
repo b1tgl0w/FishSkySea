@@ -58,6 +58,7 @@ class LayeredLayout;
 class BorderLayout;
 class GridLayout;
 class TextRendererElement;
+class Biography;
 
 class CreditGameScene : public Scene, public TimerAction, public 
     KeyboardSubscriber, public boost::enable_shared_from_this<CreditGameScene>
@@ -132,6 +133,7 @@ private:
     boost::shared_ptr<Timer<CreditGameScene> > goTimer;
     boost::shared_ptr<Game> game;
     boost::weak_ptr<Scene> titleScene;
+    std::vector<boost::shared_ptr<Biography> > biographies;
 };
 
 #endif
