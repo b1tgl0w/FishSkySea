@@ -87,12 +87,9 @@ private:
     static const Point &POLE_POINT();
     static const Point &HOOK_POINT();
     static const Point &BACKGROUND_POINT();
-    static const Point &ELDER_FISHER_POINT();
     static const Point &MOWHAWK_FISHER_POINT();
-    static const Dimension &ELDER_FISHER_SIZE();
     static const Dimension &MOWHAWK_FISHER_SIZE();
     static const Point &DOCK_SUPPORTS_POINT();
-    static const std::string &ELDER_FISHER_PATH();
     static const std::string &MOWHAWK_FISHER_PATH();
     static const std::string &BACKGROUND_PATH();
     static const std::string &DOCK_SUPPORTS_PATH();
@@ -106,15 +103,12 @@ private:
     boost::shared_ptr<HumanPlayer> player1;
     ImageRendererElement background;
     ImageRendererElement dockSupports;
-    ImageRendererElement elderFisher;
     ImageRendererElement mowhawkFisher;
     boost::shared_ptr<FitStrategy> clipFit;
     bool quit;
     boost::shared_ptr<CoordinateLayout> oceanLayout;
-    boost::shared_ptr<CenterLayout> score1CenterLayout;
     boost::shared_ptr<CenterLayout> statusLayout;
     boost::shared_ptr<Layout> superOceanLayout;
-    boost::shared_ptr<Layout> superScore1Layout;
     boost::shared_ptr<Layout> superStatusLayout;
     boost::shared_ptr<KeyboardSubscriber> clockSubscriber;
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber;
@@ -131,9 +125,20 @@ private:
     boost::shared_ptr<RendererElement> statusElement;
     boost::shared_ptr<Timer<CreditGameScene> > readyTimer;
     boost::shared_ptr<Timer<CreditGameScene> > goTimer;
-    boost::shared_ptr<Game> game;
     boost::weak_ptr<Scene> titleScene;
     std::vector<boost::shared_ptr<Biography> > biographies;
+    boost::shared_ptr<GridLayout> bioGridLayout;
+    boost::shared_ptr<Layout> superBioGridLayout;
+    boost::shared_ptr<BorderLayout> bioBorderLayout;
+    boost::shared_ptr<Layout> superBioBorderLayout;
+    boost::shared_ptr<CoordinateLayout> nameCoordinateLayout;
+    boost::shared_ptr<Layout> superNameCoordinateLayout;
+    boost::shared_ptr<CoordinateLayout> pictureCoordinateLayout;
+    boost::shared_ptr<Layout> superPictureCoordinateLayout;
+    boost::shared_ptr<CoordinateLayout> titleCoordinateLayout;
+    boost::shared_ptr<Layout> superTitleCoordinateLayout;
+    boost::shared_ptr<CoordinateLayout> bioCoordinateLayout;
+    boost::shared_ptr<Layout> superBioCoordinateLayout;
 };
 
 #endif

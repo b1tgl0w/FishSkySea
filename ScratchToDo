@@ -2,7 +2,19 @@
 //This file complements CurrentToDo. 
 //CurrentToDo is specifications of current task, this is implementation of task
 
+Done - Get rid of unneccessary things in credit game scene
+
+Bug Info
+- For some reason, the bio graphics and message box don't show
+- If picture layout added to top left grid cell, it shows, but nothing else does
+- The problem probably isn't in layered layout, it's probably in border or grid 
+- Even if the border layout itself is added to renderer, only the picture shows
+- Biography doesn't seem to be the culprit
+- Why doesn't even the picture get positioned and scaled correctly?
+
+After fixing bug
 - Credit game scene owns the biography objects
+- Try showing one biography before doing others when credit fish is caught
 - Ocean or CF is a publisher that notifies subscribers of credit fish catch
 - Use boost::signals
 - The biographies subscribe to CF through ocean by passing name to connect with
