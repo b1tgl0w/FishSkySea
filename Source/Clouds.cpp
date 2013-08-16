@@ -107,7 +107,7 @@ void Clouds::clockTick(Uint32 elapsedTime)
     if( !live )
         return;
 
-    double delX = elapsedTime * .025; //magic num is velocity
+    double delX = elapsedTime * .015; //magic num is velocity
     firstImagePosition.x -= delX;
     secondImagePosition.x -= delX;
     thirdImagePosition.x -= delX;

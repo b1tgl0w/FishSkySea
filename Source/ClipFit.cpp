@@ -64,10 +64,11 @@ void ClipFit::fit(std::list<boost::shared_ptr<RendererElement> >
     &rendererElements, const Point &position, const Dimension &size,
     boost::shared_ptr<Clip> &clipObject)
 {
+    std::list<boost::shared_ptr<RendererElement> > rendererElementsCopy =
+        rendererElements;
+
     for( std::list<boost::shared_ptr<RendererElement> >::iterator it =
-        rendererElements.begin(); it != rendererElements.end(); ++it )
-    {
+        rendererElementsCopy.begin(); it != rendererElementsCopy.end(); ++it )
         (*it)->clip(clipObject);
-    }
 }
 

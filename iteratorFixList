@@ -1,0 +1,62 @@
+Iterators become invalidated when inserting, erasing, resizing, and swapping
+elements from them. Below is a startegy to take to fix using invalidated iterators,
+how to avoid them in the future, and a checklist of classes to be fixed.
+
+Fix Strategy:
+
+- Note: if the collection stores objects by value, all modifications won't effect
+the original collection! Thus all collections that will be iterated over must 
+contain shared_ptrs. When creating shared_ptrs, don't forget about cyclical
+references.
+
+- I think you should ALWAYS make COPIES of collections and iterate on the copies
+unless specifically modifying the collection in order to add or remove elements.
+Do NOT copy back the collection after iterating but make sure the elements of 
+the collection are shared pointers.
+
+- The correct way to erase or replace an element in an iterator is
+for(std::list<boost::shared_ptr<T> >::iterator it = myList.begin();
+    it != myList.end(); /*don't increment here*/)
+{
+    if( toErase == *it )
+        it = myList.erase(it);
+    else
+        ++it;
+}
+
+- Elements should NOT be push_back on a vector that is currently being 
+iterated over. Remember: the copy must be iterated over, the push_back must be
+made on the original. Make sure no one has access to the copy (e.g. to pass it to
+a method)
+
+- This strategy may be inefficient because I do not know if the shared_ptr
+copy ctor is reasonably efficient
+
+Checklist of classes to be fixed:
+//This list is generated with grep -l iterator Source/*.cpp | sed s/Source\\///
+
+//Skipped Animation.cpp
+//Skipped BorderLayout.cpp
+//Done CenterLayout.cpp
+//Done ClipFit.cpp
+//Done CoordinateLayout.cpp
+//Done CreditGameScene.cpp
+//Done DirectRendererElement.cpp
+//Done FillClipFit.cpp
+//Done FrameCleanupPublisher.cpp
+//Skipped Part GridLayout.cpp
+//Done ImageRendererElement.cpp
+//Done KeyboardPublisher.cpp
+//Done LayeredLayout.cpp
+//Done MasterClockPublisher.cpp
+//DoneMasterInputPublisher.cpp
+MessageBox.cpp
+MousePublisher.cpp
+Ocean.cpp
+PlayerKeyTranslater.cpp
+Renderer.cpp
+ScaleClipFit.cpp
+Story.cpp
+StoryScene.cpp
+TextRendererElement.cpp
+TitleMenu.cpp

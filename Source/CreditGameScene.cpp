@@ -301,8 +301,10 @@ void CreditGameScene::enter()
     std::vector<boost::shared_ptr<Layout> > creditFishLayouts = 
         ocean->layoutsToAttach();
     Point tmpOrigin(0.0, 0.0);
+    std::vector<boost::shared_ptr<Layout> > creditFishLayoutsCopy = 
+        creditFishLayouts;
     for( std::vector<boost::shared_ptr<Layout> >::iterator it = 
-        creditFishLayouts.begin(); it != creditFishLayouts.end(); ++it )
+        creditFishLayoutsCopy.begin(); it != creditFishLayoutsCopy.end(); ++it )
         oceanLayout->addLayout(*it, tmpOrigin);
 
     layeredLayout->addLayout(superOceanLayout, 0);
@@ -330,8 +332,9 @@ void CreditGameScene::run()
     oceanLayout->drawWhenReady(dockSupports);
     boost::shared_ptr<Layout> superStatusLayout(statusLayout);
 
-    for( std::vector<boost::shared_ptr<Biography> >::iterator it = biographies.
-        begin(); it != biographies.end(); ++it )
+    std::vector<boost::shared_ptr<Biography> > biographiesCopy = biographies;
+    for( std::vector<boost::shared_ptr<Biography> >::iterator it = biographiesCopy.
+        begin(); it != biographiesCopy.end(); ++it )
         (*it)->draw(superPictureCoordinateLayout, *renderer);
 
     if( statusElement )

@@ -82,20 +82,14 @@ void KeyboardPublisher::subscribe(boost::shared_ptr<KeyboardSubscriber> &subscri
 
 void KeyboardPublisher::unsubscribe(boost::shared_ptr<KeyboardSubscriber> &subscriber)
 {
-    std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator itPlaceholder;
-    std::vector<std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator >
-        toRemove;
-
     for( std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator it =
-        subscribers.begin(); it != subscribers.end(); ++it )
+        subscribers.begin(); it != subscribers.end(); /*don't increment here*/ )
     {
-        if( subscriber == (*it).lock() );
-            toRemove.push_back(it);
+        if( subscriber == (*it).lock() )
+            it = subscribers.erase(it);
+        else
+            ++it;
     }
-
-    for( std::vector<std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator >::
-        iterator it = toRemove.begin(); it != toRemove.end(); ++it )
-        subscribers.erase(*it);
 }
 
 void KeyboardPublisher::inputEvent(const SDL_Event &e) 
@@ -117,14 +111,11 @@ void KeyboardPublisher::inputEvent(const SDL_Event &e)
 void KeyboardPublisher::notify(SDLKey key, bool pressed)
 {
     boost::shared_ptr<KeyboardSubscriber> tmpSubscriber;
-    int i = 0;
 
-    for(std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator it = subscribers.begin();
-        it != subscribers.end(); ++it, ++i)
+    std::list<boost::weak_ptr<KeyboardSubscriber> > subscribersCopy = subscribers;
+    for(std::list<boost::weak_ptr<KeyboardSubscriber> >::iterator it = 
+        subscribersCopy.begin(); it != subscribersCopy.end(); ++it )
     {
-        if( i >= subscribers.size() )
-            break;
-
         tmpSubscriber = (*it).lock();
         
         if( !tmpSubscriber )

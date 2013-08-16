@@ -71,28 +71,24 @@ void FrameCleanupPublisher::subscribe(boost::shared_ptr<FrameCleanupSubscriber>
 void FrameCleanupPublisher::unsubscribe(boost::shared_ptr<FrameCleanupSubscriber>
     &frameCleanupSubscriber)
 {
-    std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator
-        itPlaceholder;
-
-    std::vector<std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator >
-        toRemove;
-
+    //this should erase elements without invalidating iterator
     for( std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator it =
-        subscribers.begin(); it != subscribers.end(); ++it )
+        subscribers.begin(); it != subscribers.end(); /*don't increment here*/)
     {
         if( frameCleanupSubscriber == *it )
-            toRemove.push_back(it);
+            it = subscribers.erase(it);
+        else
+            ++it;
     }
-
-    for( std::vector<std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator >::iterator
-        it = toRemove.begin(); it != toRemove.end(); ++it )
-        subscribers.erase(*it);
 }
 
 void FrameCleanupPublisher::frameCleanup()
 {
+    std::list<boost::shared_ptr<FrameCleanupSubscriber> > subscribersCopy =
+        subscribers;
+
     for( std::list<boost::shared_ptr<FrameCleanupSubscriber> >::iterator it =
-        subscribers.begin(); it != subscribers.end(); ++it )
+        subscribersCopy.begin(); it != subscribersCopy.end(); ++it )
     {
         (*it)->frameCleanup();
     }

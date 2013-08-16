@@ -90,8 +90,9 @@ void LayeredLayout::drawWhenReady(RendererElement &re)
 void LayeredLayout::drawWhenReady(boost::shared_ptr<RendererElement>
     &rendererElement, boost::shared_ptr<Layout> &callerLayout)
 {
-    std::vector<boost::shared_ptr<Layout> >::iterator it = layers.begin();
-    for(int i = 0; it != layers.end(); 
+    std::vector<boost::shared_ptr<Layout> > layersCopy = layers;
+    std::vector<boost::shared_ptr<Layout> >::iterator it = layersCopy.begin();
+    for(int i = 0; it != layersCopy.end(); 
         ++it, ++i)
     {
         if( this->toDraw.size() - 1 < i || this->toDraw.empty() )
@@ -104,8 +105,9 @@ void LayeredLayout::drawWhenReady(boost::shared_ptr<RendererElement>
 void LayeredLayout::drawWhenReady(const std::list<boost::shared_ptr<RendererElement> >
     &toDraw, boost::shared_ptr<Layout> &callerLayout)
 {
-    std::vector<boost::shared_ptr<Layout> >::iterator it = layers.begin();
-    for(int i = 0; it != layers.end(); 
+    std::vector<boost::shared_ptr<Layout> > layersCopy = layers;
+    std::vector<boost::shared_ptr<Layout> >::iterator it = layersCopy.begin();
+    for(int i = 0; it != layersCopy.end(); 
         ++it, ++i)
     {
         if( this->toDraw.size() - 1 < i || this->toDraw.empty() )
@@ -118,8 +120,9 @@ void LayeredLayout::drawWhenReady(const std::list<boost::shared_ptr<RendererElem
 
 void LayeredLayout::render()
 {
-    for( std::vector<boost::shared_ptr<Layout> >::iterator it = layers.begin();
-        it != layers.end(); ++it )
+    std::vector<boost::shared_ptr<Layout> > layersCopy = layers;
+    for( std::vector<boost::shared_ptr<Layout> >::iterator it = layersCopy.begin();
+        it != layersCopy.end(); ++it )
         (*it)->render();
 
     if( toDraw.empty() )
@@ -136,14 +139,17 @@ void LayeredLayout::render()
     boost::shared_ptr<Layout> layout(shared_from_this());
     clipObject->onlyBoundary(position, size);
 
+    std::vector<std::list<boost::shared_ptr<RendererElement> > > toDrawCopy =
+        toDraw;
     for( std::vector<std::list<boost::shared_ptr<RendererElement> > >::iterator
-        it = toDraw.begin(); it != toDraw.end(); ++it )
+        it = toDrawCopy.begin(); it != toDrawCopy.end(); ++it )
     {
-        if( it > toDraw.begin() && !(*(it - 1)).empty() )
+        if( it > toDrawCopy.begin() && !(*(it - 1)).empty() )
             greatestZ = (*((it-1)->begin()))->greatestZ(*(it - 1));
 
+        std::list<boost::shared_ptr<RendererElement> > itCopy = *it;
         for( std::list<boost::shared_ptr<RendererElement> >::iterator 
-            it2 = it->begin(); it2 != it->end(); ++it2 )
+            it2 = itCopy.begin(); it2 != itCopy.end(); ++it2 )
             (*it2)->layerBy(greatestZ + 1);
 
         fitStrategy->fit(*it, position, size, clipObject);
@@ -157,8 +163,9 @@ void LayeredLayout::scale(const Dimension &size)
 {
     this->size = size;
 
-    for( std::vector<boost::shared_ptr<Layout> >::iterator it = layers.begin();
-        it != layers.end(); ++it )
+    std::vector<boost::shared_ptr<Layout> > layersCopy = layers;
+    for( std::vector<boost::shared_ptr<Layout> >::iterator it = layersCopy.begin();
+        it != layersCopy.end(); ++it )
         (*it)->scale(size);
 }
 
@@ -167,8 +174,9 @@ void LayeredLayout::scale(const DimensionPercent &dimensionPercent)
    size.width *= dimensionPercent.widthPercent;
    size.height *= dimensionPercent.heightPercent;
 
-   for( std::vector<boost::shared_ptr<Layout> >::iterator it = layers.begin();
-        it != layers.end(); ++it )
+    std::vector<boost::shared_ptr<Layout> > layersCopy = layers;
+   for( std::vector<boost::shared_ptr<Layout> >::iterator it = layersCopy.begin();
+        it != layersCopy.end(); ++it )
         (*it)->scale(dimensionPercent);
 }
 
@@ -183,11 +191,10 @@ void LayeredLayout::moveBy(const Point &offset)
     position.x += offset.x;
     position.y += offset.y;
 
-    for( std::vector<boost::shared_ptr<Layout> >::iterator it = layers.begin();
-        it != layers.end(); ++it )
-    {
+    std::vector<boost::shared_ptr<Layout> > layersCopy = layers;
+    for( std::vector<boost::shared_ptr<Layout> >::iterator it = layersCopy.begin();
+        it != layersCopy.end(); ++it )
         (*it)->moveBy(offset);
-    }
 }
 
 bool LayeredLayout::isHere(const Point &position)
@@ -207,6 +214,7 @@ void LayeredLayout::addLayout(boost::shared_ptr<Layout> &layout, int layer)
     if(layer - (int) layers.size() > 0 )
     {
         boost::shared_ptr<Layout> emptyLayout(new EmptyLayout);
+        //No iterator fix needed here. But if you read this, check anyway
         std::vector<boost::shared_ptr<Layout> >::iterator it = layers.end();
         layers.insert(it, layer - (int) layers.size(), emptyLayout);
         layers.push_back(layout);

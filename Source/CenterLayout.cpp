@@ -90,8 +90,9 @@ void CenterLayout::render()
 
     clipObject->onlyBoundary(position, size);
     fitStrategy->fit(toDraw, position, size, clipObject);
-    for( std::list<boost::shared_ptr<RendererElement> >::iterator it = toDraw.begin();
-        it != toDraw.end(); ++it )
+    std::list<boost::shared_ptr<RendererElement> > toDrawCopy = toDraw;
+    for( std::list<boost::shared_ptr<RendererElement> >::iterator it = toDrawCopy.begin();
+        it != toDrawCopy.end(); ++it )
         adjustCoordinate(*it);
 
     boost::shared_ptr<Layout> sharedThis(shared_from_this());
@@ -153,8 +154,9 @@ void CenterLayout::moveTo(const Point &newPosition)
         //uncomment when CenterLayouts can have sub-layouts
 /*    Point offset(newPosition.x - position.x, newPosition.y - position.y);
 
-    for(std::list<boost::shared_ptr<Layout> >::iterator it = sublayouts.begin();
-        it != sublayouts.end(); ++it )
+    std::list<boost::shared_ptr<Layout> > sublayoutsCopy = sublayouts;
+    for(std::list<boost::shared_ptr<Layout> >::iterator it = subayoutsCopy.begin();
+        it != sublayoutsCopy.end(); ++it )
         (*it)->moveBy(offset);*/
 
     position = newPosition;

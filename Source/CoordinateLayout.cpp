@@ -111,8 +111,10 @@ void CoordinateLayout::render()
         return;
     }
 
-    for( std::list<boost::shared_ptr<Layout> >::iterator it = sublayouts.begin();
-        it != sublayouts.end(); ++it )
+    std::list<boost::shared_ptr<Layout> > sublayoutsCopy = sublayouts;
+
+    for( std::list<boost::shared_ptr<Layout> >::iterator it = sublayoutsCopy.begin();
+        it != sublayoutsCopy.end(); ++it )
         (*it)->render();
 
     //Render images
@@ -120,8 +122,9 @@ void CoordinateLayout::render()
     fitStrategy->fit(toDraw, position, size, clipObject);
     //This was commented out b/c of bug. Sublayouts were moved
     // every frame!
+    // std::list<boost::shared_ptr<RendererElement> > toDrawCopy = toDraw;
     /*for( std::list<boost::shared_ptr<RendererElement> >::iterator it =
-        toDraw.begin(); it != toDraw.end(); ++it )
+        toDrawCopy.begin(); it != toDrawCopy.end(); ++it )
     {
         //(*it)->moveBy(position);
     }*/
@@ -135,8 +138,9 @@ void CoordinateLayout::scale(const Dimension &size)
 {
     this->size = size;
 
+    std::list<boost::shared_ptr<Layout> > sublayoutsCopy = sublayouts;
     for( std::list<boost::shared_ptr<Layout> >::iterator it =
-        sublayouts.begin(); it != sublayouts.end(); ++it )
+        sublayoutsCopy.begin(); it != sublayoutsCopy.end(); ++it )
         (*it)->scale(size);
 }
 
@@ -145,8 +149,9 @@ void CoordinateLayout::scale(const DimensionPercent &dimensionPercent)
     size.width *= dimensionPercent.widthPercent;
     size.height *= dimensionPercent.heightPercent;
 
-    for( std::list<boost::shared_ptr<Layout> >::iterator it = sublayouts.begin();
-        it != sublayouts.end(); ++it )
+    std::list<boost::shared_ptr<Layout> > sublayoutsCopy = sublayouts;
+    for( std::list<boost::shared_ptr<Layout> >::iterator it = sublayoutsCopy.begin();
+        it != sublayoutsCopy.end(); ++it )
         (*it)->scale(dimensionPercent);
 }
 
@@ -155,19 +160,19 @@ void CoordinateLayout::moveBy(const Point &offset)
     position.x += offset.x;
     position.y += offset.y;
 
-    for(std::list<boost::shared_ptr<Layout> >::iterator it = sublayouts.begin();
-        it != sublayouts.end(); ++it )
-    {
+    std::list<boost::shared_ptr<Layout> > sublayoutsCopy = sublayouts;
+    for(std::list<boost::shared_ptr<Layout> >::iterator it = sublayoutsCopy.begin();
+        it != sublayoutsCopy.end(); ++it )
         (*it)->moveBy(offset);
-    }
 }
 
 void CoordinateLayout::moveTo(const Point &newPosition)
 {
     Point offset(newPosition.x - position.x, newPosition.y - position.y);
 
-    for(std::list<boost::shared_ptr<Layout> >::iterator it = sublayouts.begin();
-        it != sublayouts.end(); ++it )
+    std::list<boost::shared_ptr<Layout> > sublayoutsCopy = sublayouts;
+    for(std::list<boost::shared_ptr<Layout> >::iterator it = sublayoutsCopy.begin();
+        it != sublayoutsCopy.end(); ++it )
         (*it)->moveTo(newPosition); //(*it)->moveBy(offset);
 
     position = newPosition;
@@ -190,29 +195,27 @@ void CoordinateLayout::addLayout(boost::shared_ptr<Layout> &layout,
 void CoordinateLayout::removeLayout(boost::shared_ptr<Layout> &layout,
     const Point &position)
 {
-    std::vector<std::list<boost::shared_ptr<Layout> >::iterator> toRemove;
-
+    //This should erase elements without using invalid iterator
     for( std::list<boost::shared_ptr<Layout> >::iterator it = 
-        sublayouts.begin(); it != sublayouts.end(); ++it )
+        sublayouts.begin(); it != sublayouts.end(); )
     {
         if( (*it)->isHere(position) && layout == *it )
-            toRemove.push_back(it);
+            it = sublayouts.erase(it);
+        else
+            ++it;
     }
-
-    for( std::vector<std::list<boost::shared_ptr<Layout> >::iterator>::iterator
-        it = toRemove.begin(); it != toRemove.end(); ++it )
-        sublayouts.erase(*it);
 }
 
 std::list<boost::shared_ptr<Layout> > CoordinateLayout::operator[](const
     Point &position)
 {
     std::list<boost::shared_ptr<Layout> > sl;
-    for(std::list<boost::shared_ptr<Layout> >::iterator it = sublayouts.begin();
-        it != sublayouts.end(); ++it )
+    std::list<boost::shared_ptr<Layout> > copy = sublayouts;
+    for(std::list<boost::shared_ptr<Layout> >::iterator it = copy.begin();
+        it != copy.end(); ++it )
     {
         if( (*it)->isHere(position) )
-            sl.push_back(*it);
+            sl.push_back(*it); 
     }
 
     return sl;

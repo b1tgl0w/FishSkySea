@@ -75,8 +75,10 @@ void FillClipFit::fit(std::list<boost::shared_ptr<RendererElement> >
     double leastWidthPercent = 10000;
     double leastHeightPercent = 10000;
 
+    std::list<boost::shared_ptr<RendererElement> > rendererElementsCopy =
+        rendererElements;
     for( std::list<boost::shared_ptr<RendererElement> >::iterator it =
-        rendererElements.begin(); it != rendererElements.end(); ++it )
+        rendererElementsCopy.begin(); it != rendererElementsCopy.end(); ++it )
     {
         dimensionPercent = (*it)->fit(size);
 
@@ -90,8 +92,10 @@ void FillClipFit::fit(std::list<boost::shared_ptr<RendererElement> >
     if( !Math::almostEquals(leastWidthPercent, 1.0) || 
         !Math::almostEquals(leastHeightPercent, 1.0) )
     {
+        std::list<boost::shared_ptr<RendererElement> > rendererElementsCopy =
+            rendererElements;
         for( std::list<boost::shared_ptr<RendererElement> >::iterator it =
-            rendererElements.begin(); it != rendererElements.end(); ++it )
+            rendererElementsCopy.begin(); it != rendererElementsCopy.end(); ++it )
         {
             (*it)->scale(leastWidthPercent, leastHeightPercent);
             (*it)->moveBy(leastWidthPercent, leastHeightPercent);

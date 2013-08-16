@@ -59,8 +59,10 @@ void MasterInputPublisher::pollInput() //Shall be called once every frame
 
     while( SDL_PollEvent(&e) )
     {
+        std::list<boost::weak_ptr<MasterInputSubscriber> > subscribersCopy =
+            subscribers;
         for(std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator it =
-            subscribers.begin(); it != subscribers.end(); ++it)
+            subscribersCopy.begin(); it != subscribersCopy.end(); ++it)
         {
             sharedSubscriber = (*it).lock();
 
@@ -99,18 +101,14 @@ void MasterInputPublisher::subscribe(boost::shared_ptr<MasterInputSubscriber>
 void MasterInputPublisher::unsubscribe(boost::shared_ptr<MasterInputSubscriber>
     &subscriber)
 {
-    std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator itPlaceholder;
-    std::vector<std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator >
-        toRemove;
-
     for( std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator it =
-        subscribers.begin(); it != subscribers.end(); ++it )
+        subscribers.begin(); it != subscribers.end(); )
+    {
         if( subscriber == it->lock() )
-            toRemove.push_back(it);
-
-    for( std::vector<std::list<boost::weak_ptr<MasterInputSubscriber> >::iterator >::
-        iterator it = toRemove.begin(); it != toRemove.end(); ++it )
-        subscribers.erase(*it);
+            it = subscribers.erase(it);
+        else
+            ++it;
+    }
 }
 
 MasterInputPublisher::~MasterInputPublisher()

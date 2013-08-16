@@ -93,11 +93,13 @@ void GridLayout::dispose()
 void GridLayout::render()
 {
     //To do: fit sublayers
+    std::vector<std::vector<boost::shared_ptr<GridCell> > > cellsCopy = cells;
     for( std::vector<std::vector<boost::shared_ptr<GridCell> > >::iterator it
-        = cells.begin(); it != cells.end(); ++it )
+        = cellsCopy.begin(); it != cellsCopy.end(); ++it )
     {
+        std::vector<boost::shared_ptr<GridCell> > itCopy = *it;
         for( std::vector<boost::shared_ptr<GridCell> >::iterator it2 =
-            it->begin(); it2 != it->end(); ++it2 )
+            itCopy.begin(); it2 != itCopy.end(); ++it2 )
             (*it2)->render();
     }
 
@@ -126,11 +128,13 @@ void GridLayout::drawWhenReady(RendererElement &re)
 void GridLayout::drawWhenReady(boost::shared_ptr<RendererElement> &re,
     boost::shared_ptr<Layout> &callerLayout)
 {
+    std::vector<std::vector<boost::shared_ptr<GridCell> > > cellsCopy = cells;
     for( std::vector<std::vector<boost::shared_ptr<GridCell> > >::iterator it
-        = cells.begin(); it != cells.end(); ++it )
+        = cellsCopy.begin(); it != cellsCopy.end(); ++it )
     {
+        std::vector<boost::shared_ptr<GridCell> > itCopy = *it;
         for( std::vector<boost::shared_ptr<GridCell> >::iterator it2 =
-            it->begin(); it2 != it->end(); ++it2 )
+            itCopy.begin(); it2 != itCopy.end(); ++it2 )
             if( (*it2)->isYoursAndMerged(callerLayout) )
                 return;
     }
@@ -141,18 +145,21 @@ void GridLayout::drawWhenReady(boost::shared_ptr<RendererElement> &re,
 void GridLayout::drawWhenReady(const std::list<boost::shared_ptr<RendererElement> > &toDraw,
     boost::shared_ptr<Layout> &callerLayout)
 {
+    std::vector<std::vector<boost::shared_ptr<GridCell> > > cellsCopy = cells;
     for( std::vector<std::vector<boost::shared_ptr<GridCell> > >::iterator it
-        = cells.begin(); it != cells.end(); ++it )
+        = cellsCopy.begin(); it != cellsCopy.end(); ++it )
     {
+        std::vector<boost::shared_ptr<GridCell> > itCopy = *it;
         for( std::vector<boost::shared_ptr<GridCell> >::iterator it2 =
-            it->begin(); it2 != it->end(); ++it2 )
+            itCopy.begin(); it2 != itCopy.end(); ++it2 )
             if( (*it2)->isYoursAndMerged(callerLayout) )
                 return;
     }
 
+    std::list<boost::shared_ptr<RendererElement> > toDrawCopy = toDraw; //toDraw param
     for( std::list<boost::shared_ptr<RendererElement> >::const_iterator it = 
-        toDraw.begin(); it != toDraw.end(); ++it )
-        this->toDraw.push_back(*it);
+        toDrawCopy.begin(); it != toDrawCopy.end(); ++it )
+        this->toDraw.push_back(*it); 
 }
 
 void GridLayout::scale(const Dimension &size)
@@ -187,11 +194,13 @@ void GridLayout::adjustCells()
     int i = 0;
     int j = 0;
 
+    std::vector<std::vector<boost::shared_ptr<GridCell> > > cellsCopy = cells;
     for( std::vector<std::vector<boost::shared_ptr<GridCell> > >::iterator it =
-        cells.begin(); it != cells.end(); ++it, ++i )
+        cellsCopy.begin(); it != cellsCopy.end(); ++it, ++i )
     {
+        std::vector<boost::shared_ptr<GridCell> > itCopy = *it;
         for( std::vector<boost::shared_ptr<GridCell> >::iterator it2 =
-            it->begin(); it2 != it->end(); ++it2, ++j )
+            itCopy.begin(); it2 != itCopy.end(); ++it2, ++j )
         {
             (*it2)->scale(cellSize);
             cellPosition.x = position.x + (((double) j) / (double) cells[0].size()) * size.width;
@@ -458,8 +467,9 @@ void GridLayout::GridCell::drawWhenReady(boost::shared_ptr<RendererElement> &re,
 void GridLayout::GridCell::drawWhenReady(const std::list<boost::shared_ptr<RendererElement> >
     &toDraw, boost::shared_ptr<Layout> &callerLayout)
 {
+    std::list<boost::shared_ptr<RendererElement> > toDrawCopy = toDraw; //toDraw param
     for( std::list<boost::shared_ptr<RendererElement> >::const_iterator it =
-        toDraw.begin(); it != toDraw.end(); ++it )
+        toDrawCopy.begin(); it != toDrawCopy.end(); ++it )
         this->toDraw.push_back(*it);
 }
 

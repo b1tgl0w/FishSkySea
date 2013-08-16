@@ -57,18 +57,14 @@ void MasterClockPublisher::subscribe(boost::shared_ptr<MasterClockSubscriber>
 void MasterClockPublisher::unsubscribe(boost::shared_ptr<MasterClockSubscriber>
     &subscriber)
 {
-    std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator itPlaceholder;
-    std::vector<std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator >
-        toRemove;
-
     for( std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator it =
-        subscribers.begin(); it != subscribers.end(); ++it )
+        subscribers.begin(); it != subscribers.end(); /*don't increment here*/  )
+    {
         if( subscriber == it->lock() )
-            toRemove.push_back(it);
-
-    for( std::vector<std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator >::
-        iterator it = toRemove.begin(); it != toRemove.end(); ++it )
-        subscribers.erase(*it);
+            it = subscribers.erase(it);
+        else
+            ++it;
+    }
 }
 
 //Note: Since subscribers can unsubscribe themselves during a clockTick,
@@ -79,14 +75,11 @@ void MasterClockPublisher::pollClock()
     boost::shared_ptr<MasterClockSubscriber> sharedSubscriber;
     int elapsedTime = calculateElapsedTime();
     
-    int i = 0;
-
+    std::list<boost::weak_ptr<MasterClockSubscriber> > subscribersCopy =
+        subscribers;
     for(std::list<boost::weak_ptr<MasterClockSubscriber> >::iterator it =
-        subscribers.begin(); it != subscribers.end(); ++it, ++i)
+        subscribersCopy.begin(); it != subscribersCopy.end(); ++it)
     {
-        if( i >= subscribers.size() )
-            break;
-
         sharedSubscriber = (*it).lock();
 
         if( !sharedSubscriber)

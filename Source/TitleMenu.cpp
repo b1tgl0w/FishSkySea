@@ -63,7 +63,7 @@ const int &TitleMenu::PREVIOUS()
 
 const Uint32 &TitleMenu::PRESSED_TIME_THRESHOLD()
 {
-    static const Uint32 TMP_PRESSED_TIME_THRESHOLD = 600;
+    static const Uint32 TMP_PRESSED_TIME_THRESHOLD = 250;
     return TMP_PRESSED_TIME_THRESHOLD;
 }
 
