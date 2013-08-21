@@ -151,8 +151,10 @@ int TextRendererElement::greatestZ(const
     int current = -10000;
     int greatestZ = -10000;
 
+    std::list<boost::shared_ptr<RendererElement> > rendererElementsCopy =
+        rendererElements;
     for( std::list<boost::shared_ptr<RendererElement> >::const_iterator it =
-        rendererElements.begin(); it != rendererElements.end(); ++it )
+        rendererElementsCopy.begin(); it != rendererElementsCopy.end(); ++it )
     {
         current = (*it)->getLayer();
 

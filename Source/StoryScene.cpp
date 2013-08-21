@@ -131,8 +131,10 @@ void StoryScene::enter()
     borderLayout->useCorners(BorderCorner::TopBottom());
     std::vector<boost::shared_ptr<Layout> > storyLayouts = story->layoutsToAttach();
     Point origin(0.0, 0.0);
-    for(std::vector<boost::shared_ptr<Layout> >::iterator it = storyLayouts.begin();
-        it != storyLayouts.end(); ++it )
+    std::vector<boost::shared_ptr<Layout> > storyLayoutsCopy = 
+        storyLayouts;
+    for(std::vector<boost::shared_ptr<Layout> >::iterator it = storyLayoutsCopy.begin();
+        it != storyLayoutsCopy.end(); ++it )
         mbLayout->addLayout(*it, origin); 
     borderLayout->addLayout(superMbLayout, BorderCell::Bottom());
     borderLayout->addLayout(superCenterLayoutFg, BorderCell::Center());
@@ -185,8 +187,10 @@ void StoryScene::exit()
     keyboardPublisher->unsubscribe(storySubscriber);
     std::vector<boost::shared_ptr<Layout> > storyLayouts = story->layoutsToAttach();
     Point origin(0.0, 0.0);
-    for(std::vector<boost::shared_ptr<Layout> >::iterator it = storyLayouts.begin();
-        it != storyLayouts.end(); ++it )
+    std::vector<boost::shared_ptr<Layout> > storyLayoutsCopy =  
+        storyLayouts;
+    for(std::vector<boost::shared_ptr<Layout> >::iterator it = storyLayoutsCopy.begin();
+        it != storyLayoutsCopy.end(); ++it )
         mbLayout->removeLayout(*it, origin); 
     boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(shared_from_this());
 

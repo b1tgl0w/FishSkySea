@@ -463,16 +463,19 @@ void Ocean::loadImage(Renderer &renderer)
     //Fish
     if( !fishes.empty() )
     {
+        std::vector<boost::shared_ptr<Fish> > fishesCopy = fishes;
         //Perhaps vector<ptr<SeaCreature> > ?
-        for(std::vector<boost::shared_ptr<Fish> >::iterator it = fishes.begin();
-            it != fishes.end(); ++it )
+        for(std::vector<boost::shared_ptr<Fish> >::iterator it = fishesCopy.begin();
+            it != fishesCopy.end(); ++it )
             (*it)->loadImage(renderer);
     }
     if( !creditFishes.empty() )
     {
+        std::vector<boost::shared_ptr<CreditFish> > creditFishesCopy =
+            creditFishes;
         //Perhaps vector<ptr<SeaCreature> > ?
         for(std::vector<boost::shared_ptr<CreditFish> >::iterator it = 
-            creditFishes.begin(); it != creditFishes.end(); ++it )
+            creditFishesCopy.begin(); it != creditFishesCopy.end(); ++it )
             (*it)->loadImage(renderer);
     }
     //SeaSnail
@@ -644,9 +647,11 @@ void Ocean::GameState::draw(boost::shared_ptr<Layout> &layout, Renderer
 
     if( !sharedOceanOwner->fishes.empty() )
     {
+        std::vector<boost::shared_ptr<Fish> > fishesCopy = sharedOceanOwner->fishes;
         for(std::vector<boost::shared_ptr<Fish> >::iterator it = 
-            sharedOceanOwner->fishes.begin(); it != sharedOceanOwner->
-            fishes.end(); ++it) (*it)->draw(layout, renderer);
+            fishesCopy.begin(); it != 
+            fishesCopy.end(); ++it) 
+            (*it)->draw(layout, renderer);
     }
     //SeaSnail
     sharedOceanOwner->seaSnail->draw(layout, renderer);
@@ -665,8 +670,9 @@ void Ocean::GameState::checkCollisions(boost::shared_ptr<Collidable> &object,
         return;
 
     boost::shared_ptr<Collidable> sharedObject;
-    for(std::set<boost::weak_ptr<Collidable> >::iterator it = sharedOceanOwner->
-        collidables.begin(); it != sharedOceanOwner->collidables.end(); ++it)
+    std::set<boost::weak_ptr<Collidable> > collidablesCopy = sharedOceanOwner->collidables;
+    for(std::set<boost::weak_ptr<Collidable> >::iterator it = 
+        collidablesCopy.begin(); it != collidablesCopy.end(); ++it)
     {
         sharedObject = (*it).lock();
 
@@ -684,8 +690,9 @@ void Ocean::GameState::gameLive(bool live)
     if( !sharedOceanOwner )
         return;
 
-    for(std::vector<boost::shared_ptr<Fish> >::iterator it = sharedOceanOwner->
-        fishes.begin(); it != sharedOceanOwner->fishes.end(); ++it )
+    std::vector<boost::shared_ptr<Fish> > fishesCopy = sharedOceanOwner->fishes;
+    for(std::vector<boost::shared_ptr<Fish> >::iterator it = 
+        fishesCopy.begin(); it != fishesCopy.end(); ++it )
         (*it)->gameLive(live);
 
     sharedOceanOwner->shark->gameLive(live);
@@ -742,9 +749,11 @@ void Ocean::CreditState::draw(boost::shared_ptr<Layout> &layout, Renderer
 
     if( !sharedOceanOwner->creditFishes.empty() )
     {
+        std::vector<boost::shared_ptr<CreditFish> > creditFishesCopy = 
+            sharedOceanOwner->creditFishes;
         for(std::vector<boost::shared_ptr<CreditFish> >::iterator it = 
-            sharedOceanOwner->creditFishes.begin(); it != 
-            sharedOceanOwner->creditFishes.end(); ++it)
+            creditFishesCopy.begin(); it != 
+            creditFishesCopy.end(); ++it)
             (*it)->draw(layout, renderer);
     }
 }
@@ -758,9 +767,11 @@ void Ocean::CreditState::checkCollisions(boost::shared_ptr<Collidable> &object,
         return;
 
     boost::shared_ptr<Collidable> sharedObject;
+    std::set<boost::weak_ptr<Collidable> > creditCollidablesCopy = 
+        sharedOceanOwner->creditCollidables;
     for(std::set<boost::weak_ptr<Collidable> >::iterator it = 
-        sharedOceanOwner->creditCollidables.begin();
-        it != sharedOceanOwner->creditCollidables.end(); ++it)
+        creditCollidablesCopy.begin();
+        it != creditCollidablesCopy.end(); ++it)
     {
         sharedObject = (*it).lock();
 
@@ -778,9 +789,11 @@ void Ocean::CreditState::gameLive(bool live)
     if( !sharedOceanOwner )
         return;
 
+    std::vector<boost::shared_ptr<CreditFish> > creditFishesCopy =
+        sharedOceanOwner->creditFishes;
     for(std::vector<boost::shared_ptr<CreditFish> >::iterator it = 
-        sharedOceanOwner->creditFishes.begin(); it != 
-        sharedOceanOwner->creditFishes.end(); ++it )
+        creditFishesCopy.begin(); it != 
+        creditFishesCopy.end(); ++it )
         (*it)->gameLive(live);
 }
 
@@ -788,8 +801,9 @@ std::vector<boost::shared_ptr<Layout> > Ocean::layoutsToAttach()
 {
     std::vector<boost::shared_ptr<Layout> > layoutsToReturn;
 
+    std::vector<boost::shared_ptr<CreditFish> > creditFishesCopy;
     for( std::vector<boost::shared_ptr<CreditFish> >::iterator it = 
-        creditFishes.begin(); it != creditFishes.end(); ++it )
+        creditFishesCopy.begin(); it != creditFishesCopy.end(); ++it )
     {
         boost::shared_ptr<Layout> tmpLayout((*it)->layoutToAttach());
         layoutsToReturn.push_back(tmpLayout);

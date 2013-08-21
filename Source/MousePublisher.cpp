@@ -134,18 +134,15 @@ void MousePublisher::subscribe(boost::weak_ptr<MouseSubscriber> &subscriber)
 
 void MousePublisher::unsubscribe(boost::weak_ptr<MouseSubscriber> &subscriber)
 {
-    std::list<boost::weak_ptr<MouseSubscriber> >::iterator itPlaceholder;
-    std::vector<std::list<boost::weak_ptr<MouseSubscriber> >::iterator>
-        toRemove;
-
     for( std::list<boost::weak_ptr<MouseSubscriber> >::iterator it =
-        subscribers.begin(); it != subscribers.end(); ++it )
+        subscribers.begin(); it != subscribers.end(); )
+    {
         if( subscriber.lock() == it->lock() )
-            toRemove.push_back(it);
+            it = subscribers.erase(it);
+        else
+            ++it;
+    }
 
-    for( std::vector<std::list<boost::weak_ptr<MouseSubscriber> >::iterator >::iterator 
-        it = toRemove.begin(); it != toRemove.end(); ++it )
-        subscribers.erase(*it);
 }
 
 void MousePublisher::notifyClick(Uint8 button, bool pressed, Point &position)
@@ -155,8 +152,11 @@ void MousePublisher::notifyClick(Uint8 button, bool pressed, Point &position)
 
     boost::shared_ptr<MouseSubscriber> sharedSubscriber;
 
+    std::list<boost::weak_ptr<MouseSubscriber> > subscribersCopy = 
+        subscribers;
+
     for( std::list<boost::weak_ptr<MouseSubscriber> >::iterator it = 
-        subscribers.begin(); it != subscribers.end(); ++it )
+        subscribersCopy.begin(); it != subscribersCopy.end(); ++it )
     {
         sharedSubscriber = it->lock();
 
@@ -177,8 +177,10 @@ void MousePublisher::notifyMove(Point &position)
 
     boost::shared_ptr<MouseSubscriber> sharedSubscriber;
 
+    std::list<boost::weak_ptr<MouseSubscriber> > subscribersCopy = 
+        subscribers;
     for( std::list<boost::weak_ptr<MouseSubscriber> >::iterator it =
-        subscribers.begin(); it != subscribers.end(); ++it )
+        subscribersCopy.begin(); it != subscribersCopy.end(); ++it )
     {
         sharedSubscriber = it->lock();
 

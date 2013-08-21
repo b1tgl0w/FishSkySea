@@ -29,6 +29,9 @@ iterated over. Remember: the copy must be iterated over, the push_back must be
 made on the original. Make sure no one has access to the copy (e.g. to pass it to
 a method)
 
+- Note: If using a collection of weak_ptr's, make sure the weak_ptr objects
+themselves are not being modified but rather being locked into shared_ptrs
+
 - This strategy may be inefficient because I do not know if the shared_ptr
 copy ctor is reasonably efficient
 
@@ -49,14 +52,14 @@ Checklist of classes to be fixed:
 //Done KeyboardPublisher.cpp
 //Done LayeredLayout.cpp
 //Done MasterClockPublisher.cpp
-//DoneMasterInputPublisher.cpp
-MessageBox.cpp
-MousePublisher.cpp
-Ocean.cpp
-PlayerKeyTranslater.cpp
-Renderer.cpp
-ScaleClipFit.cpp
-Story.cpp
-StoryScene.cpp
-TextRendererElement.cpp
-TitleMenu.cpp
+//Done MasterInputPublisher.cpp
+//Skipped MessageBox.cpp
+//Done MousePublisher.cpp
+//Done Ocean.cpp
+//Done PlayerKeyTranslater.cpp
+//Skipped Renderer.cpp
+//Done ScaleClipFit.cpp
+//Skipped Story.cpp
+//Done StoryScene.cpp
+//Done TextRendererElement.cpp
+//Skipped TitleMenu.cpp
