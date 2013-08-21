@@ -801,7 +801,8 @@ std::vector<boost::shared_ptr<Layout> > Ocean::layoutsToAttach()
 {
     std::vector<boost::shared_ptr<Layout> > layoutsToReturn;
 
-    std::vector<boost::shared_ptr<CreditFish> > creditFishesCopy;
+    std::vector<boost::shared_ptr<CreditFish> > creditFishesCopy = 
+        creditFishes;
     for( std::vector<boost::shared_ptr<CreditFish> >::iterator it = 
         creditFishesCopy.begin(); it != creditFishesCopy.end(); ++it )
     {
