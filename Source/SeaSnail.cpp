@@ -240,8 +240,8 @@ void SeaSnail::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     if( facing == Direction::RIGHT() )
         transformations = transformations | Transformation::FlipHorizontal();
 
-    //if( glowing )
-        //transformations =  transformations | Transformation::Glow();
+    if( glowing )
+        transformations =  transformations | Transformation::Glow();
 
     re.transform(transformations);
     layout->drawWhenReady(re);

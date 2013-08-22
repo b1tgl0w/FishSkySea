@@ -491,14 +491,16 @@ int Renderer::getFlipIndex(int width, int height, int i, int j,
 //      unsubscribe. For now we'll stick to clearing the multimap
 void Renderer::render()
 {
-    for( std::list<boost::shared_ptr<Layout> >::iterator it = layouts.begin();
-        it != layouts.end(); ++it )
+    std::list<boost::shared_ptr<Layout> > layoutsCopy = layouts;
+    for( std::list<boost::shared_ptr<Layout> >::iterator it = layoutsCopy.begin();
+        it != layoutsCopy.end(); ++it )
         (*it)->render();
 
     toDraw.sort(RendererElement::compareByLayer);
 
+    std::list<boost::shared_ptr<RendererElement> > toDrawCopy = toDraw;
     for(std::list<boost::shared_ptr<RendererElement> >::iterator it = 
-        toDraw.begin(); it != toDraw.end(); ++it)
+        toDrawCopy.begin(); it != toDrawCopy.end(); ++it)
        (*it)->render(*this, screen);
         
     pruneUnusedManipulations();
@@ -550,18 +552,12 @@ void Renderer::removeLayout(boost::shared_ptr<Layout> &layout)
     std::list<boost::shared_ptr<Layout> >::iterator itPlaceholder;
 
     for( std::list<boost::shared_ptr<Layout> >::iterator it = layouts.begin();
-        it != layouts.end(); ++it )
+        it != layouts.end(); )
     {
         if( *it == layout )
-        {
-            itPlaceholder = it;
-            ++itPlaceholder;
-            layouts.erase(it);
-            it = itPlaceholder;
-
-            if( it == layouts.end() )
-                break;
-        }
+            it = layouts.erase(it);
+        else
+            ++it;
     }
 }
 

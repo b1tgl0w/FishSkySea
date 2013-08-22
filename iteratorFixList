@@ -57,7 +57,7 @@ Checklist of classes to be fixed:
 //Done MousePublisher.cpp
 //Done Ocean.cpp
 //Done PlayerKeyTranslater.cpp
-//Skipped Renderer.cpp
+//Skipped Part Renderer.cpp
 //Done ScaleClipFit.cpp
 //Skipped Story.cpp
 //Done StoryScene.cpp
