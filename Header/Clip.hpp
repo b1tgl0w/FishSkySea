@@ -30,11 +30,7 @@ SUCH DAMAGES.
 #define CLIP_HPP_
 
 #include <vector>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/shared_ptr.hpp"
 #include "Layout.hpp"
 #include "Dimension.hpp"

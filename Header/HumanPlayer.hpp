@@ -66,8 +66,8 @@ public:
     void sendCollidable(boost::weak_ptr<Ocean> ocean);
     void sendCollidableRemove(boost::weak_ptr<Ocean> ocean);
     //KeyboardSubscriber
-    void keyPressed(const SDLKey &key);
-    void keyReleased(const SDLKey &key);
+    void keyPressed(const SDL_Keycode &key);
+    void keyReleased(const SDL_Keycode &key);
     //Graphic
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);

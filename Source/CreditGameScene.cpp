@@ -437,11 +437,11 @@ bool CreditGameScene::shouldExit()
     return quit;
 }
 
-void CreditGameScene::keyPressed(const SDLKey &key)
+void CreditGameScene::keyPressed(const SDL_Keycode &key)
 {
 }
 
-void CreditGameScene::keyReleased(const SDLKey &key)
+void CreditGameScene::keyReleased(const SDL_Keycode &key)
 {
     if( key == SDLK_ESCAPE )
     {

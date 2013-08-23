@@ -201,13 +201,13 @@ bool TitleScene::shouldExit()
     return quit;
 }
 
-void TitleScene::keyPressed(const SDLKey &key)
+void TitleScene::keyPressed(const SDL_Keycode &key)
 {
     if( key == SDLK_ESCAPE )
         quit = true;
 }
 
-void TitleScene::keyReleased(const SDLKey &key)
+void TitleScene::keyReleased(const SDL_Keycode &key)
 {
 }
 

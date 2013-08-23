@@ -30,7 +30,7 @@ SUCH DAMAGES.
 
 #include <vector>
 #include <string>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "boost/shared_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
 #include "RendererElement.hpp"

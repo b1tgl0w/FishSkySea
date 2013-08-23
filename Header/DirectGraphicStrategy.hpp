@@ -29,11 +29,7 @@ SUCH DAMAGES.
 #ifndef DIRECT_GRAPHIC_STRATEGY_H_
 #define DIRECT_GRAPHIC_STRATEGY_H_
 
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/shared_ptr.hpp"
 #include "Point.hpp"
 #include "Dimension.hpp"
@@ -42,7 +38,7 @@ SUCH DAMAGES.
 class DirectGraphicStrategy
 {
 public:
-    virtual void drawToScreen(SDL_Surface *screen,  const Point &position,
+    virtual void drawToScreen(SDL_Renderer *renderer,  const Point &position,
         const Dimension &size, const Clip &clipObject) = 0;
 };
 

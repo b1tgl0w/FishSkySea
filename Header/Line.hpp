@@ -29,11 +29,7 @@ SUCH DAMAGES.
 #ifndef LINE_HPP_
 #define LINE_HPP_
 
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include <string>
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"

@@ -32,11 +32,7 @@ SUCH DAMAGES.
 #define MASTER_INPUT_PUBLISHER_HPP_
 
 #include <list>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/weak_ptr.hpp"
 #include "boost/shared_ptr.hpp"
 

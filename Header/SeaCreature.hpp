@@ -32,11 +32,7 @@ SUCH DAMAGES.
 #define SEA_CREATURE_HPP_
 
 #include <vector>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/shared_ptr.hpp"
 #include "Depth.hpp"
 #include "MasterClockSubscriber.hpp"

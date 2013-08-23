@@ -44,8 +44,8 @@ public:
     Story(const Story &rhs);
     Story &operator=(const Story &rhs);
     bool done();
-    void keyPressed(const SDLKey &key);
-    void keyReleased(const SDLKey &key);
+    void keyPressed(const SDL_Keycode &key);
+    void keyReleased(const SDL_Keycode &key);
     std::vector<boost::shared_ptr<Layout> > layoutsToAttach();
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);

@@ -68,8 +68,8 @@ public:
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
     bool shouldExit(); 
-    void keyPressed(const SDLKey &key);
-    void keyReleased(const SDLKey &key);
+    void keyPressed(const SDL_Keycode &key);
+    void keyReleased(const SDL_Keycode &key);
 private:
     TitleScene();
     static const Point &BACKGROUND_POSITION();

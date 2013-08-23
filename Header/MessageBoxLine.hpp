@@ -28,11 +28,7 @@ SUCH DAMAGES.
 #ifndef MESSAGE_BOX_LINE_HPP_
 #define MESSAGE_BOX_LINE_HPP_
 
-#ifdef linux
-#include <SDL/SDL_ttf.h>
-#else
-#include <SDL_ttf.h>
-#endif
+#include <SDL2/SDL_ttf.h>
 #include <string>
 #include "boost/uuid/uuid.hpp"
 #include "boost/shared_ptr.hpp"

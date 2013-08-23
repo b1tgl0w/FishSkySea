@@ -68,7 +68,7 @@ void DirectLineGraphic::dispose()
 {
 }
 
-void DirectLineGraphic::drawToScreen(SDL_Surface *screen, const Point &position,
+void DirectLineGraphic::drawToScreen(SDL_Renderer *sdlRenderer, const Point &position,
     const Dimension &size, const Clip &clipObject)
 {
     const int LINE_SEGMENT_WIDTH = 1; //Make variable
@@ -88,9 +88,12 @@ void DirectLineGraphic::drawToScreen(SDL_Surface *screen, const Point &position,
         localP2 = p1;
     }
 
+    int tmpW = 0;
+    int tmpH = 0;
+    SDL_RenderGetLogicalSize(sdlRenderer, &tmpW, &tmpH);
     //ToDo, don't base off screen
-    DimensionPercent dimensionPercent(size.width / (double) screen->w,
-        size.height / (double) screen->h);
+    DimensionPercent dimensionPercent(size.width / (double) tmpW,
+        size.height / (double) tmpH);
     localP1.x *= dimensionPercent.widthPercent;
     localP1.y *= dimensionPercent.heightPercent;
     localP2.x *= dimensionPercent.widthPercent;
@@ -101,28 +104,6 @@ void DirectLineGraphic::drawToScreen(SDL_Surface *screen, const Point &position,
     localP2.x += position.x;
     localP2.y += position.y;
 
-    SDL_Rect currentRectangle = { localP1.x, localP1.y,
-        LINE_SEGMENT_WIDTH, LINE_SEGMENT_HEIGHT };
-
-    double rise = Math::calculateRise(localP1, localP2);
-    double run = Math::calculateRun(localP1, localP2);
-    double greaterCalculation = 
-        Math::greater(Math::greater(localP2.x, localP2.y), Math::greater(localP1.x,localP1.y));
-    double condition1 = (localP2.x - localP1.x) / (run / greaterCalculation);
-    double condition2 = (localP2.y - localP1.y ) / (rise / greaterCalculation);
-    double calculation1Part = (run / greaterCalculation);
-    double calculation2Part = (rise / greaterCalculation);
-
-    for(double curX = localP1.x, i = 0, curY = localP1.y;
-        i < condition1 ||
-        i < condition2;
-        curX = localP1.x + i * calculation1Part,
-        curY = localP1.y + i * calculation2Part,
-        ++i)
-    {
-        currentRectangle.x = curX;
-        currentRectangle.y = curY;
-        SDL_FillRect(screen, &currentRectangle, color);
-    }
+    SDL_RenderDrawLine(sdlRenderer, localP1.x, localP1.y, localP2.x, localP2.y);
 }
 

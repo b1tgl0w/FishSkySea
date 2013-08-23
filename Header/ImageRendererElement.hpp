@@ -33,11 +33,7 @@ SUCH DAMAGES.
 
 #include <string>
 #include <list>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/shared_ptr.hpp"
 #include "RendererElement.hpp"
 #include "Point.hpp"
@@ -56,7 +52,7 @@ public:
         const Point &initialPosition, const Dimension &initialSize);
     ImageRendererElement(const ImageRendererElement &rhs);
     ImageRendererElement &operator=(const ImageRendererElement &rhs);
-    void render(Renderer &renderer, SDL_Surface *screen);
+    void render(Renderer &renderer, SDL_Renderer *sdlRenderer);
     virtual ~ImageRendererElement();
     bool operator<(const RendererElement &rhs) const;
     void moveBy(const Point &offset);
@@ -77,7 +73,7 @@ protected:
         const Transformation &transformation);
     void dispose();
 private:
-    void applySurface(SDL_Surface *source, SDL_Surface *destination,
+    void applySurface(SDL_Texture *source, SDL_Renderer *renderer,
         const Point &position);
     int getLayer() const;
     std::string getPath() const;

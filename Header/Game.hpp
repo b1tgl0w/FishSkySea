@@ -29,11 +29,7 @@ SUCH DAMAGES.
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/shared_ptr.hpp"
 #include "Score.hpp"
 #include "Graphic.hpp"

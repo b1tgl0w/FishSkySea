@@ -430,11 +430,11 @@ bool MainGameScene::shouldExit()
     return false;
 }
 
-void MainGameScene::keyPressed(const SDLKey &key)
+void MainGameScene::keyPressed(const SDL_Keycode &key)
 {
 }
 
-void MainGameScene::keyReleased(const SDLKey &key)
+void MainGameScene::keyReleased(const SDL_Keycode &key)
 {
     if( key == SDLK_ESCAPE )
     {

@@ -33,11 +33,7 @@ SUCH DAMAGES.
 
 #include <string>
 #include <list>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/shared_ptr.hpp"
 #include "RendererElement.hpp"
 #include "Point.hpp"
@@ -57,7 +53,7 @@ public:
         const boost::shared_ptr<DirectGraphicStrategy> &dgs);
     DirectRendererElement(const DirectRendererElement &rhs);
     DirectRendererElement &operator=(const DirectRendererElement &rhs);
-    void render(Renderer &renderer, SDL_Surface *screen);
+    void render(Renderer &renderer, SDL_Renderer *sdlRenderer);
     virtual ~DirectRendererElement();
     bool operator<(const RendererElement &rhs) const;
     void moveBy(const Point &offset);

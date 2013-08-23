@@ -30,11 +30,7 @@ SUCH DAMAGES.
 #ifndef MASTER_INPUT_SUBSCRIBER_HPP_
 #define MASTER_INPUT_SUBSCRIBER_HPP_
 
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 
 class MasterInputSubscriber
 {

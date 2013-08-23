@@ -115,13 +115,13 @@ void Biography::show(bool shouldShow)
     title->show(shouldShow);
 }
 
-void Biography::keyPressed(const SDLKey &key)
+void Biography::keyPressed(const SDL_Keycode &key)
 {
     if( shouldShow && key == SDLK_e )
         bio->advance();
 }
 
-void Biography::keyReleased(const SDLKey &key)
+void Biography::keyReleased(const SDL_Keycode &key)
 {
 }
 

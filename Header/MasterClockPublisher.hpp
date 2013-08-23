@@ -32,11 +32,7 @@ SUCH DAMAGES.
 #define MASTER_CLOCK_PUBLISHER_HPP_
 
 #include <list>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/weak_ptr.hpp"
 #include "KeyboardSubscriber.hpp"
 
@@ -50,8 +46,8 @@ public:
     void subscribe(boost::shared_ptr<MasterClockSubscriber> &subscriber);
     void unsubscribe(boost::shared_ptr<MasterClockSubscriber> &subscriber);
     Uint32 age();
-    void keyPressed(const SDLKey &key);
-    void keyReleased(const SDLKey &key);
+    void keyPressed(const SDL_Keycode &key);
+    void keyReleased(const SDL_Keycode &key);
     static void customDeleter(MasterClockPublisher *unused);
     virtual ~MasterClockPublisher();
     void flush();

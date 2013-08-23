@@ -31,11 +31,7 @@ SUCH DAMAGES.
 
 #include <string>
 #include <list>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/shared_ptr.hpp"
 #include "DimensionPercent.hpp"
 
@@ -52,7 +48,7 @@ public:
     friend class ImageRendererElement;
     friend class DirectRendererElement;
     friend class TextRendererElement;
-    virtual void render(Renderer &renderer, SDL_Surface *screen) = 0;
+    virtual void render(Renderer &renderer, SDL_Renderer *sdlRenderer) = 0;
     virtual bool operator<(const RendererElement &rhs) const = 0;
     virtual void moveBy(const Point &offset) = 0;
     virtual void moveBy(double xPercent, double yPercent) = 0;

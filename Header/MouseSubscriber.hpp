@@ -29,11 +29,7 @@ SUCH DAMAGES.
 #ifndef MOUSE_SUBSCRIBER_HPP_
 #define MOUSE_SUBSCRIBER_HPP_
 
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "Point.hpp"
 
 class MouseSubscriber

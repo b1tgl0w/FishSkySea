@@ -28,11 +28,7 @@ SUCH DAMAGES.
 #ifndef CLOUDS_HPP_
 #define CLOUDS_HPP_
 
-#ifdef linux
-#include <SDL/SDL.h>
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h>
 #include "boost/shared_ptr.hpp"
 #include <string>
 #include "Layer.hpp"

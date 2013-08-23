@@ -239,12 +239,12 @@ void HumanPlayer::sendCollidableRemove(boost::weak_ptr<Ocean> ocean)
 }
 
 //KeyboardSubscriber
-void HumanPlayer::keyPressed(const SDLKey &key)
+void HumanPlayer::keyPressed(const SDL_Keycode &key)
 {
     playerKeyTranslater.act(key, KeyboardPublisher::PRESSED());
 }
 
-void HumanPlayer::keyReleased(const SDLKey &key)
+void HumanPlayer::keyReleased(const SDL_Keycode &key)
 {
     playerKeyTranslater.act(key, !KeyboardPublisher::PRESSED());
 }

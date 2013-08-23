@@ -65,21 +65,21 @@ TextRendererElement &TextRendererElement::operator=(const TextRendererElement
     return *this;
 }
 
-void TextRendererElement::render(Renderer &renderer, SDL_Surface *screen)
+void TextRendererElement::render(Renderer &renderer, SDL_Renderer *sdlRenderer)
 {
     renderer.manipulateImage(text, transformation, size, fontSize);
-    SDL_Surface *textSurface = renderer.whatShouldIDraw(text,
+    SDL_Texture *textSurface = renderer.whatShouldIDraw(text,
         transformation, size, fontSize);
 
     if( textSurface == NULL )
         return;
 
-    applySurface(textSurface, screen, position);
+    applySurface(textSurface, sdlRenderer, position);
     layer = originalLayer;
 }
 
-void TextRendererElement::applySurface(SDL_Surface *source,
-    SDL_Surface *destination, const Point &position)
+void TextRendererElement::applySurface(SDL_Texture *source,
+    SDL_Renderer *renderer, const Point &position)
 {
     SDL_Rect destinationRectangle;
     SDL_Rect sourceRectangle = { 0, 0, Math::ceil(size.width), Math::ceil(size.height) };
@@ -92,8 +92,10 @@ void TextRendererElement::applySurface(SDL_Surface *source,
 
     destinationRectangle.x = position.x + sourceRectangle.x;
     destinationRectangle.y = position.y + sourceRectangle.y;
+    destinationRectangle.w = Math::ceil(size.width);
+    destinationRectangle.h = Math::ceil(size.height);
 
-    SDL_BlitSurface(source, &sourceRectangle, destination, &destinationRectangle);
+    SDL_RenderCopy(renderer, source, &sourceRectangle, &destinationRectangle);
 }
 
 bool TextRendererElement::operator<(const RendererElement &rhs) const

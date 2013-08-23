@@ -83,18 +83,18 @@ void ImageRendererElement::dispose()
 {
 }
 
-void ImageRendererElement::render(Renderer &renderer, SDL_Surface *screen)
+void ImageRendererElement::render(Renderer &renderer, SDL_Renderer *sdlRenderer)
 {
     //Font size doesnt matter, just pass whatever
     renderer.manipulateImage(path, transformation, size, FontSize::Huge());
     
-    SDL_Surface *image = renderer.whatShouldIDraw(path, transformation, size,
+    SDL_Texture *image = renderer.whatShouldIDraw(path, transformation, size,
         FontSize::Huge());
     
     if( image == NULL )
         return;
 
-    applySurface(image, screen, position);
+    applySurface(image, sdlRenderer, position);
     layer = originalLayer;
 }
 
@@ -107,8 +107,8 @@ bool ImageRendererElement::operator<(const RendererElement &rhs) const
 
 //Method:   RendererElement::applySurface(...)
 //Purpose:  Draw an image to the screen at a certain position
-void ImageRendererElement::applySurface(SDL_Surface *source,
-    SDL_Surface *destination, const Point &position)
+void ImageRendererElement::applySurface(SDL_Texture *source,
+    SDL_Renderer *destination, const Point &position)
 {
     SDL_Rect destinationRectangle;
     SDL_Rect sourceRectangle = { 0, 0, Math::ceil(size.width), Math::ceil(size.height) };
@@ -121,8 +121,21 @@ void ImageRendererElement::applySurface(SDL_Surface *source,
 
     destinationRectangle.x = position.x + sourceRectangle.x;
     destinationRectangle.y = position.y + sourceRectangle.y;
+    destinationRectangle.w = Math::ceil(size.width);
+    destinationRectangle.h = Math::ceil(size.height);
 
-    SDL_BlitSurface(source, &sourceRectangle, destination, &destinationRectangle);
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+    //Note can't do both with SDL 2.0
+    if( transformation.has(Transformation::FlipVertical()) )
+        flip = SDL_FLIP_VERTICAL;
+    if( transformation.has(Transformation::FlipHorizontal()) )
+        flip = SDL_FLIP_HORIZONTAL;
+    if( flip == SDL_FLIP_NONE ) 
+        SDL_RenderCopy(destination, source, &sourceRectangle, &destinationRectangle);
+    else
+        SDL_RenderCopyEx(destination, source, &sourceRectangle, &destinationRectangle,
+            0, NULL, flip);
 }
 
 void ImageRendererElement::moveBy(const Point &offset)

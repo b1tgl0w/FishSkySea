@@ -25,6 +25,8 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+/*
+
 #include <iostream> //delete
 #include <cmath>
 #include "../Header/Math.hpp"
@@ -185,4 +187,4 @@ double GraphicEffect::syncAlpha()
     return ((int) Math::round(age * alphaDirection)) % (ALPHA_MAX - ALPHA_MIN) + 
         ALPHA_MIN;
 }
-
+*/

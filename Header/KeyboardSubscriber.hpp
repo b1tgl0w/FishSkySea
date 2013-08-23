@@ -30,13 +30,13 @@ SUCH DAMAGES.
 #ifndef KEYBOARD_SUBSCRIBER_HPP_
 #define KEYBOARD_SUBSCRIBER_HPP_
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 class KeyboardSubscriber
 {
 public:
-    virtual void keyPressed(const SDLKey &key) = 0;
-    virtual void keyReleased(const SDLKey &key) = 0;
+    virtual void keyPressed(const SDL_Keycode &key) = 0;
+    virtual void keyReleased(const SDL_Keycode &key) = 0;
 };
 
 #endif

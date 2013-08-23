@@ -27,16 +27,8 @@ SUCH DAMAGES.
 */
 
 #include <iostream>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
-#ifdef linux
-#include <SDL/SDL_image.h> 
-#else
-#include <SDL_image.h>
-#endif
+#include <SDL2/SDL.h> 
+#include <SDL2/SDL_image.h> 
 #include <cmath>
 #include "../Header/Math.hpp"
 #include "../Header/Renderer.hpp"
@@ -71,13 +63,13 @@ int &Renderer::numberOfInstances()
     return tmpNumberOfInstances;
 }
 
-//Note screen intentionally uninitialized
-Renderer::Renderer(const Dimension &screenResolution, int screenBpp,
+Renderer::Renderer(const Dimension &screenResolution, const std::string &title,
     Uint32 flags, const std::string &fontPath, 
     const boost::shared_ptr<FrameCleanupPublisher> 
     &frameCleanupPublisher) : images(), toDraw(), texts(), textColors(),
     textBorderSizes(), graphicEffects(), unusedKeys(), unusedTexts(),
-    layouts(), /*screen intentionally uninitialied*/ frameCleanupPublisher(
+    layouts(), /*screen intentionally uninitialied*/
+    sdlWindow(NULL), sdlRenderer(NULL), frameCleanupPublisher(
     frameCleanupPublisher), 
     fontPath(fontPath) /*fonts intentionally uninitialized*/
 {
@@ -88,8 +80,18 @@ Renderer::Renderer(const Dimension &screenResolution, int screenBpp,
     const int FONT_SIZE_SMALL = 12; //Text surfaces will be scaled
     const int FONT_BORDER_SIZE = 3; //3 so even scaled text will have outline
     numberOfInstances()++;
+    if( numberOfInstances() > 1 )
+    {
+        std::cout << "Error: Multiple renderer instances not currently supported. "
+            << "Exiting" << std::endl;
+        exit(1);
+    }
+
     if( SDL_WasInit(SDL_INIT_VIDEO) == 0 )
+    {
         SDL_Init(SDL_INIT_VIDEO);
+        atexit(SDL_Quit);
+    }
 
     //There is no IMG_WasInit and IMG_Init(0) does not work as expected
     //Multiple calls to IMG_Init(...) only need one call to IMG_Quit, so
@@ -98,10 +100,22 @@ Renderer::Renderer(const Dimension &screenResolution, int screenBpp,
     IMG_Init(IMG_INIT_PNG);
     TTF_Init();
 
-    screen = SDL_GetVideoSurface();
-    if( screen == NULL )
-        screen = SDL_SetVideoMode(screenResolution.width, screenResolution.height,
-            screenBpp, flags);
+    sdlWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+        screenResolution.width, screenResolution.height, flags);
+    if( sdlWindow == NULL )
+    {
+        std::cout << "Error: Could not initialize SDL. Exiting" << std::endl;
+        exit(1);
+    }
+    sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, 0);
+    if( sdlRenderer == NULL )
+    {
+        std::cout << "Error: Could not initialize SDL. Exiting" << std::endl;
+        exit(1);
+    }
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+    SDL_RenderSetLogicalSize(sdlRenderer, screenResolution.width,
+        screenResolution.height);
 
     this->frameCleanupPublisher = frameCleanupPublisher;
     fontHuge = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_HUGE);
@@ -121,7 +135,8 @@ Renderer::Renderer(const Renderer &rhs) : images(rhs.images), toDraw(rhs.toDraw)
     texts(rhs.texts), textColors(rhs.textColors), textBorderSizes(
     rhs.textBorderSizes), graphicEffects(rhs.graphicEffects), unusedKeys(
     rhs.unusedKeys), unusedTexts(rhs.unusedTexts), layouts(rhs.layouts),
-    screen(rhs.screen), frameCleanupPublisher(rhs.frameCleanupPublisher),
+    sdlWindow(rhs.sdlWindow), sdlRenderer(rhs.sdlRenderer),
+    frameCleanupPublisher(rhs.frameCleanupPublisher),
     fontPath(rhs.fontPath), fontHuge(rhs.fontHuge), fontBig(rhs.fontBig),
     fontMedium(rhs.fontMedium), fontSmall(rhs.fontSmall)
 { }
@@ -140,7 +155,8 @@ Renderer &Renderer::operator=(const Renderer &rhs)
     unusedKeys = rhs.unusedKeys;
     unusedTexts = rhs.unusedTexts;
     layouts = rhs.layouts;
-    screen = rhs.screen;
+    sdlWindow = rhs.sdlWindow;
+    sdlRenderer = rhs.sdlRenderer;
     frameCleanupPublisher = rhs.frameCleanupPublisher;
     fontPath = rhs.fontPath;
     fontHuge = rhs.fontHuge;
@@ -149,51 +165,6 @@ Renderer &Renderer::operator=(const Renderer &rhs)
     fontSmall = rhs.fontSmall;
 
     return *this;
-}
-
-//Method:   Renderer:initialize(...)
-//Purpose:  Initialize SDL and video mode.
-//Note:     It is important that any derived classes invoke this method from
-//          their initialize(...) method.
-void Renderer::initialize(const Dimension &screenResolution, int screenBpp,
-    Uint32 flags, const std::string &fontPath,
-    const boost::shared_ptr<FrameCleanupPublisher> 
-    &frameCleanupPublisher)
-{
-    //Update Font size as big as height of largest text surface (manual update)
-    const int FONT_SIZE_HUGE = 88; //Text surfaces will be scaled
-    const int FONT_SIZE_BIG = 60; //Text surfaces will be scaled
-    const int FONT_SIZE_MEDIUM = 32; //Text surfaces will be scaled
-    const int FONT_SIZE_SMALL = 12; //Text surfaces will be scaled
-    const int FONT_BORDER_SIZE = 3; //3 so even scaled text will have outline
-    numberOfInstances()++;
-    if( SDL_WasInit(SDL_INIT_VIDEO) == 0 )
-        SDL_Init(SDL_INIT_VIDEO);
-
-    //There is no IMG_WasInit and IMG_Init(0) does not work as expected
-    //Multiple calls to IMG_Init(...) only need one call to IMG_Quit, so
-    //even though there is a performance cost, I'm going to allow multiple
-    //calls to IMG_Init(IMG_INIT_PNG);
-    IMG_Init(IMG_INIT_PNG);
-    TTF_Init();
-
-    screen = SDL_GetVideoSurface();
-    if( screen == NULL )
-        screen = SDL_SetVideoMode(screenResolution.width, screenResolution.height,
-            screenBpp, flags);
-
-    this->frameCleanupPublisher = frameCleanupPublisher;
-    fontHuge = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_HUGE);
-    fontBig = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_BIG);
-    fontMedium = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_MEDIUM);
-    fontSmall = TTF_OpenFont(fontPath.c_str(), FONT_SIZE_SMALL);
-    //Commenting out due to compile issues
-    //TTF_SetFontOutline(font, FONT_BORDER_SIZE);
-    this->fontPath = fontPath;
-
-    //Should I call images.clear() and toDraw.clear() or is that a task for
-    // void dispose(...)? At any rate, they don't need to be assigned to
-    // anything here
 }
 
 Renderer::~Renderer()
@@ -207,7 +178,7 @@ Renderer::~Renderer()
     //temporarily 0. That would cause SDL_Quit to be called prematurely.
     if( numberOfInstances() <= 0 )
     {
-        SDL_Quit();
+        //SDL_Quit(); //now atexit
         IMG_Quit();
         TTF_CloseFont(fontHuge);
         TTF_CloseFont(fontBig);
@@ -221,10 +192,10 @@ void Renderer::dispose()
     numberOfInstances()--;
     if( !images.empty() )
     {
-        for(std::map<std::string, SDL_Surface *>::iterator it = images.begin();
+        for(std::map<std::string, SDL_Texture *>::iterator it = images.begin();
             it != images.end(); ++it )
         {
-            SDL_FreeSurface(it->second);
+            SDL_DestroyTexture(it->second);
         }
         images.clear();
     }
@@ -241,7 +212,7 @@ void Renderer::loadImage(std::string path)
     //}
     //End
 
-    loadImage(path, optimizeImage(loadUnoptimizedImage(path)));
+    loadImage(path, loadUnoptimizedImage(path));
 }
 
 //Method:   Renderer::loadImage(...)
@@ -258,8 +229,12 @@ void Renderer::loadImage(std::string key, SDL_Surface *image)
         return; //Throw exception?
     }
 
-    images.insert(std::pair<std::string, SDL_Surface *>(key,
-        image));
+    SDL_Texture *sdlTexture = SDL_CreateTextureFromSurface(sdlRenderer,
+        image);
+    SDL_FreeSurface(image);
+
+    images.insert(std::pair<std::string, SDL_Texture *>(key,
+        sdlTexture));
 }
 
 void Renderer::loadText(const std::string &text, const SDL_Color &color,
@@ -289,8 +264,11 @@ void Renderer::loadText(const std::string &text, const SDL_Color &color,
     if( textSurface == NULL )
         std::cout << "ERROR, textSurface = NULL" << std::endl;
 
-    images.insert(std::pair<std::string, SDL_Surface *>(text,
-        textSurface));
+    SDL_Texture *sdlTexture = SDL_CreateTextureFromSurface(sdlRenderer,
+        textSurface);
+    SDL_FreeSurface(textSurface);
+    images.insert(std::pair<std::string, SDL_Texture *>(text,
+        sdlTexture));
 
     if( texts.count(text) < 1 )
     {
@@ -312,19 +290,8 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
                 fontSize);
     }
 
-    SDL_Surface *unmanipulatedImage = images.find(path)->second;
-    if( (Math::ceil(size.width) == Math::ceil(unmanipulatedImage->w) &&
-        Math::ceil(size.height) == Math::ceil(unmanipulatedImage->h)) &&
-        transformation == Transformation::None() )
-        return;
-
-    Dimension originalSize(unmanipulatedImage->w, unmanipulatedImage->h);
-    std::string key = makeKey(path, transformation, size, originalSize);
-
-    if( images.count(key) > 0 )
-        return;
-
     SDL_Surface *highlightedText = NULL;
+    SDL_Texture *highlightedTextTexture = NULL;
     if( transformation.has(Transformation::HighlightText()) )
     {
         if( texts.count(path) >= 1 )
@@ -343,57 +310,18 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
             else
                 highlightedText = TTF_RenderText_Blended(fontSmall, path.c_str(),
                     HIGHLIGHT_TEXT_COLOR);
-        }
-    }
-    SDL_Surface *manipulatedImage = NULL;
-    //size.width = (size.width); //Causes image to scale incorrectly
-    //size.height = ceil(size.height); //Causes image to scale incorrectly
-
-    if( unmanipulatedImage->w != size.width || unmanipulatedImage->h
-        != size.height )
-    {
-        if( highlightedText == NULL )
-        {
-            manipulatedImage = SDL_CreateRGBSurface(unmanipulatedImage->flags,
-                ceil(size.width), ceil(size.height),
-                unmanipulatedImage->format->BitsPerPixel, 
-                unmanipulatedImage->format->Rmask, unmanipulatedImage->format->Gmask,
-                unmanipulatedImage->format->Bmask, unmanipulatedImage->format->Amask);
-
-            scaleImagePixels(unmanipulatedImage, manipulatedImage, size);
-        }
-        else
-        {
-            manipulatedImage = SDL_CreateRGBSurface(highlightedText->flags,
-                ceil(size.width), ceil(size.height),
-                highlightedText->format->BitsPerPixel, 
-                highlightedText->format->Rmask, highlightedText->format->Gmask,
-                highlightedText->format->Bmask, highlightedText->format->Amask);
-
-            scaleImagePixels(highlightedText, manipulatedImage, size);
+            highlightedTextTexture = SDL_CreateTextureFromSurface(sdlRenderer,
+                highlightedText);
+            Dimension textSize(highlightedText->w, highlightedText->h);
+            SDL_FreeSurface(highlightedText);
+            std::string key = makeKey(path, transformation, size, textSize);
+            images.insert(std::pair<std::string, SDL_Texture *>(key,
+                highlightedTextTexture));
         }
     }
 
-    if( transformation != Transformation::None() )
-    {
-        if( manipulatedImage == NULL )
-        {
-            if( highlightedText == NULL )
-                manipulatedImage = SDL_DisplayFormatAlpha(unmanipulatedImage);
-            else
-                manipulatedImage = SDL_DisplayFormatAlpha(highlightedText);
-        }
-
-        transformImage(manipulatedImage, transformation);
-
-        if( transformation.has(Transformation::Glow()) )
-            glowImage(key, manipulatedImage);
-    }
-
-    if( highlightedText != NULL )
-        SDL_FreeSurface(highlightedText);
-
-    loadImage(key, manipulatedImage);
+    //if( transformation.has(Transformation::Glow()) )
+        //glowImage(key, manipulatedImage);
 }
 
 //Note: updateImage is unnecessary and could cause memory to be used after
@@ -440,57 +368,13 @@ std::string Renderer::appendTransformationsToKey(std::string key,
     return keyWithTransformations;
 }
 
-void Renderer::transformImage(SDL_Surface *transformedImage,
-    const Transformation &transformations)
-{
-    int bitsPerPixel = transformedImage->format->BitsPerPixel;
-
-    if( transformations.has(Transformation::FlipVertical()) )
-    {
-        if( bitsPerPixel == 32 )
-            flipImage<Uint32>(&transformedImage, Transformation::FlipVertical());
-        if( bitsPerPixel == 16 )
-            flipImage<Uint16>(&transformedImage, Transformation::FlipVertical());
-        if( bitsPerPixel == 8 )
-            flipImage<Uint8>(&transformedImage, Transformation::FlipVertical());
-    }
-    if( transformations.has(Transformation::FlipHorizontal()) )
-    {
-        if( bitsPerPixel == 32 )
-            flipImage<Uint32>(&transformedImage, Transformation::FlipHorizontal());
-        if( bitsPerPixel == 16 )
-            flipImage<Uint16>(&transformedImage, Transformation::FlipHorizontal());
-        if( bitsPerPixel == 8 )
-            flipImage<Uint8>(&transformedImage, Transformation::FlipHorizontal());
-    }
-}
-
-void Renderer::determineFlipLoopCondition(int &loopConditionRow, int &loopConditionColumn,
-    SDL_Surface **image, const Transformation &flip)
-{
-    if( flip == Transformation::FlipHorizontal() )
-        loopConditionColumn = (*image)->w / 2;
-    else if( flip == Transformation::FlipVertical() )
-        loopConditionRow = (*image)->h / 2;
-}
-
-int Renderer::getFlipIndex(int width, int height, int i, int j,
-    const Transformation &flip)
-{
-    if( flip == Transformation::FlipVertical())
-        return width * (height - 1 - i) + j;
-    else if( flip == Transformation::FlipHorizontal())
-        return width * i + (width - 1 - j);
-
-    return 0; //Bad arg exception?
-}
-
 //Method:   Renderer::Render()
 //Purpose:  Draw the scene, everything according to its layer
 //Note: An alternative to clearing the map every frame is to make objects
 //      unsubscribe. For now we'll stick to clearing the multimap
 void Renderer::render()
 {
+    SDL_RenderClear(sdlRenderer);
     std::list<boost::shared_ptr<Layout> > layoutsCopy = layouts;
     for( std::list<boost::shared_ptr<Layout> >::iterator it = layoutsCopy.begin();
         it != layoutsCopy.end(); ++it )
@@ -501,15 +385,14 @@ void Renderer::render()
     std::list<boost::shared_ptr<RendererElement> > toDrawCopy = toDraw;
     for(std::list<boost::shared_ptr<RendererElement> >::iterator it = 
         toDrawCopy.begin(); it != toDrawCopy.end(); ++it)
-       (*it)->render(*this, screen);
+       (*it)->render(*this, sdlRenderer);
         
     pruneUnusedManipulations();
     pruneUnusedTexts();
     toDraw.clear();
-    SDL_Flip(screen);
+    SDL_RenderPresent(sdlRenderer);
     frameCleanupPublisher->frameCleanup();
 }
-
 
 void Renderer::scale(const Dimension &size)
 {
@@ -539,7 +422,12 @@ void Renderer::moveBy(const Point &offset)
 void Renderer::addLayout(boost::shared_ptr<Layout> &layout)
 {
     Point TOP_LEFT(0.0, 0.0);
-    Dimension SIZE(screen->w, screen->h);
+    Dimension SIZE;
+    int tmpW = 0;
+    int tmpH = 0;
+    SDL_RenderGetLogicalSize(sdlRenderer, &(tmpW), &(tmpH));
+    SIZE.width = tmpW;
+    SIZE.height = tmpH;
     layout->moveTo(TOP_LEFT);
     layout->scale(SIZE);
     layouts.push_back(layout);
@@ -569,7 +457,7 @@ void Renderer::own(const boost::weak_ptr<Layout> &owner)
 Uint32 Renderer::makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
     const
 {
-    return SDL_MapRGBA(screen->format, red, green, blue, alpha);
+    return SDL_MapRGBA(SDL_GetWindowSurface(sdlWindow)->format, red, green, blue, alpha);
 }
 
 void Renderer::sizeText(const std::string &str,  int &width, int &height,
@@ -618,7 +506,7 @@ std::string Renderer::makeKey(const std::string &path, const Transformation
 //Note:     Although this is in the public interface, it should only be called
 //          by objects of class RendererElement.
 //Note:     Is this too much of an accessor?
-SDL_Surface *Renderer::whatShouldIDraw(const std::string &path,
+SDL_Texture *Renderer::whatShouldIDraw(const std::string &path,
     const Transformation &transformation, const Dimension &size, 
     const FontSize &fontSize)
 {
@@ -631,8 +519,15 @@ SDL_Surface *Renderer::whatShouldIDraw(const std::string &path,
                 fontSize);
     }
 
-    SDL_Surface *original = images.find(path)->second;
-    Dimension originalSize(original->w, original->h);
+    Dimension originalSize;
+    Uint32 unusedParam1 = 0;
+    int unusedParam2 = 0;
+    int tmpW = 0;
+    int tmpH = 0;
+    SDL_QueryTexture(images.find(path)->second, &unusedParam1, &unusedParam2, &(tmpW),
+        &(tmpH));
+    originalSize.width = tmpW;
+    originalSize.height = tmpH;
 
     std::string key = makeKey(path, transformation, size, originalSize);
     unusedKeys.remove(key);
@@ -649,8 +544,8 @@ SDL_Surface *Renderer::whatShouldIDraw(const std::string &path,
             transformation ^ Transformation::Glow();
         std::string nonGlowingKey = makeKey(path, nonGlowingTransformation,
             size, originalSize);
-        graphicEffects.find(key)->second->glow(images.find(
-            nonGlowingKey)->second, images.find(key)->second);
+        //graphicEffects.find(key)->second->glow(images.find(
+            //nonGlowingKey)->second, images.find(key)->second);
         return images.find(key)->second;
     }
 
@@ -673,46 +568,7 @@ SDL_Surface *Renderer::loadUnoptimizedImage(std::string path)
     return image;
 }
 
-//Method:   Renderer::optimizeImage
-//Purpose:  Utility method that wraps the SDL_DisplayFormatAlpha(...) function
-//          to convert a loaded image to the same format as the display.
-SDL_Surface *Renderer::optimizeImage(SDL_Surface *unoptimizedImage)
-{
-    SDL_Surface *optimizedImage = SDL_DisplayFormatAlpha(unoptimizedImage);
-
-    if(!optimizedImage)
-    {
-        std::cout << "SDL_DisplayFormatAlpha: " << SDL_GetError() << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    SDL_FreeSurface(unoptimizedImage);
-
-    return optimizedImage;
-} 
-
-void Renderer::scaleImagePixels(SDL_Surface *image, SDL_Surface *scale,
-    const Dimension &size)
-{
-    DimensionPercent dimensionPercent(size.width / image->w,
-        size.height / image->h);
-    scaleImagePercent(image, scale, dimensionPercent);
-}
-
-void Renderer::scaleImagePercent(SDL_Surface *image, 
-    SDL_Surface *scaled, const DimensionPercent &dimensionPercent)
-{
-    int bitsPerPixel = image->format->BitsPerPixel;
-
-    if( bitsPerPixel == 32 )
-        scaleImage<Uint32>(image, scaled, dimensionPercent);
-    else if( bitsPerPixel == 16 )
-        scaleImage<Uint16>(image, scaled, dimensionPercent);
-    else if( bitsPerPixel == 8 )
-        scaleImage<Uint8>(image, scaled, dimensionPercent);
-}
-
-void Renderer::glowImage(std::string &key, SDL_Surface *image)
+/*void Renderer::glowImage(std::string &key, SDL_Surface *image)
 {
     if( graphicEffects.count(key) >= 1 )
         return;
@@ -727,11 +583,11 @@ void Renderer::glowImage(std::string &key, SDL_Surface *image)
     masterClockPublisher->subscribe(graphicEffectSubscriber);
     graphicEffects.insert(std::pair<std::string, boost::shared_ptr<
         GraphicEffect> >(key, tmpGraphicEffect));
-}
+}*/
 
 void Renderer::pruneUnusedManipulations()
 {
-    std::map<std::string, SDL_Surface *>::iterator it2;
+    std::map<std::string, SDL_Texture *>::iterator it2;
 
     if( unusedKeys.empty() )
     {
@@ -747,7 +603,7 @@ void Renderer::pruneUnusedManipulations()
             it2 = images.find(*it);
             if( it2 != images.end() )
             {
-                SDL_FreeSurface(it2->second);
+                SDL_DestroyTexture(it2->second);
                 images.erase(it2);
             }
         }
@@ -758,7 +614,7 @@ void Renderer::pruneUnusedManipulations()
 
 void Renderer::pruneUnusedTexts()
 {
-    std::map<std::string, SDL_Surface *>::iterator it2;
+    std::map<std::string, SDL_Texture *>::iterator it2;
 
     if( unusedTexts.empty() )
     {
@@ -772,7 +628,7 @@ void Renderer::pruneUnusedTexts()
         it2 = images.find(*it);
         if( it2 != images.end() )
         {
-            SDL_FreeSurface(it2->second);
+            SDL_DestroyTexture(it2->second);
             images.erase(it2);
         }
 
@@ -785,7 +641,7 @@ void Renderer::populateUnusedKeysList()
 {
     unusedKeys.clear();
 
-    for( std::map<std::string, SDL_Surface *>::iterator it =
+    for( std::map<std::string, SDL_Texture *>::iterator it =
         images.begin(); it != images.end(); ++it )
         unusedKeys.push_back(it->first);
 }

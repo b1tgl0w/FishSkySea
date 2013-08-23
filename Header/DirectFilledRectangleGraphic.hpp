@@ -28,11 +28,7 @@ SUCH DAMAGES.
 #ifndef DIRECT_FILLED_RECTANGLE_GRAPHIC_HPP_
 #define DIRECT_FILLED_RECTANGLE_GRAPHIC_HPP_
 
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "DirectGraphicStrategy.hpp"
 #include "Point.hpp"
 #include "Dimension.hpp"

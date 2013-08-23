@@ -6,7 +6,7 @@ CPP_FILES := $(wildcard Source/*.cpp)
 OBJ_FILES := $(patsubst Source/%.cpp,Object/NotShared%.o,$(CPP_FILES))
 ALL_OBJ := $(OBJ_FILES)
 ALL_OBJ += $(SHARED_OBJ_FILES)
-LD_LIBS := -lSDL -lSDL_image -lSDL_ttf
+LD_LIBS := -lSDL2 -lSDL2_image -lSDL2_ttf
 
 all : CC_FLAGS += -Wall -Wextra -O2 -Wno-unused-variable
 all : Object/SeaBassShowdown

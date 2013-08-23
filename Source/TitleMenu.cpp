@@ -190,7 +190,7 @@ void TitleMenu::createMenuItems(boost::shared_ptr<boost::shared_ptr<Scene> >
     menuItems.push_back(play);
 }
 
-void TitleMenu::keyPressed(const SDLKey &key)
+void TitleMenu::keyPressed(const SDL_Keycode &key)
 {
     if( key == SDLK_w || key == SDLK_UP )
     {
@@ -210,7 +210,7 @@ void TitleMenu::keyPressed(const SDLKey &key)
         select();
 }
 
-void TitleMenu::keyReleased(const SDLKey &key)
+void TitleMenu::keyReleased(const SDL_Keycode &key)
 {
     if( (key == SDLK_w || key == SDLK_UP) && cycle == PREVIOUS() )
         cycle = STOP();

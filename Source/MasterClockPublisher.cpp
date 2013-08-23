@@ -175,7 +175,7 @@ Uint32 MasterClockPublisher::age()
     return currentTicks + fastForwardCompensation;
 }
 
-void MasterClockPublisher::keyPressed(const SDLKey &key)
+void MasterClockPublisher::keyPressed(const SDL_Keycode &key)
 {
     justPaused = false;
     if( key == SDLK_l )
@@ -192,7 +192,7 @@ void MasterClockPublisher::keyPressed(const SDLKey &key)
     }
 }
 
-void MasterClockPublisher::keyReleased(const SDLKey &key)
+void MasterClockPublisher::keyReleased(const SDL_Keycode &key)
 {
     if( key == SDLK_l || key == SDLK_h )
         fastForward = 1.0;

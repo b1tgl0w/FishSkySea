@@ -30,7 +30,7 @@ SUCH DAMAGES.
 #define TIMER_HPP_
 
 #include <vector>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "boost/function.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/shared_ptr.hpp"

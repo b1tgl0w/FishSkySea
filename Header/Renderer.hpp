@@ -42,16 +42,8 @@ SUCH DAMAGES.
 #include "Math.hpp"
 #include "boost/shared_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
-#ifdef linux
-#include <SDL/SDL_ttf.h> 
-#else
-#include <SDL_ttf.h>
-#endif
+#include <SDL2/SDL.h> 
+#include <SDL2/SDL_ttf.h> 
 #include "Layout.hpp"
 #include "Layer.hpp"
 #include "RendererElement.hpp"
@@ -71,7 +63,7 @@ public:
     //before renderer calls void render(...), crash. Alternative is weak_ptr or
     //don't shared ownership of screen. Does weak_ptr even work with SDL_Surface*?
     //Renderer(Dimension screenSize, int screenBPP, flags);
-    explicit Renderer(const Dimension &screenResolution, int screenBpp, Uint32 flags,
+    explicit Renderer(const Dimension &screenResolution, const std::string &title, Uint32 flags,
         const std::string &fontPath, 
         const boost::shared_ptr<FrameCleanupPublisher> &frameCleanupPublisher);
     Renderer(const Renderer &renderer);
@@ -97,7 +89,7 @@ public:
         boost::shared_ptr<Layout> &callerLayout);
     void drawWhenReady(const std::list<boost::shared_ptr<RendererElement> >
         &toDraw, boost::shared_ptr<Layout> &callerLayout);
-    SDL_Surface *whatShouldIDraw(const std::string &path, const Transformation
+    SDL_Texture *whatShouldIDraw(const std::string &path, const Transformation
         &transformation, const Dimension &size, const FontSize &fontSize);
     void render();
     void scale(const Dimension &size); //No-op
@@ -114,41 +106,26 @@ public:
 protected:
     Renderer();
     //Must be called by derived classes
-    void initialize(const Dimension &screenresolution, int screenBpp,
-        Uint32 flags, const std::string &fontPath, 
-        const boost::shared_ptr<FrameCleanupPublisher> &frameCleanupPublisher);
     void dispose();
 private:
     //Renderer()?
-    void scaleImagePixels(SDL_Surface *image, SDL_Surface *scaled, 
-        const Dimension &size);
-    void scaleImagePercent(SDL_Surface *image, SDL_Surface *scaled,
-        const DimensionPercent &dimensionPercent);
-    template <typename T>
-    void scaleImage(SDL_Surface *image, SDL_Surface *scaled, const
-        DimensionPercent &dimensionPercent);
-    void glowImage(std::string &key, SDL_Surface *image);
+    //void glowImage(std::string &key, SDL_Surface *image);
     std::string makeKey(const std::string &path, const Transformation 
         &transformation, const Dimension &size, const Dimension &originalSize);
-    SDL_Surface *optimizeImage(SDL_Surface *unoptimizedImage);
     SDL_Surface *loadUnoptimizedImage(std::string path);
     std::string appendTransformationsToKey(std::string key,
         const Transformation &transformations);
-    void transformImage(SDL_Surface *transformedImage,
-        const Transformation &transformations);
-    void determineFlipLoopCondition(int &loopConditionRow, int &loopConditionColumn,
-        SDL_Surface **image, const Transformation &flip);
+    //void transformImage(SDL_Surface *transformedImage,
+        //const Transformation &transformations);
     int getFlipIndex(int width, int height, int i, int j,
         const Transformation &flip);
-    template <typename T>
-    void flipImage(SDL_Surface **image, const Transformation &flip);
     static int &numberOfInstances();
     void pruneUnusedManipulations();
     void pruneUnusedTexts();
     void populateUnusedKeysList();
     void populateUnusedTextsList();
     bool isKeyAManipulation(const std::string &key);
-    std::map<std::string, SDL_Surface *> images;
+    std::map<std::string, SDL_Texture *> images;
     std::list<boost::shared_ptr<RendererElement> > toDraw;
     std::set<std::string> texts;
     std::map<std::string, SDL_Color> textColors;
@@ -157,7 +134,8 @@ private:
     std::list<std::string> unusedKeys;
     std::list<std::string> unusedTexts;
     std::list<boost::shared_ptr<Layout> > layouts;
-    SDL_Surface *screen;
+    SDL_Window *sdlWindow;
+    SDL_Renderer *sdlRenderer;
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher;
     std::string fontPath;
     TTF_Font *fontHuge;
@@ -170,87 +148,7 @@ private:
     static const std::string &HEIGHT_KEY();
 };
 
-template <typename T>
-void Renderer::flipImage(SDL_Surface **image, const Transformation &flip)
-{
-    T temporaryPixel;
-    int flippedImageIndex = 0;
-    int imageIndex = 0;
-    int loopConditionRow = (*image)->h;
-    int loopConditionColumn = (*image)->w;
-    
-    determineFlipLoopCondition(loopConditionRow, loopConditionColumn,
-        image, flip);
-        
-    SDL_LockSurface(*image);
-    for( int i = 0; i < loopConditionRow; ++i )
-    {
-        for( int j = 0; j < loopConditionColumn; ++j )
-        {
-            flippedImageIndex = getFlipIndex((*image)->w, (*image)->h, i,
-                j, flip);
-            imageIndex = (*image)->w * i + j;
-            //swapPixel(...) would not compile, so just writing the body
-            // of swapPixel(...) here.
-            temporaryPixel = ((T *) (*image)->pixels)[flippedImageIndex];
-            ((T *) (*image)->pixels)[flippedImageIndex] = ((T *)
-                (*image)->pixels)[imageIndex];
-            ((T *) (*image)->pixels)[imageIndex] = temporaryPixel;
-            //Don't use std::swap here because library calls on a locked surface
-            // are not allowed
-            //std::swap(((T *) (*image)->pixels)[flippedImageIndex], ((T *)
-                //(*image)->pixels)[imageIndex]);
-        }
-    }
-    SDL_UnlockSurface(*image);
-}
-
-//Uses Uint32 instead of template T for possible performance improvements
-template <typename T>
-void Renderer::scaleImage(SDL_Surface *image, SDL_Surface *scaled, const 
-    DimensionPercent &dimensionPercent)
-{
-    int i = 0;
-    double i2 = 0.0;
-    int j = 0;
-    double j2 = 0.0;
-    int imageW = image->w;
-    int imageH = image->h;
-    int scaledBothW = scaled->w;
-    int scaledBothH = scaled->h;
-    int lastI2 = -1;
-    int lastJ2 = -1;
-    SDL_Rect scaledPortion = { 0, 0, Math::ceil(dimensionPercent.widthPercent), 
-        Math::ceil(dimensionPercent.heightPercent) };
-    
-    SDL_LockSurface(image);
-
-    for( i = 0, i2 = 0.0; i < imageH && i2 < scaledBothH;
-        ++i, i2 += dimensionPercent.heightPercent)
-    {
-        if( lastI2 == (int) i2 )
-            continue;
-
-        lastI2 = (int) i2;
-
-        for ( j = 0, j2 = 0.0; j < imageW && j2 < scaledBothW;
-            ++j, j2 += dimensionPercent.widthPercent)
-        {
-            if( lastJ2 == (int) j2 )
-                continue;
-
-            lastJ2 = (int) j2;
-            scaledPortion.x = j2;
-            scaledPortion.y = i2;
-            SDL_FillRect(scaled, &scaledPortion, 
-                ((T *) image->pixels)[(int) Math::round(imageW * i + j)]);
-        }
-
-        lastJ2 = -1;
-    }
-
-    SDL_UnlockSurface(image);
-}
+//Scale and flip now in SDL
 
 #endif
 

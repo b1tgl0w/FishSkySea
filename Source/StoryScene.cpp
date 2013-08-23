@@ -221,7 +221,7 @@ void StoryScene::registerParentScene(boost::weak_ptr<Scene> parentScene)
     titleScene = parentScene;
 }
 
-void StoryScene::keyPressed(const SDLKey &key)
+void StoryScene::keyPressed(const SDL_Keycode &key)
 {
     if( key == SDLK_ESCAPE )
     {
@@ -232,6 +232,6 @@ void StoryScene::keyPressed(const SDLKey &key)
     }
 }
 
-void StoryScene::keyReleased(const SDLKey &key)
+void StoryScene::keyReleased(const SDL_Keycode &key)
 { }
 

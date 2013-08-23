@@ -33,11 +33,7 @@ SUCH DAMAGES.
 #include <map>
 //#include "boost/bimap.hpp"
 #include "boost/shared_ptr.hpp"
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 
 class Player;
 class PlayerAction;
@@ -50,36 +46,36 @@ public:
     PlayerKeyTranslater &operator=(const PlayerKeyTranslater &rhs);
     ~PlayerKeyTranslater();
     void initializePlayer(boost::shared_ptr<Player> &player, bool playerNumber);
-    void act(SDLKey, bool pressed);
-    void switchKey(SDLKey, boost::shared_ptr<PlayerAction> &action);
+    void act(SDL_Keycode, bool pressed);
+    void switchKey(SDL_Keycode, boost::shared_ptr<PlayerAction> &action);
 protected:
     void initialize(const boost::shared_ptr<Player> &player, bool playerNumber);
-    void initialize(const std::map<SDLKey, boost::shared_ptr<PlayerAction> >
+    void initialize(const std::map<SDL_Keycode, boost::shared_ptr<PlayerAction> >
         &actions);
     void dispose();
 private:
     //Refactor class to use boost::bimap
-    std::map<SDLKey, boost::shared_ptr<PlayerAction> > actions;
+    std::map<int, boost::shared_ptr<PlayerAction> > actions;
     boost::shared_ptr<Player> player;
-    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+    std::pair<int, boost::shared_ptr<PlayerAction> >
         REEL_IN_DEFAULT_KEY_P1; //Treat as const
-    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+    std::pair<int, boost::shared_ptr<PlayerAction> >
         GIVE_LINE_DEFAULT_KEY_P1; //Treat as const
-    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+    std::pair<int, boost::shared_ptr<PlayerAction> >
         LENGTHEN_POLE_DEFAULT_KEY_P1; //Treat as const
-    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+    std::pair<int, boost::shared_ptr<PlayerAction> >
         SHORTEN_POLE_DEFAULT_KEY_P1; //Treat as const
-    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+    std::pair<int, boost::shared_ptr<PlayerAction> >
         SET_HOOK_DEFAULT_KEY_P1; //Treat as const
-    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+    std::pair<int, boost::shared_ptr<PlayerAction> >
         REEL_IN_DEFAULT_KEY_P2; //Treat as const
-    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+    std::pair<int, boost::shared_ptr<PlayerAction> >
         GIVE_LINE_DEFAULT_KEY_P2; //Treat as const
-    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+    std::pair<int, boost::shared_ptr<PlayerAction> >
         LENGTHEN_POLE_DEFAULT_KEY_P2; //Treat as const
-    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+    std::pair<int, boost::shared_ptr<PlayerAction> >
         SHORTEN_POLE_DEFAULT_KEY_P2; //Treat as const
-    std::pair<SDLKey, boost::shared_ptr<PlayerAction> >
+    std::pair<int, boost::shared_ptr<PlayerAction> >
         SET_HOOK_DEFAULT_KEY_P2; //Treat as const
 };
 

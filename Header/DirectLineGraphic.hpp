@@ -29,11 +29,7 @@ SUCH DAMAGES.
 #ifndef DIRECT_LINE_GRAPHIC_H_
 #define DIRECT_LINE_GRAPHIC_H_
 
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "DirectGraphicStrategy.hpp"
 #include "Point.hpp"
 #include "Dimension.hpp"
@@ -46,7 +42,7 @@ public:
     DirectLineGraphic(const DirectLineGraphic &rhs);
     DirectLineGraphic &operator=(const DirectLineGraphic &rhs);
     ~DirectLineGraphic();
-    void drawToScreen(SDL_Surface *screen, const Point &position,
+    void drawToScreen(SDL_Renderer *sdlRenderer, const Point &position,
         const Dimension &size, const Clip &clipObject);
 protected:
     void initialize(const Point &p1, const Point &p2, const Uint32 color);

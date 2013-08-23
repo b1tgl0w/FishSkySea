@@ -34,11 +34,7 @@ SUCH DAMAGES.
 #define KEYBOARD_PUBLISHER_HPP_
 
 #include <list>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/weak_ptr.hpp"
 #include "MasterInputSubscriber.hpp"
 
@@ -61,7 +57,7 @@ public:
     void inputEvent(const SDL_Event &e);
     static bool &PRESSED();
 private:
-    void notify(SDLKey key, bool pressed);
+    void notify(SDL_Keycode key, bool pressed);
     std::list<boost::weak_ptr<KeyboardSubscriber> > subscribers;
 };
 

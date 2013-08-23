@@ -28,11 +28,7 @@ SUCH DAMAGES.
 
 #include <cstdlib>
 #include <vector>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include <ctime>
 #include "boost/shared_ptr.hpp"
 #include "../Header/Renderer.hpp"
@@ -83,7 +79,7 @@ int main(int argc, char **argv)
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher(new
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
-        new Renderer(screenResolution, 32, SDL_HWSURFACE | SDL_DOUBLEBUF,
+        new Renderer(screenResolution, "Sea Bass Showdown", SDL_WINDOW_OPENGL,
         "../Media/Fonts/gentium/Gentium-R.ttf", frameCleanupPublisher)); 
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
         KeyboardPublisher);

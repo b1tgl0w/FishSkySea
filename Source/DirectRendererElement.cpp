@@ -88,12 +88,12 @@ void DirectRendererElement::dispose()
 {
 }
 
-void DirectRendererElement::render(Renderer &renderer, SDL_Surface *screen)
+void DirectRendererElement::render(Renderer &renderer, SDL_Renderer *sdlRenderer)
 {
     if( !directGraphicStrategy )
         return;
 
-    directGraphicStrategy->drawToScreen(screen, position, size, clipObject);
+    directGraphicStrategy->drawToScreen(sdlRenderer, position, size, clipObject);
     layer = originalLayer;
 }
 

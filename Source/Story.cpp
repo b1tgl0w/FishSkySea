@@ -84,7 +84,7 @@ void Story::createMessageBoxes(const std::string &fileName, boost::shared_ptr<
     mbIterator = messageBoxes.begin();
 }
 
-void Story::keyPressed(const SDLKey &key)
+void Story::keyPressed(const SDL_Keycode &key)
 {
     if( done() ) 
         return;
@@ -97,7 +97,7 @@ void Story::keyPressed(const SDLKey &key)
     }
 }
 
-void Story::keyReleased(const SDLKey &key)
+void Story::keyReleased(const SDL_Keycode &key)
 {
 }
 

@@ -27,7 +27,7 @@ SUCH DAMAGES.
 #ifndef TITLE_MENU_HPP_
 #define TITLE_MENU_HPP_
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <list>
 #include "boost/shared_ptr.hpp"
 #include "Menu.hpp"
@@ -60,8 +60,8 @@ public:
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
     boost::shared_ptr<Layout> layoutToAttach();
-    void keyPressed(const SDLKey &key);
-    void keyReleased(const SDLKey &key);
+    void keyPressed(const SDL_Keycode &key);
+    void keyReleased(const SDL_Keycode &key);
     void clockTick(Uint32 elapsedTime);
 private:
     TitleMenu();

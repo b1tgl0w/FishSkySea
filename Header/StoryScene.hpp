@@ -65,8 +65,8 @@ public:
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
     void registerParentScene(boost::weak_ptr<Scene> parentScene);
-    void keyPressed(const SDLKey &key);
-    void keyReleased(const SDLKey &key);
+    void keyPressed(const SDL_Keycode &key);
+    void keyReleased(const SDL_Keycode &key);
 private:
     StoryScene();
     static const Point &BACKGROUND_POSITION();

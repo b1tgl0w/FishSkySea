@@ -30,11 +30,7 @@ SUCH DAMAGES.
 #define TEXT_RENDERER_ELEMENT_HPP_
 #include <string>
 #include <list>
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/shared_ptr.hpp"
 #include "RendererElement.hpp"
 #include "DimensionPercent.hpp"
@@ -54,7 +50,7 @@ public:
         const FontSize &fontSize);
     TextRendererElement(const TextRendererElement &rhs);
     TextRendererElement &operator=(const TextRendererElement &rhs);
-    void render(Renderer &renderer, SDL_Surface *screen);
+    void render(Renderer &renderer, SDL_Renderer *sdlRenderer);
     bool operator<(const RendererElement &rhs) const;
     void moveBy(const Point &offset);
     void moveBy(double xPercent, double yPercent);
@@ -70,7 +66,7 @@ public:
 protected:
     TextRendererElement();
 private:
-    void applySurface(SDL_Surface *source, SDL_Surface *destination,
+    void applySurface(SDL_Texture *source, SDL_Renderer *destination,
         const Point &position);
     int getLayer() const;
     std::string getPath() const;

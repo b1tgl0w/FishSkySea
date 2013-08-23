@@ -30,11 +30,7 @@ SUCH DAMAGES.
 
 #include <string>
 #include <vector>
-#ifdef linux
-#include <SDL/SDL.h>
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h>
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"

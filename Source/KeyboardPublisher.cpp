@@ -108,7 +108,7 @@ void KeyboardPublisher::inputEvent(const SDL_Event &e)
 //Note: Since subscribers can unsubscribe themselves during a clockTick,
 //      some elements on the list can become invalidated. This is compensated
 //      for.
-void KeyboardPublisher::notify(SDLKey key, bool pressed)
+void KeyboardPublisher::notify(SDL_Keycode key, bool pressed)
 {
     boost::shared_ptr<KeyboardSubscriber> tmpSubscriber;
 

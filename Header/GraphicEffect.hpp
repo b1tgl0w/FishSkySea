@@ -28,11 +28,7 @@ SUCH DAMAGES.
 #ifndef GRAPHIC_EFFECT_HPP_
 #define GRAPHIC_EFFECT_HPP_
 
-#ifdef linux
-#include <SDL/SDL.h> 
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h> 
 #include "boost/shared_ptr.hpp"
 #include "MasterClockSubscriber.hpp"
 

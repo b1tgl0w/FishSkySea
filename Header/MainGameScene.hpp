@@ -76,8 +76,8 @@ public:
     void displayGo();
     void displayGoComplete();
     bool shouldExit(); //Note exit game, not scene
-    void keyPressed(const SDLKey &key);
-    void keyReleased(const SDLKey &key);
+    void keyPressed(const SDL_Keycode &key);
+    void keyReleased(const SDL_Keycode &key);
     void registerParentScene(boost::weak_ptr<Scene> parentScene);
 private:
     MainGameScene();
