@@ -457,7 +457,22 @@ void Renderer::own(const boost::weak_ptr<Layout> &owner)
 Uint32 Renderer::makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
     const
 {
-    return SDL_MapRGBA(SDL_GetWindowSurface(sdlWindow)->format, red, green, blue, alpha);
+    Uint32 r = red;
+
+    r = r << 24;
+
+    Uint32 g = green;
+
+    g = g << 16;
+
+    Uint32 b = blue;
+
+    b = b << 8;
+
+    Uint32 a = alpha;
+    Uint32 color = r + g + b + a;
+
+    return color;
 }
 
 void Renderer::sizeText(const std::string &str,  int &width, int &height,
@@ -482,10 +497,10 @@ std::string Renderer::makeKey(const std::string &path, const Transformation
     if( transformation != Transformation::None() )
     {
         std::string t = transformation.tellTransformations();
-        key += TRANSFORMATION_KEY();
         key += t;
     }
     
+    /*
     if( ceil(size.width) != ceil(originalSize.width) )
     {
         key += WIDTH_KEY();
@@ -496,7 +511,7 @@ std::string Renderer::makeKey(const std::string &path, const Transformation
     {
         key += HEIGHT_KEY();
         key += StringUtility::toString(ceil(size.height));
-    }
+    }*/
 
     return key;
 }

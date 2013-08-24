@@ -43,7 +43,7 @@ public:
     DirectFilledRectangleGraphic(const DirectFilledRectangleGraphic &rhs);
     DirectFilledRectangleGraphic &operator=(const DirectFilledRectangleGraphic &rhs);
     ~DirectFilledRectangleGraphic();
-    void drawToScreen(SDL_Surface *screen, const Point &position,
+    void drawToScreen(SDL_Renderer *renderer,  const Point &position,
         const Dimension &size, const Clip &clipObject);
 private:
     DirectFilledRectangleGraphic();

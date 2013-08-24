@@ -95,7 +95,7 @@ void TextRendererElement::applySurface(SDL_Texture *source,
     destinationRectangle.w = Math::ceil(size.width);
     destinationRectangle.h = Math::ceil(size.height);
 
-    SDL_RenderCopy(renderer, source, &sourceRectangle, &destinationRectangle);
+    SDL_RenderCopy(renderer, source, NULL, &destinationRectangle);
 }
 
 bool TextRendererElement::operator<(const RendererElement &rhs) const

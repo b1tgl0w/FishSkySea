@@ -111,18 +111,17 @@ void ImageRendererElement::applySurface(SDL_Texture *source,
     SDL_Renderer *destination, const Point &position)
 {
     SDL_Rect destinationRectangle;
-    SDL_Rect sourceRectangle = { 0, 0, Math::ceil(size.width), Math::ceil(size.height) };
 
-    sourceRectangle = clipObject.generateClipRectangle(position, size);
-    if( sourceRectangle.w <= 0 || sourceRectangle.h <= 0 ||
-        sourceRectangle.x >= Math::ceil(size.width) || sourceRectangle.y >= 
-        Math::ceil(size.height) )
-        return;
-
-    destinationRectangle.x = position.x + sourceRectangle.x;
-    destinationRectangle.y = position.y + sourceRectangle.y;
+    destinationRectangle.x = position.x;
+    destinationRectangle.y = position.y;
     destinationRectangle.w = Math::ceil(size.width);
     destinationRectangle.h = Math::ceil(size.height);
+
+    //destinationRectangle = clipObject.generateClipRectangle(position, size);
+    //if( destinationRectangle.w <= 0 || destinationRectangle.h <= 0 ||
+        //destinationRectangle.x >= Math::ceil(size.width) || destinationRectangle.y >= 
+        //Math::ceil(size.height) )
+        //return;
 
     SDL_RendererFlip flip = SDL_FLIP_NONE;
 
@@ -132,9 +131,9 @@ void ImageRendererElement::applySurface(SDL_Texture *source,
     if( transformation.has(Transformation::FlipHorizontal()) )
         flip = SDL_FLIP_HORIZONTAL;
     if( flip == SDL_FLIP_NONE ) 
-        SDL_RenderCopy(destination, source, &sourceRectangle, &destinationRectangle);
+        SDL_RenderCopy(destination, source, NULL, &destinationRectangle);
     else
-        SDL_RenderCopyEx(destination, source, &sourceRectangle, &destinationRectangle,
+        SDL_RenderCopyEx(destination, source, NULL, &destinationRectangle,
             0, NULL, flip);
 }
 

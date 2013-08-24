@@ -94,7 +94,15 @@ bool Transformation::has(const Transformation &rhs) const
 
 std::string Transformation::tellTransformations() const
 {
-    return StringUtility::toString(value);
+    //SDL2.0 broke this. Quick fix
+    //Old code: //return StringUtility::toString(value);
+
+    std::string ret;
+
+    if( has(Transformation::HighlightText()) )
+        ret += "HighlightText";
+
+    return ret;
 }
 
 Transformation::Transformation(int initialValue) : value(initialValue)

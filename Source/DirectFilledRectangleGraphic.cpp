@@ -56,7 +56,7 @@ DirectFilledRectangleGraphic::~DirectFilledRectangleGraphic()
 {
 }
 
-void DirectFilledRectangleGraphic::drawToScreen(SDL_Surface *screen, const Point 
+void DirectFilledRectangleGraphic::drawToScreen(SDL_Renderer *sdlRenderer, const Point 
     &position, const Dimension &size, const Clip &clipObject)
 {
     DimensionPercent dimensionPercent(size.width / this->size.width,
@@ -70,7 +70,12 @@ void DirectFilledRectangleGraphic::drawToScreen(SDL_Surface *screen, const Point
     SDL_Rect rect = { this->position.x, this->position.y,
         this->size.width, this->size.height };
 
-    SDL_FillRect(screen, &rect, color);
+    Uint8 red = (color >> 24) & 0xFF;
+    Uint8 green = (color >> 16) & 0xFF;
+    Uint8 blue = (color >> 8) & 0xFF;
+    Uint8 alpha = color & 0xFF;
 
+    SDL_SetRenderDrawColor(sdlRenderer, red, green, blue, alpha);
+    SDL_RenderFillRect(sdlRenderer, &rect);
 }
 

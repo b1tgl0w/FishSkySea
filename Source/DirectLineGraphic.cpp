@@ -104,6 +104,12 @@ void DirectLineGraphic::drawToScreen(SDL_Renderer *sdlRenderer, const Point &pos
     localP2.x += position.x;
     localP2.y += position.y;
 
+    Uint8 red = (color >> 24) & 0xFF;
+    Uint8 green = (color >> 16) & 0xFF;
+    Uint8 blue = (color >> 8) & 0xFF;
+    Uint8 alpha = color & 0xFF;
+
+    SDL_SetRenderDrawColor(sdlRenderer, red, green, blue, alpha);
     SDL_RenderDrawLine(sdlRenderer, localP1.x, localP1.y, localP2.x, localP2.y);
 }
 
