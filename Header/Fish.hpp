@@ -443,9 +443,11 @@ private:
     bool collidedWithSeahorse;
     bool nibbling;
     bool justFinishedNibbling;
+    double glowAlpha;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();
+    static const std::string &GLOW_IMAGE_PATH();
     static const Layer &LAYER();
     static const Dimension &MOUTH_SIZE();
     static const Dimension &MOUTH_SIZE_SEAHORSE();

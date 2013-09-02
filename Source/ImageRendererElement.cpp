@@ -35,15 +35,16 @@ SUCH DAMAGES.
 #include "../Header/FontSize.hpp"
 
 ImageRendererElement::ImageRendererElement(const std::string &path, int layer,
-    const Point &initialPosition, const Dimension &initialSize) : path(path),
+    const Point &initialPosition, const Dimension &initialSize, double alpha) : path(path),
     position(initialPosition), layer(layer), originalLayer(layer), size(
-    initialSize), transformation(Transformation::None()), clipObject()
+    initialSize), transformation(Transformation::None()), clipObject(),
+    alpha(alpha)
 { }
 
 ImageRendererElement::ImageRendererElement(const ImageRendererElement &rhs) :
     path(rhs.path), position(rhs.position), layer(rhs.layer), originalLayer(
     rhs.originalLayer), size(rhs.size), transformation(rhs.transformation),
-    clipObject(rhs.clipObject)
+    clipObject(rhs.clipObject), alpha(rhs.alpha)
 { }
 
 ImageRendererElement &ImageRendererElement::operator=(const ImageRendererElement &rhs)
@@ -58,6 +59,7 @@ ImageRendererElement &ImageRendererElement::operator=(const ImageRendererElement
     size = rhs.size;
     transformation = rhs.transformation;
     clipObject = rhs.clipObject;
+    alpha = rhs.alpha;
 
     return *this;
 }
@@ -124,6 +126,7 @@ void ImageRendererElement::applySurface(SDL_Texture *source,
         //return;
 
     SDL_RendererFlip flip = SDL_FLIP_NONE;
+    SDL_SetTextureAlphaMod(source, (Uint8) alpha);
 
     //Note can't do both with SDL 2.0
     if( transformation.has(Transformation::FlipVertical()) )

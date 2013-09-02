@@ -47,6 +47,12 @@ const std::string &Fish::IMAGE_PATH()
     return TMP_IMAGE_PATH;
 }
 
+const std::string &Fish::GLOW_IMAGE_PATH()
+{
+    static const std::string TMP_IMAGE_PATH = "../Media/FishGlow.png"; 
+    return TMP_IMAGE_PATH;
+}
+
 const Layer &Fish::LAYER()
 {
     static const Layer TMP_LAYER = Layer::FISH();
@@ -119,7 +125,8 @@ Fish::Fish(const Point &initialPosition,
     hookedByLine(), hookedByPlayer(), nibbleLine(), timeSinceRandomAboutFace(0),
     timeSinceIsTightAboutFace(0), nibbleTime(0), startingDepth(initialDepth),
     shouldResetTimes(false), glowing(false), live(false), behindSeahorse(false),
-    collidedWithSeahorse(false), nibbling(false), justFinishedNibbling(false)
+    collidedWithSeahorse(false), nibbling(false), justFinishedNibbling(false),
+    glowAlpha(0)
 {
     positionFromSide();
     updateMouthPosition();
@@ -138,7 +145,7 @@ Fish::Fish(const Fish &rhs) : state(rhs.state), hookedState(rhs.hookedState),
     glowing(rhs.glowing), live(rhs.live), behindSeahorse(rhs.behindSeahorse),
     stayBehindSeahorse(rhs.stayBehindSeahorse), collidedWithSeahorse(
     rhs.collidedWithSeahorse), nibbling(rhs.nibbling), justFinishedNibbling(
-    rhs.justFinishedNibbling)
+    rhs.justFinishedNibbling), glowAlpha(rhs.glowAlpha)
 { 
     positionFromSide();
     updateMouthPosition();
@@ -175,6 +182,7 @@ Fish &Fish::operator=(const Fish &rhs)
     collidedWithSeahorse = rhs.collidedWithSeahorse;
     nibbling = rhs.nibbling;
     justFinishedNibbling = rhs.justFinishedNibbling;
+    glowAlpha = rhs.glowAlpha;
 
     positionFromSide();
     updateMouthPosition();
@@ -296,20 +304,24 @@ void Fish::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     Transformation transformations;
     ImageRendererElement re(IMAGE_PATH(),
         LAYER().integer(), *(position), SIZE());
+    ImageRendererElement glowRe(GLOW_IMAGE_PATH(),
+        LAYER().integer() + 1, *(position), SIZE(), glowAlpha);
 
     if( facing == Direction::RIGHT() )
         transformations = transformations | Transformation::FlipHorizontal();
 
-    if( glowing )
-        transformations = transformations | Transformation::Glow();
-
     re.transform(transformations);
+    glowRe.transform(transformations);
     layout->drawWhenReady(re);
+
+    if( glowing )
+        layout->drawWhenReady(glowRe);
 }
 
 void Fish::loadImage(Renderer &renderer)
 {
     renderer.loadImage(IMAGE_PATH());
+    renderer.loadImage(GLOW_IMAGE_PATH());
 }
 
 void Fish::glow()
@@ -576,6 +588,18 @@ void Fish::clockTick(Uint32 elapsedTime)
 
     if( shouldResetTimes )
         resetTimes();
+
+    if( glowing )
+    {
+        static double alphaDiff = .15;
+
+        if( glowAlpha > 0x99 )
+            alphaDiff = -.15;
+        else if( glowAlpha < 0x11 )
+            alphaDiff = .15;
+
+        glowAlpha += alphaDiff * elapsedTime;
+    }
 }
 
 void Fish::doNibble()

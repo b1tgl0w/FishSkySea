@@ -307,8 +307,10 @@ private:
     bool continueAttack;
     bool justAte;
     bool live;
+    double glowAlpha;
 
     static const std::string &IMAGE_PATH();
+    static const std::string &GLOW_IMAGE_PATH();
     static const Layer &LAYER();
     static const Dimension &SIZE();
     static const Uint32 &ABOUT_FACE_TICK_PROBABILITY();

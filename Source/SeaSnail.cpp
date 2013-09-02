@@ -49,6 +49,12 @@ const std::string &SeaSnail::IMAGE_PATH()
     return TMP_IMAGE_PATH;
 }
 
+const std::string &SeaSnail::GLOW_IMAGE_PATH()
+{
+    static const std::string TMP_IMAGE_PATH = "../Media/SloogieGlow.png";
+    return TMP_IMAGE_PATH;
+}
+
 const Layer &SeaSnail::LAYER()
 {
     static const Layer TMP_LAYER = Layer::SEA_SNAIL();
@@ -94,7 +100,7 @@ SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
     size(new Dimension(SIZE())), seaSnailBox(position, size), facing(Direction::LEFT()),
     ocean(ocean), shouldResetTimes(false), glowing(false), proceed(false), retreat(false),
     offScreen(false), timeSinceOffScreen(0), timeSinceProceed(0), live(false), 
-    seahorse(seahorse)
+    seahorse(seahorse), glowAlpha(0)
 {
     glow();
     positionFromSide();
@@ -106,7 +112,8 @@ SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position), size(
     ocean(rhs.ocean), shouldResetTimes(rhs.shouldResetTimes), 
     glowing(rhs.glowing), proceed(rhs.proceed), retreat(rhs.retreat),
     offScreen(rhs.offScreen), timeSinceOffScreen(rhs.timeSinceOffScreen), 
-    timeSinceProceed(0), live(rhs.live), seahorse(rhs.seahorse)
+    timeSinceProceed(0), live(rhs.live), seahorse(rhs.seahorse),
+    glowAlpha(rhs.glowAlpha)
 {
 }
 
@@ -129,6 +136,7 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
     timeSinceProceed = rhs.timeSinceProceed;
     live = rhs.live;
     seahorse = rhs.seahorse;
+    glowAlpha = rhs.glowAlpha;
     
     return *this;
 }
@@ -175,6 +183,7 @@ void SeaSnail::positionFromSide()
 void SeaSnail::loadImage(Renderer &renderer)
 {
     renderer.loadImage(IMAGE_PATH());
+    renderer.loadImage(GLOW_IMAGE_PATH());
 }
 
 void SeaSnail::glow()
@@ -234,17 +243,21 @@ void SeaSnail::readyToRetreat(Uint32 elapsedTime)
 void SeaSnail::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
     Transformation transformations;
+    ImageRendererElement glowRe(GLOW_IMAGE_PATH(),
+        LAYER().integer() + 1, *(position), SIZE(), glowAlpha);
     ImageRendererElement re(IMAGE_PATH(),
         LAYER().integer(), *(position), SIZE());
 
     if( facing == Direction::RIGHT() )
         transformations = transformations | Transformation::FlipHorizontal();
 
-    if( glowing )
-        transformations =  transformations | Transformation::Glow();
-
     re.transform(transformations);
+    glowRe.transform(transformations);
     layout->drawWhenReady(re);
+
+    if( glowing )
+        layout->drawWhenReady(glowRe);
+        
 }
 
 bool SeaSnail::isGlowing()
@@ -370,6 +383,18 @@ void SeaSnail::clockTick(Uint32 elapsedTime)
 
     if( shouldResetTimes )
         resetTimes();
+
+    if( glowing )
+    {
+        static double alphaDiff = .15;
+
+        if( glowAlpha > 0x99 )
+            alphaDiff = -.15;
+        else if( glowAlpha < 0x11 )
+            alphaDiff = .15;
+
+        glowAlpha += alphaDiff * elapsedTime;
+    }
 }
 
 void SeaSnail::moveForward(double pixels)

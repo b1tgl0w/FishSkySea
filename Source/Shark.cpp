@@ -45,6 +45,13 @@ const std::string &Shark::IMAGE_PATH()
     return TMP_IMAGE_PATH;
 }
 
+const std::string &Shark::GLOW_IMAGE_PATH()
+{
+    static const std::string TMP_IMAGE_PATH = 
+        "../Media/SharkGlow.png";
+    return TMP_IMAGE_PATH;
+}
+
 const Layer &Shark::LAYER()
 {
     static const Layer TMP_LAYER(Layer::SHARK());
@@ -78,7 +85,7 @@ Shark::Shark(boost::weak_ptr<Ocean> ocean,
     initialPosition.y)), backSize(new Dimension(0.0, SIZE().height)), 
     timeSinceAboutFace(0), facing(Direction::LEFT()), sharkBox(position, size),
     visionBox(visionPosition, visionSize), backBox(backPosition, backSize),
-    continueAttack(false), justAte(false), live(false)
+    continueAttack(false), justAte(false), live(false), glowAlpha(0)
 {
     faceRandomDirection();
     adjustVisionBox();
@@ -90,7 +97,8 @@ Shark::Shark(const Shark &rhs) : state(rhs.state), attackState(rhs.attackState),
     visionSize(rhs.visionSize), backPosition(rhs.backPosition), backSize(rhs.
     backSize), timeSinceAboutFace(rhs.timeSinceAboutFace), facing(rhs.facing),
     sharkBox(rhs.sharkBox), visionBox(rhs.visionBox), backBox(rhs.backBox),
-    continueAttack(rhs.continueAttack), justAte(rhs.justAte), live(rhs.live)
+    continueAttack(rhs.continueAttack), justAte(rhs.justAte), live(rhs.live),
+    glowAlpha(rhs.glowAlpha)
 { }
 
 Shark &Shark::operator=(const Shark &rhs)
@@ -117,6 +125,7 @@ Shark &Shark::operator=(const Shark &rhs)
     continueAttack = rhs.continueAttack;
     justAte = rhs.justAte;
     live = rhs.live;
+    glowAlpha = rhs.glowAlpha;
     
     return *this;
 }
@@ -255,6 +264,7 @@ void Shark::eat(bool glowing)
 void Shark::loadImage(Renderer &renderer)
 {
     renderer.loadImage(IMAGE_PATH());
+    renderer.loadImage(GLOW_IMAGE_PATH());
 }
 
 void Shark::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
@@ -262,15 +272,19 @@ void Shark::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     Transformation transformations;
     ImageRendererElement re(IMAGE_PATH(), LAYER().integer(), *position, 
         SIZE());
+    ImageRendererElement glowRe(GLOW_IMAGE_PATH(), LAYER().integer() + 1, *position, 
+        SIZE(), glowAlpha);
 
     if( facing == Direction::RIGHT() )
         transformations = transformations | Transformation::FlipHorizontal();
 
-    if( state == glowState )
-        transformations = transformations | Transformation::Glow();
 
     re.transform(transformations);
+    glowRe.transform(transformations);
     layout->drawWhenReady(re);
+
+    if( state == glowState )
+        layout->drawWhenReady(glowRe);
 }
 
 void Shark::gameLive(bool live)
@@ -437,6 +451,18 @@ void Shark::clockTick(Uint32 elapsedTime)
 
     swim(elapsedTime);
     calmDown();
+
+    if( state == glowState )
+    {
+        static double alphaDiff = .15;
+
+        if( glowAlpha > 0x99 )
+            alphaDiff = -.15;
+        else if( glowAlpha < 0x11 )
+            alphaDiff = .15;
+
+        glowAlpha += alphaDiff * elapsedTime;
+    }
 }
 
 //Attack State

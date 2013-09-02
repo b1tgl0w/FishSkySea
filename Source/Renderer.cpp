@@ -320,9 +320,6 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
                 highlightedTextTexture));
         }
     }
-
-    //if( transformation.has(Transformation::Glow()) )
-        //glowImage(key, manipulatedImage);
 }
 
 //Note: updateImage is unnecessary and could cause memory to be used after
@@ -583,23 +580,6 @@ SDL_Surface *Renderer::loadUnoptimizedImage(std::string path)
 
     return image;
 }
-
-/*void Renderer::glowImage(std::string &key, SDL_Surface *image)
-{
-    if( graphicEffects.count(key) >= 1 )
-        return;
-
-    Dimension growTo(image->w, image->h);
-
-    boost::shared_ptr<GraphicEffect> tmpGraphicEffect(new GraphicEffect(
-        image));
-    MasterClockPublisher *masterClockPublisher = 
-        MasterClockPublisher::getInstance();
-    boost::shared_ptr<MasterClockSubscriber> graphicEffectSubscriber(tmpGraphicEffect);
-    masterClockPublisher->subscribe(graphicEffectSubscriber);
-    graphicEffects.insert(std::pair<std::string, boost::shared_ptr<
-        GraphicEffect> >(key, tmpGraphicEffect));
-}*/
 
 void Renderer::pruneUnusedManipulations()
 {

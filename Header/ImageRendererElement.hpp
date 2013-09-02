@@ -49,7 +49,8 @@ class ImageRendererElement : public RendererElement
 {
 public:
     explicit ImageRendererElement(const std::string &path, int layer, 
-        const Point &initialPosition, const Dimension &initialSize);
+        const Point &initialPosition, const Dimension &initialSize,
+        double alpha = 0xFF);
     ImageRendererElement(const ImageRendererElement &rhs);
     ImageRendererElement &operator=(const ImageRendererElement &rhs);
     void render(Renderer &renderer, SDL_Renderer *sdlRenderer);
@@ -84,6 +85,7 @@ private:
     Dimension size;
     Transformation transformation;
     Clip clipObject;
+    double alpha;
 };
 
 #endif
