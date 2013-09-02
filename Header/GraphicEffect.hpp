@@ -24,6 +24,7 @@ PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
 EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
+/*
 
 #ifndef GRAPHIC_EFFECT_HPP_
 #define GRAPHIC_EFFECT_HPP_
@@ -35,28 +36,30 @@ SUCH DAMAGES.
 class GraphicEffect : public MasterClockSubscriber
 {
 public:
-    GraphicEffect(SDL_Surface *sprite);
+    GraphicEffect(SDL_Texture *sprite);
     GraphicEffect(const GraphicEffect &rhs);
     GraphicEffect operator=(const GraphicEffect &rhs);
     ~GraphicEffect();
-    void glow(SDL_Surface *originalSprite, SDL_Surface *glowingSprite);
-    void clipGlowRectangle(SDL_Surface *sprite);
+    void glow(SDL_Texture *originalSprite, SDL_Texture *glowingSprite);
+    void clipGlowRectangle(SDL_Texture *sprite);
     void clockTick(Uint32 elapsedTime);
 private:
     GraphicEffect();
-    void applySurface(SDL_Surface *source, SDL_Surface *destination);
-    void inverseClipShape(SDL_Surface *source, SDL_Surface *destination,
+    void applySurface(SDL_Texture *source, SDL_Texture *destination);
+    void inverseClipShape(SDL_Texture *source, SDL_Texture *destination,
         bool alphaOrKey);
     double syncAlpha();
-    SDL_Surface *inverseSprite;
-    SDL_Surface *inverseGlowRectangle;
+    SDL_Texture *inverseSprite;
+    SDL_Texture *inverseGlowRectangle;
     double alpha;
     double alphaDirection;
     static const bool ALPHAD;
     static const bool COLOR_KEYED;
     static const int ALPHA_MIN;
     static const int ALPHA_MAX;
+    SDL_Texture *sprite;
 };
 
 #endif
+*/
 

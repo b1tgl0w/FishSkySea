@@ -24,7 +24,6 @@ PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
 EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
-
 /*
 
 #include <iostream> //delete
@@ -38,7 +37,7 @@ const bool GraphicEffect::COLOR_KEYED = false;
 const int GraphicEffect::ALPHA_MIN = 0x11;
 const int GraphicEffect::ALPHA_MAX = 0x99;
 
-GraphicEffect::GraphicEffect(SDL_Surface *sprite) : inverseSprite(NULL),
+GraphicEffect::GraphicEffect(SDL_Texture *sprite) : inverseSprite(NULL),
     inverseGlowRectangle(NULL), alpha(syncAlpha()), alphaDirection(.15)
 {
     clipGlowRectangle(sprite);
@@ -47,8 +46,8 @@ GraphicEffect::GraphicEffect(SDL_Surface *sprite) : inverseSprite(NULL),
 //Deep copy since not using shared_ptrs
 //A better way?
 GraphicEffect::GraphicEffect(const GraphicEffect &rhs) : 
-    inverseSprite(SDL_DisplayFormatAlpha(rhs.inverseSprite)), 
-    inverseGlowRectangle(SDL_DisplayFormatAlpha(rhs.inverseGlowRectangle)),
+    inverseSprite(rhs.inverseSprite), 
+    inverseGlowRectangle(rhs.inverseGlowRectangle),
     alpha(rhs.alpha), alphaDirection(rhs.alphaDirection)
 { }
 
@@ -59,21 +58,22 @@ GraphicEffect GraphicEffect::operator=(const GraphicEffect &rhs)
     if( &rhs == this )
         return *this;
 
-    inverseSprite = SDL_DisplayFormatAlpha(rhs.inverseSprite);
-    inverseGlowRectangle = SDL_DisplayFormatAlpha(rhs.inverseGlowRectangle);
+    inverseSprite = rhs.inverseSprite;
+    inverseGlowRectangle = rhs.inverseGlowRectangle;
     alpha = rhs.alpha;
     alphaDirection = rhs.alphaDirection;
+    
 
     return *this;
 }
 
 GraphicEffect::~GraphicEffect()
 {
-    SDL_FreeSurface(inverseSprite);
-    SDL_FreeSurface(inverseGlowRectangle);
+    SDL_DestroyTexture(inverseSprite);
+    SDL_DestroyTexture(inverseGlowRectangle);
 }
 
-void GraphicEffect::glow(SDL_Surface *originalSprite, SDL_Surface 
+void GraphicEffect::glow(SDL_Texture *originalSprite, SDL_Texture 
     *glowingSprite)
 {
     applySurface(originalSprite, glowingSprite);
@@ -81,23 +81,25 @@ void GraphicEffect::glow(SDL_Surface *originalSprite, SDL_Surface
     applySurface(inverseGlowRectangle, glowingSprite);
 }
 
-void GraphicEffect::clipGlowRectangle(SDL_Surface *sprite)
+void GraphicEffect::clipGlowRectangle(SDL_Renderer *sdlRenderer, 
+    SDL_Texture *sprite)
 {
+    Uint32 format = 0;
+    int access = 0;
+    int w = 0;
+    int h = 0;
+
+    SDL_QueryTexture(texture, &format, &access, &w, &h);
+
     if( !inverseSprite )
-        inverseSprite = SDL_CreateRGBSurface(sprite->flags | SDL_SRCALPHA,
-        sprite->w, sprite->h, sprite->format->BitsPerPixel,
-        sprite->format->Rmask, sprite->format->Gmask, sprite->format->Bmask,
-        0x00);
+        inverseSprite = SDL_CreateTexture(sdlRenderer, format, access, w, h);
+            
     if( !inverseGlowRectangle )
-        inverseGlowRectangle = SDL_CreateRGBSurface(sprite->flags | SDL_SRCALPHA,
-        sprite->w, sprite->h, sprite->format->BitsPerPixel,
-        sprite->format->Rmask, sprite->format->Gmask, sprite->format->Bmask,
-        0x00);
-    const Uint32 COLOR_KEY = SDL_MapRGB(inverseSprite->format, 0xFF, 0x00, 0xFF);
-    Uint32 yellow = SDL_MapRGB(inverseSprite->format, 0xFC, 0xE6, 0x97);
-    SDL_SetColorKey(inverseSprite, SDL_SRCCOLORKEY, COLOR_KEY);
-    SDL_SetColorKey(inverseGlowRectangle, SDL_SRCCOLORKEY, COLOR_KEY);
-    SDL_Rect rect = { 0, 0, sprite->w, sprite->h };
+        inverseGlowRectangle = SDL_CreateTexture(sdlRenderer, format, access, w, h);
+
+    const Uint32 COLOR_KEY = 0xFF00FF);
+    Uint32 yellow = 0xFCE697;
+    SDL_Rect rect = { 0, 0, w, h };
     SDL_FillRect(inverseSprite, &rect, yellow);
     inverseClipShape(sprite, inverseSprite, ALPHAD);
     SDL_FillRect(inverseGlowRectangle, &rect, yellow);
@@ -114,69 +116,90 @@ void GraphicEffect::clockTick(Uint32 elapsedTime)
     alpha += alphaDirection * elapsedTime;
 }
 
-void GraphicEffect::applySurface(SDL_Surface *source, SDL_Surface *destination)
+void GraphicEffect::applySurface(SDL_Renderer *sdlRenderer, SDL_Texture *toDraw,
+    const Point &position, const Dimension &size)
 {
-    SDL_Rect destinationRectangle = { 0, 0, destination->w, destination->h };
+    SDL_Rect destinationRectangle = { position.x, position.y, Math::ceil(size.width), 
+        Math::ceil(size.height) };
 
-    SDL_BlitSurface(source, NULL, destination,
-        &destinationRectangle);
+    SDL_RenderCopy(sdlRenderer, toDraw, NULL, &destinationRectangle);
 }
 
-void GraphicEffect::inverseClipShape(SDL_Surface *source, 
-    SDL_Surface *destination, bool alphaOrKey)
+void GraphicEffect::inverseClipShape(SDL_Texture *source, 
+    SDL_Texture *destination, bool alphaOrKey)
 {
-    int x = destination->w / 2 - source->w / 2;
-    int y = destination->h / 2 - source->h / 2;
     Uint8 sourceRed;
     Uint8 sourceGreen;
     Uint8 sourceBlue;
     Uint8 sourceAlpha;
-    Uint8 destinationRed;
-    Uint8 destinationGreen;
-    Uint8 destinationBlue;
-    Uint8 destinationAlpha;
+    Uint8 destRed;
+    Uint8 destGreen;
+    Uint8 destBlue;
+    Uint8 destAlpha;
+    Uint32 sourceFormat;
+    int sourceAccess;
+    int sourceW;
+    int sourceH;
+    Uint32 destFormat;
+    int destAccess;
+    int destW;
+    int destH;
 
-    SDL_LockSurface(source);
-    SDL_LockSurface(destination);
+    SDL_QueryTexture(source, &sourceFormat, &sourceAccess, &sourceW, &sourceH);
+    SDL_QueryTexture(dest, &destFormat, &destAccess, &destW, &destH);
 
-    for( int i = 0; i < source->h; ++i )
+    int x = destW / 2 - sourceW / 2;
+    int y = destH/ 2 - sourceH / 2;
+
+    void *sourcePixels;
+    void *destPixels;
+    int sourcePitch;
+    int destPitch;
+    SDL_LockTexture(source, NULL, &sourcePixels, &sourcePitch);
+    SDL_LockTexture(destination, NULL &destPixels, &destPitch);
+
+    for( int i = 0; i < sourceH; ++i )
     {
-        for(int j = 0; j < source->w; ++j)
+        for(int j = 0; j < sourceW; ++j)
         {
-            SDL_GetRGBA(((Uint32 *) source->pixels)[ i * source->w + j],
-                source->format, &sourceRed, &sourceGreen, &sourceBlue,
-                &sourceAlpha);
-            SDL_GetRGBA(((Uint32 *) destination->pixels)[ (i + y) *
-                destination->w + j + x],
-                destination->format, &destinationRed, &destinationGreen, 
-                &destinationBlue, &destinationAlpha);
+            Uint32 sourcePixel = ((Uint32 *)sourcePixels)[ i * sourceW + j];
+            Uint32 destPixel = ((Uint32 *) destinationPixels)[ (i + y) * destW + j + x];
+            //ASSUME FORMAT ARGB
+            sourceAlpha = (sourcePixel >> 24) 0xFF;
+            sourceRed = (sourcePixel >> 16) & 0xFF;
+            sourceGreen = (sourcePixel >> 8) & 0xFF;
+            sourceBlue = sourcePixel & 0xFF;
+            destAlpha = (destPixel >> 24) & 0xFF;
+            desteRed = (destPixel >> 16) & 0xFF;
+            destGreen = (destPixel >> 8) & 0xFF;
+            destBlue = destPixel & 0xFF;
 
-            //destinationAlpha ^= sourceAlpha; 
+            //destAlpha ^= sourceAlpha; 
             if( sourceRed == 0xFF && sourceGreen == 0x00 && sourceBlue == 0xFF)
             {
             }
             else if( alphaOrKey == COLOR_KEYED )
             {
-                destinationRed = 0xFF;
-                destinationGreen = 0x00;
-                destinationBlue = 0xFF;
+                destRed = 0xFF;
+                destGreen = 0x00;
+                destBlue = 0xFF;
             }
                 
             if( sourceAlpha > 0x00 && alphaOrKey == ALPHAD )
             {
-                destinationRed = 0xFF;
-                destinationGreen = 0x00;
-                destinationBlue = 0xFF;
+                destRed = 0xFF;
+                destGreen = 0x00;
+                destBlue = 0xFF;
             }
 
-            ((Uint32 *) destination->pixels)[ (i + y) * destination->w + j + x]
-                = SDL_MapRGBA(destination->format, destinationRed,
-                destinationGreen, destinationBlue, destinationAlpha);
+            ((Uint32 *) destinationPixels)[ (i + y) * destW + j + x]
+                = destAlpha & 0xFF000000 + destRed & 0x00FF0000 + destGreen
+                    & 0x0000FF00 + destBlue & 0x000000FF;
         }
     }
     
-    SDL_UnlockSurface(source);
-    SDL_UnlockSurface(destination);
+    SDL_UnlockTexture(source);
+    SDL_UnlockTexture(destination);
 }
 
 double GraphicEffect::syncAlpha()
@@ -188,3 +211,4 @@ double GraphicEffect::syncAlpha()
         ALPHA_MIN;
 }
 */
+

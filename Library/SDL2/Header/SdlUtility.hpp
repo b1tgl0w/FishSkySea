@@ -46,6 +46,18 @@ SUCH DAMAGES.
 //File: SdlUtility.hpp
 //Purpose:  Modifications of SDL2 Methods
 
-SDL_Texture *SdlUtility::CreateTextureFromSurfaceStreaming(SDL_Renderer * renderer, 
-    SDL_Surface * surface, bool alpha = false);
+#ifndef SDL_UTILITY_HPP_
+#define SDL_UTILITY_HPP_
+
+#include <SDL2/SDL.h>
+
+class SdlUtility
+{
+public:
+    static SDL_Texture * CreateTextureFromSurface(SDL_Renderer * renderer, 
+        SDL_Surface * surface, SDL_TextureAccess access = SDL_TEXTUREACCESS_STATIC, 
+        bool alpha = false);
+};
+
+#endif
 

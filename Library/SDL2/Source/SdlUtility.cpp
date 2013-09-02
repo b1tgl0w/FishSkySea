@@ -42,12 +42,14 @@ PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
 EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
-
-//File: SdlUtility.hpp
+//File: SdlUtility.cpp
 //Purpose:  Modifications of SDL2 Methods
 
-SDL_Texture *SdlUtility::CreateTextureFromSurfaceStreaming(SDL_Renderer * renderer, 
-    SDL_Surface * surface, bool alpha) //bool alpha default = false
+#include <iostream>
+#include "../Header/SdlUtility.hpp"
+
+SDL_Texture * SdlUtility::CreateTextureFromSurface(SDL_Renderer * renderer, 
+    SDL_Surface * surface, SDL_TextureAccess access, bool alpha)
 {
     const SDL_PixelFormat *fmt;
     SDL_bool needAlpha;
@@ -55,30 +57,32 @@ SDL_Texture *SdlUtility::CreateTextureFromSurfaceStreaming(SDL_Renderer * render
     Uint32 format;
     SDL_Texture *texture;
 
-    CHECK_RENDERER_MAGIC(renderer, NULL);
+    //CHECK_RENDERER_MAGIC(renderer, NULL);
 
-    if (!surface) {
+    if( !surface ) {
         SDL_SetError("SDL_CreateTextureFromSurface() passed NULL surface");
         return NULL;
     }
 
-    /* See what the best texture format is */
     fmt = surface->format;
     if (fmt->Amask || SDL_GetColorKey(surface, NULL) == 0 || alpha ) {
         needAlpha = SDL_TRUE;
     } else {
         needAlpha = SDL_FALSE;
     }
-    format = renderer->info.texture_formats[0];
-    for (i = 0; i < renderer->info.num_texture_formats; ++i) {
-        if (!SDL_ISPIXELFORMAT_FOURCC(renderer->info.texture_formats[i]) &&
-            SDL_ISPIXELFORMAT_ALPHA(renderer->info.texture_formats[i]) == needAlpha) {
-            format = renderer->info.texture_formats[i];
+    /*
+    SDL_RendererInfo *info;
+    SDL_GetRendererInfo(renderer, info);
+    format = info->texture_formats[0];
+    for (i = 0; i < info->num_texture_formats; ++i) {
+        if (!SDL_ISPIXELFORMAT_FOURCC(info->texture_formats[i]) &&
+            SDL_ISPIXELFORMAT_ALPHA(info->texture_formats[i]) == needAlpha) {
+            format = info->texture_formats[i];
             break;
         }
-    }
-
-    texture = SDL_CreateTexture(renderer, format, SDL_TEXTUREACCESS_STATIC,
+    }*/
+    format = SDL_PIXELFORMAT_ARGB8888;
+    texture = SDL_CreateTexture(renderer, format, access,
                                 surface->w, surface->h);
     if (!texture) {
         return NULL;
@@ -92,11 +96,11 @@ SDL_Texture *SdlUtility::CreateTextureFromSurfaceStreaming(SDL_Renderer * render
         } else {
             SDL_UpdateTexture(texture, NULL, surface->pixels, surface->pitch);
         }
+
     } else {
         SDL_PixelFormat *dst_fmt;
         SDL_Surface *temp = NULL;
 
-        /* Set up a destination surface for the texture update */
         dst_fmt = SDL_AllocFormat(format);
         temp = SDL_ConvertSurface(surface, dst_fmt, 0);
         SDL_FreeFormat(dst_fmt);
@@ -120,7 +124,6 @@ SDL_Texture *SdlUtility::CreateTextureFromSurfaceStreaming(SDL_Renderer * render
         SDL_SetTextureAlphaMod(texture, a);
 
         if (SDL_GetColorKey(surface, NULL) == 0) {
-            /* We converted to a texture with alpha format */
             SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
         } else {
             SDL_GetSurfaceBlendMode(surface, &blendMode);

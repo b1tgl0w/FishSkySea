@@ -38,6 +38,7 @@ SUCH DAMAGES.
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/MasterClockSubscriber.hpp"
 #include "../Header/FontSize.hpp"
+#include "../Library/SDL2/Header/SdlUtility.hpp"
 
 const std::string &Renderer::TRANSFORMATION_KEY()
 {
