@@ -49,7 +49,7 @@ class HumanPlayer : public Player, public KeyboardSubscriber, public Collidable,
 public:
     HumanPlayer(const Point &polePoint, const Point &hookPoint,
         boost::weak_ptr<Ocean> ocean, boost::weak_ptr<Score> score,
-        bool playerNumber);
+        bool playerNumber, bool mode);
     HumanPlayer(const HumanPlayer &rhs);
     HumanPlayer &operator=(const HumanPlayer &rhs);
     ~HumanPlayer();
@@ -110,6 +110,7 @@ public:
         const BoundingBox &yourBox);
     static const bool &PLAYER_ONE();
     static const bool &PLAYER_TWO();
+    static const bool &MAIN_GAME();
 protected:
     void initialize(const Point &polePoint, const Point &hookPoint,
         boost::weak_ptr<Ocean> ocean, const boost::shared_ptr<Line> &line,

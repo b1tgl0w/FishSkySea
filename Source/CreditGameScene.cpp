@@ -44,12 +44,13 @@ SUCH DAMAGES.
 #include "../Header/LayeredLayout.hpp"
 #include "../Header/BorderLayout.hpp"
 #include "../Header/GridLayout.hpp"
-#include "../Header/ClipFit.hpp"
+#include "../Header/ScaleClipFit.hpp"
 #include "../Header/Layer.hpp"
 #include "../Header/TextRendererElement.hpp"
 #include "../Header/Timer.hpp"
 #include "../Header/OceanMode.hpp"
 #include "../Header/Biography.hpp"
+#include "../Header/BorderCorner.hpp"
 
 const Point &CreditGameScene::POLE_POINT()
 {
@@ -118,40 +119,41 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     masterClockPublisher(MasterClockPublisher::getInstance()),
     ocean(new Ocean(screenResolution, renderer)), score1(new Score(0)),
     player1(new HumanPlayer(POLE_POINT(), HOOK_POINT(), ocean, score1,
-        HumanPlayer::PLAYER_ONE())), 
+        HumanPlayer::PLAYER_ONE(), !HumanPlayer::MAIN_GAME())), 
     background(BACKGROUND_PATH(), Layer::BACKGROUND1().integer(), 
         BACKGROUND_POINT(), screenResolution), 
     dockSupports(DOCK_SUPPORTS_PATH(), Layer::DOCK_SUPPORTS().integer(),
         DOCK_SUPPORTS_POINT(), screenResolution),
     mowhawkFisher(MOWHAWK_FISHER_PATH(), Layer::FOREGROUND().integer(), 
         MOWHAWK_FISHER_POINT(), MOWHAWK_FISHER_SIZE()), 
-        clipFit(new ClipFit), 
-    quit(false), oceanLayout(new CoordinateLayout(clipFit)), 
+        scaleClipFit(new ScaleClipFit), 
+    quit(false), oceanLayout(new CoordinateLayout(scaleClipFit)), 
     statusLayout(new 
-    CenterLayout(clipFit)), superOceanLayout(oceanLayout),
+    CenterLayout(scaleClipFit)), superOceanLayout(oceanLayout),
     superStatusLayout(statusLayout),
     clockSubscriber(masterClockPublisher,
     MasterClockPublisher::customDeleter), MiSubscriber(keyboardPublisher),
     playerSubscriber(player1), 
-    layeredLayout(new LayeredLayout(3, clipFit)), borderLayout(new BorderLayout(
+    layeredLayout(new LayeredLayout(3, scaleClipFit)), borderLayout(new BorderLayout(
     BorderSize::Thick())), superBorderLayout(borderLayout), gridLayout(new
     GridLayout(1, 3)), superGridLayout(gridLayout), superLayeredLayout(
     layeredLayout), currentScene(currentScene), transition(false),
     toScene(), statusElement(), readyTimer(), goTimer(),
-    titleScene(), biographies(), bioGridLayout(new GridLayout(4, 4)), 
+    titleScene(), biographies(), bioGridLayout(new GridLayout(3, 4)), 
     superBioGridLayout(bioGridLayout), bioBorderLayout(new BorderLayout(
     BorderSize::Thick())), superBioBorderLayout(bioBorderLayout),
-    nameCoordinateLayout(new CoordinateLayout(clipFit)),
-    superNameCoordinateLayout(nameCoordinateLayout), pictureCoordinateLayout(
-    new CoordinateLayout(clipFit)), superPictureCoordinateLayout(pictureCoordinateLayout),
-    titleCoordinateLayout(new CoordinateLayout(clipFit)), superTitleCoordinateLayout(
-    titleCoordinateLayout), bioCoordinateLayout(new CoordinateLayout(clipFit)),
+    nameCoordinateLayout(new CoordinateLayout(scaleClipFit)),
+    superNameCoordinateLayout(nameCoordinateLayout), pictureCenterLayout(
+    new CenterLayout(scaleClipFit)), superPictureCenterLayout(pictureCenterLayout),
+    titleCoordinateLayout(new CoordinateLayout(scaleClipFit)), superTitleCoordinateLayout(
+    titleCoordinateLayout), bioCoordinateLayout(new CoordinateLayout(scaleClipFit)),
     superBioCoordinateLayout(bioCoordinateLayout)
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
     player1->initializeLine();
     player1->initializePlayerKeyTranslater();
+    bioBorderLayout->useCorners(BorderCorner::TopBottomCenter());
 }
 
 CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.renderer),
@@ -160,7 +162,7 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     rhs.masterInputPublisher), masterClockPublisher(rhs.masterClockPublisher),
     ocean(rhs.ocean), score1(rhs.score1), player1(rhs.player1), background(
     rhs.background), dockSupports(rhs.dockSupports), 
-    mowhawkFisher(rhs.mowhawkFisher), clipFit(rhs.clipFit), quit(rhs.quit), 
+    mowhawkFisher(rhs.mowhawkFisher), scaleClipFit(rhs.scaleClipFit), quit(rhs.quit), 
     oceanLayout(rhs.oceanLayout), 
     statusLayout(rhs.statusLayout), 
     superOceanLayout(rhs.superOceanLayout), 
@@ -177,9 +179,9 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     bioGridLayout(rhs.bioGridLayout), superBioGridLayout(rhs.superBioGridLayout),
     bioBorderLayout(rhs.bioBorderLayout), superBioBorderLayout(rhs.superBioBorderLayout),
     nameCoordinateLayout(rhs.nameCoordinateLayout), superNameCoordinateLayout(
-    rhs.superNameCoordinateLayout), pictureCoordinateLayout(rhs.
-    pictureCoordinateLayout), superPictureCoordinateLayout(rhs.
-    superPictureCoordinateLayout), titleCoordinateLayout(rhs.titleCoordinateLayout),
+    rhs.superNameCoordinateLayout), pictureCenterLayout(rhs.
+    pictureCenterLayout), superPictureCenterLayout(rhs.
+    superPictureCenterLayout), titleCoordinateLayout(rhs.titleCoordinateLayout),
     superTitleCoordinateLayout(rhs.superTitleCoordinateLayout),
     bioCoordinateLayout(rhs.bioCoordinateLayout), superBioCoordinateLayout(
     rhs.superBioCoordinateLayout)
@@ -201,7 +203,7 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     background = rhs.background;
     dockSupports = rhs.dockSupports;
     mowhawkFisher = rhs.mowhawkFisher;
-    clipFit = rhs.clipFit;
+    scaleClipFit = rhs.scaleClipFit;
     quit = rhs.quit;
     oceanLayout = rhs.oceanLayout;
     statusLayout = rhs.statusLayout;
@@ -230,8 +232,8 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     superBioBorderLayout = rhs.superBioBorderLayout;
     nameCoordinateLayout = rhs.nameCoordinateLayout;
     superNameCoordinateLayout = rhs.superNameCoordinateLayout;
-    pictureCoordinateLayout = rhs.pictureCoordinateLayout;
-    superPictureCoordinateLayout = rhs.superPictureCoordinateLayout;
+    pictureCenterLayout = rhs.pictureCenterLayout;
+    superPictureCenterLayout = rhs.superPictureCenterLayout;
     titleCoordinateLayout = rhs.titleCoordinateLayout;
     superTitleCoordinateLayout = rhs.superTitleCoordinateLayout;
     bioCoordinateLayout = rhs.bioCoordinateLayout;
@@ -287,7 +289,7 @@ void CreditGameScene::enter()
     bioCoordinateLayout->addLayout(tmpBioLayout, origin);
 
     bioBorderLayout->addLayout(superNameCoordinateLayout, BorderCell::Top());
-    bioBorderLayout->addLayout(superPictureCoordinateLayout, BorderCell::Center());
+    bioBorderLayout->addLayout(superPictureCenterLayout, BorderCell::Center());
     bioBorderLayout->addLayout(superTitleCoordinateLayout, BorderCell::Bottom());
     cell.x = 2;
     cell.y = 0;
@@ -318,7 +320,6 @@ void CreditGameScene::enter()
     boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
         shared_from_this());
     keyboardPublisher->subscribe(sharedThisSubscriber);
-    
 }
 
 void CreditGameScene::run()
@@ -335,7 +336,7 @@ void CreditGameScene::run()
     std::vector<boost::shared_ptr<Biography> > biographiesCopy = biographies;
     for( std::vector<boost::shared_ptr<Biography> >::iterator it = biographiesCopy.
         begin(); it != biographiesCopy.end(); ++it )
-        (*it)->draw(superPictureCoordinateLayout, *renderer);
+        (*it)->draw(superPictureCenterLayout, *renderer);
 
     if( statusElement )
         statusLayout->drawWhenReady(*statusElement);

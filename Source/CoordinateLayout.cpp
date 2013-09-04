@@ -171,9 +171,6 @@ void CoordinateLayout::scale(const DimensionPercent &dimensionPercent)
 
 void CoordinateLayout::moveBy(const Point &offset)
 {
-    position.x += offset.x;
-    position.y += offset.y;
-
     std::list<boost::shared_ptr<Layout> > sublayoutsCopy = sublayouts;
     for(std::list<boost::shared_ptr<Layout> >::iterator it = sublayoutsCopy.begin();
         it != sublayoutsCopy.end(); ++it )
@@ -183,6 +180,9 @@ void CoordinateLayout::moveBy(const Point &offset)
     for(std::list<boost::shared_ptr<RendererElement> >::iterator it = toDrawCopy.begin();
         it != toDrawCopy.end(); ++it )
         (*it)->moveBy(offset);
+
+    position.x += offset.x;
+    position.y += offset.y;
 }
 
 void CoordinateLayout::moveTo(const Point &newPosition)
@@ -192,7 +192,7 @@ void CoordinateLayout::moveTo(const Point &newPosition)
     std::list<boost::shared_ptr<Layout> > sublayoutsCopy = sublayouts;
     for(std::list<boost::shared_ptr<Layout> >::iterator it = sublayoutsCopy.begin();
         it != sublayoutsCopy.end(); ++it )
-        (*it)->moveTo(newPosition); //(*it)->moveBy(offset);
+        (*it)->moveBy(offset);
 
     std::list<boost::shared_ptr<RendererElement> > toDrawCopy = toDraw;
     for(std::list<boost::shared_ptr<RendererElement> >::iterator it = toDrawCopy.begin();

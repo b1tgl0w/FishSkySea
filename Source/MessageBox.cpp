@@ -55,7 +55,7 @@ MessageBox::MessageBox(const std::string &text,
     const FontSize &fontSize, const int numberOfLines) 
     : text(text), size(lineSize.width, lineSize.height * numberOfLines),
     lineSize(lineSize), color(color),  border(border), lines(), gridLayout(),
-    layouts(), fitStrategy(new ClipFit), layer(layer), 
+    layouts(), fitStrategy(new ScaleClipFit), layer(layer), 
     uuid(boost::uuids::random_generator()()),
     identifier(boost::uuids::to_string(uuid)),
     //identifier(boost::lexical_cast<std::string>(uuid)), //for debian, old boost

@@ -21,6 +21,11 @@ Note:   Manually update loaded font size in Renderer
 Note:   If smaller text is desired, font size MUST be reduced. Use multiple
 fonts if necessary.
 
+Bug:    FillClipFit just doesn't work
+
+Bug:    CoordinateLayout doesn't properly scale and position renderer elements
+added directly to the layout
+
 Bug:    Don't remove items for collection when iterating through it. Fix in
 MasterInputPublisher, KeyboardPublisher, MasterClockPublisher and everywhere else
 

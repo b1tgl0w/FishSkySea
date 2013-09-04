@@ -49,9 +49,15 @@ const bool &HumanPlayer::PLAYER_TWO()
     return TMP_PLAYER_TWO;
 }
 
+const bool &HumanPlayer::MAIN_GAME()
+{
+    static const bool TMP_MAIN_GAME = true;
+    return TMP_MAIN_GAME;
+}
+
 HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     &hookPoint, boost::weak_ptr<Ocean> ocean, boost::weak_ptr<Score>
-    score, bool playerNumber) : playerKeyTranslater(), line(),
+    score, bool playerNumber, bool mode) : playerKeyTranslater(), line(),
     ocean(ocean), polePoint(polePoint), hookPoint(hookPoint),
     score(score), poleAreaPoint(), poleAreaSize(), poleAreaBox(),
     playerNumber(playerNumber)
@@ -67,7 +73,7 @@ HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     }
     else
     {
-        Point tmpPoint(401.0, polePoint.y);
+        Point tmpPoint(mode == MAIN_GAME() ? 401.0 : 130.0, polePoint.y);
         boost::shared_ptr<Point> tmpPoleAreaPoint(new Point(tmpPoint));
         poleAreaPoint = tmpPoleAreaPoint;
     }
@@ -75,7 +81,8 @@ HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     //From dock to middle.
     //From polePoint.y to just above bottom of screen
     //May need some adjusting
-    Dimension tmpDimension(273.0, 600.0 - polePoint.y - 35.0);
+    Dimension tmpDimension(mode == MAIN_GAME() ? 273.0 : 273.0 * 2.0, 
+        600.0 - polePoint.y - 35.0);
     boost::shared_ptr<Dimension> tmpPoleAreaSize(new Dimension(tmpDimension));
     poleAreaSize = tmpPoleAreaSize;
     BoundingBox tmpBox(poleAreaPoint, poleAreaSize);

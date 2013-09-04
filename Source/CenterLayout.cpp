@@ -142,6 +142,11 @@ void CenterLayout::scale(const DimensionPercent &dimensionPercent)
 {
     this->size.width *= dimensionPercent.widthPercent;
     this->size.height *= dimensionPercent.heightPercent;
+
+    std::list<boost::shared_ptr<RendererElement> > toDrawCopy = toDraw;
+    for( std::list<boost::shared_ptr<RendererElement> >::iterator it =
+        toDrawCopy.begin(); it != toDrawCopy.end(); ++it )
+        (*it)->scale(dimensionPercent.widthPercent, dimensionPercent.heightPercent);
     
     //To do: Scale sublayouts
 }
@@ -151,13 +156,19 @@ void CenterLayout::scale(const DimensionPercent &dimensionPercent)
 //          when render(...) is called
 void CenterLayout::moveTo(const Point &newPosition)
 {
-        //uncomment when CenterLayouts can have sub-layouts
-/*    Point offset(newPosition.x - position.x, newPosition.y - position.y);
+    Point offset(newPosition.x - position.x, newPosition.y - position.y);
 
-    std::list<boost::shared_ptr<Layout> > sublayoutsCopy = sublayouts;
+    //uncomment when CenterLayouts can have sub-layouts
+    /*std::list<boost::shared_ptr<Layout> > sublayoutsCopy = sublayouts;
     for(std::list<boost::shared_ptr<Layout> >::iterator it = subayoutsCopy.begin();
         it != sublayoutsCopy.end(); ++it )
         (*it)->moveBy(offset);*/
+
+    std::list<boost::shared_ptr<RendererElement> > toDrawCopy = toDraw;
+
+    for(std::list<boost::shared_ptr<RendererElement> >::iterator it =
+        toDrawCopy.begin(); it != toDrawCopy.end(); ++it )
+        (*it)->moveBy(offset);
 
     position = newPosition;
 }

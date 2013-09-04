@@ -69,6 +69,8 @@ void FillClipFit::fit(std::list<boost::shared_ptr<RendererElement> >
     &rendererElements, const Point &position, const Dimension &size,
     boost::shared_ptr<Clip> &clipObject)
 {
+    std::cout << "Warning, FillClipFit buggy. Use another fit strategy"
+        << std::endl;
     //Back to requirements for this method
     //Fill all? Scale according to the least, greatest? Shrink?
     DimensionPercent dimensionPercent;
@@ -88,9 +90,15 @@ void FillClipFit::fit(std::list<boost::shared_ptr<RendererElement> >
         if( dimensionPercent.heightPercent < leastHeightPercent )
             leastHeightPercent = dimensionPercent.heightPercent;
     }
+    
+    if( Math::almostEquals(leastHeightPercent, 10000.0) )
+        leastHeightPercent = 1.0;
+    if( Math::almostEquals(leastWidthPercent, 10000.0) )
+        leastWidthPercent = 1.0;
 
     if( !Math::almostEquals(leastWidthPercent, 1.0) || 
         !Math::almostEquals(leastHeightPercent, 1.0) )
+    //if( leastWidthPercent < 1.0 || leastHeightPercent < 1.0 )
     {
         std::list<boost::shared_ptr<RendererElement> > rendererElementsCopy =
             rendererElements;

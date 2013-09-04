@@ -200,7 +200,8 @@ void BorderLayout::adjustCell(const BorderCell &whichCell)
         borderPosition.y = position.y;
         borderSize.height = leastSize * thicknessPercent;
 
-        if( borderCorner == BorderCorner::TopBottom() )
+        if( borderCorner == BorderCorner::TopBottom() || borderCorner == 
+            BorderCorner::TopBottomCenter() )
         {
             borderPosition.x = position.x;
             borderSize.width = size.width;
@@ -216,7 +217,8 @@ void BorderLayout::adjustCell(const BorderCell &whichCell)
         borderPosition.x = position.x;
         borderSize.width = leastSize * thicknessPercent;
 
-        if( borderCorner == BorderCorner::Sides() )
+        if( borderCorner == BorderCorner::Sides() || borderCorner == BorderCorner::
+            SidesCenter() )
         {
             borderPosition.y = position.y;
             borderSize.height = size.height;
@@ -233,7 +235,8 @@ void BorderLayout::adjustCell(const BorderCell &whichCell)
             thicknessPercent;
         borderSize.width = leastSize * thicknessPercent;
 
-        if( borderCorner == BorderCorner::Sides() )
+        if( borderCorner == BorderCorner::Sides() || borderCorner ==
+            BorderCorner::SidesCenter() )
         {
             borderPosition.y = position.y;
             borderSize.height = size.height;
@@ -250,7 +253,8 @@ void BorderLayout::adjustCell(const BorderCell &whichCell)
             thicknessPercent;
         borderSize.height = leastSize * thicknessPercent;
 
-        if( borderCorner == BorderCorner::TopBottom() )
+        if( borderCorner == BorderCorner::TopBottom() || borderCorner ==
+            BorderCorner::TopBottomCenter() )
         {
             borderPosition.x = position.x;
             borderSize.width = size.width;
@@ -267,6 +271,17 @@ void BorderLayout::adjustCell(const BorderCell &whichCell)
         borderPosition.y = position.y + leastSize * thicknessPercent;
         borderSize.width = size.width - cornerAddon;
         borderSize.height = size.height - cornerAddon;
+        
+        if( borderCorner == BorderCorner::TopBottomCenter() )
+        {
+            borderPosition.x = position.x;
+            borderSize.width = size.width;
+        }
+        else if( borderCorner == BorderCorner::SidesCenter() )
+        {
+            borderPosition.y = position.y;
+            borderSize.height = size.height;
+        }
     }
 
     layout->moveTo(borderPosition);

@@ -73,9 +73,19 @@ BorderCorner BorderCorner::TopBottom()
     return BorderCorner(1);
 }
 
-BorderCorner BorderCorner::Sides()
+BorderCorner BorderCorner::TopBottomCenter()
 {
     return BorderCorner(2);
+}
+
+BorderCorner BorderCorner::Sides()
+{
+    return BorderCorner(3);
+}
+
+BorderCorner BorderCorner::SidesCenter()
+{
+    return BorderCorner(4);
 }
 
 bool BorderCorner::operator<(const BorderCorner &rhs) const

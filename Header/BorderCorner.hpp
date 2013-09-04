@@ -60,6 +60,7 @@ public:
         a value constraining parameter.
     */
     static BorderCorner TopBottom();
+    static BorderCorner TopBottomCenter();
     //! Top/Bottom BorderLayout use corners
     /*! 
         Essentially a constant representing that the sides will use 
@@ -67,6 +68,7 @@ public:
         a value constraining parameter.
     */
     static BorderCorner Sides();
+    static BorderCorner SidesCenter();
     //!< operator
     /*
         \param rhs the right operand.

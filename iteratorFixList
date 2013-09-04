@@ -2,6 +2,13 @@ Iterators become invalidated when inserting, erasing, resizing, and swapping
 elements from them. Below is a startegy to take to fix using invalidated iterators,
 how to avoid them in the future, and a checklist of classes to be fixed.
 
+Iterator fix steps:
+- Make sure collection contains shared_ptrs, if not, make it so, being aware of cylces
+- Make a copy of the collection before the loop
+- Change the iterator to iterate on the copy
+- Check that method calls don't pass the iterator, if they do, make sure iterator not being modified
+- Repeat
+
 Fix Strategy:
 
 - Note: if the collection stores objects by value, all modifications won't effect

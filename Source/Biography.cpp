@@ -47,11 +47,11 @@ Biography::Biography(const std::string &picturePath, const std::string &bioText,
     const std::string &nameText, const std::string &titleText, 
     boost::shared_ptr<Renderer> &renderer) : picturePath(picturePath),
     bio(new MessageBox(bioText, BIO_LINE_SIZE(), 0x00000000, false, Layer::FOREGROUND(), 
-    renderer, FontSize::Small(), BIO_NUM_LINES)), name(new MessageBox(nameText,
+    renderer, FontSize::Medium(), BIO_NUM_LINES)), name(new MessageBox(nameText,
     NAME_AND_TITLE_LINE_SIZE(), 0x00000000, false, Layer::FOREGROUND(), renderer, 
-    FontSize::Small(), NAME_AND_TITLE_NUM_LINES)), title(new MessageBox(titleText,
+    FontSize::Medium(), NAME_AND_TITLE_NUM_LINES)), title(new MessageBox(titleText,
     NAME_AND_TITLE_LINE_SIZE(), 0x00000000, false, Layer::FOREGROUND(), renderer, 
-    FontSize::Small(), NAME_AND_TITLE_NUM_LINES)), shouldShow(false)
+    FontSize::Medium(), NAME_AND_TITLE_NUM_LINES)), shouldShow(false)
 { 
     bio->show(shouldShow);
     name->show(shouldShow);

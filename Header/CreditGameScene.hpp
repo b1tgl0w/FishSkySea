@@ -104,7 +104,7 @@ private:
     ImageRendererElement background;
     ImageRendererElement dockSupports;
     ImageRendererElement mowhawkFisher;
-    boost::shared_ptr<FitStrategy> clipFit;
+    boost::shared_ptr<FitStrategy> scaleClipFit;
     bool quit;
     boost::shared_ptr<CoordinateLayout> oceanLayout;
     boost::shared_ptr<CenterLayout> statusLayout;
@@ -133,8 +133,8 @@ private:
     boost::shared_ptr<Layout> superBioBorderLayout;
     boost::shared_ptr<CoordinateLayout> nameCoordinateLayout;
     boost::shared_ptr<Layout> superNameCoordinateLayout;
-    boost::shared_ptr<CoordinateLayout> pictureCoordinateLayout;
-    boost::shared_ptr<Layout> superPictureCoordinateLayout;
+    boost::shared_ptr<CenterLayout> pictureCenterLayout;
+    boost::shared_ptr<Layout> superPictureCenterLayout;
     boost::shared_ptr<CoordinateLayout> titleCoordinateLayout;
     boost::shared_ptr<Layout> superTitleCoordinateLayout;
     boost::shared_ptr<CoordinateLayout> bioCoordinateLayout;

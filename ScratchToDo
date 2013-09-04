@@ -2,23 +2,6 @@
 //This file complements CurrentToDo. 
 //CurrentToDo is specifications of current task, this is implementation of task
 
-Iterator fix steps:
-- Make sure collection contains shared_ptrs, if not, make it so, being aware of cylces
-- Make a copy of the collection before the loop
-- Change the iterator to iterate on the copy
-- Check that method calls don't pass the iterator, if they do, make sure iterator not being modified
-- Repeat
-
-Done - Get rid of unneccessary things in credit game scene
-
-Bug Info
-- For some reason, the bio graphics and message box don't show
-- If picture layout added to top left grid cell, it shows, but nothing else does
-- The problem probably isn't in layered layout, it's probably in border or grid 
-- Even if the border layout itself is added to renderer, only the picture shows
-- Biography doesn't seem to be the culprit
-- Why doesn't even the picture get positioned and scaled correctly?
-
 After fixing bug
 - Credit game scene owns the biography objects
 - Try showing one biography before doing others when credit fish is caught
