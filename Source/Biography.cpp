@@ -100,6 +100,11 @@ void Biography::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
         origin, size);
 
     layout->drawWhenReady(re);
+
+    //Disregards layout param
+    name->draw(layout, renderer);
+    bio->draw(layout, renderer);
+    title->draw(layout, renderer);
 }
 
 void Biography::loadImage(Renderer &renderer)

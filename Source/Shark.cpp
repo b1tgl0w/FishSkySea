@@ -180,7 +180,7 @@ void Shark::initializeStates()
     attackState = tmpAttackState;
     glowState = tmpGlowState;
     patrolState = tmpPatrolState;
-    state = glowState;
+    state = patrolState;
 }
 
 //Note: Also updates back box
