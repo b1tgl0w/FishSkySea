@@ -39,6 +39,7 @@ SUCH DAMAGES.
 #include "../Header/GridLayout.hpp"
 #include "../Header/CenterLayout.hpp"
 #include "../Header/ScaleClipFit.hpp"
+#include "../Header/ClipFit.hpp"
 #include "../Header/Layer.hpp"
 #include "../Header/FontSize.hpp"
 
@@ -82,6 +83,7 @@ private:
     FontSize fontSize;
     int numberOfLines;
     bool shouldShow;
+    std::string originalText;
 };
 
 #endif

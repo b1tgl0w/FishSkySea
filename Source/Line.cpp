@@ -245,7 +245,8 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
     rippleAnimationHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
-    foremostNibbleLayer(-9999), normalSpeedThreshold(0)
+    foremostNibbleLayer(-9999), normalSpeedThreshold(0),
+    setHookReleased(true)
 {
     boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
 
@@ -305,7 +306,8 @@ Line::Line(const Line &rhs) : state(rhs.state), notHookedState(
     setHookTime(rhs.setHookTime), rippleAnimation(rhs.rippleAnimation),
     rippleAnimationNotHooked(rhs.rippleAnimationNotHooked),
     rippleAnimationHooked(rhs.rippleAnimationHooked), foremostNibbleLayer(
-    rhs.foremostNibbleLayer), normalSpeedThreshold(rhs.normalSpeedThreshold)
+    rhs.foremostNibbleLayer), normalSpeedThreshold(rhs.normalSpeedThreshold),
+    setHookReleased(rhs.setHookReleased)
 { }
 
 Line &Line::operator=(const Line &rhs)
@@ -350,6 +352,7 @@ Line &Line::operator=(const Line &rhs)
     rippleAnimationHooked = rhs.rippleAnimationHooked;
     foremostNibbleLayer = rhs.foremostNibbleLayer;
     normalSpeedThreshold = rhs.normalSpeedThreshold;
+    setHookReleased = rhs.setHookReleased;
 
     return *this;
 }
@@ -475,6 +478,16 @@ void Line::shortenPole(bool on)
 
 void Line::setHook(bool on)
 {
+    if( !setHookReleased )
+    {
+        if( on == false )
+            setHookReleased = true;
+
+        return;
+    }
+    else
+        setHookReleased = false;
+
     if( live && on && !setHookOn && fishIsNibbling )
     {
         boost::shared_ptr<Fish> sharedNibbleFish = nibbleFish.lock();

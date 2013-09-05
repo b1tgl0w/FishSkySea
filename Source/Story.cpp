@@ -64,7 +64,7 @@ void Story::createMessageBoxes(const std::string &fileName, boost::shared_ptr<
 {
     //Note: for some reason, this size overrides border layout size. bug
     const Dimension LINE_SIZE(800.0, 60.0);
-    const Uint32 BG_COLOR = 0x00000000;
+    const Uint32 BG_COLOR = 0x00170024;
     std::ifstream storyFile(fileName.c_str());
     std::vector<std::string> lines;
     std::string header("BEGIN_STORY_SECTION");

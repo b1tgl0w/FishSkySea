@@ -59,6 +59,7 @@ private:
     boost::shared_ptr<MessageBox> name;
     boost::shared_ptr<MessageBox> title;
     bool shouldShow;
+    bool keyUp;
 
     //Constants
     static const Dimension &BIO_LINE_SIZE();

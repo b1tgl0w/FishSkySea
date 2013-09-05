@@ -11,7 +11,7 @@ EXPERIMENT_OBJ_FILES := $(patsubst Source/%.cpp,../../Object/Experiment%.o,$(EXP
 ALL_OBJ := $(SHARED_OBJ_FILES)
 ALL_OBJ += $(EXPERIMENT_OBJ_FILES)
 ALL_OBJ += $(OBJ_FILES)
-LD_LIBS := -lSDL -lSDL_image -lSDL_ttf
+LD_LIBS := -lSDL2 -lSDL2_image -lSDL2_ttf
 
 all : CC_FLAGS += -Wall -O2
 all : ../../Object/MessageBox

@@ -108,7 +108,7 @@ bool MessageBoxLine::form(std::string &whatsLeft, Renderer &renderer)
             break;
         }
     }
-
+    
     line = currentLine;
 
     if( doesntFit )
@@ -122,12 +122,13 @@ bool MessageBoxLine::form(std::string &whatsLeft, Renderer &renderer)
         }
     }
 
-    return whatsLeft.empty() && doesntFit;
+    //return !(whatsLeft.empty());
+    return !(whatsLeft.empty()) && doesntFit;
 }
 
 void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    const SDL_Color COLOR = { 0xFF, 0xFF, 0xFF, 0xFF };
+    const SDL_Color COLOR = { 0xFF, 0xE3, 0xFC, 0xFC };
     const int BORDER_SIZE = 0;
 
     Point origin(0.0, 0.0);

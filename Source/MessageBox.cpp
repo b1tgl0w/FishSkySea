@@ -30,6 +30,7 @@ SUCH DAMAGES.
 #include "boost/lexical_cast.hpp" //for debian
 #include "../Header/MessageBox.hpp"
 #include "../Header/ScaleClipFit.hpp"
+#include "../Header/ClipFit.hpp"
 #include "../Header/DirectGraphicStrategy.hpp"
 #include "../Header/DirectFilledRectangleGraphic.hpp"
 #include "../Header/DirectRendererElement.hpp"
@@ -60,7 +61,7 @@ MessageBox::MessageBox(const std::string &text,
     identifier(boost::uuids::to_string(uuid)),
     //identifier(boost::lexical_cast<std::string>(uuid)), //for debian, old boost
     renderer(renderer), fontSize(fontSize), numberOfLines(numberOfLines),
-    shouldShow(true)
+    shouldShow(true), originalText(text)
 {
     formLines();
     createLayouts();
@@ -72,7 +73,7 @@ MessageBox::MessageBox(const MessageBox &rhs) : text(rhs.text),
     fitStrategy(rhs.fitStrategy),
     layer(rhs.layer), uuid(rhs.uuid), identifier(rhs.identifier),
     renderer(rhs.renderer), fontSize(rhs.fontSize), numberOfLines(
-    rhs.numberOfLines), shouldShow(rhs.shouldShow)
+    rhs.numberOfLines), shouldShow(rhs.shouldShow), originalText(rhs.originalText)
 { }
 
 MessageBox &MessageBox::operator=(const MessageBox &rhs)
@@ -96,6 +97,7 @@ MessageBox &MessageBox::operator=(const MessageBox &rhs)
     fontSize = rhs.fontSize;
     numberOfLines = rhs.numberOfLines;
     shouldShow = rhs.shouldShow;
+    originalText = rhs.originalText;
 
     return *this;
 }
@@ -116,7 +118,12 @@ bool MessageBox::advance()
         return false;
 
     if (formLines() == false )
+    {
+        //These two statements rewind the MB
+        text = originalText;
+        formLines();
         return false;
+    }
     
     return true;
 }
@@ -156,6 +163,10 @@ bool MessageBox::formLines()
         lines.push_back(currentLine);
     }
 
+    //Important bug fix to do this, and do it here
+    bool heightFull = !((lines.size() + 1) * lineSize.height <= size.height);
+
+    //Insert blank lines
     while( lines.size() < numberOfLines )
     {
         MessageBoxLine currentLine(position, size, lineSize, layer, color,
@@ -163,7 +174,7 @@ bool MessageBox::formLines()
         lines.push_back(currentLine);
     }
 
-    return !notFull;
+    return !notFull || heightFull;
 }
 
 void MessageBox::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
@@ -195,5 +206,11 @@ void MessageBox::moveTo(const Point &position)
 void MessageBox::show(bool shouldShow)
 {
     this->shouldShow = shouldShow;
+    if( shouldShow == false )
+    {
+        //Rewind the MB
+        text = originalText;
+        formLines();
+    }
 }
 

@@ -346,6 +346,7 @@ private:
     boost::shared_ptr<Animation> rippleAnimationHooked;
     int foremostNibbleLayer;
     Uint32 normalSpeedThreshold;
+    bool setHookReleased;
 };
 
 #endif

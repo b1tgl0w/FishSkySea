@@ -3,15 +3,16 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Took side quest to fix invalid iterator use, see iteratorFix doc
+Left off on: Casting after MB done.
 
-Left off on: Creating multiple bios, advancing the bio text
+Left off on: Took side quest to fix invalid iterator use, see iteratorFix doc
 
 General Task: Finish credits minigame (for the contributers known now)
 
 Specific Steps:
-    - Show bio and picture
-    - Fix bio text only showing one line
+    - Cast after finishing advancing MB
+    Done - Show bio and picture
+    Done - Fix bio text only showing one line
     Done - Make creditfish on top layer be hooked, in the case that two overlap
     Done -Fix bug that allows credit fish to occupy the same layer
     Postponed - Figure out how to fit in all the names and still be a game

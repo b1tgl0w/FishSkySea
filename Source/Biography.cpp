@@ -33,7 +33,7 @@ SUCH DAMAGES.
 
 const Dimension &Biography::BIO_LINE_SIZE()
 {
-    static const Dimension tmp(200.0, 30.0);
+    static const Dimension tmp(200.0, 35.0);
     return tmp;
 }
 
@@ -46,12 +46,13 @@ const Dimension &Biography::NAME_AND_TITLE_LINE_SIZE()
 Biography::Biography(const std::string &picturePath, const std::string &bioText,
     const std::string &nameText, const std::string &titleText, 
     boost::shared_ptr<Renderer> &renderer) : picturePath(picturePath),
-    bio(new MessageBox(bioText, BIO_LINE_SIZE(), 0x00000000, false, Layer::FOREGROUND(), 
+    bio(new MessageBox(bioText, BIO_LINE_SIZE(), 0x00170024, false, Layer::FOREGROUND(), 
     renderer, FontSize::Medium(), BIO_NUM_LINES)), name(new MessageBox(nameText,
-    NAME_AND_TITLE_LINE_SIZE(), 0x00000000, false, Layer::FOREGROUND(), renderer, 
+    NAME_AND_TITLE_LINE_SIZE(), 0x00170024, false, Layer::FOREGROUND(), renderer, 
     FontSize::Medium(), NAME_AND_TITLE_NUM_LINES)), title(new MessageBox(titleText,
-    NAME_AND_TITLE_LINE_SIZE(), 0x00000000, false, Layer::FOREGROUND(), renderer, 
-    FontSize::Medium(), NAME_AND_TITLE_NUM_LINES)), shouldShow(false)
+    NAME_AND_TITLE_LINE_SIZE(), 0x00170024, false, Layer::FOREGROUND(), renderer, 
+    FontSize::Medium(), NAME_AND_TITLE_NUM_LINES)), shouldShow(false),
+    keyUp(true)
 { 
     bio->show(shouldShow);
     name->show(shouldShow);
@@ -59,7 +60,8 @@ Biography::Biography(const std::string &picturePath, const std::string &bioText,
 }
 
 Biography::Biography(const Biography &rhs) : picturePath(rhs.picturePath),
-    bio(rhs.bio), name(rhs.name), title(rhs.title), shouldShow(rhs.shouldShow)
+    bio(rhs.bio), name(rhs.name), title(rhs.title), shouldShow(rhs.shouldShow),
+    keyUp(rhs.keyUp)
 { }
 
 Biography &Biography::operator=(const Biography &rhs)
@@ -72,6 +74,7 @@ Biography &Biography::operator=(const Biography &rhs)
     name = rhs.name;
     title = rhs.title;
     shouldShow = rhs.shouldShow;
+    keyUp = rhs.keyUp;
 
     return *this;
 }
@@ -123,11 +126,18 @@ void Biography::show(bool shouldShow)
 
 void Biography::keyPressed(const SDL_Keycode &key)
 {
-    if( shouldShow && key == SDLK_e )
-        bio->advance();
+    if( shouldShow && key == SDLK_e && keyUp)
+    {
+        if( !bio->advance() )
+            show(false);
+        
+        keyUp = false;
+    }
 }
 
 void Biography::keyReleased(const SDL_Keycode &key)
 {
+    if( shouldShow && key == SDLK_e )
+        keyUp = true;
 }
 

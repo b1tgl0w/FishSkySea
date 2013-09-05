@@ -150,9 +150,11 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     titleCoordinateLayout(new CoordinateLayout(scaleClipFit)), superTitleCoordinateLayout(
     titleCoordinateLayout), bioCoordinateLayout(new CoordinateLayout(scaleClipFit)),
     superBioCoordinateLayout(bioCoordinateLayout),
-    johnBio(new Biography("../Media/JohnBioPicture.png", "Testing biography text. This guy likes to CODE!", 
+    johnBio(new Biography("../Media/JohnBioPicture.png", "Currently a Computer Science student at a great university, John works hard developing games and studying for school so that, one day, he will reify the ideas for his dream game, a game hoped to be beautiful, musical, literary, intellectual, and detailed.",
         "John Miner", "Designer Coder Writer", renderer)),
-    connections()
+    connections(),
+    kathyBio(new Biography("../Media/KathyBioPicture.png", "A mom and grandma with a great love of family, Kathy took up the hobby of drawing later in life, drawing portraits and flowers. She also enjoys to knit, fold origami, and walk her puppy.", 
+        "Kathy Miner", "Artist", renderer))
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
@@ -190,7 +192,7 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     superTitleCoordinateLayout(rhs.superTitleCoordinateLayout),
     bioCoordinateLayout(rhs.bioCoordinateLayout), superBioCoordinateLayout(
     rhs.superBioCoordinateLayout), johnBio(rhs.johnBio),
-    connections(rhs.connections)
+    connections(rhs.connections), kathyBio(rhs.kathyBio)
 { }
 
 CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
@@ -246,6 +248,7 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     superBioCoordinateLayout = rhs.superBioCoordinateLayout;
     johnBio = rhs.johnBio;
     connections = rhs.connections;
+    kathyBio = rhs.kathyBio;
 
     return *this;
 }
@@ -283,16 +286,24 @@ void CreditGameScene::enter()
     //start bios
 
     johnBio->loadImage(*renderer);
+    kathyBio->loadImage(*renderer);
 
     biographies.push_back(johnBio);
+    biographies.push_back(kathyBio);
     
-    boost::shared_ptr<Layout> tmpNameLayout(johnBio->layoutToAttachName());
-    boost::shared_ptr<Layout> tmpTitleLayout(johnBio->layoutToAttachTitle());
-    boost::shared_ptr<Layout> tmpBioLayout(johnBio->layoutToAttachBio());
+    boost::shared_ptr<Layout> tmpJohnNameLayout(johnBio->layoutToAttachName());
+    boost::shared_ptr<Layout> tmpJohnTitleLayout(johnBio->layoutToAttachTitle());
+    boost::shared_ptr<Layout> tmpJohnBioLayout(johnBio->layoutToAttachBio());
+    boost::shared_ptr<Layout> tmpKathyNameLayout(kathyBio->layoutToAttachName());
+    boost::shared_ptr<Layout> tmpKathyTitleLayout(kathyBio->layoutToAttachTitle());
+    boost::shared_ptr<Layout> tmpKathyBioLayout(kathyBio->layoutToAttachBio());
     Point origin(0.0, 0.0);
-    nameCoordinateLayout->addLayout(tmpNameLayout, origin);
-    titleCoordinateLayout->addLayout(tmpTitleLayout, origin);
-    bioCoordinateLayout->addLayout(tmpBioLayout, origin);
+    nameCoordinateLayout->addLayout(tmpJohnNameLayout, origin);
+    titleCoordinateLayout->addLayout(tmpJohnTitleLayout, origin);
+    bioCoordinateLayout->addLayout(tmpJohnBioLayout, origin);
+    nameCoordinateLayout->addLayout(tmpKathyNameLayout, origin);
+    titleCoordinateLayout->addLayout(tmpKathyTitleLayout, origin);
+    bioCoordinateLayout->addLayout(tmpKathyBioLayout, origin);
 
     bioBorderLayout->addLayout(superNameCoordinateLayout, BorderCell::Top());
     bioBorderLayout->addLayout(superPictureCenterLayout, BorderCell::Center());
@@ -303,6 +314,8 @@ void CreditGameScene::enter()
     cell.x = 1;
     bioGridLayout->addLayout(superBioBorderLayout, cell);
     connections.push_back(ocean->subscribeToCreditFish("John Miner", 
+        boost::bind(&CreditGameScene::showBio, this, _1)));
+    connections.push_back(ocean->subscribeToCreditFish("Kathy Miner aka Mom", 
         boost::bind(&CreditGameScene::showBio, this, _1)));
 
     //end bios
@@ -475,7 +488,23 @@ void CreditGameScene::registerParentScene(boost::weak_ptr<Scene> parentScene)
 
 void CreditGameScene::showBio(const std::string &name)
 {
+    boost::shared_ptr<KeyboardSubscriber> johnKs(johnBio);
+    boost::shared_ptr<KeyboardSubscriber> kathyKs(kathyBio);
+    keyboardPublisher->unsubscribe(johnKs);
+    keyboardPublisher->unsubscribe(kathyKs);
+    johnBio->show(false);
+    kathyBio->show(false);
+
+
     if( name == "John Miner" )
+    {
         johnBio->show(true);
+        keyboardPublisher->subscribe(johnKs);
+    }
+    else if( name == "Kathy Miner aka Mom" )
+    {
+        kathyBio->show(true);
+        keyboardPublisher->subscribe(kathyKs);
+    }
 }
 
