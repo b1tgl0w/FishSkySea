@@ -25,6 +25,8 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include "boost/signals2.hpp"
+#include "boost/bind.hpp"
 #include "../Header/CreditGameScene.hpp"
 #include "../Header/Point.hpp"
 #include "../Header/Renderer.hpp"
@@ -147,7 +149,10 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     new CenterLayout(scaleClipFit)), superPictureCenterLayout(pictureCenterLayout),
     titleCoordinateLayout(new CoordinateLayout(scaleClipFit)), superTitleCoordinateLayout(
     titleCoordinateLayout), bioCoordinateLayout(new CoordinateLayout(scaleClipFit)),
-    superBioCoordinateLayout(bioCoordinateLayout)
+    superBioCoordinateLayout(bioCoordinateLayout),
+    johnBio(new Biography("../Media/JohnBioPicture.png", "Testing biography text. This guy likes to CODE!", 
+        "John Miner", "Designer Coder Writer", renderer)),
+    connections()
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
@@ -184,7 +189,8 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     superPictureCenterLayout), titleCoordinateLayout(rhs.titleCoordinateLayout),
     superTitleCoordinateLayout(rhs.superTitleCoordinateLayout),
     bioCoordinateLayout(rhs.bioCoordinateLayout), superBioCoordinateLayout(
-    rhs.superBioCoordinateLayout)
+    rhs.superBioCoordinateLayout), johnBio(rhs.johnBio),
+    connections(rhs.connections)
 { }
 
 CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
@@ -238,6 +244,8 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     superTitleCoordinateLayout = rhs.superTitleCoordinateLayout;
     bioCoordinateLayout = rhs.bioCoordinateLayout;
     superBioCoordinateLayout = rhs.superBioCoordinateLayout;
+    johnBio = rhs.johnBio;
+    connections = rhs.connections;
 
     return *this;
 }
@@ -273,8 +281,6 @@ void CreditGameScene::enter()
     keyboardPublisher->subscribe(playerSubscriber);
 
     //start bios
-    boost::shared_ptr<Biography> johnBio(new Biography("../Media/JohnBioPicture.png", 
-        "Testing biography text", "John Miner", "Designer Coder Writer", renderer));
 
     johnBio->loadImage(*renderer);
 
@@ -296,7 +302,8 @@ void CreditGameScene::enter()
     bioGridLayout->addLayout(superBioCoordinateLayout, cell);
     cell.x = 1;
     bioGridLayout->addLayout(superBioBorderLayout, cell);
-    johnBio->show(true); //delete
+    connections.push_back(ocean->subscribeToCreditFish("John Miner", 
+        boost::bind(&CreditGameScene::showBio, this, _1)));
 
     //end bios
 
@@ -375,6 +382,14 @@ void CreditGameScene::exit()
     boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
         shared_from_this());
     keyboardPublisher->unsubscribe(sharedThisSubscriber);
+    
+    std::vector<boost::shared_ptr<boost::signals2::connection> > connectionsCopy = connections;
+    for( std::vector<boost::shared_ptr<boost::signals2::connection> >::iterator it = 
+        connectionsCopy.begin(); it != connectionsCopy.end(); ++it )
+    {
+        if( *it )
+            (*it)->disconnect();
+    }
 }
 
 void CreditGameScene::transitionTo(boost::shared_ptr<Scene> &scene)
@@ -456,5 +471,11 @@ void CreditGameScene::keyReleased(const SDL_Keycode &key)
 void CreditGameScene::registerParentScene(boost::weak_ptr<Scene> parentScene)
 {
     titleScene = parentScene;
+}
+
+void CreditGameScene::showBio(const std::string &name)
+{
+    if( name == "John Miner" )
+        johnBio->show(true);
 }
 

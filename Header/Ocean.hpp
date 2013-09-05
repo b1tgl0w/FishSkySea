@@ -41,6 +41,7 @@ SUCH DAMAGES.
 #include "Graphic.hpp"
 #include "Depth.hpp"
 #include "Clouds.hpp"
+#include "CreditFish.hpp"
 
 class OceanMode;
 class Fish;
@@ -121,6 +122,8 @@ public:
     void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
     std::vector<boost::shared_ptr<Layout> > layoutsToAttach();
+    boost::shared_ptr<boost::signals2::connection> subscribeToCreditFish(const std::string &name, 
+        const CreditFish::OnCatchSlotType &slot);
 protected:
     void initialize(const Dimension &screenSize);
     void dispose();

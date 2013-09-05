@@ -813,3 +813,22 @@ std::vector<boost::shared_ptr<Layout> > Ocean::layoutsToAttach()
     return layoutsToReturn;
 }
 
+boost::shared_ptr<boost::signals2::connection> Ocean::subscribeToCreditFish(const std::string &name, 
+    const CreditFish::OnCatchSlotType &
+    slot)
+{
+    boost::shared_ptr<boost::signals2::connection> con;
+
+    std::vector<boost::shared_ptr<CreditFish> > creditFishesCopy = creditFishes;
+    for( std::vector<boost::shared_ptr<CreditFish> >::iterator it =
+        creditFishesCopy.begin(); it != creditFishesCopy.end(); ++it )
+    {
+        con = (*it)->subscribe(name, slot); //Chain-of-command, only subscribes if name == name
+
+        if( con )
+            break;
+    }
+    
+    return con;
+}
+

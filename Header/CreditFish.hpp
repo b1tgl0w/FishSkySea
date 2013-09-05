@@ -35,6 +35,7 @@ SUCH DAMAGES.
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
+#include "boost/signals2.hpp"
 #include "Layer.hpp"
 #include "Dimension.hpp"
 #include "Graphic.hpp"
@@ -68,6 +69,8 @@ friend class CreditFishState;
 friend class HookedState;
 friend class FreeState;
 public:
+    typedef boost::signals2::signal<void (const std::string &)> OnCatch;
+    typedef OnCatch::slot_type OnCatchSlotType;
     //!ctor
     explicit CreditFish(const std::string &name, const std::string &title,
         const Point &initialPosition,
@@ -213,6 +216,8 @@ public:
         const BoundingBox & yourBox);
     void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
+    boost::shared_ptr<boost::signals2::connection> subscribe(const std::string &name, const 
+        OnCatchSlotType &slot);
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
@@ -401,6 +406,7 @@ private:
     boost::shared_ptr<MessageBox> messageBox;
     boost::weak_ptr<Line> nibbleLine;
     bool nibbling;
+    boost::shared_ptr<OnCatch> onCatch;
     
     static int nextFreeId;
 

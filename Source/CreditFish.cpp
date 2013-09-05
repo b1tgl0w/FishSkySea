@@ -97,7 +97,7 @@ CreditFish::CreditFish(const std::string &name, const std::string &title,
     id(CreditFish::nextFreeId++), layer(associateLayer()),
     messageBox(new MessageBox(name, *size, 0x00000000,
         false, layer, renderer, FontSize::Small(), 1)), nibbleLine(),
-    nibbling(false)
+    nibbling(false), onCatch(new OnCatch)
 {
     positionFromSide();
     resetTimes(); 
@@ -116,7 +116,7 @@ CreditFish::CreditFish(const CreditFish &rhs) : state(rhs.state),
     rhs.shouldResetTimesVertical), live(rhs.live), name(rhs.name),
     title(rhs.title), hookOriginalDirection(rhs.hookOriginalDirection),
     id(rhs.id), layer(rhs.layer), messageBox(rhs.messageBox),
-    nibbleLine(rhs.nibbleLine), nibbling(rhs.nibbling)
+    nibbleLine(rhs.nibbleLine), nibbling(rhs.nibbling), onCatch(rhs.onCatch)
 {
     positionFromSide();
     resetTimes(); 
@@ -150,6 +150,7 @@ CreditFish &CreditFish::operator=(const CreditFish &rhs)
     messageBox = rhs.messageBox;
     nibbleLine = rhs.nibbleLine;
     nibbling = rhs.nibbling;
+    onCatch = rhs.onCatch;
 
     positionFromSide();
     resetTimes(); 
@@ -1102,7 +1103,7 @@ void CreditFish::HookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean> 
     sharedHookedByLine->offHook();
     //Add this
     sharedOcean->addCreditFish(sharedFishOwner);
-    //Ocean is responsible for showing image and bio or at least delegating
+    (*(sharedFishOwner->onCatch))(sharedFishOwner->name);
 }
 
 //void CreditFish::HookedState::collidesWithCreditFish(boost::shared_ptr<CreditFish>
@@ -1141,5 +1142,20 @@ void CreditFish::HookedState::nibble(boost::shared_ptr<Line> &line, const int
     foremostNibbleLayer)
 {
     //no-op
+}
+
+boost::shared_ptr<boost::signals2::connection> CreditFish::subscribe(const 
+    std::string &name, const OnCatchSlotType &slot)
+{
+    boost::shared_ptr<boost::signals2::connection> con;
+
+    if( name == this->name )
+    {
+        boost::shared_ptr<boost::signals2::connection> tmp(new 
+            boost::signals2::connection(onCatch->connect(slot)));
+        con = tmp;
+    }
+
+    return con;
 }
 

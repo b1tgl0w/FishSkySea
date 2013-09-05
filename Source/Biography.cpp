@@ -99,7 +99,8 @@ void Biography::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     ImageRendererElement re(picturePath, Layer::FOREGROUND().integer(),
         origin, size);
 
-    layout->drawWhenReady(re);
+    if( shouldShow )
+        layout->drawWhenReady(re);
 
     //Disregards layout param
     name->draw(layout, renderer);

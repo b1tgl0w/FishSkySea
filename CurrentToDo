@@ -11,6 +11,7 @@ General Task: Finish credits minigame (for the contributers known now)
 
 Specific Steps:
     - Show bio and picture
+    - Fix bio text only showing one line
     Done - Make creditfish on top layer be hooked, in the case that two overlap
     Done -Fix bug that allows credit fish to occupy the same layer
     Postponed - Figure out how to fit in all the names and still be a game

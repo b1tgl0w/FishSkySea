@@ -81,6 +81,7 @@ public:
     void keyPressed(const SDL_Keycode &key);
     void keyReleased(const SDL_Keycode &key);
     void registerParentScene(boost::weak_ptr<Scene> parentScene);
+    void showBio(const std::string &name);
 private:
     CreditGameScene();
     void displayReady();
@@ -139,6 +140,8 @@ private:
     boost::shared_ptr<Layout> superTitleCoordinateLayout;
     boost::shared_ptr<CoordinateLayout> bioCoordinateLayout;
     boost::shared_ptr<Layout> superBioCoordinateLayout;
+    boost::shared_ptr<Biography> johnBio;
+    std::vector<boost::shared_ptr<boost::signals2::connection> > connections;
 };
 
 #endif
