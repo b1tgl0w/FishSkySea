@@ -756,6 +756,8 @@ void Ocean::CreditState::draw(boost::shared_ptr<Layout> &layout, Renderer
             creditFishesCopy.end(); ++it)
             (*it)->draw(layout, renderer);
     }
+
+    sharedOceanOwner->clouds->draw(layout, renderer);
 }
 
 void Ocean::CreditState::checkCollisions(boost::shared_ptr<Collidable> &object,
@@ -795,6 +797,8 @@ void Ocean::CreditState::gameLive(bool live)
         creditFishesCopy.begin(); it != 
         creditFishesCopy.end(); ++it )
         (*it)->gameLive(live);
+
+    sharedOceanOwner->clouds->gameLive(live);
 }
 
 std::vector<boost::shared_ptr<Layout> > Ocean::layoutsToAttach()

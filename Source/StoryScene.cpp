@@ -197,6 +197,7 @@ void StoryScene::exit()
     if( sharedThisSubscriber )
         keyboardPublisher->unsubscribe(sharedThisSubscriber);
 
+    story->rewind();
 }
 
 void StoryScene::transitionTo(boost::shared_ptr<Scene> &scene)

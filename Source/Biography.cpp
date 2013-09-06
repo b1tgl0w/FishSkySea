@@ -128,10 +128,14 @@ void Biography::keyPressed(const SDL_Keycode &key)
 {
     if( shouldShow && key == SDLK_e && keyUp)
     {
-        if( !bio->advance() )
-            show(false);
-        
         keyUp = false;
+
+        if( !bio->advance() )
+        {
+            show(false);
+            keyUp = true;
+        }
+        
     }
 }
 

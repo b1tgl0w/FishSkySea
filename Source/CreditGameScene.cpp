@@ -160,7 +160,6 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     ocean->initializeSharedFromThis();
     player1->initializeLine();
     player1->initializePlayerKeyTranslater();
-    bioBorderLayout->useCorners(BorderCorner::TopBottomCenter());
 }
 
 CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.renderer),

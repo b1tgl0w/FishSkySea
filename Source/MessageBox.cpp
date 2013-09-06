@@ -119,9 +119,7 @@ bool MessageBox::advance()
 
     if (formLines() == false )
     {
-        //These two statements rewind the MB
-        text = originalText;
-        formLines();
+        rewind();
         return false;
     }
     
@@ -207,10 +205,12 @@ void MessageBox::show(bool shouldShow)
 {
     this->shouldShow = shouldShow;
     if( shouldShow == false )
-    {
-        //Rewind the MB
-        text = originalText;
-        formLines();
-    }
+        rewind();
+}
+
+void MessageBox::rewind()
+{
+    text = originalText;
+    formLines();
 }
 

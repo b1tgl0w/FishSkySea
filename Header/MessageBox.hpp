@@ -65,6 +65,7 @@ public:
     void createLayouts();
     void moveTo(const Point &position);
     void show(bool shouldShow);
+    void rewind();
 private:
     bool formLines();
     std::string text;

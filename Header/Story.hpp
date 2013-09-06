@@ -49,6 +49,7 @@ public:
     std::vector<boost::shared_ptr<Layout> > layoutsToAttach();
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     void loadImage(Renderer &renderer);
+    void rewind();
 private:
     Story();
     void createMessageBoxes(const std::string &fileName, boost::shared_ptr<

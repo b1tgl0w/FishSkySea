@@ -124,3 +124,10 @@ void Story::loadImage(Renderer &renderer)
 {
 }
 
+void Story::rewind()
+{
+    for( std::vector<MessageBox>::iterator it = messageBoxes.begin();
+        it != messageBoxes.end(); ++it )
+        it->rewind();
+}
+
