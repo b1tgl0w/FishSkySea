@@ -52,7 +52,7 @@ Biography::Biography(const std::string &picturePath, const std::string &bioText,
     FontSize::Medium(), NAME_AND_TITLE_NUM_LINES)), title(new MessageBox(titleText,
     NAME_AND_TITLE_LINE_SIZE(), 0x00170024, false, Layer::FOREGROUND(), renderer, 
     FontSize::Medium(), NAME_AND_TITLE_NUM_LINES)), shouldShow(false),
-    keyUp(true)
+    keyUp(true), onBioDone(new OnBioDone)
 { 
     bio->show(shouldShow);
     name->show(shouldShow);
@@ -61,7 +61,7 @@ Biography::Biography(const std::string &picturePath, const std::string &bioText,
 
 Biography::Biography(const Biography &rhs) : picturePath(rhs.picturePath),
     bio(rhs.bio), name(rhs.name), title(rhs.title), shouldShow(rhs.shouldShow),
-    keyUp(rhs.keyUp)
+    keyUp(rhs.keyUp), onBioDone(rhs.onBioDone)
 { }
 
 Biography &Biography::operator=(const Biography &rhs)
@@ -75,6 +75,7 @@ Biography &Biography::operator=(const Biography &rhs)
     title = rhs.title;
     shouldShow = rhs.shouldShow;
     keyUp = rhs.keyUp;
+    onBioDone = rhs.onBioDone;
 
     return *this;
 }
@@ -134,6 +135,7 @@ void Biography::keyPressed(const SDL_Keycode &key)
         {
             show(false);
             keyUp = true;
+            (*onBioDone)();
         }
         
     }
@@ -143,5 +145,15 @@ void Biography::keyReleased(const SDL_Keycode &key)
 {
     if( shouldShow && key == SDLK_e )
         keyUp = true;
+}
+
+
+boost::shared_ptr<boost::signals2::connection> Biography::subscribe(
+    const OnBioDoneSlotType &slot)
+{
+    boost::shared_ptr<boost::signals2::connection> tmp(new
+        boost::signals2::connection(onBioDone->connect(slot)));
+
+    return tmp;
 }
 

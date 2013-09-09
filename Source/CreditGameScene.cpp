@@ -25,6 +25,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include <cstdlib> //delete
 #include "boost/signals2.hpp"
 #include "boost/bind.hpp"
 #include "../Header/CreditGameScene.hpp"
@@ -316,6 +317,8 @@ void CreditGameScene::enter()
         boost::bind(&CreditGameScene::showBio, this, _1)));
     connections.push_back(ocean->subscribeToCreditFish("Kathy Miner aka Mom", 
         boost::bind(&CreditGameScene::showBio, this, _1)));
+    connections.push_back(johnBio->subscribe(boost::bind(&HumanPlayer::cast, player1.get(), true)));
+    connections.push_back(kathyBio->subscribe(boost::bind(&HumanPlayer::cast, player1.get(), true)));
 
     //end bios
 
@@ -339,6 +342,11 @@ void CreditGameScene::enter()
     boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
         shared_from_this());
     keyboardPublisher->subscribe(sharedThisSubscriber);
+
+    /*static int enterCount = 1;
+    std::cout << "enterCount\t" << enterCount++ << std::endl;
+    if( enterCount >= 7 )
+        std::terminate();*/
 }
 
 void CreditGameScene::run()
@@ -487,6 +495,7 @@ void CreditGameScene::registerParentScene(boost::weak_ptr<Scene> parentScene)
 
 void CreditGameScene::showBio(const std::string &name)
 {
+    player1->cast(false);
     boost::shared_ptr<KeyboardSubscriber> johnKs(johnBio);
     boost::shared_ptr<KeyboardSubscriber> kathyKs(kathyBio);
     keyboardPublisher->unsubscribe(johnKs);

@@ -166,3 +166,12 @@ void PlayerKeyTranslater::dispose()
 {
 }
 
+void PlayerKeyTranslater::releaseAll()
+{
+    std::map<int, boost::shared_ptr<PlayerAction> > actionsCopy = actions;
+
+    for( std::map<int, boost::shared_ptr<PlayerAction> >::iterator it =
+        actionsCopy.begin(); it != actionsCopy.end(); ++it )
+        it->second->act(false);
+}
+

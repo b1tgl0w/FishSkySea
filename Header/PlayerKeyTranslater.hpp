@@ -48,6 +48,7 @@ public:
     void initializePlayer(boost::shared_ptr<Player> &player, bool playerNumber);
     void act(SDL_Keycode, bool pressed);
     void switchKey(SDL_Keycode, boost::shared_ptr<PlayerAction> &action);
+    void releaseAll();
 protected:
     void initialize(const boost::shared_ptr<Player> &player, bool playerNumber);
     void initialize(const std::map<SDL_Keycode, boost::shared_ptr<PlayerAction> >

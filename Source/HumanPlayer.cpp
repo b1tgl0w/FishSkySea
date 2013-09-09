@@ -60,7 +60,7 @@ HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     score, bool playerNumber, bool mode) : playerKeyTranslater(), line(),
     ocean(ocean), polePoint(polePoint), hookPoint(hookPoint),
     score(score), poleAreaPoint(), poleAreaSize(), poleAreaBox(),
-    playerNumber(playerNumber)
+    playerNumber(playerNumber), lineCast(true)
 {
     boost::shared_ptr<Line> null;
     line = null;
@@ -93,7 +93,7 @@ HumanPlayer::HumanPlayer(const HumanPlayer &rhs) : playerKeyTranslater(
     rhs.playerKeyTranslater), line(rhs.line), ocean(rhs.ocean), polePoint(
     rhs.polePoint), hookPoint(rhs.hookPoint), score(rhs.score), poleAreaPoint(
     rhs.poleAreaPoint), poleAreaSize(rhs.poleAreaSize), poleAreaBox(
-    rhs.poleAreaBox), playerNumber(rhs.playerNumber)
+    rhs.poleAreaBox), playerNumber(rhs.playerNumber), lineCast(rhs.lineCast)
 { }
 
 HumanPlayer &HumanPlayer::operator=(const HumanPlayer &rhs)
@@ -111,6 +111,7 @@ HumanPlayer &HumanPlayer::operator=(const HumanPlayer &rhs)
     poleAreaSize = rhs.poleAreaSize;
     poleAreaBox = rhs.poleAreaBox;
     playerNumber = rhs.playerNumber;
+    lineCast = rhs.lineCast;
 
     return *this;
 }
@@ -183,6 +184,9 @@ void HumanPlayer::alignWithBoundary(double &coordinate, const Direction &
 
 void HumanPlayer::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
+    if( !lineCast )
+        return;
+
     line->draw(layout, renderer);
 }
 
@@ -248,11 +252,17 @@ void HumanPlayer::sendCollidableRemove(boost::weak_ptr<Ocean> ocean)
 //KeyboardSubscriber
 void HumanPlayer::keyPressed(const SDL_Keycode &key)
 {
+    if( !lineCast )
+        return;
+
     playerKeyTranslater.act(key, KeyboardPublisher::PRESSED());
 }
 
 void HumanPlayer::keyReleased(const SDL_Keycode &key)
 {
+    if( !lineCast )
+        return;
+
     playerKeyTranslater.act(key, !KeyboardPublisher::PRESSED());
 }
 
@@ -340,4 +350,10 @@ void HumanPlayer::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
 void HumanPlayer::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
+
+void HumanPlayer::cast(bool shouldCast)
+{
+    lineCast = shouldCast;
+    playerKeyTranslater.releaseAll();
+}
 

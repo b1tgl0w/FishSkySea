@@ -137,12 +137,15 @@ void TitleMenu::reset()
 
 void TitleMenu::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
+    std::list<boost::shared_ptr<TextRendererElement> > textRendererElementsCopy =
+        textRendererElements;
     std::list<boost::shared_ptr<TextRendererElement> >::iterator it2 = 
-        textRendererElements.begin();
+        textRendererElementsCopy.begin();
 
+    std::list<boost::shared_ptr<CenterLayout> > layoutsCopy = layouts;
     for( std::list<boost::shared_ptr<CenterLayout> >::iterator it = 
-        layouts.begin(); it != layouts.end() && it2 != 
-        textRendererElements.end(); ++it, ++it2)
+        layoutsCopy.begin(); it != layoutsCopy.end() && it2 != 
+        textRendererElementsCopy.end(); ++it, ++it2)
         (*it)->drawWhenReady(**it2);
 }
 

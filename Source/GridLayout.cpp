@@ -449,7 +449,6 @@ void GridLayout::GridCell::render()
     boost::shared_ptr<Layout> sharedThis(shared_from_this());
 
     sharedOwner->drawWhenReady(toDraw, sharedThis);
-
     toDraw.clear();
 }
 

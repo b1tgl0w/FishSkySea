@@ -29,6 +29,7 @@ highlighted item, however, is Play.
 by pressing a key, they get a special animation, e.g. b1tgl0w games starts glowing
 briefly then advances. Otherwise does not glow
 - Wes uses worm, Rad uses lure
+- Make player cast after catching fish
 
 Done
 //Done - Press a button to set hook, otherwise fish just nibbles. Note that there

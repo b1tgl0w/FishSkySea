@@ -295,8 +295,17 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
     SDL_Texture *highlightedTextTexture = NULL;
     if( transformation.has(Transformation::HighlightText()) )
     {
-        if( texts.count(path) >= 1 )
+        SDL_Texture *nonHighlightedText = images[path];
+        Uint32 format = 0;
+        int access = 0;
+        int width = 0;
+        int height = 0;
+        SDL_QueryTexture(nonHighlightedText, &format, &access, &width, &height);
+        Dimension textSize(width, height);
+        std::string key = makeKey(path, transformation, size, textSize);
+        if( images.count(key) < 1 )
         {
+            std::cout << images.count(key);
             //Manually update to color in palette
             const SDL_Color HIGHLIGHT_TEXT_COLOR = { 0xFC, 0xE6, 0x97, 0x00 };
             if( fontSize == FontSize::Huge() )
@@ -313,9 +322,7 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
                     HIGHLIGHT_TEXT_COLOR);
             highlightedTextTexture = SDL_CreateTextureFromSurface(sdlRenderer,
                 highlightedText);
-            Dimension textSize(highlightedText->w, highlightedText->h);
             SDL_FreeSurface(highlightedText);
-            std::string key = makeKey(path, transformation, size, textSize);
             images.insert(std::pair<std::string, SDL_Texture *>(key,
                 highlightedTextTexture));
         }
@@ -384,7 +391,7 @@ void Renderer::render()
     for(std::list<boost::shared_ptr<RendererElement> >::iterator it = 
         toDrawCopy.begin(); it != toDrawCopy.end(); ++it)
        (*it)->render(*this, sdlRenderer);
-        
+    
     pruneUnusedManipulations();
     pruneUnusedTexts();
     toDraw.clear();

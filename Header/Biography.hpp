@@ -28,6 +28,7 @@ SUCH DAMAGES.
 #ifndef BIOGRAPHY_HPP_
 #define BIOGRAPHY_CPP_
 
+#include "boost/signals2.hpp"
 #include "boost/shared_ptr.hpp"
 #include "KeyboardSubscriber.hpp"
 #include "Graphic.hpp"
@@ -40,6 +41,8 @@ class Layout;
 class Biography : public KeyboardSubscriber, public Graphic
 {
 public:
+    typedef boost::signals2::signal<void ()> OnBioDone;
+    typedef OnBioDone::slot_type OnBioDoneSlotType;
     Biography(const std::string &picturePath, const std::string &bioText,
         const std::string &nameText, const std::string &titleText, 
         boost::shared_ptr<Renderer> &renderer);
@@ -53,6 +56,8 @@ public:
     void show(bool shouldShow);
     void keyPressed(const SDL_Keycode &key);
     void keyReleased(const SDL_Keycode &key);
+    boost::shared_ptr<boost::signals2::connection> subscribe(
+        const OnBioDoneSlotType &slot);
 private:
     std::string picturePath;
     boost::shared_ptr<MessageBox> bio;
@@ -60,6 +65,7 @@ private:
     boost::shared_ptr<MessageBox> title;
     bool shouldShow;
     bool keyUp;
+    boost::shared_ptr<OnBioDone> onBioDone;
 
     //Constants
     static const Dimension &BIO_LINE_SIZE();

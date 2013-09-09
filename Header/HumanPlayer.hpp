@@ -108,6 +108,7 @@ public:
         const BoundingBox & yourBox);
     void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
+    void cast(bool shouldCast);
     static const bool &PLAYER_ONE();
     static const bool &PLAYER_TWO();
     static const bool &MAIN_GAME();
@@ -127,6 +128,7 @@ private:
     boost::shared_ptr<Dimension> poleAreaSize;
     BoundingBox poleAreaBox;
     bool playerNumber;
+    bool lineCast;
 };
 
 #endif

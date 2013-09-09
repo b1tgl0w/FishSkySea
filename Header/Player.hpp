@@ -55,6 +55,7 @@ public:
     virtual void gameLive(bool live) = 0;
     virtual void alignWithBoundary(double &coordinate, const Direction &
         whichBoundary, const double offset = 1.0) = 0;
+    virtual void cast(bool shouldCast) = 0;
 };
 
 #endif

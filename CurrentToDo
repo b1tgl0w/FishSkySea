@@ -3,14 +3,14 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Casting after MB done.
+Left off on: Finding next thing to do
 
 Left off on: Took side quest to fix invalid iterator use, see iteratorFix doc
 
 General Task: Finish credits minigame (for the contributers known now)
 
 Specific Steps:
-    - Cast after finishing advancing MB
+    Done - Cast after finishing advancing MB
     Done - Show bio and picture
     Done - Fix bio text only showing one line
     Done - Make creditfish on top layer be hooked, in the case that two overlap
