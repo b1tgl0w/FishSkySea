@@ -54,7 +54,7 @@ StoryScene::StoryScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     boost::shared_ptr<Renderer> &renderer, const Dimension &screenSize) : 
     currentScene(currentScene), keyboardPublisher(keyboardPublisher), 
     transition(false), toScene(), scaleClip(new ScaleClipFit), 
-    layeredLayout(new LayeredLayout(2, scaleClip)), 
+    layeredLayout(new LayeredLayout(4, scaleClip)), 
     centerLayoutBg(new CenterLayout(scaleClip)),  centerLayoutFg(new CenterLayout(scaleClip)),
     borderLayout(new BorderLayout(BorderSize::Thick())),
     superLayeredLayout(layeredLayout), superCenterLayoutBg(centerLayoutBg), 
@@ -68,7 +68,10 @@ StoryScene::StoryScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     storySceneFg("../Media/SbsStoryFg.png", 0, BACKGROUND_POSITION(),
     screenSize), story(new Story("../Story/MainStoryScene.txt", renderer)),
     storySubscriber(story), mbLayout(new CoordinateLayout(scaleClip)),
-    superMbLayout(mbLayout), titleScene()
+    superMbLayout(mbLayout), titleScene(), centerLayoutTransition(new
+    CenterLayout(scaleClip)), superCenterLayoutTransition(centerLayoutTransition),
+    borderLayoutText(new BorderLayout(BorderSize::Thick())),
+    superBorderLayoutText(borderLayoutText)
 {
 }
 
@@ -86,7 +89,10 @@ StoryScene::StoryScene(const StoryScene &rhs) : currentScene(rhs.currentScene),
     renderer(rhs.renderer), storySceneBg(rhs.storySceneBg), storySceneFg(
     rhs.storySceneFg), story(rhs.story), storySubscriber(rhs.storySubscriber),
     mbLayout(rhs.mbLayout), superMbLayout(rhs.superMbLayout), titleScene(
-    rhs.titleScene)
+    rhs.titleScene), centerLayoutTransition(rhs.centerLayoutTransition),
+    superCenterLayoutTransition(rhs.superCenterLayoutTransition),
+    borderLayoutText(rhs.borderLayoutText), superBorderLayoutText(
+    rhs.superBorderLayoutText)
 {
 }
 
@@ -120,6 +126,10 @@ StoryScene &StoryScene::operator=(const StoryScene &rhs)
     mbLayout = rhs.mbLayout;
     superMbLayout = rhs.superMbLayout;
     titleScene = rhs.titleScene;
+    centerLayoutTransition = rhs.centerLayoutTransition;
+    superCenterLayoutTransition = rhs.superCenterLayoutTransition;
+    borderLayoutText = rhs.borderLayoutText;
+    superBorderLayoutText = rhs.superBorderLayoutText;
 
     return *this;
 }
@@ -129,6 +139,7 @@ void StoryScene::enter()
     transition = false;
     layeredLayout->addLayout(superCenterLayoutBg, 0);
     borderLayout->useCorners(BorderCorner::TopBottom());
+    borderLayoutText->useCorners(BorderCorner::TopBottom());
     std::vector<boost::shared_ptr<Layout> > storyLayouts = story->layoutsToAttach();
     Point origin(0.0, 0.0);
     std::vector<boost::shared_ptr<Layout> > storyLayoutsCopy = 
@@ -136,9 +147,11 @@ void StoryScene::enter()
     for(std::vector<boost::shared_ptr<Layout> >::iterator it = storyLayoutsCopy.begin();
         it != storyLayoutsCopy.end(); ++it )
         mbLayout->addLayout(*it, origin); 
-    borderLayout->addLayout(superMbLayout, BorderCell::Bottom());
+    borderLayoutText->addLayout(superMbLayout, BorderCell::Bottom());
     borderLayout->addLayout(superCenterLayoutFg, BorderCell::Center());
     layeredLayout->addLayout(superBorderLayout, 1);
+    layeredLayout->addLayout(superCenterLayoutTransition, 2);
+    layeredLayout->addLayout(superBorderLayoutText, 3);
     renderer->addLayout(superLayeredLayout);
     masterInputPublisher->subscribe(MiSubscriber);
     keyboardPublisher->subscribe(storySubscriber);
@@ -165,7 +178,7 @@ void StoryScene::run()
     {
         superCenterLayoutBg->drawWhenReady(storySceneBg);
         superCenterLayoutFg->drawWhenReady(storySceneFg);
-        story->draw(superMbLayout, *renderer);
+        story->draw(superCenterLayoutTransition, *renderer);
         renderer->render();
     }
 

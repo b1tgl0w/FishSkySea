@@ -226,16 +226,16 @@ void TransitionRendererElement::clockTick(Uint32 elapsedTime)
 {
     if( fadeType == FADE_IN )
     {
-        alpha -= .40 * elapsedTime;
+        alpha -= .70 * elapsedTime;
 
         if( alpha < 0.0 )
             alpha = 0.0;
     }
     else if( fadeType == FADE_OUT )
     {
-        alpha += .40 * elapsedTime;
+        alpha += .70 * elapsedTime;
 
-        if( alpha < 0xFF )
+        if( alpha > 0xFF )
             alpha = 0xFF;
     }
 }

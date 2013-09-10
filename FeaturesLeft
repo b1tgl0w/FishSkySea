@@ -26,7 +26,7 @@
 Done - Scene class
     Done - Polymorphic with setup() and run() pure virtual functions //Done
     Done - Some way to transition //Done
-- Story
+Done - Story
     Done - There will be a drawing of the old fisherman and his rival
     Done - Add a story scene with a text message box
 Done for current contributers - Credits
@@ -38,4 +38,4 @@ Done - Fishing line
     Done - Hook //Done
     Done - Ripples //Done
     Done - Water/Line submerge
-
+    

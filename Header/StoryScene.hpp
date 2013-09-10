@@ -95,6 +95,10 @@ private:
     boost::shared_ptr<CoordinateLayout> mbLayout;
     boost::shared_ptr<Layout> superMbLayout;
     boost::weak_ptr<Scene> titleScene;
+    boost::shared_ptr<CenterLayout> centerLayoutTransition;
+    boost::shared_ptr<Layout> superCenterLayoutTransition;
+    boost::shared_ptr<BorderLayout> borderLayoutText;
+    boost::shared_ptr<Layout> superBorderLayoutText;
 };
 
 #endif

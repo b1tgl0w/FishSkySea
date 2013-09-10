@@ -46,11 +46,11 @@ const Dimension &Biography::NAME_AND_TITLE_LINE_SIZE()
 Biography::Biography(const std::string &picturePath, const std::string &bioText,
     const std::string &nameText, const std::string &titleText, 
     boost::shared_ptr<Renderer> &renderer) : picturePath(picturePath),
-    bio(new MessageBox(bioText, BIO_LINE_SIZE(), 0x00170024, false, Layer::FOREGROUND(), 
+    bio(new MessageBox(bioText, BIO_LINE_SIZE(), 0x17002400, false, Layer::FOREGROUND(), 
     renderer, FontSize::Medium(), BIO_NUM_LINES)), name(new MessageBox(nameText,
-    NAME_AND_TITLE_LINE_SIZE(), 0x00170024, false, Layer::FOREGROUND(), renderer, 
+    NAME_AND_TITLE_LINE_SIZE(), 0x17002400, false, Layer::FOREGROUND(), renderer, 
     FontSize::Medium(), NAME_AND_TITLE_NUM_LINES)), title(new MessageBox(titleText,
-    NAME_AND_TITLE_LINE_SIZE(), 0x00170024, false, Layer::FOREGROUND(), renderer, 
+    NAME_AND_TITLE_LINE_SIZE(), 0x17002400, false, Layer::FOREGROUND(), renderer, 
     FontSize::Medium(), NAME_AND_TITLE_NUM_LINES)), shouldShow(false),
     keyUp(true), onBioDone(new OnBioDone)
 { 

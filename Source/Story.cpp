@@ -81,7 +81,7 @@ void Story::createMessageBoxes(const std::string &fileName, boost::shared_ptr<
 {
     //Note: for some reason, this size overrides border layout size. bug
     const Dimension LINE_SIZE(800.0, 60.0);
-    const Uint32 BG_COLOR = 0x00170024;
+    const Uint32 BG_COLOR = 0x17002400;
     std::ifstream storyFile(fileName.c_str());
     std::vector<std::string> lines;
     std::string header("BEGIN_STORY_SECTION");
@@ -90,14 +90,14 @@ void Story::createMessageBoxes(const std::string &fileName, boost::shared_ptr<
     File::sectionToLines(lines, storyFile, header, footer);
     storyFile.close();
     
-    boost::shared_ptr<int> index(new int(0));
+    int index = 0;
     std::vector<std::string> linesCopy = lines; //not shared, but not modified
     for( std::vector<std::string>::iterator it = linesCopy.begin(); 
         it != linesCopy.end(); ++it )
     {
         if( !parseCommand(*it, index) )
         {
-            ++(*index);
+            ++index;
             boost::shared_ptr<MessageBox> tmpMb(new MessageBox(*it, LINE_SIZE, 
                 BG_COLOR, false, Layer::FOREGROUND(), renderer, 
                 FontSize::Medium(), 1));
@@ -111,7 +111,7 @@ void Story::createMessageBoxes(const std::string &fileName, boost::shared_ptr<
 
 //Returns true if string is a command rather than dialog
 bool Story::parseCommand(const std::string &line,
-    boost::shared_ptr<int> &placement)
+    int placement)
 {
     bool isCommand = false;
 
@@ -123,7 +123,7 @@ bool Story::parseCommand(const std::string &line,
         {
             isCommand = true;
             boost::shared_ptr<std::string> str(new std::string(line));
-            commandPlacements.insert(std::make_pair<boost::shared_ptr<int>, 
+            commandPlacements.insert(std::make_pair<int, 
                 boost::shared_ptr<std::string> >(
                 placement, str));
         }
@@ -180,12 +180,12 @@ void Story::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     if( done() )
         return;
 
-    std::map<boost::shared_ptr<int>, boost::shared_ptr<std::string> > 
+    std::map<int, boost::shared_ptr<std::string> > 
         commandPlacementsCopy = commandPlacements;
-    for( std::map<boost::shared_ptr<int>, boost::shared_ptr<std::string> >::iterator 
+    for( std::map<int, boost::shared_ptr<std::string> >::iterator 
         it = commandPlacementsCopy.begin(); it != commandPlacementsCopy.end(); ++it )
     {
-        if( *(it->first) == placementIndex )
+        if( it->first == placementIndex )
         {
             if( *(it->second) == "[BLACK]" )
                 fadeRe->instantBlack();
@@ -197,7 +197,7 @@ void Story::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     }
 
     boost::shared_ptr<RendererElement> re(fadeRe);
-    //WRONG LAYOUT, FIND ANOTHER WAY//layout->drawWhenReady(*re);
+    layout->drawWhenReady(*re);
     (*mbIterator)->draw(layout, renderer);
 }
 

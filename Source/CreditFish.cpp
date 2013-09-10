@@ -95,7 +95,7 @@ CreditFish::CreditFish(const std::string &name, const std::string &title,
     shouldResetTimes(true), shouldResetTimesVertical(true), live(false),
     name(name), title(title), hookOriginalDirection(Direction::LEFT()),
     id(CreditFish::nextFreeId++), layer(associateLayer()),
-    messageBox(new MessageBox(name, *size, 0x00170024,
+    messageBox(new MessageBox(name, *size, 0x17002400,
         false, layer, renderer, FontSize::Small(), 1)), nibbleLine(),
     nibbling(false), onCatch(new OnCatch)
 {

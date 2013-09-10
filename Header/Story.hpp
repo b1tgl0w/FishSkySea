@@ -57,13 +57,13 @@ private:
     void createMessageBoxes(const std::string &fileName, boost::shared_ptr<
         Renderer> &renderer);
     void fillCommands();
-    bool parseCommand(const std::string &line, boost::shared_ptr<int> &placement);
+    bool parseCommand(const std::string &line, int placement);
     std::vector<boost::shared_ptr<MessageBox> > messageBoxes;
     std::vector<boost::shared_ptr<MessageBox> >::iterator mbIterator;
     std::vector<boost::shared_ptr<std::string> > commands;
     int placementIndex;
     boost::shared_ptr<TransitionRendererElement> fadeRe;
-    std::map<boost::shared_ptr<int>, boost::shared_ptr<std::string> >
+    std::map<int, boost::shared_ptr<std::string> >
         commandPlacements;
 };
 
