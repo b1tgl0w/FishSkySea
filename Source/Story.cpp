@@ -33,14 +33,27 @@ SUCH DAMAGES.
 #include "../Header/Layout.hpp"
 #include "../Header/FontSize.hpp"
 #include "../Header/Layout.hpp"
+#include "../Header/TransitionRendererElement.hpp"
+#include "../Header/MasterClockPublisher.hpp"
+#include "../Header/MasterClockSubscriber.hpp"
+#include "../Header/Renderer.hpp"
 
 Story::Story(const std::string &fileName, boost::shared_ptr<Renderer> &renderer)
+    : messageBoxes(), mbIterator(), commands(), placementIndex(0),
+    fadeRe(new TransitionRendererElement(Layer::FOREGROUND().integer() -1)), 
+    commandPlacements()
 {
+    MasterClockPublisher *mcp = MasterClockPublisher::getInstance();
+    boost::shared_ptr<MasterClockSubscriber> subscriber(fadeRe);
+
+    mcp->subscribe(subscriber);
+    fillCommands();
     createMessageBoxes(fileName, renderer);
 }
 
 Story::Story(const Story &rhs) : messageBoxes(rhs.messageBoxes), mbIterator(
-    rhs.mbIterator)
+    rhs.mbIterator), commands(rhs.commands), placementIndex(rhs.placementIndex),
+    fadeRe(rhs.fadeRe), commandPlacements(rhs.commandPlacements)
 { }
 
 Story &Story::operator=(const Story &rhs)
@@ -50,6 +63,10 @@ Story &Story::operator=(const Story &rhs)
 
     messageBoxes = rhs.messageBoxes;
     mbIterator = rhs.mbIterator;
+    commands = rhs.commands;
+    placementIndex = rhs.placementIndex;
+    fadeRe = rhs.fadeRe;
+    commandPlacements = rhs.commandPlacements;
 
     return *this;
 }
@@ -72,16 +89,57 @@ void Story::createMessageBoxes(const std::string &fileName, boost::shared_ptr<
 
     File::sectionToLines(lines, storyFile, header, footer);
     storyFile.close();
-    for( std::vector<std::string>::iterator it = lines.begin(); it != lines.end();
-        ++it )
+    
+    boost::shared_ptr<int> index(new int(0));
+    std::vector<std::string> linesCopy = lines; //not shared, but not modified
+    for( std::vector<std::string>::iterator it = linesCopy.begin(); 
+        it != linesCopy.end(); ++it )
     {
-        MessageBox tmpMb(*it, LINE_SIZE, BG_COLOR, false, Layer::FOREGROUND(),
-            renderer, FontSize::Medium(), 1);
+        if( !parseCommand(*it, index) )
+        {
+            ++(*index);
+            boost::shared_ptr<MessageBox> tmpMb(new MessageBox(*it, LINE_SIZE, 
+                BG_COLOR, false, Layer::FOREGROUND(), renderer, 
+                FontSize::Medium(), 1));
 
-        messageBoxes.push_back(tmpMb);
+            messageBoxes.push_back(tmpMb);
+        }
     }
 
     mbIterator = messageBoxes.begin();
+}
+
+//Returns true if string is a command rather than dialog
+bool Story::parseCommand(const std::string &line,
+    boost::shared_ptr<int> &placement)
+{
+    bool isCommand = false;
+
+    std::vector<boost::shared_ptr<std::string> > commandsCopy = commands;
+    for( std::vector<boost::shared_ptr<std::string> >::iterator it = 
+        commandsCopy.begin(); it != commandsCopy.end(); ++it )
+    {
+        if( line == **it )
+        {
+            isCommand = true;
+            boost::shared_ptr<std::string> str(new std::string(line));
+            commandPlacements.insert(std::make_pair<boost::shared_ptr<int>, 
+                boost::shared_ptr<std::string> >(
+                placement, str));
+        }
+    }
+
+    return isCommand;
+}
+
+void Story::fillCommands()
+{
+    boost::shared_ptr<std::string> command1(new std::string("[BLACK]"));
+    boost::shared_ptr<std::string> command2(new std::string("[FADE_IN]"));
+    boost::shared_ptr<std::string> command3(new std::string("[FADE_OUT]"));
+    commands.push_back(command1);
+    commands.push_back(command2);
+    commands.push_back(command3);
 }
 
 void Story::keyPressed(const SDL_Keycode &key)
@@ -92,8 +150,11 @@ void Story::keyPressed(const SDL_Keycode &key)
     //hard coded for now, but if configurable controls allowed, change
     if( key == SDLK_e || key == SDLK_SPACE || key == SDLK_RETURN )
     {
-        if( !mbIterator->advance() )
+        if( !(*mbIterator)->advance() )
+        {
+            ++placementIndex;
             ++mbIterator;
+        }
     }
 }
 
@@ -105,9 +166,11 @@ std::vector<boost::shared_ptr<Layout> > Story::layoutsToAttach()
 {
     std::vector<boost::shared_ptr<Layout> > layouts;
     
-    for(std::vector<MessageBox>::iterator it = messageBoxes.begin(); it != 
-        messageBoxes.end(); ++it )
-        layouts.push_back(it->layoutToAttach());
+    std::vector<boost::shared_ptr<MessageBox> > messageBoxesCopy =
+        messageBoxes;
+    for(std::vector<boost::shared_ptr<MessageBox> >::iterator it = 
+        messageBoxesCopy.begin(); it != messageBoxesCopy.end(); ++it )
+        layouts.push_back((*it)->layoutToAttach());
 
     return layouts;
 }
@@ -117,17 +180,38 @@ void Story::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     if( done() )
         return;
 
-    mbIterator->draw(layout, renderer);
+    std::map<boost::shared_ptr<int>, boost::shared_ptr<std::string> > 
+        commandPlacementsCopy = commandPlacements;
+    for( std::map<boost::shared_ptr<int>, boost::shared_ptr<std::string> >::iterator 
+        it = commandPlacementsCopy.begin(); it != commandPlacementsCopy.end(); ++it )
+    {
+        if( *(it->first) == placementIndex )
+        {
+            if( *(it->second) == "[BLACK]" )
+                fadeRe->instantBlack();
+            else if( *(it->second) == "[FADE_IN]" )
+                fadeRe->fadeIn();
+            else if( *(it->second) == "[FADE_OUT]" )
+                fadeRe->fadeOut();
+        }
+    }
+
+    boost::shared_ptr<RendererElement> re(fadeRe);
+    //WRONG LAYOUT, FIND ANOTHER WAY//layout->drawWhenReady(*re);
+    (*mbIterator)->draw(layout, renderer);
 }
 
 void Story::loadImage(Renderer &renderer)
 {
+    renderer.loadImage(TransitionRendererElement::PATH());
 }
 
 void Story::rewind()
 {
-    for( std::vector<MessageBox>::iterator it = messageBoxes.begin();
-        it != messageBoxes.end(); ++it )
-        it->rewind();
+    std::vector<boost::shared_ptr<MessageBox> > messageBoxesCopy =
+        messageBoxes;
+    for( std::vector<boost::shared_ptr<MessageBox> >::iterator it = 
+        messageBoxesCopy.begin(); it != messageBoxesCopy.end(); ++it )
+        (*it)->rewind();
 }
 

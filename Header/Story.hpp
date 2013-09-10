@@ -30,10 +30,12 @@ SUCH DAMAGES.
 
 #include <vector>
 #include <string>
+#include <map>
 #include "boost/shared_ptr.hpp"
 #include "Graphic.hpp"
 #include "KeyboardSubscriber.hpp"
 #include "MessageBox.hpp"
+#include "TransitionRendererElement.hpp"
 
 class Layout;
 
@@ -54,8 +56,15 @@ private:
     Story();
     void createMessageBoxes(const std::string &fileName, boost::shared_ptr<
         Renderer> &renderer);
-    std::vector<MessageBox> messageBoxes;
-    std::vector<MessageBox>::iterator mbIterator;
+    void fillCommands();
+    bool parseCommand(const std::string &line, boost::shared_ptr<int> &placement);
+    std::vector<boost::shared_ptr<MessageBox> > messageBoxes;
+    std::vector<boost::shared_ptr<MessageBox> >::iterator mbIterator;
+    std::vector<boost::shared_ptr<std::string> > commands;
+    int placementIndex;
+    boost::shared_ptr<TransitionRendererElement> fadeRe;
+    std::map<boost::shared_ptr<int>, boost::shared_ptr<std::string> >
+        commandPlacements;
 };
 
 #endif

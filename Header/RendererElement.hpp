@@ -48,6 +48,7 @@ public:
     friend class ImageRendererElement;
     friend class DirectRendererElement;
     friend class TextRendererElement;
+    friend class TransitionRendererElement;
     virtual void render(Renderer &renderer, SDL_Renderer *sdlRenderer) = 0;
     virtual bool operator<(const RendererElement &rhs) const = 0;
     virtual void moveBy(const Point &offset) = 0;

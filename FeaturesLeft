@@ -1,38 +1,39 @@
 //Note: Also look in pocket ideas for other features
 
 //What's left
--Main Game
-    Done - Start match //Done
-    Done - Player
-    - Pole (May or may not be bendy) (can't go < dock)
-    Done - Seahorse //Done
-    Done - Seasnail //Done
-    Done - Score //Done
 - Modes
-    Done - Two-player
+    - Two-player Network mode
     - AI
 - Media
     - Music
-- Finish and Polish art
-- Title screen
-    Unfinished - Art
-    Done - Menu //Done
-Done - Scene class
-    Done - Polymorphic with setup() and run() pure virtual functions //Done
-    Done - Some way to transition //Done
 - Tutorial minigame 
     - One fish that doesn't move
     - Instructions in the sky
     - Instructions progress when correct action/button is pressed
     - Return to title screen
+    - Find more music for tutorial
+- Finish and Polish art
+- Title screen
+    Unfinished - Art
+    Done - Menu //Done
+-Main Game
+    Done - Start match //Done
+    Done - Player
+    Done unless want bendy - Pole (May or may not be bendy) (can't go < dock)
+    Done - Seahorse //Done
+    Done - Seasnail //Done
+    Done - Score //Done
+Done - Scene class
+    Done - Polymorphic with setup() and run() pure virtual functions //Done
+    Done - Some way to transition //Done
 - Story
     Done - There will be a drawing of the old fisherman and his rival
     Done - Add a story scene with a text message box
-- Credits
-    - Fishing minigame
+Done for current contributers - Credits
+    Done - Fishing minigame
         Done - No Shark
         Done - Fish are names and job titles
-        - When caught, show picture and brief bio (cartoonized picture)
+        Done - When caught, show picture and brief bio (cartoonized picture)
 Done - Fishing line
     Done - Hook //Done
     Done - Ripples //Done

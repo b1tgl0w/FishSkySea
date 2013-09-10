@@ -215,6 +215,7 @@ void StoryScene::loadImage(Renderer &renderer)
 {
     renderer.loadImage("../Media/SbsStoryBg.png");
     renderer.loadImage("../Media/SbsStoryFg.png");
+    story->loadImage(renderer);
 }
 
 void StoryScene::registerParentScene(boost::weak_ptr<Scene> parentScene)

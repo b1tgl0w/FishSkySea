@@ -305,7 +305,6 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
         std::string key = makeKey(path, transformation, size, textSize);
         if( images.count(key) < 1 )
         {
-            std::cout << images.count(key);
             //Manually update to color in palette
             const SDL_Color HIGHLIGHT_TEXT_COLOR = { 0xFC, 0xE6, 0x97, 0x00 };
             if( fontSize == FontSize::Huge() )
