@@ -37,6 +37,7 @@ SUCH DAMAGES.
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
+#include "boost/uuid/uuid.hpp"
 #include "Layer.hpp"
 #include "Dimension.hpp"
 #include "Graphic.hpp"
@@ -54,6 +55,7 @@ class Player;
 class Shark;
 class Seahorse;
 struct Point;
+class MessageRouter;
 
 //! Bass fish that swims in ocean and gets caught
 /*!
@@ -69,7 +71,8 @@ friend class FreeState;
 public:
     //!ctor
     explicit Fish(const Point &initialPosition,
-        const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean);
+        const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean,
+        boost::shared_ptr<MessageRouter> messageRouter);
     //!Copy ctor
     Fish(const Fish &rhs);
     //!Copy assignment operator
@@ -444,6 +447,8 @@ private:
     bool nibbling;
     bool justFinishedNibbling;
     double glowAlpha;
+    boost::shared_ptr<MessageRouter> messageRouter;
+    boost::uuids::uuid uuid;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

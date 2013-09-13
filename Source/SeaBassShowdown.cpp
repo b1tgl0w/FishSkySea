@@ -69,6 +69,7 @@ SUCH DAMAGES.
 #include "../Header/Scene.hpp"
 #include "../Header/TitleScene.hpp"
 #include "../Header/StoryScene.hpp"
+#include "../Header/MessageRouter.hpp"
 
 void handleQuit( bool &quit );
 
@@ -85,10 +86,13 @@ int main(int argc, char **argv)
         KeyboardPublisher);
     boost::shared_ptr<boost::shared_ptr<Scene> > currentScene(
         new boost::shared_ptr<Scene>);
+    boost::shared_ptr<MessageRouter> messageRouter(new MessageRouter);
     boost::shared_ptr<MainGameScene> mainGameScene(new MainGameScene(
-        currentScene, renderer, keyboardPublisher, screenResolution));
+        currentScene, renderer, keyboardPublisher, screenResolution,
+        messageRouter));
     boost::shared_ptr<CreditGameScene> creditGameScene(new CreditGameScene(
-        currentScene, renderer, keyboardPublisher, screenResolution));
+        currentScene, renderer, keyboardPublisher, screenResolution,
+        messageRouter));
     boost::shared_ptr<StoryScene> storyScene(new StoryScene(
         currentScene, keyboardPublisher, renderer, screenResolution));
     boost::shared_ptr<Scene> superMainGameScene(mainGameScene);

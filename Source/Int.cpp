@@ -1,7 +1,7 @@
-//File: Bool.hpp
+//File: Int.cpp
 //Author:   John Miner
 //Created:  09/13/13
-//Purpose: Bool class
+//Purpose: Int class
 //Copyright 2013 John Miner
 //This program is distributed under the terms of the GNU General Public License
 /*
@@ -25,19 +25,9 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
-#ifndef BOOL_HPP_
-#define BOOL_HPP_
+#include "../Header/Int.hpp"
 
-#include "../Header/MessageData.hpp"
+Int::Int() : plainInt(0) { }
 
-class Bool : public MessageData
-{
-public:
-    Bool(); 
-    ~Bool();
-    Bool(bool b);
-    bool plainBool;
-};
-
-#endif
+Int::Int(int i) : plainInt(i) { }
 

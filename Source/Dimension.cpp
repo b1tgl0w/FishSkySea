@@ -34,3 +34,5 @@ Dimension::Dimension() : width(0.0), height(0.0)
 Dimension::Dimension(double width, double height) : width(width), height(height)
 { }
 
+Dimension::~Dimension()
+{ }

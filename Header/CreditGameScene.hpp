@@ -59,6 +59,7 @@ class BorderLayout;
 class GridLayout;
 class TextRendererElement;
 class Biography;
+class MessageRouter;
 
 class CreditGameScene : public Scene, public TimerAction, public 
     KeyboardSubscriber, public boost::enable_shared_from_this<CreditGameScene>
@@ -67,7 +68,7 @@ public:
     CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
         boost::shared_ptr<Renderer> &renderer, boost::shared_ptr<
         KeyboardPublisher> &keyboardPublisher, const Dimension 
-        &screenResolution);
+        &screenResolution, boost::shared_ptr<MessageRouter> &messageRouter);
     CreditGameScene(const CreditGameScene &rhs);
     CreditGameScene &operator=(const CreditGameScene &rhs);
     ~CreditGameScene();
@@ -99,6 +100,7 @@ private:
     Dimension screenResolution;
     MasterInputPublisher *masterInputPublisher;
     MasterClockPublisher *masterClockPublisher;
+    boost::shared_ptr<MessageRouter> messageRouter;
     boost::shared_ptr<Ocean> ocean;
     boost::shared_ptr<Score> score1;
     boost::shared_ptr<HumanPlayer> player1;

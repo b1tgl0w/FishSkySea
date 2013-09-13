@@ -1,4 +1,4 @@
-//File: Bool.hpp
+//File: Bool.cpp
 //Author:   John Miner
 //Created:  09/13/13
 //Purpose: Bool class
@@ -25,19 +25,9 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
-#ifndef BOOL_HPP_
-#define BOOL_HPP_
+#include "../Header/Bool.hpp"
 
-#include "../Header/MessageData.hpp"
-
-class Bool : public MessageData
-{
-public:
-    Bool(); 
-    ~Bool();
-    Bool(bool b);
-    bool plainBool;
-};
-
-#endif
+Bool::Bool() : plainBool(false) { }
+Bool::Bool(bool b) : plainBool(b) { }
+Bool::~Bool() { }
 

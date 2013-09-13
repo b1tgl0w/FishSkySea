@@ -58,6 +58,7 @@ class LayeredLayout;
 class BorderLayout;
 class GridLayout;
 class TextRendererElement;
+class MessageRouter;
 
 class MainGameScene : public Scene, public TimerAction, public 
     KeyboardSubscriber, public boost::enable_shared_from_this<MainGameScene>
@@ -66,7 +67,7 @@ public:
     MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
         boost::shared_ptr<Renderer> &renderer, boost::shared_ptr<
         KeyboardPublisher> &keyboardPublisher, const Dimension 
-        &screenResolution);
+        &screenResolution, boost::shared_ptr<MessageRouter> &messageRouter);
     MainGameScene(const MainGameScene &rhs);
     MainGameScene &operator=(const MainGameScene &rhs);
     void enter();
@@ -101,6 +102,7 @@ private:
     Dimension screenResolution;
     MasterInputPublisher *masterInputPublisher;
     MasterClockPublisher *masterClockPublisher;
+    boost::shared_ptr<MessageRouter> messageRouter;
     boost::shared_ptr<Ocean> ocean;
     boost::shared_ptr<Score> score1;
     boost::shared_ptr<Score> score2;

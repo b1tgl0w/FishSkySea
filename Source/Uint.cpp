@@ -1,7 +1,7 @@
-//File: Bool.hpp
+//File: Uint.cpp
 //Author:   John Miner
 //Created:  09/13/13
-//Purpose: Bool class
+//Purpose: Transform data sent to Ai into more meaningful data
 //Copyright 2013 John Miner
 //This program is distributed under the terms of the GNU General Public License
 /*
@@ -25,19 +25,9 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
-#ifndef BOOL_HPP_
-#define BOOL_HPP_
+#include "../Header/Uint.hpp"
 
-#include "../Header/MessageData.hpp"
+Uint::Uint() : plainUint(0) { }
 
-class Bool : public MessageData
-{
-public:
-    Bool(); 
-    ~Bool();
-    Bool(bool b);
-    bool plainBool;
-};
-
-#endif
+Uint::Uint(Uint32 u) : plainUint(u) { }
 

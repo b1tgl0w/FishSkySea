@@ -38,6 +38,7 @@ SUCH DAMAGES.
 #include "../Header/SeaSnail.hpp"
 #include "../Header/OceanMode.hpp"
 #include "../Header/Seahorse.hpp"
+#include "../Header/MessageRouter.hpp"
 
 double &Ocean::OCEAN_EDGE_X()
 {
@@ -104,7 +105,8 @@ const Point &Ocean::SHARK_POSITION()
     return TMP_SHARK_POSITION;
 }
 
-Ocean::Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer)
+Ocean::Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer,
+    boost::shared_ptr<MessageRouter> &messageRouter)
     : collidables(), creditCollidables(), fishes(), seaSnail(), seahorse(),
     shark(), depthCoordinates(), state(), gameState(), creditState(),
     screenSize(screenSize), oceanEdgePosition(new Point(OCEAN_EDGE_X(),
@@ -115,7 +117,7 @@ Ocean::Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer)
     OCEAN_FLOOR_WIDTH(), OCEAN_FLOOR_HEIGHT())), oceanBox(oceanEdgePosition,
     oceanEdgeSize), oceanSurfaceBox(oceanSurfacePosition, oceanSurfaceSize),
     oceanFloorBox(oceanFloorPosition, oceanFloorSize), clouds(), renderer(
-    renderer)
+    renderer), messageRouter(messageRouter)
 {
     const double DEPTH_DISTANCE = 30;
     double currentDepthCoordinate = 361.0;
@@ -141,7 +143,7 @@ Ocean::Ocean(const Ocean &rhs) : collidables(rhs.collidables),
     oceanEdgeSize(rhs.oceanEdgeSize), oceanFloorPosition(rhs.oceanFloorPosition),
     oceanFloorSize(rhs.oceanFloorSize), oceanBox(rhs.oceanBox), oceanSurfaceBox(
     rhs.oceanSurfaceBox), oceanFloorBox(rhs.oceanFloorBox), clouds(rhs.clouds),
-    renderer(rhs.renderer)
+    renderer(rhs.renderer), messageRouter(rhs.messageRouter)
 { }
 
 Ocean &Ocean::operator=(const Ocean &rhs)
@@ -171,6 +173,7 @@ Ocean &Ocean::operator=(const Ocean &rhs)
     oceanFloorBox = rhs.oceanFloorBox;
     clouds = rhs.clouds;
     renderer = rhs.renderer;
+    messageRouter = rhs.messageRouter;
 
     return *this;
 }
@@ -194,27 +197,27 @@ void Ocean::initializeSharedFromThis()
     boost::shared_ptr<Ocean> sharedThis(shared_from_this());
     //Be sure to make a temporary shared_ptr before push_back
     boost::shared_ptr<Fish> fish1(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis));
+        fishStartingDepth, sharedThis, messageRouter));
     fishStartingDepth = Depth::ROW2();
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish2(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis));
+        fishStartingDepth, sharedThis, messageRouter));
     fishStartingDepth = Depth::ROW3();
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish3(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis));
+        fishStartingDepth, sharedThis, messageRouter));
     fishStartingDepth = Depth::ROW4();
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish4(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis));
+        fishStartingDepth, sharedThis, messageRouter));
     fishStartingDepth = Depth::ROW5();
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish5(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis));
+        fishStartingDepth, sharedThis, messageRouter));
     fishStartingDepth = Depth::ROW6();
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish6(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis));
+        fishStartingDepth, sharedThis, messageRouter));
     boost::shared_ptr<Seahorse> tmpSeahorse(new Seahorse(SEA_HORSE_POSITION(),
         sharedThis));
     boost::weak_ptr<Seahorse> weakSeahorse(tmpSeahorse);

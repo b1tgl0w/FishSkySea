@@ -50,6 +50,7 @@ SUCH DAMAGES.
 #include "../Header/Timer.hpp"
 #include "../Header/OceanMode.hpp"
 #include "../Header/FontSize.hpp"
+#include "../Header/MessageRouter.hpp"
 
 const Point &MainGameScene::POLE_POINT()
 {
@@ -142,12 +143,15 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     &currentScene,
     boost::shared_ptr<Renderer> &renderer, 
     boost::shared_ptr<KeyboardPublisher> &keyboardPublisher,
-    const Dimension &screenResolution) : 
+    const Dimension &screenResolution, boost::shared_ptr<MessageRouter>
+        &messageRouter) : 
     renderer(renderer), keyboardPublisher(keyboardPublisher),
     screenResolution(screenResolution), 
     masterInputPublisher(MasterInputPublisher::getInstance()),
     masterClockPublisher(MasterClockPublisher::getInstance()),
-    ocean(new Ocean(screenResolution, renderer)), score1(new Score(0)), score2(new Score(0)),
+    messageRouter(messageRouter),
+    ocean(new Ocean(screenResolution, renderer, messageRouter)),
+    score1(new Score(0)), score2(new Score(0)),
     player1(new HumanPlayer(POLE_POINT(), HOOK_POINT(), ocean, score1,
         HumanPlayer::PLAYER_ONE(), HumanPlayer::MAIN_GAME())), 
     player2(new HumanPlayer(POLE_POINT2(), HOOK_POINT2(), ocean, score2,
@@ -187,6 +191,7 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     keyboardPublisher(rhs.keyboardPublisher), screenResolution(
     rhs.screenResolution), masterInputPublisher(
     rhs.masterInputPublisher), masterClockPublisher(rhs.masterClockPublisher),
+    messageRouter(rhs.messageRouter),
     ocean(rhs.ocean), score1(rhs.score1), score2(rhs.score2),
     player1(rhs.player1), player2(rhs.player2),
     background(rhs.background), dockSupports(rhs.dockSupports), 
@@ -219,6 +224,7 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     screenResolution = rhs.screenResolution;
     masterInputPublisher = rhs.masterInputPublisher;
     masterClockPublisher = rhs.masterClockPublisher;
+    messageRouter = rhs.messageRouter;
     ocean = rhs.ocean;
     score1 = rhs.score1;
     score2 = rhs.score2;

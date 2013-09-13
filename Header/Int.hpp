@@ -28,11 +28,13 @@ SUCH DAMAGES.
 #ifndef INT_HPP_
 #define INT_HPP_
 
-#include "../Header/MessageReceiver.hpp"
+#include "../Header/MessageData.hpp"
 
-class Int : public MessageReceiver
+class Int : public MessageData
 {
 public:
+    Int(); 
+    Int(int i);
     int plainInt;
 };
 

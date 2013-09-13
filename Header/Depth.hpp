@@ -31,8 +31,9 @@ SUCH DAMAGES.
 #define DEPTH_HPP_
 
 #include "Weight.hpp"
+#include "MessageData.hpp"
 
-class Depth
+class Depth : public MessageData
 {
 public:
     static const Depth SURFACE();

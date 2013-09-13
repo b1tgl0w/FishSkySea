@@ -30,7 +30,9 @@ SUCH DAMAGES.
 #ifndef DIRECTION_HPP_
 #define DIRECTION_HPP_
 
-class Direction
+#include "MessageData.hpp"
+
+class Direction : public MessageData
 {
 public:
     static const Direction NONE();
@@ -49,6 +51,7 @@ public:
     Direction();
     Direction(const Direction &rhs);
     Direction &operator=(const Direction &rhs);
+    ~Direction();
     bool has(const Direction &rhs) const;
 private:
     explicit Direction(int initialValue);

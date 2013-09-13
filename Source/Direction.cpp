@@ -123,3 +123,6 @@ bool Direction::has(const Direction &rhs) const
     return (value & rhs.value) == rhs.value;
 }
 
+Direction::~Direction()
+{ } 
+

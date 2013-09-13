@@ -52,6 +52,7 @@ class Line;
 class Point;
 class Direction;
 class Renderer;
+class MessageRouter;
 
 class Ocean : public Collidable, public Graphic,
     public boost::enable_shared_from_this<Ocean>
@@ -60,7 +61,8 @@ friend class OceanState;
 friend class GameState;
 friend class CreditState;
 public:
-    explicit Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer);
+    explicit Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer,
+        boost::shared_ptr<MessageRouter> &messageRouter);
     Ocean(const Ocean &rhs);
     Ocean &operator=(const Ocean &rhs);
     virtual ~Ocean();
@@ -214,6 +216,7 @@ private:
     BoundingBox oceanFloorBox;
     boost::shared_ptr<Clouds> clouds;
     boost::shared_ptr<Renderer> renderer;
+    boost::shared_ptr<MessageRouter> messageRouter;
 };
 
 #endif

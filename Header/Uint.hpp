@@ -28,11 +28,14 @@ SUCH DAMAGES.
 #ifndef UINT_HPP_
 #define UINT_HPP_
 
-#include "../Header/MessageReceiver.hpp"
+#include <SDL2/SDL.h>
+#include "../Header/MessageData.hpp"
 
-class Uint : public MessageReceiver
+class Uint : public MessageData
 {
 public:
+    Uint();
+    Uint(Uint32 u);
     Uint32 plainUint;
 };
 

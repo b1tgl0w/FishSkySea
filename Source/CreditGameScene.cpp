@@ -54,6 +54,7 @@ SUCH DAMAGES.
 #include "../Header/OceanMode.hpp"
 #include "../Header/Biography.hpp"
 #include "../Header/BorderCorner.hpp"
+#include "../Header/MessageRouter.hpp"
 
 const Point &CreditGameScene::POLE_POINT()
 {
@@ -115,12 +116,14 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     &currentScene,
     boost::shared_ptr<Renderer> &renderer, 
     boost::shared_ptr<KeyboardPublisher> &keyboardPublisher,
-    const Dimension &screenResolution) : 
+    const Dimension &screenResolution, boost::shared_ptr<MessageRouter> &
+    messageRouter) : 
     renderer(renderer), keyboardPublisher(keyboardPublisher),
     screenResolution(screenResolution), 
     masterInputPublisher(MasterInputPublisher::getInstance()),
     masterClockPublisher(MasterClockPublisher::getInstance()),
-    ocean(new Ocean(screenResolution, renderer)), score1(new Score(0)),
+    messageRouter(messageRouter),
+    ocean(new Ocean(screenResolution, renderer, messageRouter)), score1(new Score(0)),
     player1(new HumanPlayer(POLE_POINT(), HOOK_POINT(), ocean, score1,
         HumanPlayer::PLAYER_ONE(), !HumanPlayer::MAIN_GAME())), 
     background(BACKGROUND_PATH(), Layer::BACKGROUND1().integer(), 
@@ -167,6 +170,7 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     keyboardPublisher(rhs.keyboardPublisher), screenResolution(
     rhs.screenResolution), masterInputPublisher(
     rhs.masterInputPublisher), masterClockPublisher(rhs.masterClockPublisher),
+    messageRouter(rhs.messageRouter),
     ocean(rhs.ocean), score1(rhs.score1), player1(rhs.player1), background(
     rhs.background), dockSupports(rhs.dockSupports), 
     mowhawkFisher(rhs.mowhawkFisher), scaleClipFit(rhs.scaleClipFit), quit(rhs.quit), 
@@ -205,6 +209,7 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     screenResolution = rhs.screenResolution;
     masterInputPublisher = rhs.masterInputPublisher;
     masterClockPublisher = rhs.masterClockPublisher;
+    messageRouter = rhs.messageRouter;
     ocean = rhs.ocean;
     score1 = rhs.score1;
     player1 = rhs.player1;

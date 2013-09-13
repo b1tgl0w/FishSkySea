@@ -28,6 +28,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include "boost/uuid/uuid_generators.hpp"
 #include "../Header/Fish.hpp"
 #include "../Header/Renderer.hpp"
 #include "../Header/Math.hpp"
@@ -39,6 +40,10 @@ SUCH DAMAGES.
 #include "../Header/ImageRendererElement.hpp"
 #include "../Header/SeaSnail.hpp"
 #include "../Header/Seahorse.hpp"
+#include "../Header/MessageRouter.hpp"
+#include "../Header/MessageData.hpp"
+#include "../Header/Bool.hpp"
+#include "../Header/Double.hpp"
 
 //Class-wide constants
 const std::string &Fish::IMAGE_PATH()
@@ -117,7 +122,8 @@ const Uint32 &Fish::NIBBLE_TIME()
 
 //Class Fish
 Fish::Fish(const Point &initialPosition,
-    const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean) : 
+    const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean,
+    boost::shared_ptr<MessageRouter> messageRouter) : 
     state(), hookedState(), freeState(), position(new Point(initialPosition)),
     mouthPosition(new Point), fishSize(new Dimension(SIZE())), mouthSize(
     new Dimension(MOUTH_SIZE())), fishBox(position, fishSize), mouthBox(
@@ -126,8 +132,20 @@ Fish::Fish(const Point &initialPosition,
     timeSinceIsTightAboutFace(0), nibbleTime(0), startingDepth(initialDepth),
     shouldResetTimes(false), glowing(false), live(false), behindSeahorse(false),
     collidedWithSeahorse(false), nibbling(false), justFinishedNibbling(false),
-    glowAlpha(0)
+    glowAlpha(0), messageRouter(messageRouter), uuid(boost::uuids::random_generator()())
 {
+    boost::shared_ptr<MessageData> messageSize(fishSize);
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_SIZE,
+        TypeHint::Dimension, messageSize);
+
+    boost::shared_ptr<MessageData> messageMouthSize(mouthSize);
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_MOUTH_SIZE,
+        TypeHint::Dimension, messageMouthSize);
+
+    boost::shared_ptr<MessageData> messageDepth(new Depth(startingDepth));
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_DEPTH,
+        TypeHint::Depth, messageDepth);
+
     positionFromSide();
     updateMouthPosition();
     resetTimes();
@@ -145,7 +163,8 @@ Fish::Fish(const Fish &rhs) : state(rhs.state), hookedState(rhs.hookedState),
     glowing(rhs.glowing), live(rhs.live), behindSeahorse(rhs.behindSeahorse),
     stayBehindSeahorse(rhs.stayBehindSeahorse), collidedWithSeahorse(
     rhs.collidedWithSeahorse), nibbling(rhs.nibbling), justFinishedNibbling(
-    rhs.justFinishedNibbling), glowAlpha(rhs.glowAlpha)
+    rhs.justFinishedNibbling), glowAlpha(rhs.glowAlpha), messageRouter(
+    rhs.messageRouter), uuid(rhs.uuid)
 { 
     positionFromSide();
     updateMouthPosition();
@@ -183,6 +202,8 @@ Fish &Fish::operator=(const Fish &rhs)
     nibbling = rhs.nibbling;
     justFinishedNibbling = rhs.justFinishedNibbling;
     glowAlpha = rhs.glowAlpha;
+    messageRouter = rhs.messageRouter;
+    uuid = rhs.uuid;
 
     positionFromSide();
     updateMouthPosition();
@@ -230,6 +251,10 @@ void Fish::faceRandomDirection()
         facing = Direction::LEFT();
     else
         facing = Direction::RIGHT();
+
+    boost::shared_ptr<MessageData> messageFacing(new Direction(facing));
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_FACING,
+        TypeHint::Direction, messageFacing);
 }
 
 void Fish::swim(Uint32 elapsedTime)
@@ -240,6 +265,10 @@ void Fish::swim(Uint32 elapsedTime)
 void Fish::swim(double pixels)
 {
     state->swim(pixels);
+
+    boost::shared_ptr<MessageData> messagePosition(position);
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_MOVE,
+        TypeHint::Point, messagePosition);
 }
 
 void Fish::randomAboutFace(Uint32 elapsedTime)
@@ -327,6 +356,10 @@ void Fish::loadImage(Renderer &renderer)
 void Fish::glow()
 {
     glowing = true;
+
+    boost::shared_ptr<MessageData> messageGlowing(new Bool(glowing));
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_GLOWING,
+        TypeHint::Bool, messageGlowing);
 }
 
 bool Fish::isGlowing()
@@ -371,6 +404,10 @@ void Fish::aboutFace()
         facing = Direction::RIGHT();
     else
         facing = Direction::LEFT();
+
+    boost::shared_ptr<MessageData> messageFacing(new Direction(facing));
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_FACING,
+        TypeHint::Direction, messageFacing);
     
     shouldResetTimes = true;
 
@@ -404,6 +441,10 @@ void Fish::updateMouthPosition()
         mouthPosition->x = position->x + SIZE().width - xOffset;
 
     mouthPosition->y = position->y + yOffset;
+
+    boost::shared_ptr<MessageData> messagePosition(mouthPosition);
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_MOUTH_MOVE,
+        TypeHint::Point, messagePosition);
 }
 
 void Fish::reelIn()
@@ -428,6 +469,10 @@ void Fish::respawn(const Point &newPosition)
     sharedHookedByLine->offHook();
     hookedByLine.reset();
     glowing = false;
+
+    boost::shared_ptr<MessageData> messageGlowing(new Bool(glowing));
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_GLOWING,
+        TypeHint::Bool, messageGlowing);
 
     boost::shared_ptr<FishState> fishState(freeState);
     changeState(fishState);
@@ -456,6 +501,10 @@ void Fish::hitEdge(const Direction &direction)
         facing = Direction::LEFT();
         shouldResetTimes = true; //Don't about face too soon after coming on screen
     }
+
+    boost::shared_ptr<MessageData> messageFacing(new Direction(facing));
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_FACING,
+        TypeHint::Direction, messageFacing);
 }
 
 void Fish::isTight(const Direction &direction)
@@ -769,6 +818,14 @@ void Fish::FreeState::spurtVelocity(Uint32 elapsedTime)
     spurtPhase = Math::cycle(spurtPhase, 0, SPURT_PERIOD);
     velocity = Math::calculateLinearPositionValue(0, SPURT_PERIOD, VELOCITY_MAX, 
         VELOCITY_MIN, spurtPhase);
+
+    boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
+    if( ! sharedFishOwner )
+        return;
+
+    boost::shared_ptr<MessageData> messageVelocity(new Double(velocity));
+    sharedFishOwner-> messageRouter->sendMessage(sharedFishOwner->uuid, 
+        MessageEnum::FISH_VELOCITY, TypeHint::Double, messageVelocity);
 }
 
 void Fish::FreeState::pull(const Point &hookPoint)
@@ -905,7 +962,12 @@ void Fish::FreeState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail>
         return;
 
     if( seaSnail->isGlowing() )
+    {
         sharedFishOwner->glowing = true;
+        boost::shared_ptr<MessageData> messageGlowing(new Bool(sharedFishOwner->glowing));
+        sharedFishOwner->messageRouter->sendMessage(sharedFishOwner->uuid, 
+            MessageEnum::FISH_GLOWING, TypeHint::Bool, messageGlowing);
+    }
 }
 
 void Fish::FreeState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,
@@ -966,6 +1028,11 @@ void Fish::FreeState::collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &sea
     }
 
     sharedFishOwner->facing = Direction::LEFT();
+
+    boost::shared_ptr<MessageData> messageFacing(new Direction(sharedFishOwner->
+        facing));
+    sharedFishOwner->messageRouter->sendMessage(sharedFishOwner->uuid, 
+        MessageEnum::FISH_FACING, TypeHint::Direction, messageFacing);
 
     if( seahorseFacing == Direction::LEFT() )
     {
@@ -1036,6 +1103,15 @@ void Fish::HookedState::swim(double pixels)
 {
     Uint32 elapsedTime = Math::round(pixels / HOOKED_FISH_VELOCITY());
     swim(elapsedTime);
+
+    boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
+
+    if( !sharedFishOwner )
+        return;
+
+    boost::shared_ptr<MessageData> messageVelocity(new Double(HOOKED_FISH_VELOCITY()));
+    sharedFishOwner->messageRouter->sendMessage(sharedFishOwner->uuid, 
+        MessageEnum::FISH_VELOCITY, TypeHint::Double, messageVelocity);
 }
 
 void Fish::HookedState::swim(Uint32 elapsedTime)
@@ -1248,7 +1324,12 @@ void Fish::HookedState::collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &
         return;
 
     if( seaSnail->isGlowing() )
+    {
         sharedFishOwner->glowing = true;
+        boost::shared_ptr<MessageData> messageGlowing(new Bool(sharedFishOwner->glowing));
+        sharedFishOwner->messageRouter->sendMessage(sharedFishOwner->uuid, 
+            MessageEnum::FISH_GLOWING, TypeHint::Bool, messageGlowing);
+    }
 }
 
 void Fish::HookedState::collidesWithPoleAreaEdge(boost::shared_ptr<Player> &player,

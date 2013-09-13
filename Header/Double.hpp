@@ -28,11 +28,13 @@ SUCH DAMAGES.
 #ifndef DOUBLE_HPP_
 #define DOUBLE_HPP_
 
-#include "../Header/MessageReceiver.hpp"
+#include "../Header/MessageData.hpp"
 
-class Double : public MessageReceiver
+class Double : public MessageData
 {
 public:
+    Double();
+    Double(double d);
     double plainDouble;
 };
 

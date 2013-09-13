@@ -29,10 +29,14 @@ SUCH DAMAGES.
 #ifndef DIMENSION_HPP_
 #define DIMENSION_HPP_
 
-struct Dimension
+#include "MessageData.hpp"
+
+class Dimension : public MessageData
 {
+public:
     Dimension(double width, double height);
     Dimension();
+    ~Dimension();
     double width;
     double height;
 };
