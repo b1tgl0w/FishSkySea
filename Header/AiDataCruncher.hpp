@@ -1,7 +1,7 @@
-//File: MessageRouter.hpp
+//File: AiDataCruncher.hpp
 //Author:   John Miner
-//Created:  09/12/13
-//Purpose: Route messages to objects that want them
+//Created:  09/13/13
+//Purpose: Transform data sent to Ai into more meaningful data
 //Copyright 2013 John Miner
 //This program is distributed under the terms of the GNU General Public License
 /*
@@ -25,34 +25,21 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
-#ifndef MESSAGE_ROUTER_
-#define MESSAGE_ROUTER_
+#ifndef AI_DATA_CRUNCHER_HPP_
+#define AI_DATA_CRUNCHER_HPP_
 
-#include <map>
-#include "boost/shared_ptr.hpp"
-#include "boost/uuid/uuid.hpp"
+#include "MessageReceiver.hpp"
+#include "Int.hpp"
+#include "Double.hpp"
+#include "Bool.hpp"
+#include "Uint.hpp"
 
-class MessageReceiver;
-class MessageData;
-
-enum class MessageEnum : int { FISH_MOVE };
-enum class TypeHint : int { Point, Dimension };
-
-class MessageRouter
+class AiDataCruncher : public MessageReceiver
 {
 public:
-    MessageRouter();
-    MessageRouter(const MessageRouter &rhs);
-    MessageRouter &operator=(const MessageRouter &rhs);
-    void sendMessage(const boost::uuids::uuid &senderId, const MessageEnum &message, 
-        const TypeHint &typeHint, boost::shared_ptr<MessageData> &data);
-    void subscribeToMessage(const MessageEnum &message, boost::shared_ptr<
-        MessageReceiver> mr);
-    void unsubscribeToMessage(const MessageEnum &message, boost::shared_ptr<
-        MessageReceiver> mr);
-private:
-    std::multimap<MessageEnum, boost::shared_ptr<MessageReceiver> >
-        subscribers;
+    void sendMessage(const boost::uuids::uuid &senderId, const MessageEnum
+        &message, const TypeHint &typeHint, boost::shared_ptr<MessageData>
+        data);
 };
 
 #endif

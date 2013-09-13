@@ -29,12 +29,16 @@ SUCH DAMAGES.
 #ifndef POINT_HPP_
 #define POINT_HPP_
 
-struct Point
+#include "MessageData.hpp"
+
+class Point : public MessageData
 {
+public:
     Point();
     Point(double x, double y);
     Point(const Point &rhs);
     Point &operator=(const Point &rhs);
+    ~Point() { };
     static bool sortByXAscending(const Point &first, const Point &second);
     static bool sortByYAscending(const Point &first, const Point &second);
     double x;

@@ -37,7 +37,7 @@ class MessageReceiver
 public:
     virtual void sendMessage(const boost::uuids::uuid &senderId, const MessageEnum
         &message, const TypeHint &typeHint, boost::shared_ptr<MessageData>
-        data);
+        data) = 0;
 };
 
 #endif

@@ -3,12 +3,18 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Designing AI
+Left off on: Sending messages from objects who need to
 
 Left off on: Took side quest to fix invalid iterator use, see iteratorFix doc
 
-General Task: Designing AI
+General Task: Implementing Ai
 
-Specific Steps: Designing AI
+Specific Steps:
+    - Receive necessary messages
+    - Adjust speeds, times, sizes for consistency
+    - Calculate needed information to make decisions
+    - Implement an action/goals system
+    - Control line
+    - Test
     
 

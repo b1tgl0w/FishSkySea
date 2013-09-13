@@ -1,5 +1,5 @@
 CC := g++
-CC_FLAGS := 
+CC_FLAGS :=  -std=c++11
 SHARED_CPP_FILES := $(wildcard SharedSource/PaletteHarmony/*.cpp)
 SHARED_OBJ_FILES := $(patsubst SharedSource/PaletteHarmony/%.cpp,Object/Shared%.o,$(SHARED_CPP_FILES))
 SDL2_CPP_FILES := $(wildcard Library/SDL2/Source/*.cpp)

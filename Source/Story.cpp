@@ -123,7 +123,7 @@ bool Story::parseCommand(const std::string &line,
         {
             isCommand = true;
             boost::shared_ptr<std::string> str(new std::string(line));
-            commandPlacements.insert(std::make_pair<int, 
+            commandPlacements.insert(std::pair<int, 
                 boost::shared_ptr<std::string> >(
                 placement, str));
         }

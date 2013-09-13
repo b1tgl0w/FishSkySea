@@ -1,7 +1,7 @@
-//File: MessageRouter.hpp
+//File: Animation.cpp
 //Author:   John Miner
-//Created:  09/12/13
-//Purpose: Route messages to objects that want them
+//Created 06/14/13
+//Purpose: Store animation as a collection of images and timings
 //Copyright 2013 John Miner
 //This program is distributed under the terms of the GNU General Public License
 /*
@@ -24,36 +24,4 @@ PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
 EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
-
-#ifndef MESSAGE_ROUTER_
-#define MESSAGE_ROUTER_
-
-#include <map>
-#include "boost/shared_ptr.hpp"
-#include "boost/uuid/uuid.hpp"
-
-class MessageReceiver;
-class MessageData;
-
-enum class MessageEnum : int { FISH_MOVE };
-enum class TypeHint : int { Point, Dimension };
-
-class MessageRouter
-{
-public:
-    MessageRouter();
-    MessageRouter(const MessageRouter &rhs);
-    MessageRouter &operator=(const MessageRouter &rhs);
-    void sendMessage(const boost::uuids::uuid &senderId, const MessageEnum &message, 
-        const TypeHint &typeHint, boost::shared_ptr<MessageData> &data);
-    void subscribeToMessage(const MessageEnum &message, boost::shared_ptr<
-        MessageReceiver> mr);
-    void unsubscribeToMessage(const MessageEnum &message, boost::shared_ptr<
-        MessageReceiver> mr);
-private:
-    std::multimap<MessageEnum, boost::shared_ptr<MessageReceiver> >
-        subscribers;
-};
-
-#endif
 

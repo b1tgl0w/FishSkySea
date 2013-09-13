@@ -261,25 +261,25 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     /*std::pair<std::string, Uint32> ripplePair1(RIPPLE_PATH1(), rippleFrameTime);
     std::pair<std::string, Uint32> ripplePair2(RIPPLE_PATH2(), rippleFrameTime);
     std::pair<std::string, Uint32> ripplePair3(RIPPLE_PATH3(), rippleFrameTime);*/
-    rippleAnimationNotHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH1(), 
+    rippleAnimationNotHooked->addFrame(std::pair<std::string, Uint32>(RIPPLE_PATH1(), 
         rippleFrameTimeNotHooked));
-    rippleAnimationNotHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
+    rippleAnimationNotHooked->addFrame(std::pair<std::string, Uint32>(RIPPLE_PATH2(), 
         rippleFrameTimeNotHooked));
-    rippleAnimationNotHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH3(), 
+    rippleAnimationNotHooked->addFrame(std::pair<std::string, Uint32>(RIPPLE_PATH3(), 
         rippleFrameTimeNotHooked));
-    rippleAnimationNotHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
+    rippleAnimationNotHooked->addFrame(std::pair<std::string, Uint32>(RIPPLE_PATH2(), 
         rippleFrameTimeNotHooked));
     boost::shared_ptr<MasterClockSubscriber> raNotHookedSubscriber(
         rippleAnimationNotHooked);
     MasterClockPublisher *mcp = MasterClockPublisher::getInstance();
     mcp->subscribe(raNotHookedSubscriber);
-    rippleAnimationHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH1(), 
+    rippleAnimationHooked->addFrame(std::pair<std::string, Uint32>(RIPPLE_PATH1(), 
         rippleFrameTimeHooked));
-    rippleAnimationHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
+    rippleAnimationHooked->addFrame(std::pair<std::string, Uint32>(RIPPLE_PATH2(), 
         rippleFrameTimeHooked));
-    rippleAnimationHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH3(), 
+    rippleAnimationHooked->addFrame(std::pair<std::string, Uint32>(RIPPLE_PATH3(), 
         rippleFrameTimeHooked));
-    rippleAnimationHooked->addFrame(std::make_pair<std::string, Uint32>(RIPPLE_PATH2(), 
+    rippleAnimationHooked->addFrame(std::pair<std::string, Uint32>(RIPPLE_PATH2(), 
         rippleFrameTimeHooked));
     boost::shared_ptr<MasterClockSubscriber> raHookedSubscriber(
         rippleAnimationHooked);

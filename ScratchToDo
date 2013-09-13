@@ -2,17 +2,5 @@
 //This file complements CurrentToDo. 
 //CurrentToDo is specifications of current task, this is implementation of task
 
-Done - Write a biography that takes multiple pages
-Done - Allow advancing of mb by pressing e
-Done - Add a return-to-beginning method to MBs
-- Cast again after reading MB
-Can't, need room for long names - Make credit fish names FontSize bigger
-
-After fixing bug
-Done - Credit game scene owns the biography objects
-?? - Try showing one biography before doing others when credit fish is caught
-Done - Ocean or CF is a publisher that notifies subscribers of credit fish catch
-Done - Use boost::signals
-Done - The biographies subscribe to CF through ocean by passing name to connect with
-the right CF, perhaps the CF is created at this time too
+- Test class for MessageRouter
 

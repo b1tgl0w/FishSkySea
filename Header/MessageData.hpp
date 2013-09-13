@@ -30,6 +30,7 @@ SUCH DAMAGES.
 
 class MessageData
 {
+protected:
     virtual ~MessageData() { };
 };
 
