@@ -260,6 +260,10 @@ void Fish::faceRandomDirection()
 void Fish::swim(Uint32 elapsedTime)
 {
     state->swim(elapsedTime);
+
+    boost::shared_ptr<MessageData> messagePosition(position);
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_MOVE,
+        TypeHint::Point, messagePosition);
 }
 
 void Fish::swim(double pixels)

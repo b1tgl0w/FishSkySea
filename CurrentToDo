@@ -15,6 +15,7 @@ Specific Steps:
     - Calculate needed information to make decisions
     - Implement an action/goals system
     - Control line
+    - Write code to check at end of program which MessageEnums were never sent
     - Test
     
 
