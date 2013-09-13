@@ -351,6 +351,8 @@ with other borders. For instance, when using sharkplaceholder images with
 full screen BorderLayout (fillClipFit), the outline of the sharkplaceholder
 isn't present on the left image, and is thinner on the bottom image.
 
+Bug: Use virtual dtors for Ifaces and other base classes
+
 TEST: 3 LayeredLayout of 2 LayeredLayouts of CoordinateLayouts
 
 Check if should pass boost::shared_ptr<T> or const boost::shared_ptr<T> &
