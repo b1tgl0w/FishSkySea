@@ -28,6 +28,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include "boost/uuid/uuid_generators.hpp"
 #include "../Header/Math.hpp"
 #include "../Header/Shark.hpp"
 #include "../Header/Fish.hpp"
@@ -37,6 +38,9 @@ SUCH DAMAGES.
 #include "../Header/ImageRendererElement.hpp"
 #include "../Header/SeaSnail.hpp"
 #include "../Header/Seahorse.hpp"
+#include "../Header/MessageRouter.hpp"
+#include "../Header/Bool.hpp"
+#include "../Header/Double.hpp"
 
 const std::string &Shark::IMAGE_PATH()
 {
@@ -78,15 +82,22 @@ const Uint32 &Shark::MINIMUM_TIME_TO_RANDOM_ABOUT_FACE()
 }
 
 Shark::Shark(boost::weak_ptr<Ocean> ocean,
-    const Point &initialPosition) : state(), attackState(), glowState(),
+    const Point &initialPosition, boost::shared_ptr<MessageRouter> &messageRouter) 
+    : state(), attackState(), glowState(),
     patrolState(), ocean(ocean), position(new Point(initialPosition)),
     size(new Dimension(SIZE())), visionPosition(new Point(0.0, initialPosition.y)),
     visionSize(new Dimension(0.0, SIZE().height)), backPosition(new Point(0.0,
     initialPosition.y)), backSize(new Dimension(0.0, SIZE().height)), 
     timeSinceAboutFace(0), facing(Direction::LEFT()), sharkBox(position, size),
     visionBox(visionPosition, visionSize), backBox(backPosition, backSize),
-    continueAttack(false), justAte(false), live(false), glowAlpha(0)
+    continueAttack(false), justAte(false), live(false), glowAlpha(0),
+    messageRouter(messageRouter), uuid(boost::uuids::random_generator()())
 {
+    boost::shared_ptr<MessageData> messageSize(size);
+
+    messageRouter->sendMessage(uuid, 
+        MessageEnum::SHARK_SIZE, TypeHint::Dimension, messageSize);
+
     faceRandomDirection();
     adjustVisionBox();
 }
@@ -98,7 +109,7 @@ Shark::Shark(const Shark &rhs) : state(rhs.state), attackState(rhs.attackState),
     backSize), timeSinceAboutFace(rhs.timeSinceAboutFace), facing(rhs.facing),
     sharkBox(rhs.sharkBox), visionBox(rhs.visionBox), backBox(rhs.backBox),
     continueAttack(rhs.continueAttack), justAte(rhs.justAte), live(rhs.live),
-    glowAlpha(rhs.glowAlpha)
+    glowAlpha(rhs.glowAlpha), messageRouter(rhs.messageRouter), uuid(rhs.uuid)
 { }
 
 Shark &Shark::operator=(const Shark &rhs)
@@ -126,6 +137,8 @@ Shark &Shark::operator=(const Shark &rhs)
     justAte = rhs.justAte;
     live = rhs.live;
     glowAlpha = rhs.glowAlpha;
+    messageRouter = rhs.messageRouter;
+    uuid = rhs.uuid;
     
     return *this;
 }
@@ -213,6 +226,11 @@ void Shark::adjustVisionBox()
 void Shark::swim(Uint32 elapsedTime)
 {
     state->swim(elapsedTime);
+
+    boost::shared_ptr<MessageData> messageMove(position);
+
+    messageRouter->sendMessage(uuid, MessageEnum::SHARK_MOVE,
+        TypeHint::Point, messageMove);
 }
 
 //See Fish::randomAboutFace for more comments
@@ -256,6 +274,11 @@ void Shark::eat(bool glowing)
     {
         boost::shared_ptr<SharkState> sharkState(glowState);
         changeState(sharkState);
+
+        boost::shared_ptr<MessageData> messageGlowing(new Bool(true));
+
+        messageRouter->sendMessage(uuid, 
+            MessageEnum::SHARK_GLOWING, TypeHint::Bool, messageGlowing);
     }
     else
         justAte = true;
@@ -302,6 +325,14 @@ void Shark::dispose()
 
 void Shark::changeState(boost::shared_ptr<SharkState> &newState)
 {
+    if( state == glowState && newState != glowState )
+    {
+        boost::shared_ptr<MessageData> messageStopGlowing(new Bool(true));
+
+        messageRouter->sendMessage(uuid, 
+            MessageEnum::SHARK_STOP_GLOWING, TypeHint::Bool, messageStopGlowing);
+    }
+
     state = newState;
 }
 
@@ -320,6 +351,11 @@ void Shark::aboutFace()
     else
         facing = Direction::LEFT();
 
+    boost::shared_ptr<MessageData> messageFacing(new Direction(facing));
+
+    messageRouter->sendMessage(uuid, 
+        MessageEnum::SHARK_FACING, TypeHint::Direction, messageFacing);
+
     timeSinceAboutFace = 0;
 }
 
@@ -329,6 +365,11 @@ void Shark::faceRandomDirection()
         facing = Direction::LEFT();
     else
         facing = Direction::RIGHT();
+
+    boost::shared_ptr<MessageData> messageFacing(new Direction(facing));
+
+    messageRouter->sendMessage(uuid, 
+        MessageEnum::SHARK_FACING, TypeHint::Direction, messageFacing);
 }
 
 void Shark::hitEdge(const Direction &direction)
@@ -337,6 +378,11 @@ void Shark::hitEdge(const Direction &direction)
         facing = Direction::RIGHT();
     else if( direction == Direction::RIGHT() )
         facing = Direction::LEFT();
+
+    boost::shared_ptr<MessageData> messageFacing(new Direction(facing));
+
+    messageRouter->sendMessage(uuid, 
+        MessageEnum::SHARK_FACING, TypeHint::Direction, messageFacing);
 }
 
 void Shark::calmDown()
@@ -497,6 +543,18 @@ void Shark::AttackState::initialize(boost::weak_ptr<Shark> owner)
 double Shark::AttackState::calculatePixelsLeft(Uint32 elapsedTime)
 {
     const double ATTACK_SHARK_VELOCITY = 0.3;
+
+    boost::shared_ptr<Shark> sharedSharkOwner = sharkOwner.lock();
+    
+    if( sharedSharkOwner )
+    {
+        boost::shared_ptr<MessageData> messageVelocity(new Double(
+            ATTACK_SHARK_VELOCITY));
+
+        sharedSharkOwner->messageRouter->sendMessage(sharedSharkOwner->uuid, 
+            MessageEnum::SHARK_VELOCITY, TypeHint::Double, messageVelocity);
+    }
+
     return ATTACK_SHARK_VELOCITY * elapsedTime;
 }
 
@@ -675,6 +733,18 @@ void Shark::PatrolState::initialize(boost::weak_ptr<Shark> owner)
 double Shark::PatrolState::calculatePixelsLeft(Uint32 elapsedTime)
 {
     const double PATROL_SHARK_VELOCITY = 0.14;
+
+    boost::shared_ptr<Shark> sharedSharkOwner = sharkOwner.lock();
+    
+    if( sharedSharkOwner )
+    {
+        boost::shared_ptr<MessageData> messageVelocity(new Double(
+            PATROL_SHARK_VELOCITY));
+
+        sharedSharkOwner->messageRouter->sendMessage(sharedSharkOwner->uuid, 
+            MessageEnum::SHARK_VELOCITY, TypeHint::Double, messageVelocity);
+    }
+
     return PATROL_SHARK_VELOCITY * elapsedTime;
 }
 
@@ -860,6 +930,18 @@ void Shark::GlowState::initialize(boost::weak_ptr<Shark> owner)
 double Shark::GlowState::calculatePixelsLeft(Uint32 elapsedTime)
 {
     const double GLOW_SHARK_VELOCITY = 0.4;
+
+    boost::shared_ptr<Shark> sharedSharkOwner = sharkOwner.lock();
+    
+    if( sharedSharkOwner )
+    {
+        boost::shared_ptr<MessageData> messageVelocity(new Double(
+            GLOW_SHARK_VELOCITY));
+
+        sharedSharkOwner->messageRouter->sendMessage(sharedSharkOwner->uuid, 
+            MessageEnum::SHARK_VELOCITY, TypeHint::Double, messageVelocity);
+    }
+
     return GLOW_SHARK_VELOCITY * elapsedTime;
 }
 

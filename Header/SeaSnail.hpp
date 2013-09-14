@@ -42,19 +42,22 @@ SUCH DAMAGES.
 #include "BoundingBox.hpp"
 #include "Collidable.hpp"
 #include "MasterClockSubscriber.hpp"
+#include "boost/uuid/uuid.hpp"
 
 class Renderer;
 class Ocean;
 class Shark;
 class Seahorse;
 struct Point;
+class MessageRouter;
 
 class SeaSnail : public SeaCreature, public Graphic, public Collidable,
     public boost::enable_shared_from_this<SeaSnail>
 {
 public:
     explicit SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
-        &ocean, boost::weak_ptr<Seahorse> &seahorse);
+        &ocean, boost::weak_ptr<Seahorse> &seahorse, boost::shared_ptr<
+        MessageRouter> &messageRouter);
     SeaSnail(const SeaSnail &rhs);
     SeaSnail &operator=(const SeaSnail &rhs);
     ~SeaSnail();
@@ -129,6 +132,9 @@ private:
     bool live;
     boost::weak_ptr<Seahorse> seahorse;
     double glowAlpha;
+    boost::shared_ptr<MessageRouter> messageRouter;
+    boost::uuids::uuid uuid;
+
     static const std::string &IMAGE_PATH();
     static const std::string &GLOW_IMAGE_PATH();
     static const Layer &LAYER();

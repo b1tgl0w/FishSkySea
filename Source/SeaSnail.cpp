@@ -25,6 +25,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include "boost/uuid/uuid_generators.hpp"
 #include "../Header/SeaSnail.hpp"
 #include "../Header/Renderer.hpp"
 #include "../Header/Ocean.hpp"
@@ -36,6 +37,9 @@ SUCH DAMAGES.
 #include "../Header/Math.hpp"
 #include "../Header/SeaSnail.hpp"
 #include "../Header/Seahorse.hpp"
+#include "../Header/MessageRouter.hpp"
+#include "../Header/MessageData.hpp"
+#include "../Header/Bool.hpp"
 
 const Dimension &SeaSnail::SIZE()
 {
@@ -96,11 +100,13 @@ const Uint32 &SeaSnail::RETREAT_PROBABILITY()
 }
 
 SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
-    &ocean, boost::weak_ptr<Seahorse> &seahorse) : position(new Point(initialPosition)), 
+    &ocean, boost::weak_ptr<Seahorse> &seahorse, boost::shared_ptr<MessageRouter>
+    &messageRouter) : position(new Point(initialPosition)), 
     size(new Dimension(SIZE())), seaSnailBox(position, size), facing(Direction::LEFT()),
     ocean(ocean), shouldResetTimes(false), glowing(false), proceed(false), retreat(false),
     offScreen(false), timeSinceOffScreen(0), timeSinceProceed(0), live(false), 
-    seahorse(seahorse), glowAlpha(0)
+    seahorse(seahorse), glowAlpha(0), messageRouter(messageRouter), uuid(
+    boost::uuids::random_generator()())
 {
     glow();
     positionFromSide();
@@ -113,7 +119,8 @@ SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position), size(
     glowing(rhs.glowing), proceed(rhs.proceed), retreat(rhs.retreat),
     offScreen(rhs.offScreen), timeSinceOffScreen(rhs.timeSinceOffScreen), 
     timeSinceProceed(0), live(rhs.live), seahorse(rhs.seahorse),
-    glowAlpha(rhs.glowAlpha)
+    glowAlpha(rhs.glowAlpha), messageRouter(rhs.messageRouter),
+    uuid(rhs.uuid)
 {
 }
 
@@ -137,6 +144,8 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
     live = rhs.live;
     seahorse = rhs.seahorse;
     glowAlpha = rhs.glowAlpha;
+    messageRouter = rhs.messageRouter;
+    uuid = rhs.uuid;
     
     return *this;
 }
@@ -166,6 +175,11 @@ void SeaSnail::swim(Uint32 elapsedTime)
         pixelsLeft -= pixelsThisIteration;
         sharedOcean->checkCollisions(collidable, seaSnailBox);
     }
+
+    boost::shared_ptr<MessageData> messageMove(position);
+    
+    messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_MOVE,
+        TypeHint::Point, messageMove);
 }
 
 void SeaSnail::positionFromSide()
@@ -189,6 +203,11 @@ void SeaSnail::loadImage(Renderer &renderer)
 void SeaSnail::glow()
 {
     glowing = true;
+
+    boost::shared_ptr<MessageData> messageGlow(new Bool(true));
+    
+    messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_GLOWING,
+        TypeHint::Bool, messageGlow);
 }
 
 void SeaSnail::randomAboutFace(Uint32 elapsedTime)
@@ -205,6 +224,12 @@ void SeaSnail::readyToProceed(Uint32 elapsedTime)
     if( timeSinceOffScreen >= MAXIMUM_TIME_TO_PROCEED() )
     {
         proceed = true;
+
+        boost::shared_ptr<MessageData> messageProceed(new Bool(true));
+        
+        messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_ON_SCREEN,
+            TypeHint::Bool, messageProceed);
+
         return;
     }
 
@@ -218,7 +243,14 @@ void SeaSnail::readyToProceed(Uint32 elapsedTime)
 
     if( Math::random(1, PROBABILITY_OVER_TIME) %
         PROBABILITY_OVER_TIME == 0 )
+    {
         proceed = true;
+
+        boost::shared_ptr<MessageData> messageProceed(new Bool(true));
+        
+        messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_ON_SCREEN,
+            TypeHint::Bool, messageProceed);
+    }
 }
 
 void SeaSnail::readyToRetreat(Uint32 elapsedTime)
@@ -324,6 +356,12 @@ void SeaSnail::collidesWithFish(boost::shared_ptr<Fish> &fish,
 
     fish->glow();
     glowing = false;
+
+    boost::shared_ptr<MessageData> messageGlow(new Bool(true));
+    
+    messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_STOP_GLOWING,
+        TypeHint::Bool, messageGlow);
+
     retreat = true;
 }
 
@@ -457,5 +495,10 @@ void SeaSnail::restartCycle()
     positionFromSide();
     aboutFace();
     glow();
+
+    boost::shared_ptr<MessageData> messageProceed(new Bool(true));
+    
+    messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_OFF_SCREEN,
+        TypeHint::Bool, messageProceed);
 }
 

@@ -36,6 +36,7 @@ SUCH DAMAGES.
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
+#include "boost/uuid/uuid.hpp"
 #include "Graphic.hpp"
 #include "SeaCreature.hpp"
 #include "Point.hpp"
@@ -48,6 +49,7 @@ SUCH DAMAGES.
 
 class Ocean;
 class Seahorse;
+class MessageRouter;
 
 class Shark : public SeaCreature, public Graphic, public Collidable,
     public boost::enable_shared_from_this<Shark>
@@ -57,7 +59,8 @@ friend class AttackState;
 friend class PatrolState;
 public:
     explicit Shark(boost::weak_ptr<Ocean> ocean,
-        const Point &initialPosition);
+        const Point &initialPosition, boost::shared_ptr<MessageRouter>
+        &messageRouter);
     Shark(const Shark &rhs);
     Shark &operator=(const Shark &rhs);
     virtual ~Shark();
@@ -308,6 +311,8 @@ private:
     bool justAte;
     bool live;
     double glowAlpha;
+    boost::shared_ptr<MessageRouter> messageRouter;
+    boost::uuids::uuid uuid;
 
     static const std::string &IMAGE_PATH();
     static const std::string &GLOW_IMAGE_PATH();

@@ -32,6 +32,7 @@ SUCH DAMAGES.
 #include <string>
 #include <vector>
 #include <SDL2/SDL.h> 
+#include "boost/uuid/uuid.hpp"
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
@@ -48,6 +49,7 @@ SUCH DAMAGES.
 class Renderer;
 class Ocean;
 struct Point;
+class MessageRouter;
 
 //! Bass fish that swims in ocean and gets caught
 /*!
@@ -63,7 +65,8 @@ friend class FloatingState;
 public:
     //!ctor
     explicit Seahorse(const Point &initialPosition,
-        boost::shared_ptr<Ocean> &ocean);
+        boost::shared_ptr<Ocean> &ocean, boost::shared_ptr<MessageRouter> 
+        &messageRouter);
     //!Copy ctor
     Seahorse(const Seahorse &rhs);
     //!Copy assignment operator
@@ -363,6 +366,8 @@ private:
     bool collidedWithOceanEdge;
     int seaSnailRetreatCount;
     bool proceed;
+    boost::shared_ptr<MessageRouter> messageRouter;
+    boost::uuids::uuid uuid;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

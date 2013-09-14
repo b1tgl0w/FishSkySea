@@ -219,11 +219,12 @@ void Ocean::initializeSharedFromThis()
     boost::shared_ptr<Fish> fish6(new Fish(fishStartingPoint,
         fishStartingDepth, sharedThis, messageRouter));
     boost::shared_ptr<Seahorse> tmpSeahorse(new Seahorse(SEA_HORSE_POSITION(),
-        sharedThis));
+        sharedThis, messageRouter));
     boost::weak_ptr<Seahorse> weakSeahorse(tmpSeahorse);
     boost::shared_ptr<SeaSnail> tmpSeaSnail(new SeaSnail(SEA_SNAIL_POSITION(),
-        sharedThis, weakSeahorse));
-    boost::shared_ptr<Shark> tmpShark(new Shark(sharedThis, SHARK_POSITION()));
+        sharedThis, weakSeahorse, messageRouter));
+    boost::shared_ptr<Shark> tmpShark(new Shark(sharedThis, SHARK_POSITION(),
+        messageRouter));
     boost::shared_ptr<Clouds> tmpClouds(new Clouds);
     fish1->initializeStates();
     fish2->initializeStates();

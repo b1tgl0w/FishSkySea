@@ -318,6 +318,11 @@ void Fish::hookedBy(boost::weak_ptr<Line> hookedByLine, boost::weak_ptr<Player>
     this->hookedByPlayer = hookedByPlayer;
     boost::shared_ptr<FishState> fishState(hookedState);
     changeState(fishState);
+
+    boost::shared_ptr<MessageData> messageHooked(new Bool(true));
+
+    messageRouter->sendMessage(uuid, MessageEnum::FISH_HOOKED,
+        TypeHint::Bool, messageHooked);
 }
 
 void Fish::positionFromSide()
@@ -674,6 +679,11 @@ void Fish::doNibble()
         swim(passNibble);
         justFinishedNibbling = false;
 
+        boost::shared_ptr<MessageData> messageStopNibble(new Bool(true));
+
+        messageRouter->sendMessage(uuid, 
+            MessageEnum::FISH_STOP_NIBBLE, TypeHint::Bool, messageStopNibble);
+
         return;
     }
 }
@@ -861,6 +871,11 @@ void Fish::FreeState::nibble(boost::shared_ptr<Line> &line)
     sharedFishOwner->nibbleLine = line;
     sharedFishOwner->nibbling = true;
     sharedFishOwner->nibbleTime = sharedFishOwner->NIBBLE_TIME();
+
+    boost::shared_ptr<MessageData> messageNibble(new Bool(true));
+
+    sharedFishOwner->messageRouter->sendMessage(sharedFishOwner->uuid, 
+        MessageEnum::FISH_NIBBLE, TypeHint::Bool, messageNibble);
 }
 
 //FreeState Collidable
@@ -1265,6 +1280,11 @@ void Fish::HookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean
             sharedFishOwner->glowing);
         sharedHookedByLine->offHook();
         sharedOcean->addFish(sharedFishOwner, sharedFishOwner->startingDepth);
+
+        boost::shared_ptr<MessageData> messageCaught(new Bool(true));
+        sharedFishOwner->messageRouter->sendMessage(sharedFishOwner->uuid, 
+            MessageEnum::FISH_CAUGHT,
+            TypeHint::Bool, messageCaught);
     }
 }
 
@@ -1294,6 +1314,11 @@ void Fish::HookedState::collidesWithShark(boost::shared_ptr<Shark> &shark,
         shark->eat(sharedFishOwner->glowing);
         sharedHookedByLine->offHook();
         sharedOcean->addFish(sharedFishOwner, sharedFishOwner->startingDepth);
+
+        boost::shared_ptr<MessageData> messageEaten(new Bool(true));
+
+        sharedFishOwner->messageRouter->sendMessage(sharedFishOwner->uuid, 
+            MessageEnum::FISH_EATEN, TypeHint::Bool, messageEaten);
     }
 }
 

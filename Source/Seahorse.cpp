@@ -27,6 +27,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include "boost/uuid/uuid_generators.hpp"
 #include "../Header/Seahorse.hpp"
 #include "../Header/SeaSnail.hpp"
 #include "../Header/Renderer.hpp"
@@ -35,6 +36,10 @@ SUCH DAMAGES.
 #include "../Header/Shark.hpp"
 #include "../Header/Transformation.hpp"
 #include "../Header/ImageRendererElement.hpp"
+#include "../Header/Bool.hpp"
+#include "../Header/MessageRouter.hpp"
+#include "../Header/MessageData.hpp"
+#include "../Header/Double.hpp"
 
 //Class-wide constants
 const std::string &Seahorse::IMAGE_PATH()
@@ -57,7 +62,8 @@ const Dimension &Seahorse::SIZE()
 }
 
 Seahorse::Seahorse(const Point &initialPosition,
-    boost::shared_ptr<Ocean> &ocean) : state(), swimmingState(), floatingState(),
+    boost::shared_ptr<Ocean> &ocean, boost::shared_ptr<MessageRouter> 
+    &messageRouter) : state(), swimmingState(), floatingState(),
     position(new Point(initialPosition)), seahorseSize(new Dimension(SIZE())),
     leftPosition(new Point), leftSize(new Dimension), rightPosition(new Point),
     rightSize(new Dimension), seahorseBox(position, seahorseSize), 
@@ -66,7 +72,8 @@ Seahorse::Seahorse(const Point &initialPosition,
     live(false), bobRemaining(0), bobDirection(Direction::UP()), depth(
     Depth::random()), verticalFacing(Direction::DOWN()), floatX(0.0),
     floatedOnce(false), floatTime(0), collidedWithOceanEdge(true),
-    seaSnailRetreatCount(-1), proceed(false)
+    seaSnailRetreatCount(-1), proceed(false), messageRouter(messageRouter),
+    uuid(boost::uuids::random_generator()())
 {
     Point tmpOceanFloor(0.0, 0.0);
     ocean->alignWithBoundary(tmpOceanFloor.y, Direction::DOWN(), 0.0);
@@ -94,7 +101,7 @@ Seahorse::Seahorse(const Seahorse &rhs) : state(rhs.state), swimmingState(
     depth(rhs.depth), verticalFacing(rhs.verticalFacing), floatX(rhs.floatX),
     floatedOnce(rhs.floatedOnce), floatTime(rhs.floatTime), collidedWithOceanEdge(
     rhs.collidedWithOceanEdge), seaSnailRetreatCount(rhs.seaSnailRetreatCount),
-    proceed(rhs.proceed)
+    proceed(rhs.proceed), messageRouter(rhs.messageRouter), uuid(rhs.uuid)
 { }
 
 Seahorse &Seahorse::operator=(const Seahorse &rhs)
@@ -128,6 +135,8 @@ Seahorse &Seahorse::operator=(const Seahorse &rhs)
     collidedWithOceanEdge = rhs.collidedWithOceanEdge;
     seaSnailRetreatCount = rhs.seaSnailRetreatCount;
     proceed = rhs.proceed;
+    messageRouter = rhs.messageRouter;
+    uuid = rhs.uuid;
 
     return *this;
 }
@@ -226,6 +235,11 @@ void Seahorse::faceRandomDirection()
 void Seahorse::swim(Uint32 elapsedTime)
 {
     state->swim(elapsedTime);
+
+    boost::shared_ptr<MessageData> messageMove(position);
+
+    messageRouter->sendMessage(uuid, MessageEnum::SEAHORSE_MOVE,
+        TypeHint::Point, messageMove);
 }
 
 void Seahorse::positionFromSide()
@@ -266,6 +280,20 @@ void Seahorse::gameLive(bool live)
 
 void Seahorse::changeState(boost::shared_ptr<SeahorseState> &newState)
 {
+    if( state != floatingState && newState == floatingState )
+    {
+        boost::shared_ptr<MessageData> messageFloating(new Bool(true));
+
+        messageRouter->sendMessage(uuid,
+            MessageEnum::SEAHORSE_FLOAT, TypeHint::Bool, messageFloating);
+    }
+    else if( state == floatingState && newState != floatingState )
+    {
+        boost::shared_ptr<MessageData> messageStopFloating(new Bool(true));
+
+        messageRouter->sendMessage(uuid,
+            MessageEnum::SEAHORSE_STOP_FLOAT, TypeHint::Bool, messageStopFloating);
+    }
     state = newState;
 }
 
@@ -479,6 +507,11 @@ void Seahorse::notifySeaSnailRetreat()
         boost::shared_ptr<Seahorse> sharedThis(shared_from_this());
         sharedOcean->addSeahorse(sharedThis, depth);
         proceed = true;
+
+        boost::shared_ptr<MessageData> messageProceed(new Bool(true));
+
+        messageRouter->sendMessage(uuid,
+            MessageEnum::SEAHORSE_ON_SCREEN, TypeHint::Bool, messageProceed);
     }
 }
 
@@ -523,7 +556,19 @@ void Seahorse::SwimmingState::dispose()
 double Seahorse::SwimmingState::calculatePixelsLeft(Uint32 elapsedTime)
 {
     //return elapsedTime * velocity;
-    return elapsedTime * 0.1;
+    const double VELOCITY = 0.1;
+
+    boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
+
+    if( sharedSeahorseOwner )
+    {
+        boost::shared_ptr<MessageData> messageVelocity(new Double(VELOCITY));
+
+        sharedSeahorseOwner->messageRouter->sendMessage(sharedSeahorseOwner->uuid,
+            MessageEnum::SEAHORSE_VELOCITY, TypeHint::Double, messageVelocity);
+    }
+
+    return elapsedTime * VELOCITY;
 }
 
 double Seahorse::calculatePixelsLeftBob(Uint32 elapsedTime)
@@ -739,6 +784,15 @@ void Seahorse::SwimmingState::collidesWithOceanEdge(boost::shared_ptr<Ocean> &oc
     {
         if( direction == Direction::DOWN() )
             sharedSeahorseOwner->avoidBoundaries(Direction::DOWN());
+        //Doing it this way means seahorse not onscreen until FULLY onscreen
+        // messages will reflect such
+        if( direction == Direction::LEFT() || direction == Direction::RIGHT() )
+        {
+            boost::shared_ptr<MessageData> messageOffScreen(new Bool(true));
+
+            sharedSeahorseOwner->messageRouter->sendMessage(sharedSeahorseOwner->uuid, 
+                MessageEnum::SEAHORSE_OFF_SCREEN, TypeHint::Bool, messageOffScreen);
+        }
     }
 }
 
@@ -876,6 +930,16 @@ void Seahorse::FloatingState::dispose()
 double Seahorse::FloatingState::calculatePixelsLeft(Uint32 elapsedTime)
 {
     const double X_VELOCITY = 0.0;
+
+    boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
+
+    if( sharedSeahorseOwner )
+    {
+        boost::shared_ptr<MessageData> messageVelocity(new Double(X_VELOCITY));
+
+        sharedSeahorseOwner->messageRouter->sendMessage(sharedSeahorseOwner->uuid, 
+            MessageEnum::SEAHORSE_VELOCITY, TypeHint::Double, messageVelocity);
+    }
     return elapsedTime * X_VELOCITY;
 }
 
