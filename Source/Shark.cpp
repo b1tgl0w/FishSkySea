@@ -45,14 +45,14 @@ SUCH DAMAGES.
 const std::string &Shark::IMAGE_PATH()
 {
     static const std::string TMP_IMAGE_PATH = 
-        "../Media/Shark3.png";
+        "../Media/Shark2.png";
     return TMP_IMAGE_PATH;
 }
 
 const std::string &Shark::GLOW_IMAGE_PATH()
 {
     static const std::string TMP_IMAGE_PATH = 
-        "../Media/SharkGlow2.png";
+        "../Media/SharkGlow.png";
     return TMP_IMAGE_PATH;
 }
 

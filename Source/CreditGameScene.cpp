@@ -94,21 +94,21 @@ const Dimension &CreditGameScene::MOWHAWK_FISHER_SIZE()
 
 const std::string &CreditGameScene::BACKGROUND_PATH()
 {
-    static std::string TMP_BACKGROUND_PATH = "../Media/Scene9.png";
+    static std::string TMP_BACKGROUND_PATH = "../Media/Scene8.png";
     return TMP_BACKGROUND_PATH;
 }
 
 const std::string &CreditGameScene::MOWHAWK_FISHER_PATH()
 {
     static const std::string TMP_MOWHAWK_FISHER_PATH = 
-        "../Media/MowhawkFisher3.png";
+        "../Media/MowhawkFisher2.png";
     return TMP_MOWHAWK_FISHER_PATH;
 }
 
 const std::string &CreditGameScene::DOCK_SUPPORTS_PATH()
 {
     static const std::string TMP_DOCK_SUPPORTS_PATH = 
-        "../Media/DockSupports4.png";
+        "../Media/DockSupports3.png";
     return TMP_DOCK_SUPPORTS_PATH;
 }
 
@@ -278,9 +278,9 @@ void CreditGameScene::enter()
     boost::weak_ptr<Collidable> playerCollidable(player1);
     ocean->addCollidable(playerCollidable);
     player1->loadImage(*renderer);
-    renderer->loadImage("../Media/Scene9.png");
-    renderer->loadImage("../Media/MowhawkFisher3.png");
-    renderer->loadImage("../Media/DockSupports4.png");
+    renderer->loadImage("../Media/Scene8.png");
+    renderer->loadImage("../Media/MowhawkFisher2.png");
+    renderer->loadImage("../Media/DockSupports3.png");
     renderer->loadText("Ready", COLOR, BORDER_SIZE, FontSize::Big());
     renderer->loadText("Go", COLOR, BORDER_SIZE, FontSize::Huge());
     player1->sendCollidable(ocean);

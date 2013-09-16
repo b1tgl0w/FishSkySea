@@ -55,7 +55,7 @@ const std::string &SeaSnail::IMAGE_PATH()
 
 const std::string &SeaSnail::GLOW_IMAGE_PATH()
 {
-    static const std::string TMP_IMAGE_PATH = "../Media/SloogieGlow2.png";
+    static const std::string TMP_IMAGE_PATH = "../Media/SloogieGlow.png";
     return TMP_IMAGE_PATH;
 }
 

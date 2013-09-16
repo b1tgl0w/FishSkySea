@@ -114,28 +114,28 @@ const Dimension &MainGameScene::MOWHAWK_FISHER_SIZE()
 
 const std::string &MainGameScene::BACKGROUND_PATH()
 {
-    static std::string TMP_BACKGROUND_PATH = "../Media/Scene9.png";
+    static std::string TMP_BACKGROUND_PATH = "../Media/Scene8.png";
     return TMP_BACKGROUND_PATH;
 }
 
 const std::string &MainGameScene::MOWHAWK_FISHER_PATH()
 {
     static const std::string TMP_MOWHAWK_FISHER_PATH = 
-        "../Media/MowhawkFisher3.png";
+        "../Media/MowhawkFisher2.png";
     return TMP_MOWHAWK_FISHER_PATH;
 }
 
 const std::string &MainGameScene::ELDER_FISHER_PATH()
 {
     static const std::string TMP_ELDER_FISHER_PATH = 
-        "../Media/ElderFisher3.png";
+        "../Media/ElderFisher2.png";
     return TMP_ELDER_FISHER_PATH;
 }
 
 const std::string &MainGameScene::DOCK_SUPPORTS_PATH()
 {
     static const std::string TMP_DOCK_SUPPORTS_PATH = 
-        "../Media/DockSupports4.png";
+        "../Media/DockSupports3.png";
     return TMP_DOCK_SUPPORTS_PATH;
 }
 
@@ -284,10 +284,10 @@ void MainGameScene::enter()
     ocean->addCollidable(playerCollidable2);
     player1->loadImage(*renderer);
     player2->loadImage(*renderer);
-    renderer->loadImage("../Media/Scene9.png");
-    renderer->loadImage("../Media/MowhawkFisher3.png");
-    renderer->loadImage("../Media/ElderFisher3.png");
-    renderer->loadImage("../Media/DockSupports4.png");
+    renderer->loadImage("../Media/Scene8.png");
+    renderer->loadImage("../Media/MowhawkFisher2.png");
+    renderer->loadImage("../Media/ElderFisher2.png");
+    renderer->loadImage("../Media/DockSupports3.png");
     renderer->loadText("Ready", COLOR, BORDER_SIZE, FontSize::Big());
     renderer->loadText("Go", COLOR, BORDER_SIZE, FontSize::Huge());
     game->loadImage(*renderer);
