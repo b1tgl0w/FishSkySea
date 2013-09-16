@@ -48,13 +48,13 @@ SUCH DAMAGES.
 //Class-wide constants
 const std::string &Fish::IMAGE_PATH()
 {
-    static const std::string TMP_IMAGE_PATH = "../Media/Fish5.png"; 
+    static const std::string TMP_IMAGE_PATH = "../Media/Fish6.png"; 
     return TMP_IMAGE_PATH;
 }
 
 const std::string &Fish::GLOW_IMAGE_PATH()
 {
-    static const std::string TMP_IMAGE_PATH = "../Media/FishGlow.png"; 
+    static const std::string TMP_IMAGE_PATH = "../Media/FishGlow2.png"; 
     return TMP_IMAGE_PATH;
 }
 

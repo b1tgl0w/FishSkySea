@@ -128,7 +128,7 @@ bool MessageBoxLine::form(std::string &whatsLeft, Renderer &renderer)
 
 void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    const SDL_Color COLOR = { 0xFF, 0xE3, 0xFC, 0xFC };
+    const SDL_Color COLOR = { 0xE3, 0xFC, 0xFC, 0x00 };
     const int BORDER_SIZE = 0;
 
     Point origin(0.0, 0.0);
