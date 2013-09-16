@@ -21,6 +21,10 @@ Note:   Manually update loaded font size in Renderer
 Note:   If smaller text is desired, font size MUST be reduced. Use multiple
 fonts if necessary.
 
+Bug:    AI might not get correct data about pole/hook speed when hooked
+
+Bug:    How does AI know which direction the poles moving?
+
 Bug:    FillClipFit just doesn't work
 
 Bug:    CoordinateLayout doesn't properly scale and position renderer elements

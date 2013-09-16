@@ -125,7 +125,7 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     messageRouter(messageRouter),
     ocean(new Ocean(screenResolution, renderer, messageRouter)), score1(new Score(0)),
     player1(new HumanPlayer(POLE_POINT(), HOOK_POINT(), ocean, score1,
-        HumanPlayer::PLAYER_ONE(), !HumanPlayer::MAIN_GAME())), 
+        HumanPlayer::PLAYER_ONE(), !HumanPlayer::MAIN_GAME(), messageRouter)), 
     background(BACKGROUND_PATH(), Layer::BACKGROUND1().integer(), 
         BACKGROUND_POINT(), screenResolution), 
     dockSupports(DOCK_SUPPORTS_PATH(), Layer::DOCK_SUPPORTS().integer(),

@@ -29,6 +29,7 @@ SUCH DAMAGES.
 #include <iostream>
 #include <limits>
 #include <utility>
+#include "boost/uuid/uuid_generators.hpp"
 #include "../Header/Line.hpp"
 #include "../Header/Math.hpp"
 #include "../Header/StringUtility.hpp"
@@ -49,6 +50,9 @@ SUCH DAMAGES.
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/Seahorse.hpp"
 #include "../Header/CreditFish.hpp"
+#include "../Header/MessageRouter.hpp"
+#include "../Header/Bool.hpp"
+#include "../Header/Double.hpp"
 
 //Private static variable initialization
 int &Line::highestIdNumberGiven()
@@ -224,7 +228,8 @@ const Uint32 &Line::SET_HOOK_RECOVER_TIME()
 
 Line::Line(boost::shared_ptr<Player> &initialPlayer,
     const Point &initialPolePoint,
-    const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean) : state(),
+    const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean,
+    boost::shared_ptr<MessageRouter> &messageRouter) : state(),
     notHookedState(), hookedState(), lineIDNumber(highestIdNumberGiven()++),
     owner(initialPlayer), ocean(ocean), polePoint(new Point(initialPolePoint)),
     poleSize(new Dimension(POLE_DIMENSION())),
@@ -246,7 +251,8 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     rippleAnimationHooked(new Animation(RIPPLE_INITIAL_POSITION(), 
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
     foremostNibbleLayer(-9999), normalSpeedThreshold(0),
-    setHookReleased(true)
+    setHookReleased(true), messageRouter(messageRouter), uuid(
+    boost::uuids::random_generator()())
 {
     boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
 
@@ -287,6 +293,26 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     rippleAnimation = rippleAnimationNotHooked;
     initialize(initialPlayer, initialPolePoint, initialHookPoint,
         ocean);
+
+    boost::shared_ptr<MessageData> messagePoleSpeed(new Double(POLE_X_VELOCITY()));
+    
+    messageRouter->sendMessage(uuid, MessageEnum::POLE_X_SPEED,
+        TypeHint::Double, messagePoleSpeed);
+
+    boost::shared_ptr<MessageData> messageLineSpeed(new Double(LINE_Y_VELOCITY()));
+    
+    messageRouter->sendMessage(uuid, MessageEnum::LINE_Y_SPEED,
+        TypeHint::Double, messageLineSpeed);
+
+    boost::shared_ptr<MessageData> messageHookXSettleRate(new Double(SETTLE_RATE()));
+    
+    messageRouter->sendMessage(uuid, MessageEnum::HOOK_X_SETTLE_SPEED,
+        TypeHint::Double, messageHookXSettleRate);
+
+    boost::shared_ptr<MessageData> messageHookSize(hookSize);
+    
+    messageRouter->sendMessage(uuid, MessageEnum::HOOK_SIZE,
+        TypeHint::Dimension, messageHookSize);
 }
 
 Line::Line(const Line &rhs) : state(rhs.state), notHookedState(
@@ -307,7 +333,8 @@ Line::Line(const Line &rhs) : state(rhs.state), notHookedState(
     rippleAnimationNotHooked(rhs.rippleAnimationNotHooked),
     rippleAnimationHooked(rhs.rippleAnimationHooked), foremostNibbleLayer(
     rhs.foremostNibbleLayer), normalSpeedThreshold(rhs.normalSpeedThreshold),
-    setHookReleased(rhs.setHookReleased)
+    setHookReleased(rhs.setHookReleased), messageRouter(rhs.messageRouter),
+    uuid(rhs.uuid)
 { }
 
 Line &Line::operator=(const Line &rhs)
@@ -353,6 +380,8 @@ Line &Line::operator=(const Line &rhs)
     foremostNibbleLayer = rhs.foremostNibbleLayer;
     normalSpeedThreshold = rhs.normalSpeedThreshold;
     setHookReleased = rhs.setHookReleased;
+    messageRouter = rhs.messageRouter;
+    uuid = rhs.uuid;
 
     return *this;
 }
@@ -447,6 +476,11 @@ void Line::toggleMovement(bool &which, bool on)
 void Line::reelIn(bool on)
 {
     toggleMovement(reelInOn, on);
+
+    boost::shared_ptr<MessageData> messageOn(new Bool(on));
+
+    messageRouter->sendMessage(uuid, MessageEnum::POLE_REEL_IN,
+        TypeHint::Bool, messageOn);
 }
 
 //Method:   Line::giveLine(...)
@@ -456,6 +490,11 @@ void Line::reelIn(bool on)
 void Line::giveLine(bool on)
 {
     toggleMovement(giveLineOn, on);
+
+    boost::shared_ptr<MessageData> messageOn(new Bool(on));
+
+    messageRouter->sendMessage(uuid, MessageEnum::POLE_GIVE_LINE,
+        TypeHint::Bool, messageOn);
 }
 
 //Method:   Line::lengthenPole(...)
@@ -465,6 +504,11 @@ void Line::giveLine(bool on)
 void Line::lengthenPole(bool on)
 {
     toggleMovement(lengthenPoleOn, on);
+
+    boost::shared_ptr<MessageData> messageOn(new Bool(on));
+
+    messageRouter->sendMessage(uuid, MessageEnum::POLE_LENGTHEN,
+        TypeHint::Bool, messageOn);
 }
 
 //Method:   Line::lengthenPole(...)
@@ -474,6 +518,11 @@ void Line::lengthenPole(bool on)
 void Line::shortenPole(bool on)
 {
     toggleMovement(shortenPoleOn, on);
+
+    boost::shared_ptr<MessageData> messageOn(new Bool(on));
+
+    messageRouter->sendMessage(uuid, MessageEnum::POLE_SHORTEN,
+        TypeHint::Bool, messageOn);
 }
 
 void Line::setHook(bool on)
@@ -517,6 +566,12 @@ void Line::setHook(bool on)
     if( live && on && !setHookOn )
     {
         setHookOn = true;
+
+        boost::shared_ptr<MessageData> messageOn(new Bool(setHookOn));
+
+        messageRouter->sendMessage(uuid, MessageEnum::SET_HOOK,
+            TypeHint::Bool, messageOn);
+
         setHookTime = SET_HOOK_RECOVER_TIME();
         boost::shared_ptr<Fish> sharedHookedFish = hookedFish.lock();
 
@@ -750,6 +805,43 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 
 void Line::changeState(boost::shared_ptr<LineState> &newState)
 {
+    if( state == notHookedState && newState == hookedState )
+    {
+        boost::shared_ptr<MessageData> messagePoleSpeed(new Double(POLE_X_VELOCITY()
+            / LINE_X_VELOCITY_DRAG_MODIFIER()));
+        
+        messageRouter->sendMessage(uuid, MessageEnum::POLE_X_SPEED,
+            TypeHint::Double, messagePoleSpeed);
+
+        boost::shared_ptr<MessageData> messageLineSpeed(new Double(LINE_Y_VELOCITY()
+            / LINE_Y_VELOCITY_DRAG_MODIFIER()));
+        
+        messageRouter->sendMessage(uuid, MessageEnum::LINE_Y_SPEED,
+            TypeHint::Double, messageLineSpeed);
+
+        boost::shared_ptr<MessageData> messageHookXSettleRate(new Double(0.0));
+        
+        messageRouter->sendMessage(uuid, MessageEnum::HOOK_X_SETTLE_SPEED,
+            TypeHint::Double, messageHookXSettleRate);
+    }
+    else if( state == hookedState && newState == notHookedState )
+    {
+        boost::shared_ptr<MessageData> messagePoleSpeed(new Double(POLE_X_VELOCITY()));
+        
+        messageRouter->sendMessage(uuid, MessageEnum::POLE_X_SPEED,
+            TypeHint::Double, messagePoleSpeed);
+
+        boost::shared_ptr<MessageData> messageLineSpeed(new Double(LINE_Y_VELOCITY()));
+        
+        messageRouter->sendMessage(uuid, MessageEnum::LINE_Y_SPEED,
+            TypeHint::Double, messageLineSpeed);
+
+        boost::shared_ptr<MessageData> messageHookXSettleRate(new Double(SETTLE_RATE()));
+        
+        messageRouter->sendMessage(uuid, MessageEnum::HOOK_X_SETTLE_SPEED,
+            TypeHint::Double, messageHookXSettleRate);
+    }
+
     state = newState;
 }
 
@@ -953,6 +1045,10 @@ void Line::NotHookedState::move(Uint32 elapsedTime)
         sharedLineOwner->giveLineOn == false )
         sharedLineOwner->normalSpeedThreshold = 0;
 
+    boost::shared_ptr<MessageData> messagePolePosition(sharedLineOwner->polePoint);
+
+    sharedLineOwner->messageRouter->sendMessage(sharedLineOwner->uuid, 
+        MessageEnum::POLE_MOVE, TypeHint::Point, messagePolePosition);
 
     /*Uncomment*//*move(elapsedTime, hookPoint.x,
         hookedFish.HOOKED_FISH_X_VELOCITY);
@@ -998,6 +1094,12 @@ void Line::NotHookedState::settle(Uint32 elapsedTime)
         sharedLineOwner->hookBox);
     sharedOcean->checkCollisions(sharedCollidableLineOwner, 
         sharedLineOwner->biteBox);
+
+    boost::shared_ptr<MessageData> messageHookPosition(sharedLineOwner->hookPoint);
+
+    sharedLineOwner->messageRouter->sendMessage(sharedLineOwner->uuid, 
+        MessageEnum::HOOK_MOVE, TypeHint::Point, messageHookPosition);
+
 }
 
 boost::weak_ptr<Player> Line::NotHookedState::hooked(boost::weak_ptr<Fish>
@@ -1049,7 +1151,14 @@ void Line::NotHookedState::restoreFromSetHook(Uint32 elapsedTime)
     if( sharedLineOwner->setHookTime > elapsedTime )
         sharedLineOwner->setHookTime -= elapsedTime;
     else
+    {
         sharedLineOwner->setHookOn = false;
+
+        boost::shared_ptr<MessageData> messageOn(new Bool(sharedLineOwner->setHookOn));
+
+        sharedLineOwner->messageRouter->sendMessage(sharedLineOwner->uuid, 
+            MessageEnum::SET_HOOK, TypeHint::Bool, messageOn);
+    }
 }
 
 void Line::NotHookedState::nibble(boost::shared_ptr<Fish> &fish)
@@ -1182,6 +1291,11 @@ void Line::NotHookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean>
         ocean->alignWithSurface(sharedLineOwner->hookPoint->y, 1.0);
         sharedLineOwner->setHookTime = 0;
         sharedLineOwner->setHookOn = false;
+
+        boost::shared_ptr<MessageData> messageOn(new Bool(sharedLineOwner->setHookOn));
+
+        sharedLineOwner->messageRouter->sendMessage(sharedLineOwner->uuid, 
+            MessageEnum::SET_HOOK, TypeHint::Bool, messageOn);
     }
 }
 
@@ -1318,6 +1432,16 @@ void Line::HookedState::move(Uint32 elapsedTime)
         hookedFish.HOOKED_FISH_X_VELOCITY);
     move(elapsedTime, hookPoint.x,
         hookedFish.HOOKED_FISH_X_VELOCITY);*/
+
+    boost::shared_ptr<MessageData> messagePolePosition(sharedLineOwner->polePoint);
+
+    sharedLineOwner->messageRouter->sendMessage(sharedLineOwner->uuid, 
+        MessageEnum::POLE_MOVE, TypeHint::Point, messagePolePosition);
+
+    boost::shared_ptr<MessageData> messageHookPosition(sharedLineOwner->hookPoint);
+
+    sharedLineOwner->messageRouter->sendMessage(sharedLineOwner->uuid, 
+        MessageEnum::HOOK_MOVE, TypeHint::Point, messageHookPosition);
 }
 
 void Line::HookedState::settle(Uint32 elapsedTime)
@@ -1372,7 +1496,14 @@ void Line::HookedState::restoreFromSetHook(Uint32 elapsedTime)
     if( sharedLineOwner->setHookTime > elapsedTime )
         sharedLineOwner->setHookTime -= elapsedTime;
     else
+    {
         sharedLineOwner->setHookOn = false;
+
+        boost::shared_ptr<MessageData> messageOn(new Bool(sharedLineOwner->setHookOn));
+
+        sharedLineOwner->messageRouter->sendMessage(sharedLineOwner->uuid, 
+            MessageEnum::SET_HOOK, TypeHint::Bool, messageOn);
+    }
 }
 
 void Line::HookedState::nibble(boost::shared_ptr<Fish> &fish)

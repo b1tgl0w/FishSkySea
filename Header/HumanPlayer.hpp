@@ -32,6 +32,7 @@ SUCH DAMAGES.
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
+#include "boost/uuid/uuid.hpp"
 #include "Player.hpp"
 #include "KeyboardSubscriber.hpp"
 #include "Point.hpp"
@@ -42,6 +43,7 @@ SUCH DAMAGES.
 
 class Line;
 class Seahorse;
+class MessageRouter;
 
 class HumanPlayer : public Player, public KeyboardSubscriber, public Collidable,
     public boost::enable_shared_from_this<HumanPlayer>
@@ -49,7 +51,8 @@ class HumanPlayer : public Player, public KeyboardSubscriber, public Collidable,
 public:
     HumanPlayer(const Point &polePoint, const Point &hookPoint,
         boost::weak_ptr<Ocean> ocean, boost::weak_ptr<Score> score,
-        bool playerNumber, bool mode);
+        bool playerNumber, bool mode, boost::shared_ptr<MessageRouter> &
+        messageRouter);
     HumanPlayer(const HumanPlayer &rhs);
     HumanPlayer &operator=(const HumanPlayer &rhs);
     ~HumanPlayer();
@@ -129,6 +132,8 @@ private:
     BoundingBox poleAreaBox;
     bool playerNumber;
     bool lineCast;
+    boost::shared_ptr<MessageRouter> messageRouter;
+    boost::uuids::uuid uuid;
 };
 
 #endif

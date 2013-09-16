@@ -26,6 +26,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
+#include "boost/uuid/uuid_generators.hpp"
 #include "../Header/Renderer.hpp"
 #include "../Header/HumanPlayer.hpp"
 #include "../Header/Line.hpp"
@@ -36,6 +37,8 @@ SUCH DAMAGES.
 #include "../Header/Direction.hpp"
 #include "../Header/BoundingBox.hpp"
 #include "../Header/Seahorse.hpp"
+#include "../Header/MessageRouter.hpp"
+#include "../Header/Bool.hpp"
 
 const bool &HumanPlayer::PLAYER_ONE()
 {
@@ -57,10 +60,12 @@ const bool &HumanPlayer::MAIN_GAME()
 
 HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     &hookPoint, boost::weak_ptr<Ocean> ocean, boost::weak_ptr<Score>
-    score, bool playerNumber, bool mode) : playerKeyTranslater(), line(),
+    score, bool playerNumber, bool mode, boost::shared_ptr<MessageRouter> &messageRouter) 
+    : playerKeyTranslater(), line(),
     ocean(ocean), polePoint(polePoint), hookPoint(hookPoint),
     score(score), poleAreaPoint(), poleAreaSize(), poleAreaBox(),
-    playerNumber(playerNumber), lineCast(true)
+    playerNumber(playerNumber), lineCast(true), messageRouter(messageRouter),
+    uuid(boost::uuids::random_generator()())
 {
     boost::shared_ptr<Line> null;
     line = null;
@@ -87,13 +92,22 @@ HumanPlayer::HumanPlayer(const Point &polePoint, const Point
     poleAreaSize = tmpPoleAreaSize;
     BoundingBox tmpBox(poleAreaPoint, poleAreaSize);
     poleAreaBox = tmpBox;
+
+    boost::shared_ptr<MessageData> messagePoleAreaPoint(poleAreaPoint);
+    boost::shared_ptr<MessageData> messagePoleAreaSize(poleAreaSize);
+
+    messageRouter->sendMessage(uuid, MessageEnum::POLE_AREA_POSITION,
+        TypeHint::Point, messagePoleAreaPoint);
+    messageRouter->sendMessage(uuid, MessageEnum::POLE_AREA_DIMENSION,
+        TypeHint::Dimension, messagePoleAreaSize);
 }
 
 HumanPlayer::HumanPlayer(const HumanPlayer &rhs) : playerKeyTranslater(
     rhs.playerKeyTranslater), line(rhs.line), ocean(rhs.ocean), polePoint(
     rhs.polePoint), hookPoint(rhs.hookPoint), score(rhs.score), poleAreaPoint(
     rhs.poleAreaPoint), poleAreaSize(rhs.poleAreaSize), poleAreaBox(
-    rhs.poleAreaBox), playerNumber(rhs.playerNumber), lineCast(rhs.lineCast)
+    rhs.poleAreaBox), playerNumber(rhs.playerNumber), lineCast(rhs.lineCast),
+    messageRouter(rhs.messageRouter), uuid(rhs.uuid)
 { }
 
 HumanPlayer &HumanPlayer::operator=(const HumanPlayer &rhs)
@@ -112,6 +126,8 @@ HumanPlayer &HumanPlayer::operator=(const HumanPlayer &rhs)
     poleAreaBox = rhs.poleAreaBox;
     playerNumber = rhs.playerNumber;
     lineCast = rhs.lineCast;
+    messageRouter = rhs.messageRouter;
+    uuid = rhs.uuid;
 
     return *this;
 }
@@ -139,7 +155,7 @@ void HumanPlayer::initializeLine()
 {
     boost::shared_ptr<Player> sharedThis(shared_from_this());
     boost::shared_ptr<Line> tmpLine(new Line(sharedThis, polePoint,
-        hookPoint, ocean));
+        hookPoint, ocean, messageRouter));
     line = tmpLine;
     line->initializeStates();
     MasterClockPublisher *masterClockPublisher =
@@ -227,6 +243,16 @@ void HumanPlayer::caughtFish(Weight weight, bool glowing)
         return;
 
     sharedScore->increase(weight.correspondingScore(), glowing);
+
+    boost::shared_ptr<MessageData> messageCatch(new Bool(true));
+
+    messageRouter->sendMessage(uuid, MessageEnum::PLAYER_CATCH,
+        TypeHint::Bool, messageCatch);
+
+    boost::shared_ptr<MessageData> messageScore(sharedScore);
+
+    messageRouter->sendMessage(uuid, MessageEnum::PLAYER_TOTAL_SCORE,
+        TypeHint::Score, messageScore);
 }
 
 void HumanPlayer::sendCollidable(boost::weak_ptr<Ocean> ocean)

@@ -31,11 +31,12 @@ SUCH DAMAGES.
 #include "boost/shared_ptr.hpp"
 #include "Graphic.hpp"
 #include "Dimension.hpp"
+#include "MessageData.hpp"
 
 class Renderer;
 class Layout;
 
-class Score : public Graphic
+class Score : public Graphic, public MessageData
 {
 public:
     Score(int initialScore);

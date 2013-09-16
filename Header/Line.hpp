@@ -34,6 +34,7 @@ SUCH DAMAGES.
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
+#include "boost/uuid/uuid.hpp"
 #include "Point.hpp"
 #include "BoundingBox.hpp"
 #include "Direction.hpp"
@@ -51,6 +52,7 @@ class Player;
 class Dimension;
 class Seahorse;
 class CreditFish;
+class MessageRouter;
 
 class Line : public Graphic, public Collidable,
     public MasterClockSubscriber,
@@ -62,7 +64,8 @@ class Line : public Graphic, public Collidable,
 public:
     explicit Line(boost::shared_ptr<Player> &initialPlayer,
         const Point &initialPolePoint,
-        const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean); 
+        const Point &initialHookPoint, boost::weak_ptr<Ocean> ocean,
+        boost::shared_ptr<MessageRouter> &messageRouter); 
     Line(const Line &rhs);
     Line &operator=(const Line &rhs);
     void initializeStates(); //_MUST_ be called IMMEDIATELY after ctor
@@ -347,6 +350,8 @@ private:
     int foremostNibbleLayer;
     Uint32 normalSpeedThreshold;
     bool setHookReleased;
+    boost::shared_ptr<MessageRouter> messageRouter;
+    boost::uuids::uuid uuid;
 };
 
 #endif
