@@ -32,6 +32,7 @@ SUCH DAMAGES.
 #include "../Header/Renderer.hpp"
 #include "../Header/Layout.hpp"
 #include "../Header/FontSize.hpp"
+#include "../Header/StandardUnit.hpp"
 
 const Score &Game::WIN_SCORE()
 {
@@ -95,7 +96,7 @@ void Game::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 
 void Game::loadImage(Renderer &renderer)
 {
-    const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
+    const SDL_Color COLOR = StandardUnit::SDL_BLACK();
     const int BORDER_SIZE = 0;
     const Point ORIGIN(0.0, 0.0);
     const Dimension TEXT_SIZE(150.0, 50.0);

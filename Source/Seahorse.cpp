@@ -40,6 +40,7 @@ SUCH DAMAGES.
 #include "../Header/MessageRouter.hpp"
 #include "../Header/MessageData.hpp"
 #include "../Header/Double.hpp"
+#include "../Header/StandardUnit.hpp"
 
 //Class-wide constants
 const std::string &Seahorse::IMAGE_PATH()
@@ -57,7 +58,8 @@ const Layer &Seahorse::LAYER()
 const Dimension &Seahorse::SIZE()
 {
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE(40, 89);
+    static const Dimension TMP_SIZE(StandardUnit::DIMENSION() * 5.0, StandardUnit::
+        DIMENSION() * 11.0);
     return TMP_SIZE;
 }
 
@@ -556,7 +558,7 @@ void Seahorse::SwimmingState::dispose()
 double Seahorse::SwimmingState::calculatePixelsLeft(Uint32 elapsedTime)
 {
     //return elapsedTime * velocity;
-    const double VELOCITY = 0.1;
+    const double VELOCITY = StandardUnit::SPEED() * 8.0;
 
     boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
 
@@ -573,7 +575,7 @@ double Seahorse::SwimmingState::calculatePixelsLeft(Uint32 elapsedTime)
 
 double Seahorse::calculatePixelsLeftBob(Uint32 elapsedTime)
 {
-    double pixels = elapsedTime * 0.02;
+    double pixels = elapsedTime * (StandardUnit::SPEED() * 2.0);
 
     if( pixels <= bobRemaining )
         return pixels;
@@ -743,7 +745,7 @@ void Seahorse::avoidBoundaries(const Direction &direction)
 
 void Seahorse::resetBobRemaining()
 {
-    const double BOB_PIXELS = 12.0;
+    const double BOB_PIXELS = StandardUnit::DIMENSION() * 2.0;
     bobRemaining = BOB_PIXELS;
 }
 
@@ -945,7 +947,7 @@ double Seahorse::FloatingState::calculatePixelsLeft(Uint32 elapsedTime)
 
 void Seahorse::FloatingState::swim(Uint32 elapsedTime)
 {
-    const Uint32 FLOAT_DURATION = 4000;
+    const Uint32 FLOAT_DURATION = StandardUnit::DURATION() * 250; 
     boost::shared_ptr<Seahorse> sharedSeahorseOwner = seahorseOwner.lock();
 
     if( !sharedSeahorseOwner )

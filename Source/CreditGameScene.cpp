@@ -55,6 +55,7 @@ SUCH DAMAGES.
 #include "../Header/Biography.hpp"
 #include "../Header/BorderCorner.hpp"
 #include "../Header/MessageRouter.hpp"
+#include "../Header/StandardUnit.hpp"
 
 const Point &CreditGameScene::POLE_POINT()
 {
@@ -88,7 +89,8 @@ const Point &CreditGameScene::DOCK_SUPPORTS_POINT()
 
 const Dimension &CreditGameScene::MOWHAWK_FISHER_SIZE()
 {
-    static const Dimension TMP_MOWHAWK_FISHER_SIZE(50.0, 161.0);
+    static const Dimension TMP_MOWHAWK_FISHER_SIZE(StandardUnit::DIMENSION()
+        * 6.0, StandardUnit::DIMENSION() * 20.0);
     return TMP_MOWHAWK_FISHER_SIZE;
 }
 
@@ -267,7 +269,7 @@ CreditGameScene::~CreditGameScene()
 void CreditGameScene::enter()
 {
     Point cell(0, 0);
-    const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
+    const SDL_Color COLOR = StandardUnit::SDL_BLACK();
     const int BORDER_SIZE = 0;
 
     Layer::randomize();

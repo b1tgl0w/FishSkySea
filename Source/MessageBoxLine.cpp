@@ -36,6 +36,7 @@ SUCH DAMAGES.
 #include "../Header/DirectGraphicStrategy.hpp"
 #include "../Header/DirectFilledRectangleGraphic.hpp"
 #include "../Header/DirectRendererElement.hpp"
+#include "../Header/StandardUnit.hpp"
 
 MessageBoxLine::MessageBoxLine(const Point &position, const Dimension &messageBoxSize,
     const Dimension &lineSize, const Layer &layer, Uint32 bgColor,
@@ -128,7 +129,7 @@ bool MessageBoxLine::form(std::string &whatsLeft, Renderer &renderer)
 
 void MessageBoxLine::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    const SDL_Color COLOR = { 0xFF, 0xE3, 0xFC, 0xFC };
+    const SDL_Color COLOR = StandardUnit::SDL_WHITE();
     const int BORDER_SIZE = 0;
 
     Point origin(0.0, 0.0);

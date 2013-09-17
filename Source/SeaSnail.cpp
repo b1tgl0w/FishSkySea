@@ -40,10 +40,12 @@ SUCH DAMAGES.
 #include "../Header/MessageRouter.hpp"
 #include "../Header/MessageData.hpp"
 #include "../Header/Bool.hpp"
+#include "../Header/StandardUnit.hpp"
 
 const Dimension &SeaSnail::SIZE()
 {
-    static const Dimension TMP_SIZE(180.0, 90.0);
+    static const Dimension TMP_SIZE(StandardUnit::DIMENSION() * 24, StandardUnit::
+        DIMENSION() * 12);
     return TMP_SIZE;
 }
 
@@ -67,13 +69,15 @@ const Layer &SeaSnail::LAYER()
 
 const Uint32 &SeaSnail::MINIMUM_TIME_TO_PROCEED()
 {
-    static const Uint32 TMP_MINIMUM_TIME_TO_PROCEED = 9000;
+    static const Uint32 TMP_MINIMUM_TIME_TO_PROCEED = StandardUnit::DURATION() *
+        562;
     return TMP_MINIMUM_TIME_TO_PROCEED;
 }
 
 const Uint32 &SeaSnail::MAXIMUM_TIME_TO_PROCEED()
 {
-    static const Uint32 TMP_MAXIMUM_TIME_TO_PROCEED = 90000;
+    static const Uint32 TMP_MAXIMUM_TIME_TO_PROCEED = StandardUnit::DURATION()
+        * 2620;
     return TMP_MAXIMUM_TIME_TO_PROCEED;
 }
 
@@ -81,21 +85,25 @@ const Uint32 &SeaSnail::MINIMUM_TIME_TO_RETREAT()
 {
     //Make sure this is updated if velocity changes
     //should be SIZE.width / VELOCITY
-    static const Uint32 TMP_MINIMUM_TIME_TO_RETREAT = 9000;
+    static const Uint32 TMP_MINIMUM_TIME_TO_RETREAT = StandardUnit::DURATION()
+        * 200;
     return TMP_MINIMUM_TIME_TO_RETREAT;
 }
 
 const Uint32 &SeaSnail::READY_PROBABILITY()
 {
-    static const Uint32 TMP_READY_PROBABILITY = 30000 - 9000;
+    static const Uint32 TMP_READY_PROBABILITY = StandardUnit::DURATION()
+        * 1312;
     return TMP_READY_PROBABILITY;
 }
 
+//The higher the LESS probable
 const Uint32 &SeaSnail::RETREAT_PROBABILITY()
 {
     //Make sure this is updated if velocity changes
     //should be (SCREEN_WIDTH / 2) / VELOCITY - MIN_TIME_RETREAT
-    static const Uint32 TMP_RETREAT_PROBABILITY = 20000 - 9000;
+    static const Uint32 TMP_RETREAT_PROBABILITY = StandardUnit::DURATION()
+        * 340;
     return TMP_RETREAT_PROBABILITY;
 }
 
@@ -453,7 +461,7 @@ void SeaSnail::aboutFace()
 
 double SeaSnail::calculatePixelsLeft(Uint32 elapsedTime)
 {
-    const double VELOCITY = 0.02;
+    const double VELOCITY = StandardUnit::SPEED() * 2.0;
     return elapsedTime * VELOCITY;
 }
 

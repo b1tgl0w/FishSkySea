@@ -51,6 +51,7 @@ SUCH DAMAGES.
 #include "../Header/OceanMode.hpp"
 #include "../Header/FontSize.hpp"
 #include "../Header/MessageRouter.hpp"
+#include "../Header/StandardUnit.hpp"
 
 const Point &MainGameScene::POLE_POINT()
 {
@@ -84,7 +85,7 @@ const Point &MainGameScene::BACKGROUND_POINT()
 
 const Point &MainGameScene::ELDER_FISHER_POINT()
 {
-    static const Point TMP_ELDER_FISHER_POINT(660.0, 126.0);
+    static const Point TMP_ELDER_FISHER_POINT(662.0, 126.0);
     return TMP_ELDER_FISHER_POINT;
 }
 
@@ -102,13 +103,15 @@ const Point &MainGameScene::DOCK_SUPPORTS_POINT()
 
 const Dimension &MainGameScene::ELDER_FISHER_SIZE()
 {
-    static const Dimension TMP_ELDER_FISHER_SIZE(50.0, 161.0);
+    static const Dimension TMP_ELDER_FISHER_SIZE(StandardUnit::DIMENSION()
+        * 6.0, StandardUnit::DIMENSION() * 20.0);
     return TMP_ELDER_FISHER_SIZE;
 }
 
 const Dimension &MainGameScene::MOWHAWK_FISHER_SIZE()
 {
-    static const Dimension TMP_MOWHAWK_FISHER_SIZE(50.0, 161.0);
+    static const Dimension TMP_MOWHAWK_FISHER_SIZE(StandardUnit::DIMENSION()
+        * 6.0, StandardUnit::DIMENSION() * 20.0);
     return TMP_MOWHAWK_FISHER_SIZE;
 }
 
@@ -271,7 +274,7 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
 void MainGameScene::enter()
 {
     Point cell(0, 0);
-    const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
+    const SDL_Color COLOR = StandardUnit::SDL_BLACK();
     const int BORDER_SIZE = 0;
 
     transition = false;

@@ -39,23 +39,38 @@ const double StandardUnit::SPEED()
     return TMP;
 }
 
+const Uint32 StandardUnit::DURATION()
+{
+    static const Uint32 TMP = 16;
+    return TMP;
+}
+
 const Uint32 StandardUnit::BLACK()
 {
     //FIX to match art
-    static const Uint32 TMP = 0x00000000;
+    static const Uint32 TMP = 0x170024FF;
+    return TMP;
+}
+
+const SDL_Color StandardUnit::SDL_BLACK()
+{
+    //FIX to match art
+    static const SDL_Color TMP = { 0x17, 0x00, 0x24, 0xFF };
     return TMP;
 }
 
 const Uint32 StandardUnit::WHITE()
 {
     //FIX to match art
-    static const Uint32 TMP = 0xFFFFFF00;
+    static const Uint32 TMP = 0xFCE3FCFF;
     return TMP;
 }
 
-const Uint32 StandardUnit::DURATION()
+const SDL_Color StandardUnit::SDL_WHITE()
 {
-    static const Uint32 TMP = 16;
+    //FIX to match art
+    static const SDL_Color TMP = { 0xFF, 0xE3, 0xFC, 0xFC };
     return TMP;
 }
+
 

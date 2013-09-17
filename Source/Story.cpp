@@ -37,6 +37,7 @@ SUCH DAMAGES.
 #include "../Header/MasterClockPublisher.hpp"
 #include "../Header/MasterClockSubscriber.hpp"
 #include "../Header/Renderer.hpp"
+#include "../Header/StandardUnit.hpp"
 
 Story::Story(const std::string &fileName, boost::shared_ptr<Renderer> &renderer)
     : messageBoxes(), mbIterator(), commands(), placementIndex(0),
@@ -81,7 +82,7 @@ void Story::createMessageBoxes(const std::string &fileName, boost::shared_ptr<
 {
     //Note: for some reason, this size overrides border layout size. bug
     const Dimension LINE_SIZE(800.0, 60.0);
-    const Uint32 BG_COLOR = 0x17002400;
+    const Uint32 BG_COLOR = StandardUnit::BLACK();
     std::ifstream storyFile(fileName.c_str());
     std::vector<std::string> lines;
     std::string header("BEGIN_STORY_SECTION");

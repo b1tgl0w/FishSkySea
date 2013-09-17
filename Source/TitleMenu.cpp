@@ -42,6 +42,7 @@ SUCH DAMAGES.
 #include "../Header/SceneMenuItem.hpp"
 #include "../Header/Scene.hpp"
 #include "../Header/FontSize.hpp"
+#include "../Header/StandardUnit.hpp"
 
 const int &TitleMenu::STOP()
 {
@@ -63,7 +64,8 @@ const int &TitleMenu::PREVIOUS()
 
 const Uint32 &TitleMenu::PRESSED_TIME_THRESHOLD()
 {
-    static const Uint32 TMP_PRESSED_TIME_THRESHOLD = 250;
+    static const Uint32 TMP_PRESSED_TIME_THRESHOLD = StandardUnit::DURATION()
+        * 15;
     return TMP_PRESSED_TIME_THRESHOLD;
 }
 
@@ -152,8 +154,9 @@ void TitleMenu::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 void TitleMenu::loadImage(Renderer &renderer)
 {
     const Point POSITION(0.0, 0.0);
-    const Dimension SIZE(230.0, 88.0);
-    const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
+    const Dimension SIZE(StandardUnit::DIMENSION() * 30.0, StandardUnit::
+        DIMENSION() * 10.0);
+    const SDL_Color COLOR = StandardUnit::SDL_BLACK();
     const int BORDER_SIZE = 0;
     std::string menuText; 
 

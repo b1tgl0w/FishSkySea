@@ -42,19 +42,22 @@ SUCH DAMAGES.
 #include "../Header/MessageBox.hpp"
 #include "../Header/Layout.hpp"
 #include "../Header/ScaleClipFit.hpp"
+#include "../Header/StandardUnit.hpp"
 
 int CreditFish::nextFreeId = 0;
 
 const Dimension &CreditFish::SIZE()
 {
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE(140, 17);
+    static const Dimension TMP_SIZE(StandardUnit::DIMENSION() * 16, 
+        StandardUnit::DIMENSION() * 2);
     return TMP_SIZE;
 }
 
 const Uint32 &CreditFish::ABOUT_FACE_TICK_PROBABILITY()
 {
-    static const Uint32 TMP_ABOUT_FACE_TICK_PROBABILITY = 2000; 
+    static const Uint32 TMP_ABOUT_FACE_TICK_PROBABILITY = 
+        StandardUnit::DURATION() * 125; 
     return TMP_ABOUT_FACE_TICK_PROBABILITY;
 }
 
@@ -66,19 +69,22 @@ const Uint32 &CreditFish::ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER()
 
 const Uint32 &CreditFish::MINIMUM_TIME_TO_RANDOM_ABOUT_FACE()
 {
-    static const Uint32 TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE = 100;
+    static const Uint32 TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE = 
+        StandardUnit::DURATION() * 7;
     return TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE;
 }
 
 const Uint32 &CreditFish::MINIMUM_TIME_TO_RANDOM_ABOUT_FACE_VERTICAL()
 {
-    static const Uint32 TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE_VERTICAL = 1000;
+    static const Uint32 TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE_VERTICAL = 
+        StandardUnit::DURATION() * 62;
     return TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE_VERTICAL;
 }
 
 const Uint32 &CreditFish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 {
-    static const Uint32 TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE = 200;
+    static const Uint32 TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE =
+        StandardUnit::DURATION() * 12;
     return TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE;
 }
 
@@ -95,7 +101,7 @@ CreditFish::CreditFish(const std::string &name, const std::string &title,
     shouldResetTimes(true), shouldResetTimesVertical(true), live(false),
     name(name), title(title), hookOriginalDirection(Direction::LEFT()),
     id(CreditFish::nextFreeId++), layer(associateLayer()),
-    messageBox(new MessageBox(name, *size, 0x17002400,
+    messageBox(new MessageBox(name, *size, StandardUnit::BLACK(),
         false, layer, renderer, FontSize::Small(), 1)), nibbleLine(),
     nibbling(false), onCatch(new OnCatch)
 {
@@ -615,7 +621,7 @@ void CreditFish::doNibble()
 
 void CreditFish::yank()
 {
-    const double YANK_PIXELS = 10.0;
+    const double YANK_PIXELS = StandardUnit::DIMENSION() * 1.0;
     position->y -= YANK_PIXELS;
 }
 
@@ -706,13 +712,13 @@ void CreditFish::FreeState::dispose()
 
 double CreditFish::FreeState::calculatePixelsLeftHorizontal(Uint32 elapsedTime)
 {
-    const double FREE_FISH_X_VELOCITY = 0.07;
+    const double FREE_FISH_X_VELOCITY = StandardUnit::SPEED() * 4.0;
     return elapsedTime * FREE_FISH_X_VELOCITY;
 }
 
 double CreditFish::FreeState::calculatePixelsLeftVertical(Uint32 elapsedTime)
 {
-    const double FREE_FISH_Y_VELOCITY = 0.023;
+    const double FREE_FISH_Y_VELOCITY = StandardUnit::SPEED() * 1.0;
     return elapsedTime * FREE_FISH_Y_VELOCITY;
 }
 
@@ -952,13 +958,13 @@ void CreditFish::HookedState::dispose()
 
 double CreditFish::HookedState::calculatePixelsLeftHorizontal(Uint32 elapsedTime)
 {
-    const double HOOKED_FISH_X_VELOCITY = 0.28;
+    const double HOOKED_FISH_X_VELOCITY = StandardUnit::SPEED() * 18;
     return elapsedTime * HOOKED_FISH_X_VELOCITY;
 }
 
 double CreditFish::HookedState::calculatePixelsLeftVertical(Uint32 elapsedTime)
 {
-    const double HOOKED_FISH_Y_VELOCITY = 0.02; //Just a test value
+    const double HOOKED_FISH_Y_VELOCITY = StandardUnit::SPEED() * 1.0; 
     return elapsedTime * HOOKED_FISH_Y_VELOCITY;
 }
 

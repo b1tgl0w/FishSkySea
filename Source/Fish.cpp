@@ -88,37 +88,41 @@ const Dimension &Fish::MOUTH_SIZE_SEAHORSE()
 
 const Uint32 &Fish::ABOUT_FACE_TICK_PROBABILITY()
 {
-    static const Uint32 TMP_ABOUT_FACE_TICK_PROBABILITY = 2000; 
+    static const Uint32 TMP_ABOUT_FACE_TICK_PROBABILITY = StandardUnit::DURATION()
+        * 125; 
     return TMP_ABOUT_FACE_TICK_PROBABILITY;
 }
 
 const Uint32 &Fish::ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER()
 {
+    //No standard unit exists for this type
     static const Uint32 TMP_ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER = 7.0;
     return TMP_ABOUT_FACE_TICK_PROBABILITY_HOOKED_MODIFIER;
 }
 
 const Uint32 &Fish::MINIMUM_TIME_TO_RANDOM_ABOUT_FACE()
 {
-    static const Uint32 TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE = 100;
+    static const Uint32 TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE = StandardUnit::
+        DURATION() * 6;
     return TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE;
 }
 
 const Uint32 &Fish::MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE()
 {
-    static const Uint32 TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE = 80;
+    static const Uint32 TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE = StandardUnit::
+        DURATION() * 5;
     return TMP_MINIMUM_TIME_TO_IS_TIGHT_ABOUT_FACE;
 }
 
 const double &Fish::YANK_PIXELS()
 {
-    static const double TMP_YANK_PIXELS = 10.0;
+    static const double TMP_YANK_PIXELS = StandardUnit::DIMENSION() * 1.0;
     return TMP_YANK_PIXELS;
 }
 
 const Uint32 &Fish::NIBBLE_TIME()
 {
-    static const Uint32 TMP_NIBBLE_TIME = 200;
+    static const Uint32 TMP_NIBBLE_TIME = StandardUnit::DURATION() * 12;
     return TMP_NIBBLE_TIME;
 }
 
@@ -445,7 +449,7 @@ Weight Fish::calculateWeight()
 
 void Fish::updateMouthPosition()
 {
-    const double yOffset = 14.0;
+    const double yOffset = 13.0;
     const double xOffset = 0;
 
     if( facing == Direction::LEFT() )
@@ -462,7 +466,7 @@ void Fish::updateMouthPosition()
 
 void Fish::reelIn()
 {
-    const double YOFFSET = 14.0;
+    const double YOFFSET = 13.0;
     position->y = mouthPosition->y - YOFFSET;
 }
 

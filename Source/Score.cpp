@@ -33,6 +33,7 @@ SUCH DAMAGES.
 #include <cmath>
 #include "../Header/Math.hpp"
 #include "../Header/FontSize.hpp"
+#include "../Header/StandardUnit.hpp"
 
 Score::Score(int initialScore) : score(initialScore), 
     renderedScore(-1)
@@ -74,7 +75,7 @@ void Score::reset()
 
 void Score::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 {
-    const SDL_Color COLOR = { 0x17, 0x00, 0x24, 0x00 };
+    const SDL_Color COLOR = StandardUnit::SDL_BLACK();
     const int BORDER_SIZE = 0;
     const Layer LAYER = Layer::SCORE();
     const Point POSITION(0.0, 0.0);

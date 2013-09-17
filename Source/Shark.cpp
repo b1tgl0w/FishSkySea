@@ -41,6 +41,7 @@ SUCH DAMAGES.
 #include "../Header/MessageRouter.hpp"
 #include "../Header/Bool.hpp"
 #include "../Header/Double.hpp"
+#include "../Header/StandardUnit.hpp"
 
 const std::string &Shark::IMAGE_PATH()
 {
@@ -65,19 +66,22 @@ const Layer &Shark::LAYER()
 const Dimension &Shark::SIZE()
 {   
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE(185.0, 68.0);
+    static const Dimension TMP_SIZE(StandardUnit::DIMENSION() * 24, 
+        StandardUnit::DIMENSION() * 10);
     return TMP_SIZE;
 }
 
 const Uint32 &Shark::ABOUT_FACE_TICK_PROBABILITY()
 {
-    const static Uint32 TMP_ABOUT_FACE_TICK_PROBABILITY = 10000;
+    const static Uint32 TMP_ABOUT_FACE_TICK_PROBABILITY = StandardUnit::
+        DURATION() * 625;
     return TMP_ABOUT_FACE_TICK_PROBABILITY;
 }
 
 const Uint32 &Shark::MINIMUM_TIME_TO_RANDOM_ABOUT_FACE()
 {
-    const static Uint32 TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE = 100;
+    const static Uint32 TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE = StandardUnit::
+        DURATION() * 8;
     return TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE;
 }
 
@@ -732,7 +736,7 @@ void Shark::PatrolState::initialize(boost::weak_ptr<Shark> owner)
 
 double Shark::PatrolState::calculatePixelsLeft(Uint32 elapsedTime)
 {
-    const double PATROL_SHARK_VELOCITY = 0.14;
+    const double PATROL_SHARK_VELOCITY = StandardUnit::SPEED() * 9;
 
     boost::shared_ptr<Shark> sharedSharkOwner = sharkOwner.lock();
     
@@ -929,7 +933,7 @@ void Shark::GlowState::initialize(boost::weak_ptr<Shark> owner)
 
 double Shark::GlowState::calculatePixelsLeft(Uint32 elapsedTime)
 {
-    const double GLOW_SHARK_VELOCITY = 0.4;
+    const double GLOW_SHARK_VELOCITY = StandardUnit::SPEED() * 26;
 
     boost::shared_ptr<Shark> sharedSharkOwner = sharkOwner.lock();
     

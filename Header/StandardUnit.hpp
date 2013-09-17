@@ -36,7 +36,9 @@ public:
     static const double DIMENSION();
     static const double SPEED();
     static const Uint32 BLACK();
+    static const SDL_Color SDL_BLACK();
     static const Uint32 WHITE();
+    static const SDL_Color SDL_WHITE();
     static const Uint32 DURATION();
 };
 
