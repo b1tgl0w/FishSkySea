@@ -36,7 +36,6 @@ class MessageReceiver;
 class MessageData;
 
 //Do I need these? WINNING_SCORE
-//Left off on HookMove, PoleMove, and SET_HOOK
 enum class MessageEnum : int { FISH_MOVE, FISH_MOUTH_MOVE, FISH_VELOCITY, 
     FISH_SIZE, FISH_MOUTH_SIZE, FISH_FACING, FISH_GLOWING, FISH_DEPTH, 
     FISH_HOOKED, FISH_CAUGHT, FISH_EATEN, FISH_NIBBLE, FISH_STOP_NIBBLE, SHARK_MOVE,

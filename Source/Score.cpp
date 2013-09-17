@@ -55,6 +55,8 @@ Score &Score::operator=(const Score &rhs)
     return *this;
 }
 
+Score::~Score() { }
+
 void Score::increase(const Score &score, bool glowing)
 {
     const double GLOWING_MODIFIER = 0.5;

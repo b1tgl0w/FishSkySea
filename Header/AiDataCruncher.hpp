@@ -28,18 +28,76 @@ SUCH DAMAGES.
 #ifndef AI_DATA_CRUNCHER_HPP_
 #define AI_DATA_CRUNCHER_HPP_
 
+#include "boost/shared_ptr.hpp"
+#include "boost/enable_shared_from_this.hpp"
+#include "boost/uuid/uuid.hpp"
 #include "MessageReceiver.hpp"
-#include "Int.hpp"
-#include "Double.hpp"
-#include "Bool.hpp"
-#include "Uint.hpp"
 
-class AiDataCruncher : public MessageReceiver
+class MessageRouter;
+class Int;
+class Double;
+class Bool;
+class Uint;
+class Point;
+class Dimension;
+class Score;
+class Direction;
+class Depth;
+
+class AiDataCruncher : public MessageReceiver, 
+    public boost::enable_shared_from_this<AiDataCruncher>
 {
 public:
+    AiDataCruncher(boost::shared_ptr<MessageRouter> &messageRouter);
+    //use default copyctor //AiDataCruncher(const AiDataCruncher &rhs);
+    //use default copy assign //AiDataCruncher &operator=(const AiDataCruncher &rhs);
     void sendMessage(const boost::uuids::uuid &senderId, const MessageEnum
         &message, const TypeHint &typeHint, boost::shared_ptr<MessageData>
         data);
+    //void registerAi(boost::shared_ptr<Ai> ai);
+    //Must be called _after_ ctor
+    void subscribeToAll();
+private:
+    boost::shared_ptr<MessageRouter> messageRouter;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Point> > fishPosition;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Point> > fishMouthPosition;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Double> > fishVelocity;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Dimension> > fishSize;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Dimension> > fishMouthSize;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Direction> > fishFacing;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > fishGlowing;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Depth> > fishDepth;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > fishHooked;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > fishCaught;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > fishEaten;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > fishNibble;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Point> > sharkPosition;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Double> > sharkVelocity;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Dimension> > sharkSize;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Direction> > sharkFacing;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > sharkGlowing;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Point> > seaSnailPosition;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > seaSnailGlowing;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > seaSnailOnScreen;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Point> > seahorsePosition;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Double> > seahorseVelocity;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > seahorseFloat;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > seahorseOnScreen;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Point> > poleAreaPosition;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Dimension> > poleAreaSize;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > playerCatch;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Score> > playerTotalScore;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Point> > polePosition;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Double> > poleXSpeed;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Double> > lineYSpeed;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Point> > hookPosition;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Double> > hookXSettleSpeed;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Dimension> > hookSize;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > poleShorten;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > poleLengthen;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > poleReelIn;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > poleGiveLine;
+    std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > setHook;
 };
 
 #endif
