@@ -1,0 +1,13 @@
+The following classes need to base their speeds, sizes, durations, and colors off 
+standard units:
+
+- Fish
+- CreditFish
+- Shark
+- SeaSnail
+- Seahorse
+- Player graphics
+- TitleMenu
+- MessageBox/Line
+- Border Size?
+

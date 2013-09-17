@@ -44,6 +44,7 @@ SUCH DAMAGES.
 #include "../Header/MessageData.hpp"
 #include "../Header/Bool.hpp"
 #include "../Header/Double.hpp"
+#include "../Header/StandardUnit.hpp"
 
 //Class-wide constants
 const std::string &Fish::IMAGE_PATH()
@@ -67,18 +68,20 @@ const Layer &Fish::LAYER()
 const Dimension &Fish::SIZE()
 {
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE(70.0 , 26.0);
+    static const Dimension TMP_SIZE(StandardUnit::DIMENSION() * 9, StandardUnit::DIMENSION() * 3);
     return TMP_SIZE;
 }
 
 const Dimension &Fish::MOUTH_SIZE()
 {
+    //Dont use StandardUnit here
     static const Dimension TMP_MOUTH_SIZE(1.0, 4.0); 
     return TMP_MOUTH_SIZE;
 }
 
 const Dimension &Fish::MOUTH_SIZE_SEAHORSE()
 {
+    //Dont use StandardUnit here
     static const Dimension TMP_MOUTH_SIZE_SEAHORSE(5.0, 4.0); 
     return TMP_MOUTH_SIZE_SEAHORSE;
 }
@@ -427,6 +430,7 @@ void Fish::aboutFace()
 
     updateMouthPosition();
     sharedHookedByLine->pull(*mouthPosition);
+    freeState->spurtPhase = 0;
 }
 
 double Fish::calculatePixelsLeft(Uint32 elapsedTime)
@@ -825,9 +829,9 @@ void Fish::FreeState::swim(Uint32 elapsedTime)
 
 void Fish::FreeState::spurtVelocity(Uint32 elapsedTime)
 {
-    const Uint32 SPURT_PERIOD = 700;
-    const double VELOCITY_MIN = 0.07;
-    const double VELOCITY_MAX = VELOCITY_MIN * 3;
+    const Uint32 SPURT_PERIOD = StandardUnit::DURATION() * 42;
+    const double VELOCITY_MIN = StandardUnit::SPEED() * 4.0;
+    const double VELOCITY_MAX = VELOCITY_MIN * 4.0;
     spurtPhase += elapsedTime;
     spurtPhase = Math::cycle(spurtPhase, 0, SPURT_PERIOD);
     velocity = Math::calculateLinearPositionValue(0, SPURT_PERIOD, VELOCITY_MAX, 
@@ -837,7 +841,9 @@ void Fish::FreeState::spurtVelocity(Uint32 elapsedTime)
     if( ! sharedFishOwner )
         return;
 
-    boost::shared_ptr<MessageData> messageVelocity(new Double(velocity));
+    //Since velocity changes, pass along average velocity
+    boost::shared_ptr<MessageData> messageVelocity(new Double(
+        (VELOCITY_MIN + VELOCITY_MAX) / 2.0));
     sharedFishOwner-> messageRouter->sendMessage(sharedFishOwner->uuid, 
         MessageEnum::FISH_VELOCITY, TypeHint::Double, messageVelocity);
 }
@@ -1071,7 +1077,7 @@ void Fish::FreeState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
 
 const double &Fish::HookedState::HOOKED_FISH_VELOCITY()
 {
-    static const double TMP_VEL = .50;
+    static const double TMP_VEL = StandardUnit::SPEED() * 32;
     return TMP_VEL;
 }
 

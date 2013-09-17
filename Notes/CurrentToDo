@@ -3,19 +3,18 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Sending messages from objects who need to
+Left off on: 
 
 Left off on: Took side quest to fix invalid iterator use, see iteratorFix doc
 
 General Task: Implementing Ai
 
 Specific Steps:
-    - Receive necessary messages
+    Done - Receive necessary messages
     - Adjust speeds, times, sizes for consistency
     - Calculate needed information to make decisions
     - Implement an action/goals system
     - Control line
     - Write code to check at end of program which MessageEnums were never sent
     - Test
-    
 
