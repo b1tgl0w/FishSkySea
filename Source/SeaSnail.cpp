@@ -421,7 +421,7 @@ void SeaSnail::clockTick(Uint32 elapsedTime)
 
     if( retreat && proceed )
     {
-        aboutFace();
+        //aboutFace();
         proceed = false;
     }
 
