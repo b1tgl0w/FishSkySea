@@ -833,8 +833,8 @@ void Fish::FreeState::swim(Uint32 elapsedTime)
 
 void Fish::FreeState::spurtVelocity(Uint32 elapsedTime)
 {
-    const Uint32 SPURT_PERIOD = StandardUnit::DURATION() * 42;
-    const double VELOCITY_MIN = StandardUnit::SPEED() * 4.0;
+    const Uint32 SPURT_PERIOD = StandardUnit::DURATION() * 40;
+    const double VELOCITY_MIN = StandardUnit::SPEED() * 5.0;
     const double VELOCITY_MAX = VELOCITY_MIN * 4.0;
     spurtPhase += elapsedTime;
     spurtPhase = Math::cycle(spurtPhase, 0, SPURT_PERIOD);

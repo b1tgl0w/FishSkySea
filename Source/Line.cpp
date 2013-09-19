@@ -53,6 +53,7 @@ SUCH DAMAGES.
 #include "../Header/MessageRouter.hpp"
 #include "../Header/Bool.hpp"
 #include "../Header/Double.hpp"
+#include "../Header/StandardUnit.hpp"
 
 //Private static variable initialization
 int &Line::highestIdNumberGiven()
@@ -148,7 +149,7 @@ const bool &Line::INITIAL_FISH_HOOKED()
 
 const double &Line::LINE_Y_VELOCITY()
 {
-    static const double TMP_LINE_Y_VELOCITY = .15;
+    static const double TMP_LINE_Y_VELOCITY = StandardUnit::SPEED() * 11.0;
     return TMP_LINE_Y_VELOCITY;
 }
 
@@ -160,25 +161,26 @@ const double &Line::LINE_X_VELOCITY_DRAG_MODIFIER()
 
 const double &Line::LINE_Y_VELOCITY_DRAG_MODIFIER()
 {
-    static const double TMP_LINE_Y_VELOCITY_DRAG_MODIFIER = 3.0;
+    static const double TMP_LINE_Y_VELOCITY_DRAG_MODIFIER = 4.0;
     return TMP_LINE_Y_VELOCITY_DRAG_MODIFIER;
 }
 
 const double &Line::POLE_X_VELOCITY()
 {
-    static const double TMP_POLE_X_VELOCITY = .15;
+    static const double TMP_POLE_X_VELOCITY = StandardUnit::SPEED() * 11.0;
     return TMP_POLE_X_VELOCITY;
 }
 
 const double &Line::SETTLE_RATE()
 {
-    static const double TMP_SETTLE_RATE = POLE_X_VELOCITY() * 0.6;
+    //Okay b/c standardUnit::speed is divisible by 2
+    static const double TMP_SETTLE_RATE = StandardUnit::SPEED() * 8;
     return TMP_SETTLE_RATE;
 }
 
 const double &Line::SLOPE_PULL_THRESHOLD()
 {
-    static const double TMP_SLOPE_PULL_THRESHOLD = 3.0/2.0;
+    static const double TMP_SLOPE_PULL_THRESHOLD = 4.0/2.0;
     return TMP_SLOPE_PULL_THRESHOLD;
 }
 
@@ -210,19 +212,21 @@ const Point &Line::RIPPLE_INITIAL_POSITION()
 
 const Dimension &Line::RIPPLE_INITIAL_SIZE()
 {
-    static const Dimension TMP_RIPPLE_INITIAL_SIZE(20.0, 20.0);
+    static const Dimension TMP_RIPPLE_INITIAL_SIZE(StandardUnit::DIMENSION()
+        * 3, StandardUnit::DIMENSION() * 3);
     return TMP_RIPPLE_INITIAL_SIZE;
 }
 
 const double &Line::SET_HOOK_PIXELS()
 {
-    static const double TMP_SET_HOOK_PIXELS = 10.0;
+    static const double TMP_SET_HOOK_PIXELS = StandardUnit::DIMENSION() * 1.0;
     return TMP_SET_HOOK_PIXELS;
 }
 
 const Uint32 &Line::SET_HOOK_RECOVER_TIME()
 {
-    static const Uint32 TMP_SET_HOOK_RECOVER_TIME = 400;
+    static const Uint32 TMP_SET_HOOK_RECOVER_TIME = StandardUnit::DURATION()
+        * 25;
     return TMP_SET_HOOK_RECOVER_TIME;
 }
 
@@ -259,11 +263,12 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     if( !sharedOcean )
         return;
 
-    sharedOcean->alignWithSurface(this->hookPoint->y, 50.0);
+    sharedOcean->alignWithSurface(this->hookPoint->y, StandardUnit::DIMENSION()
+        * 6);
     this->initialHookPoint.y = hookPoint->y;
 
-    Uint32 rippleFrameTimeNotHooked = 500;
-    Uint32 rippleFrameTimeHooked = 100;
+    Uint32 rippleFrameTimeNotHooked = StandardUnit::DURATION() * 32;
+    Uint32 rippleFrameTimeHooked = StandardUnit::DURATION() * 8;
     /*std::pair<std::string, Uint32> ripplePair1(RIPPLE_PATH1(), rippleFrameTime);
     std::pair<std::string, Uint32> ripplePair2(RIPPLE_PATH2(), rippleFrameTime);
     std::pair<std::string, Uint32> ripplePair3(RIPPLE_PATH3(), rippleFrameTime);*/
@@ -419,7 +424,7 @@ void Line::initialize(boost::shared_ptr<Player> &newPlayer,
         return;
 
     //Magic number 50 means the hook will be somewhat in the water
-    sharedOcean->alignWithSurface(hookPoint->y, 50.0);
+    sharedOcean->alignWithSurface(hookPoint->y, StandardUnit::DIMENSION() * 6.0);
     initialPolePoint.x = polePoint->x;
     initialPolePoint.y = polePoint->y;
     initialHookPoint.x = hookPoint->x;
@@ -1016,13 +1021,13 @@ void Line::NotHookedState::move(Uint32 elapsedTime)
     if( !sharedLineOwner )
         return;
 
-    const Uint32 NORMAL_SPEED_THRESHOLD = 75;
+    const Uint32 NORMAL_SPEED_THRESHOLD = StandardUnit::DURATION() * 5;
     double slowdownFactor = 1.0;
 
     if( sharedLineOwner->normalSpeedThreshold + elapsedTime < NORMAL_SPEED_THRESHOLD )
     {
         sharedLineOwner->normalSpeedThreshold += elapsedTime;
-        slowdownFactor = .4;
+        slowdownFactor = .3;
     }
 
     if(sharedLineOwner->reelInOn)

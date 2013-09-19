@@ -112,7 +112,7 @@ SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
     &messageRouter) : position(new Point(initialPosition)), 
     size(new Dimension(SIZE())), seaSnailBox(position, size), facing(Direction::LEFT()),
     ocean(ocean), shouldResetTimes(false), glowing(false), proceed(false), retreat(false),
-    offScreen(false), timeSinceOffScreen(0), timeSinceProceed(0), live(false), 
+    offScreen(true), timeSinceOffScreen(0), timeSinceProceed(0), live(false), 
     seahorse(seahorse), glowAlpha(0), messageRouter(messageRouter), uuid(
     boost::uuids::random_generator()())
 {
@@ -313,7 +313,7 @@ void SeaSnail::gameLive(bool live)
 void SeaSnail::collidesWith(boost::shared_ptr<Collidable> &otherObject,
     const BoundingBox &otherBox)
 {
-    if( !proceed )
+    if( !proceed && offScreen )
         return;
 
     boost::shared_ptr<SeaSnail> sharedThis = shared_from_this();
@@ -359,7 +359,7 @@ void SeaSnail::collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
 void SeaSnail::collidesWithFish(boost::shared_ptr<Fish> &fish,
     const BoundingBox &yourBox)
 {
-    if( !glowing )
+    if( !glowing || offScreen )
         return;
 
     fish->glow();
@@ -370,7 +370,8 @@ void SeaSnail::collidesWithFish(boost::shared_ptr<Fish> &fish,
     messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_STOP_GLOWING,
         TypeHint::Bool, messageGlow);
 
-    retreat = true;
+    //Commented out because it sometimes caused snail to vanish
+    //retreat = true;
 }
 
 void SeaSnail::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
