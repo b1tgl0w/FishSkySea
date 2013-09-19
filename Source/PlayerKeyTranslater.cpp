@@ -136,9 +136,8 @@ void PlayerKeyTranslater::initialize(const boost::shared_ptr<Player> &player,
         actions.insert(LENGTHEN_POLE_DEFAULT_KEY_P1);
         actions.insert(SHORTEN_POLE_DEFAULT_KEY_P1);
         actions.insert(SET_HOOK_DEFAULT_KEY_P1);
-    }
-    else
-    {
+
+        //Orignally player2's, but adding alternative keys to player1
         REEL_IN_DEFAULT_KEY_P2 = std::make_pair((int) SDLK_UP, tmpPlayerReelInAction);
         GIVE_LINE_DEFAULT_KEY_P2 = std::make_pair((int) SDLK_DOWN, tmpPlayerGiveLineAction);
         LENGTHEN_POLE_DEFAULT_KEY_P2 = std::make_pair((int) SDLK_RIGHT,
@@ -152,6 +151,9 @@ void PlayerKeyTranslater::initialize(const boost::shared_ptr<Player> &player,
         actions.insert(LENGTHEN_POLE_DEFAULT_KEY_P2);
         actions.insert(SHORTEN_POLE_DEFAULT_KEY_P2);
         actions.insert(SET_HOOK_DEFAULT_KEY_P2);
+    }
+    else
+    {
     }
 }
 

@@ -111,10 +111,11 @@ SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
     &ocean, boost::weak_ptr<Seahorse> &seahorse, boost::shared_ptr<MessageRouter>
     &messageRouter) : position(new Point(initialPosition)), 
     size(new Dimension(SIZE())), seaSnailBox(position, size), facing(Direction::LEFT()),
-    ocean(ocean), shouldResetTimes(false), glowing(false), proceed(false), retreat(false),
-    offScreen(true), timeSinceOffScreen(0), timeSinceProceed(0), live(false), 
+    ocean(ocean), glowing(false), 
+    live(false), 
     seahorse(seahorse), glowAlpha(0), messageRouter(messageRouter), uuid(
-    boost::uuids::random_generator()())
+    boost::uuids::random_generator()()), state(), proceedState(),
+    waitState(), onScreen(false)
 {
     glow();
     positionFromSide();
@@ -123,12 +124,12 @@ SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
 
 SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position), size(
     rhs.size), seaSnailBox(rhs.seaSnailBox), facing(rhs.facing), 
-    ocean(rhs.ocean), shouldResetTimes(rhs.shouldResetTimes), 
-    glowing(rhs.glowing), proceed(rhs.proceed), retreat(rhs.retreat),
-    offScreen(rhs.offScreen), timeSinceOffScreen(rhs.timeSinceOffScreen), 
-    timeSinceProceed(0), live(rhs.live), seahorse(rhs.seahorse),
+    ocean(rhs.ocean), 
+    glowing(rhs.glowing), 
+    live(rhs.live), seahorse(rhs.seahorse),
     glowAlpha(rhs.glowAlpha), messageRouter(rhs.messageRouter),
-    uuid(rhs.uuid)
+    uuid(rhs.uuid), state(rhs.state), proceedState(rhs.proceedState),
+    waitState(rhs.waitState), onScreen(rhs.onScreen)
 {
 }
 
@@ -142,24 +143,40 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
     seaSnailBox = rhs.seaSnailBox;
     facing = rhs.facing;
     ocean = rhs.ocean;
-    shouldResetTimes = rhs.shouldResetTimes;
     glowing = rhs.glowing;
-    proceed = rhs.proceed;
-    retreat = rhs.retreat;
-    offScreen = rhs.offScreen;
-    timeSinceOffScreen = rhs.timeSinceOffScreen;
-    timeSinceProceed = rhs.timeSinceProceed;
     live = rhs.live;
     seahorse = rhs.seahorse;
     glowAlpha = rhs.glowAlpha;
     messageRouter = rhs.messageRouter;
     uuid = rhs.uuid;
+    state = rhs.state;
+    proceedState = rhs.proceedState;
+    waitState = rhs.waitState;
+    onScreen = rhs.onScreen;
     
     return *this;
 }
 
 SeaSnail::~SeaSnail()
 {
+}
+
+void SeaSnail::initializeStates()
+{
+    boost::shared_ptr<SeaSnail> sharedThis(shared_from_this());
+    boost::shared_ptr<ProceedState> tmpProceed(new ProceedState(sharedThis));
+    boost::shared_ptr<WaitState> tmpWait(new WaitState(sharedThis));
+    proceedState = tmpProceed;
+    waitState = tmpWait;
+    state = waitState;
+    state->enter();
+}
+
+void SeaSnail::changeState(boost::shared_ptr<SeaSnailState> &newState)
+{
+    state->exit();
+    state = newState;
+    state->enter();
 }
 
 void SeaSnail::swim(Uint32 elapsedTime)
@@ -199,7 +216,7 @@ void SeaSnail::positionFromSide()
     
     faceRandomDirection();
     sharedOcean->alignWithBoundary(position->x, facing,
-        facing == Direction::LEFT() ? -SIZE().width - 1 : -1 );
+        facing == Direction::LEFT() ? -SIZE().width + 1 : 1 );
 }
 
 void SeaSnail::loadImage(Renderer &renderer)
@@ -221,63 +238,6 @@ void SeaSnail::glow()
 void SeaSnail::randomAboutFace(Uint32 elapsedTime)
 {
     //No-op
-}
-
-void SeaSnail::readyToProceed(Uint32 elapsedTime)
-{
-    if( timeSinceOffScreen < MINIMUM_TIME_TO_PROCEED() ||
-        shouldResetTimes || retreat )
-        return;
-
-    if( timeSinceOffScreen >= MAXIMUM_TIME_TO_PROCEED() )
-    {
-        proceed = true;
-
-        boost::shared_ptr<MessageData> messageProceed(new Bool(true));
-        
-        messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_ON_SCREEN,
-            TypeHint::Bool, messageProceed);
-
-        return;
-    }
-
-    if( elapsedTime == 0 )
-        return;
-
-    const int PROBABILITY_OVER_TIME = READY_PROBABILITY() / elapsedTime;
-
-    if( PROBABILITY_OVER_TIME == 0 )
-        return;
-
-    if( Math::random(1, PROBABILITY_OVER_TIME) %
-        PROBABILITY_OVER_TIME == 0 )
-    {
-        proceed = true;
-
-        boost::shared_ptr<MessageData> messageProceed(new Bool(true));
-        
-        messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_ON_SCREEN,
-            TypeHint::Bool, messageProceed);
-    }
-}
-
-void SeaSnail::readyToRetreat(Uint32 elapsedTime)
-{
-    if( timeSinceProceed < MINIMUM_TIME_TO_RETREAT() ||
-        shouldResetTimes )
-        return;
-
-    if( elapsedTime == 0 )
-        return;
-
-    const int PROBABILITY_OVER_TIME = RETREAT_PROBABILITY() / elapsedTime;
-
-    if( PROBABILITY_OVER_TIME == 0 )
-        return;
-
-    if( Math::random(1, PROBABILITY_OVER_TIME) %
-        PROBABILITY_OVER_TIME == 0 )
-        retreat = true;
 }
 
 void SeaSnail::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
@@ -313,9 +273,6 @@ void SeaSnail::gameLive(bool live)
 void SeaSnail::collidesWith(boost::shared_ptr<Collidable> &otherObject,
     const BoundingBox &otherBox)
 {
-    if( !proceed && offScreen )
-        return;
-
     boost::shared_ptr<SeaSnail> sharedThis = shared_from_this();
     
     if( !sharedThis )
@@ -343,7 +300,7 @@ void SeaSnail::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
 void SeaSnail::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox)
 {
-    offScreen = false;
+    onScreen = true;
 }
 
 void SeaSnail::collidesWithShark(boost::shared_ptr<Shark> &shark,
@@ -359,7 +316,7 @@ void SeaSnail::collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
 void SeaSnail::collidesWithFish(boost::shared_ptr<Fish> &fish,
     const BoundingBox &yourBox)
 {
-    if( !glowing || offScreen )
+    if( !glowing )
         return;
 
     fish->glow();
@@ -369,9 +326,6 @@ void SeaSnail::collidesWithFish(boost::shared_ptr<Fish> &fish,
     
     messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_STOP_GLOWING,
         TypeHint::Bool, messageGlow);
-
-    //Commented out because it sometimes caused snail to vanish
-    //retreat = true;
 }
 
 void SeaSnail::collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
@@ -409,27 +363,20 @@ void SeaSnail::clockTick(Uint32 elapsedTime)
     if( !live )
         return;
 
-    offScreen = true;
+    state->clockTick(elapsedTime);
 
-    readyToProceed(elapsedTime);
-    readyToRetreat(elapsedTime);
-
-    if( proceed || retreat )
-        swim(elapsedTime);
-
-    if( offScreen && retreat )
-        restartCycle();
-
-    if( retreat && proceed )
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+    if( sharedOcean )
     {
-        //aboutFace();
-        proceed = false;
+        onScreen = false;
+
+        boost::shared_ptr<Collidable> collidable(shared_from_this());
+        sharedOcean->checkCollisions(collidable, seaSnailBox);
+
+        if( onScreen == false && state == proceedState )
+            changeState(waitState);
     }
 
-    updateTimes(elapsedTime);
-
-    if( shouldResetTimes )
-        resetTimes();
 
     if( glowing )
     {
@@ -474,40 +421,115 @@ void SeaSnail::faceRandomDirection()
         facing = Direction::RIGHT();
 }
 
-void SeaSnail::resetTimes()
+SeaSnail::ProceedState::ProceedState(boost::shared_ptr<SeaSnail> &owner) : 
+    seaSnailOwner(owner)
+{ }
+
+void SeaSnail::ProceedState::enter()
 {
-    timeSinceOffScreen = 0;
-    timeSinceProceed = 0;
-    shouldResetTimes = false;
-}
+    boost::shared_ptr<SeaSnail> sharedOwner = seaSnailOwner.lock();
 
-void SeaSnail::updateTimes(Uint32 elapsedTime)
-{
-    timeSinceOffScreen += elapsedTime;
-
-    if( proceed )
-        timeSinceProceed += elapsedTime;
-}
-
-void SeaSnail::restartCycle()
-{
-    boost::shared_ptr<Seahorse> sharedSeahorse = seahorse.lock();
-
-    if( !sharedSeahorse )
+    if( !sharedOwner )
         return;
 
-    sharedSeahorse->notifySeaSnailRetreat();
+    sharedOwner->glowing = true;
+}
 
-    shouldResetTimes = true;
-    proceed = false;
-    retreat = false;
-    positionFromSide();
-    aboutFace();
-    glow();
+void SeaSnail::ProceedState::exit()
+{
+    boost::shared_ptr<SeaSnail> sharedOwner = seaSnailOwner.lock();
 
-    boost::shared_ptr<MessageData> messageProceed(new Bool(true));
+    if( sharedOwner )
+    {
+        boost::shared_ptr<Seahorse> sharedSeahorse = 
+            sharedOwner->seahorse.lock();
+
+        if( sharedSeahorse )
+            sharedSeahorse->notifySeaSnailRetreat();
+    }
+}
+
+void SeaSnail::ProceedState::swim(Uint32 elapsedTime)
+{
+    boost::shared_ptr<SeaSnail> sharedOwner = seaSnailOwner.lock();
+
+    if( !sharedOwner )
+        return;
+
+    //Note if touching just antenna, this size should be the antenna size
+    const double MAXIMUM_PIXELS = SIZE().width - 1; 
+    double pixelsLeft = sharedOwner->calculatePixelsLeft(elapsedTime);
+    double pixelsThisIteration = 0;
+
+    boost::shared_ptr<Ocean> sharedOcean = sharedOwner->ocean.lock();
     
-    messageRouter->sendMessage(uuid, MessageEnum::SEA_SNAIL_OFF_SCREEN,
-        TypeHint::Bool, messageProceed);
+    if( !sharedOcean )
+        return;
+
+    boost::shared_ptr<Collidable> collidable(sharedOwner);
+
+    while(pixelsLeft > 0 )
+    {
+        pixelsThisIteration = Math::lesser(MAXIMUM_PIXELS, pixelsLeft);
+        sharedOwner->moveForward(pixelsThisIteration);
+        pixelsLeft -= pixelsThisIteration;
+        sharedOcean->checkCollisions(collidable, sharedOwner->seaSnailBox);
+    }
+
+    boost::shared_ptr<MessageData> messageMove(sharedOwner->position);
+    
+    sharedOwner->messageRouter->sendMessage(sharedOwner->uuid, 
+        MessageEnum::SEA_SNAIL_MOVE, TypeHint::Point, messageMove);
+    
+}
+
+void SeaSnail::ProceedState::clockTick(Uint32 elapsedTime)
+{
+    swim(elapsedTime);
+}
+
+SeaSnail::WaitState::WaitState(boost::shared_ptr<SeaSnail> &owner) :
+    seaSnailOwner(owner), timeSinceOffScreen(0)
+{ }
+
+void SeaSnail::WaitState::enter()
+{
+    timeSinceOffScreen = 0;
+
+    boost::shared_ptr<SeaSnail> sharedOwner = seaSnailOwner.lock();
+
+    if( !sharedOwner )
+        return;
+
+    sharedOwner->glowing = false;
+    sharedOwner->positionFromSide();
+    sharedOwner->aboutFace();
+}
+
+void SeaSnail::WaitState::exit()
+{
+}
+
+void SeaSnail::WaitState::swim(Uint32 elapsedTime)
+{
+    //do nothing
+}
+
+void SeaSnail::WaitState::clockTick(Uint32 elapsedTime)
+{
+    //This should be a longer duration than the seahorse is on screen
+    const Uint32 WAIT_TIME = StandardUnit::DURATION() * 2000;
+    timeSinceOffScreen += elapsedTime;
+
+    if( timeSinceOffScreen > WAIT_TIME )
+    {
+        boost::shared_ptr<SeaSnail> sharedOwner = seaSnailOwner.lock();
+        
+        if( !sharedOwner )
+            return;
+
+        sharedOwner->changeState(sharedOwner->proceedState);
+        return;
+    }
 }
 

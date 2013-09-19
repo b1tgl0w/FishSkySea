@@ -272,6 +272,7 @@ void Ocean::initializeSharedFromThis()
     fishes.push_back(fish5);
     fishes.push_back(fish6);
     seaSnail = tmpSeaSnail;
+    seaSnail->initializeStates();
     seahorse = tmpSeahorse;
     shark = tmpShark;
     clouds = tmpClouds;

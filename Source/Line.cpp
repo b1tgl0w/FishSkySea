@@ -89,7 +89,7 @@ const Dimension &Line::POLE_DIMENSION()
 
 const Dimension &Line::HOOK_DIMENSION()
 {
-    static const Dimension TMP_HOOK_DIMENSION(1.0, 4.0); 
+    static const Dimension TMP_HOOK_DIMENSION(1.0, 6.0); 
     return TMP_HOOK_DIMENSION;
 }
 
@@ -149,7 +149,7 @@ const bool &Line::INITIAL_FISH_HOOKED()
 
 const double &Line::LINE_Y_VELOCITY()
 {
-    static const double TMP_LINE_Y_VELOCITY = StandardUnit::SPEED() * 11.0;
+    static const double TMP_LINE_Y_VELOCITY = StandardUnit::SPEED() * 10.0;
     return TMP_LINE_Y_VELOCITY;
 }
 
@@ -161,13 +161,13 @@ const double &Line::LINE_X_VELOCITY_DRAG_MODIFIER()
 
 const double &Line::LINE_Y_VELOCITY_DRAG_MODIFIER()
 {
-    static const double TMP_LINE_Y_VELOCITY_DRAG_MODIFIER = 4.0;
+    static const double TMP_LINE_Y_VELOCITY_DRAG_MODIFIER = 3.333;
     return TMP_LINE_Y_VELOCITY_DRAG_MODIFIER;
 }
 
 const double &Line::POLE_X_VELOCITY()
 {
-    static const double TMP_POLE_X_VELOCITY = StandardUnit::SPEED() * 11.0;
+    static const double TMP_POLE_X_VELOCITY = StandardUnit::SPEED() * 10.0;
     return TMP_POLE_X_VELOCITY;
 }
 
@@ -263,8 +263,8 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     if( !sharedOcean )
         return;
 
-    sharedOcean->alignWithSurface(this->hookPoint->y, StandardUnit::DIMENSION()
-        * 6);
+    sharedOcean->alignWithSurface(this->hookPoint->y, 
+        1.0);
     this->initialHookPoint.y = hookPoint->y;
 
     Uint32 rippleFrameTimeNotHooked = StandardUnit::DURATION() * 32;
@@ -424,7 +424,7 @@ void Line::initialize(boost::shared_ptr<Player> &newPlayer,
         return;
 
     //Magic number 50 means the hook will be somewhat in the water
-    sharedOcean->alignWithSurface(hookPoint->y, StandardUnit::DIMENSION() * 6.0);
+    sharedOcean->alignWithSurface(hookPoint->y, 0.0);
     initialPolePoint.x = polePoint->x;
     initialPolePoint.y = polePoint->y;
     initialHookPoint.x = hookPoint->x;
@@ -1138,7 +1138,7 @@ void Line::NotHookedState::clockTick(Uint32 elapsedTime)
         restoreFromSetHook(elapsedTime);
 
     sharedLineOwner->bitePoint->x = sharedLineOwner->hookPoint->x - 2.0;
-    sharedLineOwner->bitePoint->y = sharedLineOwner->hookPoint->y + 5.0;
+    sharedLineOwner->bitePoint->y = sharedLineOwner->hookPoint->y + 6.0;
 }
 
 void Line::NotHookedState::restoreFromSetHook(Uint32 elapsedTime)

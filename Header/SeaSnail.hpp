@@ -54,6 +54,9 @@ class MessageRouter;
 class SeaSnail : public SeaCreature, public Graphic, public Collidable,
     public boost::enable_shared_from_this<SeaSnail>
 {
+friend class SeaSnailState;
+friend class ProceedState;
+friend class WaitState;
 public:
     explicit SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
         &ocean, boost::weak_ptr<Seahorse> &seahorse, boost::shared_ptr<
@@ -61,6 +64,8 @@ public:
     SeaSnail(const SeaSnail &rhs);
     SeaSnail &operator=(const SeaSnail &rhs);
     ~SeaSnail();
+    //_MUST_ be called immediately after ctor
+    void initializeStates();
     void swim(Uint32 elapsedTime);
     void positionFromSide();
     void loadImage(Renderer &renderer);
@@ -108,32 +113,62 @@ public:
 protected:
     SeaSnail();
 private:
+    class SeaSnailState
+    {
+    friend class SeaSnail;
+    public:
+        virtual void enter() = 0;
+        virtual void exit() = 0;
+        virtual void swim(Uint32 elapsedTime) = 0;
+        virtual void clockTick(Uint32 elapsedTime) = 0;
+    };
+    class ProceedState : public SeaSnailState
+    {
+    friend class SeaSnail;
+    public:
+        ProceedState(boost::shared_ptr<SeaSnail> &owner);
+        void enter();
+        void exit();
+        void swim(Uint32 elapsedTime);
+        void clockTick(Uint32 elapsedTime);
+    private:
+        ProceedState();
+        boost::weak_ptr<SeaSnail> seaSnailOwner;
+    };
+    class WaitState : public SeaSnailState
+    {
+    friend class SeaSnail;
+    public:
+        WaitState(boost::shared_ptr<SeaSnail> &owner);
+        void enter();
+        void exit();
+        void swim(Uint32 elapsedTime);
+        void clockTick(Uint32 elapsedTime);
+    private:
+        WaitState();
+        boost::weak_ptr<SeaSnail> seaSnailOwner;
+        Uint32 timeSinceOffScreen;
+    };
     void moveForward(double pixels);
     void aboutFace();
     double calculatePixelsLeft(Uint32 elapsedTime);
     void faceRandomDirection();
-    void resetTimes();
-    void updateTimes(Uint32 elapsedTime);
-    void readyToProceed(Uint32 elapsedTime);
-    void readyToRetreat(Uint32 elapsedTime);
-    void restartCycle();
+    void changeState(boost::shared_ptr<SeaSnailState> &newState);
     boost::shared_ptr<Point> position;
     boost::shared_ptr<Dimension> size;
     BoundingBox seaSnailBox;
     Direction facing;
     boost::weak_ptr<Ocean> ocean;
-    bool shouldResetTimes;
     bool glowing;
-    bool proceed;
-    bool retreat;
-    bool offScreen;
-    Uint32 timeSinceOffScreen;
-    Uint32 timeSinceProceed;
     bool live;
     boost::weak_ptr<Seahorse> seahorse;
     double glowAlpha;
     boost::shared_ptr<MessageRouter> messageRouter;
     boost::uuids::uuid uuid;
+    boost::shared_ptr<SeaSnailState> state;
+    boost::shared_ptr<SeaSnailState> proceedState;
+    boost::shared_ptr<SeaSnailState> waitState;
+    bool onScreen;
 
     static const std::string &IMAGE_PATH();
     static const std::string &GLOW_IMAGE_PATH();

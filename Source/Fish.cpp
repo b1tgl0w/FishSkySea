@@ -75,14 +75,14 @@ const Dimension &Fish::SIZE()
 const Dimension &Fish::MOUTH_SIZE()
 {
     //Dont use StandardUnit here
-    static const Dimension TMP_MOUTH_SIZE(1.0, 4.0); 
+    static const Dimension TMP_MOUTH_SIZE(1.0, 6.0); 
     return TMP_MOUTH_SIZE;
 }
 
 const Dimension &Fish::MOUTH_SIZE_SEAHORSE()
 {
     //Dont use StandardUnit here
-    static const Dimension TMP_MOUTH_SIZE_SEAHORSE(5.0, 4.0); 
+    static const Dimension TMP_MOUTH_SIZE_SEAHORSE(5.0, 6.0); 
     return TMP_MOUTH_SIZE_SEAHORSE;
 }
 
@@ -835,7 +835,7 @@ void Fish::FreeState::spurtVelocity(Uint32 elapsedTime)
 {
     const Uint32 SPURT_PERIOD = StandardUnit::DURATION() * 40;
     const double VELOCITY_MIN = StandardUnit::SPEED() * 5.0;
-    const double VELOCITY_MAX = VELOCITY_MIN * 4.0;
+    const double VELOCITY_MAX = StandardUnit::SPEED() * 18.0;
     spurtPhase += elapsedTime;
     spurtPhase = Math::cycle(spurtPhase, 0, SPURT_PERIOD);
     velocity = Math::calculateLinearPositionValue(0, SPURT_PERIOD, VELOCITY_MAX, 
