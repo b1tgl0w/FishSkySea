@@ -143,7 +143,6 @@ public:
     static const double &LINE_Y_VELOCITY_DRAG_MODIFIER();
     static const double &POLE_X_VELOCITY();
     static const double &SETTLE_RATE();
-    static const double &SLOPE_PULL_THRESHOLD();
     static const Point &RIPPLE_INITIAL_POSITION();
     static const Dimension &RIPPLE_INITIAL_SIZE();
     static const std::string &RIPPLE_PATH1();

@@ -81,7 +81,7 @@ const Uint32 &Shark::ABOUT_FACE_TICK_PROBABILITY()
 const Uint32 &Shark::MINIMUM_TIME_TO_RANDOM_ABOUT_FACE()
 {
     const static Uint32 TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE = StandardUnit::
-        DURATION() * 8;
+        DURATION() * 16;
     return TMP_MINIMUM_TIME_TO_RANDOM_ABOUT_FACE;
 }
 

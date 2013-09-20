@@ -178,12 +178,6 @@ const double &Line::SETTLE_RATE()
     return TMP_SETTLE_RATE;
 }
 
-const double &Line::SLOPE_PULL_THRESHOLD()
-{
-    static const double TMP_SLOPE_PULL_THRESHOLD = 4.0/2.0;
-    return TMP_SLOPE_PULL_THRESHOLD;
-}
-
 const std::string &Line::RIPPLE_PATH1()
 {
     static const std::string TMP_PATH = "../Media/Ripple1.png";

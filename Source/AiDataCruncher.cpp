@@ -988,3 +988,50 @@ void AiDataCruncher::sendMessage(const boost::uuids::uuid &senderId, const Messa
     }
 }
 
+boost::shared_ptr<Bool> AiDataCruncher::snailActive()
+{
+    boost::shared_ptr<Bool> ret;
+    boost::uuids::uuid ssUuid;
+
+    if( !getSeaSnailUuid(ssUuid) )
+        return ret;
+
+    if( seaSnailGlowing.count(ssUuid) == 0 || seaSnailOnScreen.count(ssUuid) == 0 )
+        return ret;
+
+    if( seaSnailGlowing[ssUuid]->plainBool == true && seaSnailOnScreen[
+        ssUuid]->plainBool == true )
+    {
+        boost::shared_ptr<Bool> tmp(new Bool(true));
+        ret = tmp;
+    }
+    else
+    {
+        boost::shared_ptr<Bool> tmp(new Bool(false));
+        ret = tmp;
+    }
+
+    return ret;
+}
+
+bool AiDataCruncher::getSeaSnailUuid(boost::uuids::uuid &ssUuid)
+{
+    if( !seaSnailPosition.empty() )
+    {
+        ssUuid =  seaSnailPosition.begin()->first;
+        return true;
+    }
+    else if( !seaSnailGlowing.empty() )
+    {
+        ssUuid = seaSnailGlowing.begin()->first;
+        return true;
+    }
+    else if( !seaSnailOnScreen.empty() )
+    {
+        ssUuid = seaSnailOnScreen.begin()->first;
+        return true;
+    }
+
+    return false;
+}
+

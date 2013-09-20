@@ -57,7 +57,10 @@ public:
     //void registerAi(boost::shared_ptr<Ai> ai);
     //Must be called _after_ ctor
     void subscribeToAll();
+    //Data crunch methods   
+    boost::shared_ptr<Bool> snailActive();
 private:
+    bool getSeaSnailUuid(boost::uuids::uuid &ssUuid);
     boost::shared_ptr<MessageRouter> messageRouter;
     std::map<boost::uuids::uuid, boost::shared_ptr<Point> > fishPosition;
     std::map<boost::uuids::uuid, boost::shared_ptr<Point> > fishMouthPosition;

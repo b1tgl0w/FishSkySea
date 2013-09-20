@@ -446,6 +446,11 @@ void SeaSnail::ProceedState::exit()
 
         if( sharedSeahorse )
             sharedSeahorse->notifySeaSnailRetreat();
+
+        boost::shared_ptr<MessageData> messageProceed(new Bool(true));
+
+        sharedOwner->messageRouter->sendMessage(sharedOwner->uuid, 
+            MessageEnum::SEA_SNAIL_ON_SCREEN, TypeHint::Bool, messageProceed);
     }
 }
 
@@ -504,6 +509,11 @@ void SeaSnail::WaitState::enter()
     sharedOwner->glowing = false;
     sharedOwner->positionFromSide();
     sharedOwner->aboutFace();
+
+    boost::shared_ptr<MessageData> messageRetreat(new Bool(true));
+
+    sharedOwner->messageRouter->sendMessage(sharedOwner->uuid, 
+        MessageEnum::SEA_SNAIL_OFF_SCREEN, TypeHint::Bool, messageRetreat);
 }
 
 void SeaSnail::WaitState::exit()
@@ -518,7 +528,7 @@ void SeaSnail::WaitState::swim(Uint32 elapsedTime)
 void SeaSnail::WaitState::clockTick(Uint32 elapsedTime)
 {
     //This should be a longer duration than the seahorse is on screen
-    const Uint32 WAIT_TIME = StandardUnit::DURATION() * 2000;
+    const Uint32 WAIT_TIME = StandardUnit::DURATION() * 1200;
     timeSinceOffScreen += elapsedTime;
 
     if( timeSinceOffScreen > WAIT_TIME )
