@@ -28,6 +28,7 @@ SUCH DAMAGES.
 #ifndef AI_DATA_CRUNCHER_HPP_
 #define AI_DATA_CRUNCHER_HPP_
 
+#include <SDL2/SDL.h>
 #include "boost/shared_ptr.hpp"
 #include "boost/enable_shared_from_this.hpp"
 #include "boost/uuid/uuid.hpp"
@@ -43,6 +44,8 @@ class Dimension;
 class Score;
 class Direction;
 class Depth;
+template<typename T>
+class QueueWrapper;
 
 class AiDataCruncher : public MessageReceiver, 
     public boost::enable_shared_from_this<AiDataCruncher>
@@ -74,6 +77,8 @@ private:
     std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > fishCaught;
     std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > fishEaten;
     std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > fishNibble;
+    std::map<boost::uuids::uuid, boost::shared_ptr<QueueWrapper<Uint32> > >
+        fishRandomAboutFaceQueue;
     std::map<boost::uuids::uuid, boost::shared_ptr<Point> > sharkPosition;
     std::map<boost::uuids::uuid, boost::shared_ptr<Double> > sharkVelocity;
     std::map<boost::uuids::uuid, boost::shared_ptr<Dimension> > sharkSize;

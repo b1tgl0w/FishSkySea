@@ -70,7 +70,6 @@ public:
     void positionFromSide();
     void loadImage(Renderer &renderer);
     void glow();
-    void randomAboutFace(Uint32 elapsedTime);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
     bool isGlowing();
     void gameLive(bool live);
@@ -149,6 +148,7 @@ private:
         boost::weak_ptr<SeaSnail> seaSnailOwner;
         Uint32 timeSinceOffScreen;
     };
+    void randomAboutFace(Uint32 elapsedTime);
     void moveForward(double pixels);
     void aboutFace();
     double calculatePixelsLeft(Uint32 elapsedTime);

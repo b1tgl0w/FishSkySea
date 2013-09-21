@@ -168,7 +168,6 @@ public:
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
     void aboutFace();
-    void randomAboutFace(Uint32 elapsedTime); //No-op
     void respawn(const double yCoordinate);
     void notifySeaSnailRetreat();
 
@@ -326,6 +325,7 @@ private:
         boost::weak_ptr<Seahorse> seahorseOwner; //Beware of cyclic ptrs
     };
 
+    void randomAboutFace(Uint32 elapsedTime); //No-op
     void changeState(boost::shared_ptr<SeahorseState> &newState);
     void moveForward(double pixels);
     void moveBob(double pixels);

@@ -1,0 +1,54 @@
+See also handwritten notes
+
+Defn
+- Goal:     A desired outcome of an action or series of actions.
+- Action:   A specific, unitary action that is taken to satisfy one or more
+goals.
+- Component:    An iface that can be either a goal or an action
+- Action mapping:   Control sequence needed to satsify the current action.
+
+Goals
+- Win game
+- Score max
+- Score enough
+- Hinder player
+- Make mistake
+- Play perfectly (when opponent is about to win)
+
+Actions                     Goals they fulfill
+--------------------------------------------------
+Seek fish                   Score, hinder, mistake
+Hook fish                   Score, hinder, mistake
+Miss hook nearest fish      Mistake
+Keep hooked fish for glow   Score, hinder
+Shark eat                   Mistake
+Move below shark            Score, mistake
+Shark eat glow              Mistake
+Catch certain               Score
+Catch risky                 Score, mistake
+Intercept seahorse fish     Score, hinder
+Lose fish out of range      Mistake
+Place hook too low/high     Mistake
+Place hook in fish path     Score, hinder, mistake
+Yank hook                   Score
+Chase fish                  Mistake
+Steal fish coming inrange   Score, hinder
+
+Other
+--------------------------------------------------
+Work slower                 (Not a regular action)
+Move differently            (Not a regular action)
+
+Note:   The win game goal can be achieved by score big and sometimes score little,
+only if a little score will win the game.
+
+Note    Consider using the composite pattern where a goal can hold subgoals
+or actions. Some goals can also be taken as actions?
+
+Note:   Use boost::graph (not a tree), where the root nodes (goals) are known,
+and the weight of each edge is the maximum time the action will take (max(poleTime,
+fishTime)). Use shortest path algos provided with lib. Reason won't be a tree:
+e.g. Seek fish action might have two parents, and those parents might have
+more children, which seek fish might also be a child of them. Also, to avoid
+cycles, perhaps use a directed graph? Algorithm for choosing path is 
+totalWeight / edgesTraveled

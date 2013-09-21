@@ -66,7 +66,6 @@ public:
     virtual ~Shark();
     void initializeStates(); //_MUST_ be called IMMEDIATELY after ctor
     void swim(Uint32 elapsedTime);
-    void randomAboutFace(Uint32 elapsedTime);
     bool shouldEatFish(BoundingBox fishBox);
     void seeFish();
     void eat(bool glowing);
@@ -283,6 +282,7 @@ private:
         boost::weak_ptr<Shark> sharkOwner; //Beware of cyclic ptrs
     };
 
+    void randomAboutFace(Uint32 elapsedTime);
     void changeState(boost::shared_ptr<SharkState> &newState);
     void moveForward(double pixels);
     void aboutFace();

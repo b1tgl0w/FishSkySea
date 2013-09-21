@@ -37,11 +37,13 @@ SUCH DAMAGES.
 #include "../Header/Score.hpp"
 #include "../Header/Direction.hpp"
 #include "../Header/Depth.hpp"
+#include "../Header/QueueWrapper.hpp"
 
 AiDataCruncher::AiDataCruncher(boost::shared_ptr<MessageRouter> &messageRouter)
     : messageRouter(messageRouter), fishPosition(), fishMouthPosition(),
     fishVelocity(), fishSize(), fishMouthSize(), fishFacing(), fishGlowing(),
     fishDepth(), fishHooked(), fishCaught(), fishEaten(), fishNibble(),
+    fishRandomAboutFaceQueue(),
     sharkPosition(), sharkVelocity(), sharkSize(), sharkFacing(), sharkGlowing(),
     seaSnailPosition(), seaSnailGlowing(), seaSnailOnScreen(), seahorsePosition(),
     seahorseVelocity(), seahorseFloat(), seahorseOnScreen(), poleAreaPosition(),
@@ -68,6 +70,7 @@ void AiDataCruncher::subscribeToAll()
     messageRouter->subscribeToMessage(MessageEnum::FISH_CAUGHT, sharedThis);
     messageRouter->subscribeToMessage(MessageEnum::FISH_EATEN, sharedThis);
     messageRouter->subscribeToMessage(MessageEnum::FISH_NIBBLE, sharedThis);
+    messageRouter->subscribeToMessage(MessageEnum::FISH_RANDOM_ABOUT_FACE_QUEUE, sharedThis);
     messageRouter->subscribeToMessage(MessageEnum::FISH_STOP_NIBBLE, sharedThis);
     messageRouter->subscribeToMessage(MessageEnum::SHARK_MOVE, sharedThis);
     messageRouter->subscribeToMessage(MessageEnum::SHARK_VELOCITY, sharedThis);
@@ -344,6 +347,26 @@ void AiDataCruncher::sendMessage(const boost::uuids::uuid &senderId, const Messa
                 fishNibble.insert(std::make_pair(senderId, castedData));
             else
                 fishNibble[senderId] = castedData;
+        }
+    }
+    else if( message == MessageEnum::FISH_RANDOM_ABOUT_FACE_QUEUE )
+    {
+        if( typeHint == TypeHint::QueueWrapperUint32 )
+        {
+            boost::shared_ptr<QueueWrapper<Uint32> > castedData = boost::dynamic_pointer_cast<QueueWrapper<Uint32> >(
+                data);
+
+            if( !castedData )
+            {
+                std::cout << "Error: Bad message." << std::endl;
+
+                return;
+            }
+
+            if( fishRandomAboutFaceQueue.count(senderId) == 0 )
+                fishRandomAboutFaceQueue.insert(std::make_pair(senderId, castedData));
+            else
+                fishRandomAboutFaceQueue[senderId] = castedData;
         }
     }
     else if( message == MessageEnum::SHARK_MOVE )

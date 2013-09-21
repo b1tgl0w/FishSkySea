@@ -56,6 +56,8 @@ class Shark;
 class Seahorse;
 struct Point;
 class MessageRouter;
+template<typename T>
+class QueueWrapper;
 
 //! Bass fish that swims in ocean and gets caught
 /*!
@@ -102,7 +104,6 @@ public:
         state, but essentially changes direction with a higher probability
         as time goes on.
     */
-    void randomAboutFace(Uint32 elapsedTime);
     //!Not currently implemented
     /*!
         This was in the UML, but it may have become obsolete. It will be
@@ -245,7 +246,6 @@ private:
     public:
         virtual void swim(Uint32 elapsedTime) = 0;
         virtual void pull(const Point &hookPoint) = 0;
-        virtual void randomAboutFace(Uint32 elapsedTime) = 0;
         virtual void nibble(boost::shared_ptr<Line> &line) = 0;
         virtual void swim(double pixels) = 0;
     private:
@@ -259,11 +259,10 @@ private:
         void swim(double pixels);
         void swim(Uint32 elapsedTime);
         void pull(const Point &hookPoint);
-        void randomAboutFace(Uint32 elapsedTime);
         bool atDepth(const Depth &depth);
         void nibble(boost::shared_ptr<Line> &line);
         HookedState();
-        HookedState(boost::weak_ptr<Fish> fishOwner);
+        HookedState(boost::shared_ptr<Fish> fishOwner); //DONT STORE SHARED_PTR
         HookedState(const HookedState &rhs);
         HookedState &operator=(const HookedState &rhs);
         virtual ~HookedState();
@@ -320,6 +319,7 @@ private:
         double calculatePixelsLeft(Uint32 elapsedTime);
         boost::weak_ptr<Fish> fishOwner; //Beware of cyclic ptrs
         static const double &HOOKED_FISH_VELOCITY();
+        boost::shared_ptr<QueueWrapper<Uint32> > randomAboutFaceQueue;
     };
 
     class FreeState : public FishState
@@ -329,11 +329,10 @@ private:
         void swim(double pixels);
         void swim(Uint32 elapsedTime);
         void pull(const Point &hookPoint);
-        void randomAboutFace(Uint32 elapsedTime);
         bool atDepth(const Depth &depth);
         void nibble(boost::shared_ptr<Line> &line);
         FreeState();
-        FreeState(boost::weak_ptr<Fish> fishOwner);
+        FreeState(boost::shared_ptr<Fish> fishOwner); //DONT STORE SHARED_PTR
         FreeState(const FreeState &rhs);
         FreeState &operator=(const FreeState &rhs);
         virtual ~FreeState();
@@ -404,8 +403,14 @@ private:
         boost::weak_ptr<Fish> fishOwner; //Beware of cyclic ptrs
         double velocity;
         Uint32 spurtPhase;
+        boost::shared_ptr<QueueWrapper<Uint32> > randomAboutFaceQueue;
     };
 
+    void populateRandomAboutFace(boost::shared_ptr<QueueWrapper<Uint32> > 
+        &randomAboutFaceQueue, Uint32 probability);
+    void randomAboutFace(Uint32 &timeSinceRandomAboutFace, boost::shared_ptr<
+        QueueWrapper<Uint32> > &randomAboutFaceQueue);
+    bool shouldAboutFace(Uint32 elapsedTime, Uint32 probability);
     void changeState(boost::shared_ptr<FishState> &newState);
     void moveForward(double pixels);
     void aboutFace();
