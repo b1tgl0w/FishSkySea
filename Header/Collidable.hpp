@@ -83,6 +83,8 @@ public:
         const BoundingBox & yourBox) = 0;
     virtual void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox) = 0;
+    virtual void doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
 };
 
 #endif

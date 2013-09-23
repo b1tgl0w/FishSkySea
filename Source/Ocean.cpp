@@ -518,6 +518,12 @@ void Ocean::collidesWith(boost::shared_ptr<Collidable> &otherObject,
         otherObject->collidesWithOceanEdge(sharedThis,
             otherBox, edge);
     }
+    else
+    {
+        boost::shared_ptr<Ocean> sharedThis(shared_from_this());
+        otherObject->doesntCollideWithOceanEdge(sharedThis,
+            otherBox);
+    }
     if( oceanSurfaceBox.isCollision(otherBox) )
     {
         boost::shared_ptr<Ocean> sharedThis(shared_from_this());

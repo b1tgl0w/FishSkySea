@@ -231,6 +231,8 @@ public:
         const BoundingBox & yourBox);
     void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
+    void doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
     static const Dimension &SIZE(); //Public so ocean knows where to place
@@ -394,6 +396,8 @@ private:
             const BoundingBox & yourBox);
         void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
+        void doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
+            const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Fish> fishOwner);
         void dispose();
@@ -425,6 +429,8 @@ private:
     void resetTimes();
     void updateTimes(Uint32 elapsedTime);
     void swim(double pixels);
+    Point calculateLoopPosition();
+    void loopAround();
     boost::shared_ptr<FishState> state;
     boost::shared_ptr<HookedState> hookedState;
     boost::shared_ptr<FreeState> freeState;
@@ -454,6 +460,7 @@ private:
     double glowAlpha;
     boost::shared_ptr<MessageRouter> messageRouter;
     boost::uuids::uuid uuid;
+    bool loopScreen;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

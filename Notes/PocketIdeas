@@ -1,5 +1,21 @@
+NOTE: Old pocket notebook has already been looked through and added here.
+
+Priority Improvements
+- Fish should float up and down (withing their rows) on an elongated sine wave
+- Make it fishes' job to predict movement, not the data cruncher
+- Redo Story so it's both friendly and interesting.
+
+Unorganized Improvements (May or may not be moved to priority)
+- Fish swap depths. Also, size them according to weight (it will cause the 
+player to take the whole screen into account) (NOT SURE ABOUT THIS ONE, might
+make things too hard)
 - Title screen shown before title menu. Menu shown at button press
 - Fix fish graphic mouth
+- If you put the hook in front of the fish for too long, the fish goes
+up to it, doesn't nibble, and runs away because of suspicion. If fisherman
+jiggles line, don't run.
+- Fisherman has to jiggle line for fish to nibble?
+-
 - Work on colors
 - Don't allow the player to keep the fish on the line too long. Either use
 and eel to eat the fish or have the line break. Either way, make sure there
@@ -13,7 +29,6 @@ is a visible cue to warn the player
 to catch a fish
 - Let player choose character
 - Put an expiration timer on glowing fish/shark?
-- Fish should float up and down (withing their rows)
 - Shark might move in spurts too, at least when not in attack state
 - When doing special move, put text above head of character doing the move. e.g.
 the name of the move.
@@ -40,4 +55,5 @@ obviously)
 //Done - Ripples when line is in water
 //Done - Slow moving clouds
 //Done - Accelerate line and hook for fine movements
-
+//Done - Fish should loop around to other side of screen except when hooked and
+first going on screen.

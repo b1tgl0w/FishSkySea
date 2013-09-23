@@ -141,7 +141,8 @@ Fish::Fish(const Point &initialPosition,
     timeSinceIsTightAboutFace(0), nibbleTime(0), startingDepth(initialDepth),
     shouldResetTimes(false), glowing(false), live(false), behindSeahorse(false),
     collidedWithSeahorse(false), nibbling(false), justFinishedNibbling(false),
-    glowAlpha(0), messageRouter(messageRouter), uuid(boost::uuids::random_generator()())
+    glowAlpha(0), messageRouter(messageRouter), uuid(boost::uuids::random_generator()()),
+    loopScreen(false) 
 {
     boost::shared_ptr<MessageData> messageSize(fishSize);
     messageRouter->sendMessage(uuid, MessageEnum::FISH_SIZE,
@@ -173,7 +174,7 @@ Fish::Fish(const Fish &rhs) : state(rhs.state), hookedState(rhs.hookedState),
     stayBehindSeahorse(rhs.stayBehindSeahorse), collidedWithSeahorse(
     rhs.collidedWithSeahorse), nibbling(rhs.nibbling), justFinishedNibbling(
     rhs.justFinishedNibbling), glowAlpha(rhs.glowAlpha), messageRouter(
-    rhs.messageRouter), uuid(rhs.uuid) 
+    rhs.messageRouter), uuid(rhs.uuid), loopScreen(rhs.loopScreen)
 { 
     positionFromSide();
     updateMouthPosition();
@@ -213,6 +214,7 @@ Fish &Fish::operator=(const Fish &rhs)
     glowAlpha = rhs.glowAlpha;
     messageRouter = rhs.messageRouter;
     uuid = rhs.uuid;
+    loopScreen = rhs.loopScreen;
 
     positionFromSide();
     updateMouthPosition();
@@ -298,7 +300,7 @@ void Fish::randomAboutFace(Uint32 &timeSinceRandomAboutFace, boost::shared_ptr<
         boost::shared_ptr<MessageData> messageQueue(randomAboutFaceQueue);
 
         messageRouter->sendMessage(uuid, MessageEnum::FISH_RANDOM_ABOUT_FACE_QUEUE,
-            TypeHint::Queue, messageQueue);
+            TypeHint::QueueWrapperUint32, messageQueue);
     }
 }
 
@@ -334,6 +336,7 @@ void Fish::hookedBy(boost::weak_ptr<Line> hookedByLine, boost::weak_ptr<Player>
     this->hookedByLine = hookedByLine;
     this->hookedByPlayer = hookedByPlayer;
     boost::shared_ptr<FishState> fishState(hookedState);
+    loopScreen = false;
     changeState(fishState);
 
     boost::shared_ptr<MessageData> messageHooked(new Bool(true));
@@ -359,18 +362,97 @@ void Fish::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     Transformation transformations;
     ImageRendererElement re(IMAGE_PATH(),
         LAYER().integer(), *(position), SIZE());
-    ImageRendererElement glowRe(GLOW_IMAGE_PATH(),
-        LAYER().integer() + 1, *(position), SIZE(), glowAlpha);
+    Point loopPosition;
+
+    if( loopScreen )
+        loopPosition = calculateLoopPosition();
 
     if( facing == Direction::RIGHT() )
         transformations = transformations | Transformation::FlipHorizontal();
 
     re.transform(transformations);
-    glowRe.transform(transformations);
     layout->drawWhenReady(re);
 
+    if( loopScreen )
+    {
+        ImageRendererElement re2(IMAGE_PATH(),
+            LAYER().integer(), loopPosition, SIZE());
+            re2.transform(transformations);
+        layout->drawWhenReady(re2);
+    }
+
     if( glowing )
+    {
+        ImageRendererElement glowRe(GLOW_IMAGE_PATH(),
+            LAYER().integer() + 1, *(position), SIZE(), glowAlpha);
+
+        glowRe.transform(transformations);
         layout->drawWhenReady(glowRe);
+        
+        if( loopScreen )
+        {
+            ImageRendererElement glowRe2(GLOW_IMAGE_PATH(),
+                LAYER().integer() + 1, loopPosition, SIZE(), glowAlpha);
+            glowRe2.transform(transformations);
+            layout->drawWhenReady(glowRe2);
+        }
+    }
+}
+
+Point Fish::calculateLoopPosition()
+{
+    Point loopPosition = *position;
+    loopPosition.x = -9999; //A position that won't show onscreen, default
+    double screenWidth = 0.0;
+
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+
+    if( !sharedOcean )
+    {
+        return loopPosition;
+    }
+
+    //0 offset
+    sharedOcean->alignWithBoundary(screenWidth, Direction::RIGHT(), 0);
+
+    if( position->x < 0 )
+    {
+        sharedOcean->alignWithBoundary(loopPosition.x, Direction::RIGHT(),
+            -position->x);
+    }
+    else if( position->x + SIZE().width > screenWidth )
+    {
+        sharedOcean->alignWithBoundary(loopPosition.x, Direction::LEFT(),
+            position->x - screenWidth);
+    }
+}
+
+void Fish::loopAround()
+{
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+
+    if( !sharedOcean )
+    {
+        return; 
+    }
+
+    double screenWidth = 0.0;
+
+    //0 offset
+    sharedOcean->alignWithBoundary(screenWidth, Direction::RIGHT(), 0);
+
+    if( position->x < -SIZE().width )
+    {
+        double offset = -position->x;
+        sharedOcean->alignWithBoundary(position->x, Direction::RIGHT(),
+            offset);
+    }
+    else if( position->x > screenWidth )
+    {
+        double offset = position->x - screenWidth;
+        sharedOcean->alignWithBoundary(position->x, Direction::LEFT(),
+            offset);
+    }
 }
 
 void Fish::loadImage(Renderer &renderer)
@@ -518,20 +600,27 @@ void Fish::respawn(const Point &newPosition)
 
 void Fish::hitEdge(const Direction &direction)
 {
-    if( direction == Direction::LEFT() )
+    if( loopScreen )
     {
-        facing = Direction::RIGHT();
-        shouldResetTimes = true; //Don't about face too soon after coming on screen
+        loopAround();
     }
-    else if( direction == Direction::RIGHT() )
+    else
     {
-        facing = Direction::LEFT();
-        shouldResetTimes = true; //Don't about face too soon after coming on screen
-    }
+        if( direction == Direction::LEFT() )
+        {
+            facing = Direction::RIGHT();
+            shouldResetTimes = true; //Don't about face too soon after coming on screen
+        }
+        else if( direction == Direction::RIGHT() )
+        {
+            facing = Direction::LEFT();
+            shouldResetTimes = true; //Don't about face too soon after coming on screen
+        }
 
-    boost::shared_ptr<MessageData> messageFacing(new Direction(facing));
-    messageRouter->sendMessage(uuid, MessageEnum::FISH_FACING,
-        TypeHint::Direction, messageFacing);
+        boost::shared_ptr<MessageData> messageFacing(new Direction(facing));
+        messageRouter->sendMessage(uuid, MessageEnum::FISH_FACING,
+            TypeHint::Direction, messageFacing);
+    }
 }
 
 void Fish::isTight(const Direction &direction)
@@ -650,6 +739,11 @@ void Fish::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
 void Fish::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
+void Fish::doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox) 
+{
+    state->doesntCollideWithOceanEdge(ocean, yourBox);
+}
 
 void Fish::clockTick(Uint32 elapsedTime)
 {
@@ -734,7 +828,7 @@ void Fish::populateRandomAboutFace(boost::shared_ptr<QueueWrapper<Uint32> >
     boost::shared_ptr<MessageData> messageQueue(randomAboutFaceQueue);
 
     messageRouter->sendMessage(uuid, MessageEnum::FISH_RANDOM_ABOUT_FACE_QUEUE,
-        TypeHint::Queue, messageQueue);
+        TypeHint::QueueWrapperUint32, messageQueue);
 }
 
 //Inner class FreeState
@@ -978,7 +1072,9 @@ void Fish::FreeState::collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
         return;
 
     if( &yourBox == &(sharedFishOwner->fishBox) )
+    {
         sharedFishOwner->hitEdge(direction);
+    }
 }
 
 void Fish::FreeState::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
@@ -1115,6 +1211,17 @@ void Fish::FreeState::collidesSharkBack(boost::shared_ptr<Shark> &shark,
     const BoundingBox & yourBox) {}
 void Fish::FreeState::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
+void Fish::FreeState::doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
+    const BoundingBox &yourBox)
+{
+    boost::shared_ptr<Fish> sharedOwner = fishOwner.lock();
+
+    if( sharedOwner )
+    {
+        if( &yourBox == &(sharedOwner->fishBox) )
+            sharedOwner->loopScreen = true;
+    }
+}
 
 const double &Fish::HookedState::HOOKED_FISH_VELOCITY()
 {
