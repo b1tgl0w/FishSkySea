@@ -47,6 +47,7 @@ SUCH DAMAGES.
 #include "BoundingBox.hpp"
 #include "Collidable.hpp"
 #include "MasterClockSubscriber.hpp"
+#include "Wave.hpp"
 
 class Renderer;
 class Ocean;
@@ -74,7 +75,7 @@ public:
     //!ctor
     explicit Fish(const Point &initialPosition,
         const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean,
-        boost::shared_ptr<MessageRouter> messageRouter);
+        boost::shared_ptr<MessageRouter> messageRouter, const Wave &wave);
     //!Copy ctor
     Fish(const Fish &rhs);
     //!Copy assignment operator
@@ -461,6 +462,8 @@ private:
     boost::shared_ptr<MessageRouter> messageRouter;
     boost::uuids::uuid uuid;
     bool loopScreen;
+    Wave wave;
+    Point initialPosition;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

@@ -132,7 +132,7 @@ const Uint32 &Fish::NIBBLE_TIME()
 //Class Fish
 Fish::Fish(const Point &initialPosition,
     const Depth &initialDepth, boost::shared_ptr<Ocean> &ocean,
-    boost::shared_ptr<MessageRouter> messageRouter) : 
+    boost::shared_ptr<MessageRouter> messageRouter, const Wave &wave) : 
     state(), hookedState(), freeState(), position(new Point(initialPosition)),
     mouthPosition(new Point), fishSize(new Dimension(SIZE())), mouthSize(
     new Dimension(MOUTH_SIZE())), fishBox(position, fishSize), mouthBox(
@@ -142,7 +142,7 @@ Fish::Fish(const Point &initialPosition,
     shouldResetTimes(false), glowing(false), live(false), behindSeahorse(false),
     collidedWithSeahorse(false), nibbling(false), justFinishedNibbling(false),
     glowAlpha(0), messageRouter(messageRouter), uuid(boost::uuids::random_generator()()),
-    loopScreen(false) 
+    loopScreen(false), wave(wave), initialPosition(initialPosition)
 {
     boost::shared_ptr<MessageData> messageSize(fishSize);
     messageRouter->sendMessage(uuid, MessageEnum::FISH_SIZE,
@@ -174,7 +174,8 @@ Fish::Fish(const Fish &rhs) : state(rhs.state), hookedState(rhs.hookedState),
     stayBehindSeahorse(rhs.stayBehindSeahorse), collidedWithSeahorse(
     rhs.collidedWithSeahorse), nibbling(rhs.nibbling), justFinishedNibbling(
     rhs.justFinishedNibbling), glowAlpha(rhs.glowAlpha), messageRouter(
-    rhs.messageRouter), uuid(rhs.uuid), loopScreen(rhs.loopScreen)
+    rhs.messageRouter), uuid(rhs.uuid), loopScreen(rhs.loopScreen), wave(
+    rhs.wave), initialPosition(rhs.initialPosition)
 { 
     positionFromSide();
     updateMouthPosition();
@@ -215,6 +216,8 @@ Fish &Fish::operator=(const Fish &rhs)
     messageRouter = rhs.messageRouter;
     uuid = rhs.uuid;
     loopScreen = rhs.loopScreen;
+    wave = rhs.wave;
+    initialPosition = rhs.initialPosition;
 
     positionFromSide();
     updateMouthPosition();
@@ -596,6 +599,8 @@ void Fish::respawn(const Point &newPosition)
         sharedNibbleLine->stopNibble();
         nibbling = false;
     }
+
+    position->y = initialPosition.y + wave.yDisplacement(position->x);
 }
 
 void Fish::hitEdge(const Direction &direction)
@@ -971,6 +976,8 @@ void Fish::FreeState::swim(Uint32 elapsedTime)
     }
         
     spurtVelocity(elapsedTime);
+    sharedFishOwner->position->y = sharedFishOwner->initialPosition.y + 
+        sharedFishOwner->wave.yDisplacement(sharedFishOwner->position->x);
 }
 
 void Fish::FreeState::spurtVelocity(Uint32 elapsedTime)

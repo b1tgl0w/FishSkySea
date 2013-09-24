@@ -39,6 +39,8 @@ SUCH DAMAGES.
 #include "../Header/OceanMode.hpp"
 #include "../Header/Seahorse.hpp"
 #include "../Header/MessageRouter.hpp"
+#include "../Header/Wave.hpp"
+#include "../Header/Wavenumber.hpp"
 
 double &Ocean::OCEAN_EDGE_X()
 {
@@ -119,8 +121,8 @@ Ocean::Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer,
     oceanFloorBox(oceanFloorPosition, oceanFloorSize), clouds(), renderer(
     renderer), messageRouter(messageRouter)
 {
-    const double DEPTH_DISTANCE = 30;
-    double currentDepthCoordinate = 361.0;
+    const double DEPTH_DISTANCE = 34;
+    double currentDepthCoordinate = 336.0;
     depthCoordinates[Depth::ROW1()] = currentDepthCoordinate;
     currentDepthCoordinate += DEPTH_DISTANCE;
     depthCoordinates[Depth::ROW2()] = currentDepthCoordinate;
@@ -196,28 +198,33 @@ void Ocean::initializeSharedFromThis()
     Point fishStartingPoint(getFishStartingX(), fishStartingY);
     boost::shared_ptr<Ocean> sharedThis(shared_from_this());
     //Be sure to make a temporary shared_ptr before push_back
-    boost::shared_ptr<Fish> fish1(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis, messageRouter));
+    Wavenumber k(1.0, screenSize.width / 2.0);
+    Wave wave(5.0, 0.0, k);
+    wave.randomizePhase();
     fishStartingDepth = Depth::ROW2();
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish2(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis, messageRouter));
+        fishStartingDepth, sharedThis, messageRouter, wave));
+    wave.randomizePhase();
     fishStartingDepth = Depth::ROW3();
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish3(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis, messageRouter));
+        fishStartingDepth, sharedThis, messageRouter, wave));
+    wave.randomizePhase();
     fishStartingDepth = Depth::ROW4();
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish4(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis, messageRouter));
+        fishStartingDepth, sharedThis, messageRouter, wave));
+    wave.randomizePhase();
     fishStartingDepth = Depth::ROW5();
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish5(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis, messageRouter));
+        fishStartingDepth, sharedThis, messageRouter, wave));
+    wave.randomizePhase();
     fishStartingDepth = Depth::ROW6();
     fishStartingPoint.y = getDepthY(fishStartingDepth);
     boost::shared_ptr<Fish> fish6(new Fish(fishStartingPoint,
-        fishStartingDepth, sharedThis, messageRouter));
+        fishStartingDepth, sharedThis, messageRouter, wave));
     boost::shared_ptr<Seahorse> tmpSeahorse(new Seahorse(SEA_HORSE_POSITION(),
         sharedThis, messageRouter));
     boost::weak_ptr<Seahorse> weakSeahorse(tmpSeahorse);
@@ -226,7 +233,6 @@ void Ocean::initializeSharedFromThis()
     boost::shared_ptr<Shark> tmpShark(new Shark(sharedThis, SHARK_POSITION(),
         messageRouter));
     boost::shared_ptr<Clouds> tmpClouds(new Clouds);
-    fish1->initializeStates();
     fish2->initializeStates();
     fish3->initializeStates();
     fish4->initializeStates();
@@ -234,7 +240,6 @@ void Ocean::initializeSharedFromThis()
     fish6->initializeStates();
     tmpSeahorse->initializeStates();
     tmpShark->initializeStates();
-    addCollidable(fish1);
     addCollidable(fish2);
     addCollidable(fish3);
     addCollidable(fish4);
@@ -245,7 +250,6 @@ void Ocean::initializeSharedFromThis()
     addCollidable(tmpShark);
     MasterClockPublisher *masterClockPublisher =
         MasterClockPublisher::getInstance();
-    boost::shared_ptr<MasterClockSubscriber> subscriber1(fish1);
     boost::shared_ptr<MasterClockSubscriber> subscriber2(fish2);
     boost::shared_ptr<MasterClockSubscriber> subscriber3(fish3);
     boost::shared_ptr<MasterClockSubscriber> subscriber4(fish4);
@@ -255,7 +259,6 @@ void Ocean::initializeSharedFromThis()
     boost::shared_ptr<MasterClockSubscriber> subscriber8(tmpShark);
     boost::shared_ptr<MasterClockSubscriber> subscriber9(tmpSeahorse);
     boost::shared_ptr<MasterClockSubscriber> subscriber10(tmpClouds);
-    masterClockPublisher->subscribe(subscriber1);
     masterClockPublisher->subscribe(subscriber2);
     masterClockPublisher->subscribe(subscriber3);
     masterClockPublisher->subscribe(subscriber4);
@@ -265,7 +268,6 @@ void Ocean::initializeSharedFromThis()
     masterClockPublisher->subscribe(subscriber8);
     masterClockPublisher->subscribe(subscriber9);
     masterClockPublisher->subscribe(subscriber10);
-    fishes.push_back(fish1);
     fishes.push_back(fish2);
     fishes.push_back(fish3);
     fishes.push_back(fish4);
@@ -375,7 +377,7 @@ void Ocean::initialize(const Dimension &screenSize)
     oceanSurfaceBox = tmpOceanSurfaceBox;
     oceanFloorBox = tmpOceanFloorBox;
     const double DEPTH_DISTANCE = 33;
-    double currentDepthCoordinate = 343.0;
+    double currentDepthCoordinate = 327.0;
     depthCoordinates[Depth::ROW1()] = currentDepthCoordinate;
     currentDepthCoordinate += DEPTH_DISTANCE;
     depthCoordinates[Depth::ROW2()] = currentDepthCoordinate;
