@@ -137,7 +137,7 @@ Fish::Fish(const Point &initialPosition,
     mouthPosition(new Point), fishSize(new Dimension(SIZE())), mouthSize(
     new Dimension(MOUTH_SIZE())), fishBox(position, fishSize), mouthBox(
     mouthPosition, mouthSize), facing(Direction::LEFT()), ocean(ocean),
-    hookedByLine(), hookedByPlayer(), nibbleLine(), timeSinceRandomAboutFace(0),
+    hookedByLine(), hookedByPlayer(), nibbleLine(), 
     timeSinceIsTightAboutFace(0), nibbleTime(0), startingDepth(initialDepth),
     shouldResetTimes(false), glowing(false), live(false), behindSeahorse(false),
     collidedWithSeahorse(false), nibbling(false), justFinishedNibbling(false),
@@ -166,8 +166,8 @@ Fish::Fish(const Fish &rhs) : state(rhs.state), hookedState(rhs.hookedState),
     rhs.mouthPosition), fishSize(rhs.fishSize), mouthSize(rhs.mouthSize),
     fishBox(rhs.fishBox), mouthBox(rhs.mouthBox), facing(rhs.facing),
     ocean(rhs.ocean), hookedByLine(rhs.hookedByLine), hookedByPlayer(
-    rhs.hookedByPlayer), nibbleLine(rhs.nibbleLine), timeSinceRandomAboutFace(
-    rhs.timeSinceRandomAboutFace), timeSinceIsTightAboutFace(
+    rhs.hookedByPlayer), nibbleLine(rhs.nibbleLine), 
+    timeSinceIsTightAboutFace(
     rhs.timeSinceIsTightAboutFace), nibbleTime(rhs.nibbleTime), startingDepth(
     rhs.startingDepth), shouldResetTimes(rhs.shouldResetTimes),
     glowing(rhs.glowing), live(rhs.live), behindSeahorse(rhs.behindSeahorse),
@@ -200,7 +200,6 @@ Fish &Fish::operator=(const Fish &rhs)
     ocean = rhs.ocean;
     hookedByLine = rhs.hookedByLine;
     hookedByPlayer = rhs.hookedByPlayer;
-    timeSinceRandomAboutFace = rhs.timeSinceRandomAboutFace;
     timeSinceIsTightAboutFace = rhs.timeSinceIsTightAboutFace;
     nibbleTime = rhs.nibbleTime;
     startingDepth = rhs.startingDepth;
@@ -292,6 +291,9 @@ void Fish::swim(double pixels)
 void Fish::randomAboutFace(Uint32 &timeSinceRandomAboutFace, boost::shared_ptr<
     QueueWrapper<Uint32> > &randomAboutFaceQueue)
 {
+    if( randomAboutFaceQueue->actualQueue.empty() )
+        populateRandomAboutFace(randomAboutFaceQueue, ABOUT_FACE_TICK_PROBABILITY());
+
     if( timeSinceRandomAboutFace >= randomAboutFaceQueue->actualQueue.front() )
     {
         timeSinceRandomAboutFace -= randomAboutFaceQueue->actualQueue.front();
@@ -647,7 +649,10 @@ void Fish::resetTimes()
 
 void Fish::updateTimes(Uint32 elapsedTime)
 {
-    timeSinceRandomAboutFace += elapsedTime;
+    if( state == freeState )
+        freeState->timeSinceRandomAboutFace += elapsedTime;
+    if( state == hookedState )
+        hookedState->timeSinceRandomAboutFace += elapsedTime;
     timeSinceIsTightAboutFace += elapsedTime;
 
     if ( nibbleTime > elapsedTime )
@@ -811,7 +816,7 @@ void Fish::populateRandomAboutFace(boost::shared_ptr<QueueWrapper<Uint32> >
 {
     const int NUMBER_OF_RANDOM_VALUES = 32;
     const int queueSize = 1024;
-    const Uint32 MAX_TIME_TO_ABOUT_FACE = 9999;
+    const Uint32 MAX_TIME_TO_ABOUT_FACE = probability * 2;
     Uint32 currentTime = MINIMUM_TIME_TO_RANDOM_ABOUT_FACE() - 1;
     Uint32 randomValues[NUMBER_OF_RANDOM_VALUES];
 
@@ -827,7 +832,7 @@ void Fish::populateRandomAboutFace(boost::shared_ptr<QueueWrapper<Uint32> >
     for( int i = 0; i < queueSize; ++i )
     {
         randomAboutFaceQueue->actualQueue.push(randomValues[Math::random(0, 
-            NUMBER_OF_RANDOM_VALUES)]);
+            NUMBER_OF_RANDOM_VALUES - 1)]);
     }
 
     boost::shared_ptr<MessageData> messageQueue(randomAboutFaceQueue);
@@ -837,17 +842,18 @@ void Fish::populateRandomAboutFace(boost::shared_ptr<QueueWrapper<Uint32> >
 }
 
 //Inner class FreeState
-Fish::FreeState::FreeState() : fishOwner(), velocity(0.0), spurtPhase(
-    Math::random(0, 9999)), randomAboutFaceQueue(new QueueWrapper<Uint32>)
+/*Fish::FreeState::FreeState() : fishOwner(), velocity(0.0), spurtPhase(
+    Math::random(0, 9999)), randomAboutFaceQueue(new QueueWrapper<Uint32>),
+    timeSinceRandomAboutFace(0)
 
 {
     //Fish owner is not in a valid state!
-}
+}*/
 
 //DONT STORE SHARED PTR UNLESS WEAK COPY
 Fish::FreeState::FreeState(boost::shared_ptr<Fish> fishOwner) : fishOwner(
     fishOwner), velocity(0.0), spurtPhase(Math::random(0, 9999)),
-    randomAboutFaceQueue(new QueueWrapper<Uint32>)
+    randomAboutFaceQueue(new QueueWrapper<Uint32>), timeSinceRandomAboutFace(0)
 {
     fishOwner->populateRandomAboutFace(randomAboutFaceQueue, 
         Fish::ABOUT_FACE_TICK_PROBABILITY());
@@ -855,7 +861,8 @@ Fish::FreeState::FreeState(boost::shared_ptr<Fish> fishOwner) : fishOwner(
 
 Fish::FreeState::FreeState(const Fish::FreeState &rhs) : fishOwner(
     rhs.fishOwner), velocity(rhs.velocity), spurtPhase(rhs.spurtPhase),
-    randomAboutFaceQueue(rhs.randomAboutFaceQueue)
+    randomAboutFaceQueue(rhs.randomAboutFaceQueue), timeSinceRandomAboutFace(
+    rhs.timeSinceRandomAboutFace)
 {
 }
 
@@ -868,6 +875,7 @@ Fish::FreeState &Fish::FreeState::operator=(const Fish::FreeState &rhs)
     velocity = rhs.velocity;
     spurtPhase = rhs.spurtPhase;
     randomAboutFaceQueue = rhs.randomAboutFaceQueue;
+    timeSinceRandomAboutFace = rhs.timeSinceRandomAboutFace;
 
     return *this;
 }
@@ -959,8 +967,10 @@ void Fish::FreeState::swim(Uint32 elapsedTime)
     }
 
     if( !sharedFishOwner->behindSeahorse )
-        sharedFishOwner->randomAboutFace(sharedFishOwner->timeSinceRandomAboutFace, 
+        sharedFishOwner->randomAboutFace(timeSinceRandomAboutFace, 
             randomAboutFaceQueue);
+    else
+        timeSinceRandomAboutFace -= elapsedTime;
 
     sharedOcean->checkCollisions(collidable, sharedFishOwner->fishBox);
     sharedOcean->checkCollisions(collidable, sharedFishOwner->mouthBox);
@@ -1236,16 +1246,18 @@ const double &Fish::HookedState::HOOKED_FISH_VELOCITY()
     return TMP_VEL;
 }
 
+/*
 //Inner class HookedState
 Fish::HookedState::HookedState() : fishOwner(), randomAboutFaceQueue(new
-    QueueWrapper<Uint32>)
+    QueueWrapper<Uint32>), timeSinceRandomAboutFace(0)
 {
     //fishOwner is not in a valid state!
-}
+}*/
 
 //DONT STORE SHARED PTR UNLESS WEAK COPY
 Fish::HookedState::HookedState(boost::shared_ptr<Fish> fishOwner) :
-    fishOwner(fishOwner), randomAboutFaceQueue(new QueueWrapper<Uint32>)
+    fishOwner(fishOwner), randomAboutFaceQueue(new QueueWrapper<Uint32>),
+    timeSinceRandomAboutFace(0)
 { 
     fishOwner->populateRandomAboutFace(randomAboutFaceQueue, 
         Fish::ABOUT_FACE_TICK_PROBABILITY() / Fish::
@@ -1253,7 +1265,8 @@ Fish::HookedState::HookedState(boost::shared_ptr<Fish> fishOwner) :
 }
 
 Fish::HookedState::HookedState(const Fish::HookedState &rhs) : fishOwner(
-    rhs.fishOwner)
+    rhs.fishOwner), randomAboutFaceQueue(rhs.randomAboutFaceQueue),
+    timeSinceRandomAboutFace(rhs.timeSinceRandomAboutFace)
 { }
 
 Fish::HookedState &Fish::HookedState::operator=(const Fish::HookedState &rhs)
@@ -1262,6 +1275,8 @@ Fish::HookedState &Fish::HookedState::operator=(const Fish::HookedState &rhs)
         return *this;
 
     fishOwner = rhs.fishOwner;
+    randomAboutFaceQueue = rhs.randomAboutFaceQueue;
+    timeSinceRandomAboutFace = rhs.timeSinceRandomAboutFace;
 
     return *this;
 }
@@ -1352,7 +1367,7 @@ void Fish::HookedState::swim(Uint32 elapsedTime)
         }*/
     }
 
-    sharedFishOwner->randomAboutFace(sharedFishOwner->timeSinceRandomAboutFace,
+    sharedFishOwner->randomAboutFace(timeSinceRandomAboutFace,
         randomAboutFaceQueue);
     tmpOcean->checkCollisions(collidable, sharedFishOwner->fishBox);
     tmpOcean->checkCollisions(collidable, sharedFishOwner->mouthBox);

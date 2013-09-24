@@ -264,7 +264,6 @@ private:
         void pull(const Point &hookPoint);
         bool atDepth(const Depth &depth);
         void nibble(boost::shared_ptr<Line> &line);
-        HookedState();
         HookedState(boost::shared_ptr<Fish> fishOwner); //DONT STORE SHARED_PTR
         HookedState(const HookedState &rhs);
         HookedState &operator=(const HookedState &rhs);
@@ -319,10 +318,12 @@ private:
         void initialize(boost::weak_ptr<Fish> fishOwner);
         void dispose();
     private:
+        HookedState();
         double calculatePixelsLeft(Uint32 elapsedTime);
-        boost::weak_ptr<Fish> fishOwner; //Beware of cyclic ptrs
         static const double &HOOKED_FISH_VELOCITY();
+        boost::weak_ptr<Fish> fishOwner; //Beware of cyclic ptrs
         boost::shared_ptr<QueueWrapper<Uint32> > randomAboutFaceQueue;
+        Uint32 timeSinceRandomAboutFace;
     };
 
     class FreeState : public FishState
@@ -334,7 +335,6 @@ private:
         void pull(const Point &hookPoint);
         bool atDepth(const Depth &depth);
         void nibble(boost::shared_ptr<Line> &line);
-        FreeState();
         FreeState(boost::shared_ptr<Fish> fishOwner); //DONT STORE SHARED_PTR
         FreeState(const FreeState &rhs);
         FreeState &operator=(const FreeState &rhs);
@@ -403,12 +403,14 @@ private:
         void initialize(boost::weak_ptr<Fish> fishOwner);
         void dispose();
     private:
+        FreeState();
         double calculatePixelsLeft(Uint32 elapsedTime);
         void spurtVelocity(Uint32 elapsedTime);
         boost::weak_ptr<Fish> fishOwner; //Beware of cyclic ptrs
         double velocity;
         Uint32 spurtPhase;
         boost::shared_ptr<QueueWrapper<Uint32> > randomAboutFaceQueue;
+        Uint32 timeSinceRandomAboutFace;
     };
 
     void populateRandomAboutFace(boost::shared_ptr<QueueWrapper<Uint32> > 
@@ -446,7 +448,6 @@ private:
     boost::weak_ptr<Line> hookedByLine;
     boost::weak_ptr<Player> hookedByPlayer;
     boost::weak_ptr<Line> nibbleLine;
-    Uint32 timeSinceRandomAboutFace;
     Uint32 timeSinceIsTightAboutFace;
     Uint32 nibbleTime;
     Depth startingDepth;

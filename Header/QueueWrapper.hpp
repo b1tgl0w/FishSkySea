@@ -38,9 +38,33 @@ template<typename T>
 class QueueWrapper : public MessageData
 {
 public:
+    QueueWrapper();
+    QueueWrapper(const QueueWrapper<T> &rhs);
+    QueueWrapper<T> &operator=(const QueueWrapper<T> &rhs);
+    ~QueueWrapper();
     std::queue<T> actualQueue;
-    ~QueueWrapper<T>() { };
 };
+
+template <typename T>
+QueueWrapper<T>::QueueWrapper() : actualQueue() { }
+
+template <typename T>
+QueueWrapper<T>::QueueWrapper(const QueueWrapper<T> &rhs) : 
+    actualQueue(rhs.actualQueue) { }
+
+template <typename T>
+QueueWrapper<T> &QueueWrapper<T>::operator=(const QueueWrapper<T> &rhs)
+{
+    if( &rhs == this )
+        return *this;
+
+    actualQueue = rhs.actualQueue;
+
+    return *this;
+}
+
+template <typename T>
+QueueWrapper<T>::~QueueWrapper() { }
 
 #endif
 
