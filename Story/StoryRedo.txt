@@ -1,3 +1,5 @@
+Consider drawing more pictures for this.
+
 Questions:
 - Why are they fishing? The old man has wanted to take Rad fishing for years,
 but Rad hasn't had the interest. Rad finally agrees.
@@ -11,16 +13,38 @@ reminds him of his mother, just as his son, Rad, reminds him of her.
 there, they've caught plenty.
 - How do you expand this into a long story and still make it interesting?
 - Rad should continuously disappoint his father, until his father reveals
-the actual reason for inviting Rad.
+the actual reason for inviting Rad. (actually, maybe not. But build up tension
+somehow)
 
 Outline:
-- Wes asked Rad to join him fishing, (maybe) saying he bought a hat for the occasion,
-but rad declines
+- Describe sunrise. Then say, "An older man is there as is usual for him."
+- Wes fishes alone. Describe more of the scene. There's a sadness to him.
+- That evening Wes asked Rad to join him fishing, (maybe) saying he bought a hat 
+so he won't get sunburned, but Rad declines. (The narrator could tell this part.)
+(The hat part is justification for the graphics)
 - Wes says that he's asked Rad to fish for years, but he always says no.
-- Later Rad shows up at the beach spontaneously.
-- Wes: "You came."
+- Later Rad shows up at the pier spontaneously.
+- Wes: "You came." (Fade into scene)
 - It's Rad's first time fishing with his dad.
 - Talk about them fishing and what they catch (beautiful)
+- Wes: "I've wanted to take you fishing all these years... so to spend time with 
+you and tell you the ocean reminds me of your mother.
+- Rad, "How... does the ocean remind you of mom?"
+- Wes: "Her blue eyes."
+- Wes: "... And you remind me of her too."
+- Rad: "You're right. The ocean does remind me of Mom."
+- Wes: "I'll always remember and miss my sweet love Wendy."
+- They fish more, to fill to the brim their coolers that hold the fish.
+- A huge wave crashes against the pier, hiding the fishermen in its mist. Then
+they emerge, shouting over the loud sounds of the ocean, and Rad exlaims, "What a
+great time I'm having!"
+- From then on, the two fishermen cast their lines every Saturday morning, 
+sometimes hearing whale songs and seeing pods of dolphins, always gazing 
+toward the far off horizon.
+- The story spans the actual game. That is, the gameplay happens within 
+the story. At the end of the story, write something like: A spectator to this
+scene captured the day on video. The video has been recored and uploaded to
+this game. Just press, "play" on the title menu.
 
 
 Words and phrases to use
@@ -49,6 +73,31 @@ Words and phrases to use
 - Cool
 - Warm
 - Tear
+- Salty
+- Wash
+- Crab
+- Seagreen
+- Luminescent
+- Sounds
+- Love
+- Understanding
+- Caring
+- Starry
+- Light
+- Shine
+- Reflect
+- Far
+- Cast
+- Distant
+- Rain
+- Smooth
+- Crash (sound)
+- Lull
+- Rise
+- Fall
+- Talk over the sounds of the waves (after they become louder)
+- Stir
+- Fill
 - 
 
 Possible lines
@@ -60,9 +109,9 @@ casting long shadows that layed out along the surface of the faded dock.
 Other notes:
 - Don't use Narrator: Blah blah. Just write it. (But how would player know it's
 not a character continuing a message?)
-- The story spans the actual game. That is, the gameplay happens within 
-the story. At the end of the story, write something like: A spectator to this
-scene captured the day on video. The video has been recored and uploaded to
-this game. Just press, "play" on the title menu.
 - The screen fades in when Wes says, You came.
+
+Gameplay Dialog:
+- If Rad wins, he says, "My cooler is overflowing with fish. Thank you, pa!"
+- If Wes wins, "We've caught plenty today. I enjoyed fishing with you, son."
 
