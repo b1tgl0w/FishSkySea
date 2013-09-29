@@ -48,28 +48,28 @@ const Uint32 StandardUnit::DURATION()
 const Uint32 StandardUnit::BLACK()
 {
     //FIX to match art
-    static const Uint32 TMP = 0x170024FF;
+    static const Uint32 TMP = 0x3a185cff;
     return TMP;
 }
 
 const SDL_Color StandardUnit::SDL_BLACK()
 {
     //FIX to match art
-    static const SDL_Color TMP = { 0x17, 0x00, 0x24, 0xFF };
+    static const SDL_Color TMP = { 0x3a, 0x18, 0x5c, 0xff};
     return TMP;
 }
 
 const Uint32 StandardUnit::WHITE()
 {
     //FIX to match art
-    static const Uint32 TMP = 0xFCE3FCFF;
+    static const Uint32 TMP = 0xf0fafaff;
     return TMP;
 }
 
 const SDL_Color StandardUnit::SDL_WHITE()
 {
     //FIX to match art
-    static const SDL_Color TMP = { 0xFF, 0xE3, 0xFC, 0xFC };
+    static const SDL_Color TMP = { 0xf0, 0xfa, 0xfa, 0xff};
     return TMP;
 }
 

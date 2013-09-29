@@ -747,10 +747,10 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
     if( !sharedOcean )
         return;
 
-    const Uint32 WHITE = renderer.makeColor(0xFF, 0xFF, 0xFF, 0xFF);
-    const Uint32 SURFACE_BLUE = renderer.makeColor(0x3f, 0x92, 0xd1, 0xff);
-    const Uint32 OCEAN_BLUE = renderer.makeColor(0x00, 0x45, 0xA6, 0xff);
-    const Uint32 POLE_RED = renderer.makeColor(0x00, 0x00, 0x00, 0x00);
+    const Uint32 WHITE = renderer.makeColor(0xf0, 0xfa, 0xfa, 0xff);
+    const Uint32 SURFACE_BLUE = renderer.makeColor(0x6c, 0x9e, 0x9e, 0xff);
+    const Uint32 OCEAN_BLUE = renderer.makeColor(0x4e, 0x4e, 0x80, 0xff);
+    const Uint32 POLE_RED = renderer.makeColor(0x3a, 0x18, 0x5c, 0x00);
     Dimension size(800.0, 600.0);
     Point noOffset(0.0, 0.0);
     Point perspectiveSurface;
