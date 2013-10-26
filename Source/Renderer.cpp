@@ -306,7 +306,7 @@ void Renderer::manipulateImage(const std::string &path, const Transformation
         if( images.count(key) < 1 )
         {
             //Manually update to color in palette
-            const SDL_Color HIGHLIGHT_TEXT_COLOR = { 0xbd, 0xbd, 0x8e, 0x00 };
+            const SDL_Color HIGHLIGHT_TEXT_COLOR = { 0xfa, 0xfa, 0xaa, 0x00 };
             if( fontSize == FontSize::Huge() )
                 highlightedText = TTF_RenderText_Blended(fontHuge, path.c_str(),
                     HIGHLIGHT_TEXT_COLOR);

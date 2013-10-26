@@ -748,7 +748,7 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
         return;
 
     const Uint32 WHITE = renderer.makeColor(0xf0, 0xfa, 0xfa, 0xff);
-    const Uint32 SURFACE_BLUE = renderer.makeColor(0x6c, 0x9e, 0x9e, 0xff);
+    const Uint32 SURFACE_BLUE = renderer.makeColor(0x84, 0xc2, 0xc2, 0xff);
     const Uint32 OCEAN_BLUE = renderer.makeColor(0x4e, 0x4e, 0x80, 0xff);
     const Uint32 POLE_RED = renderer.makeColor(0x3a, 0x18, 0x5c, 0x00);
     Dimension size(800.0, 600.0);

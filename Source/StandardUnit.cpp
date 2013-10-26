@@ -48,14 +48,14 @@ const Uint32 StandardUnit::DURATION()
 const Uint32 StandardUnit::BLACK()
 {
     //FIX to match art
-    static const Uint32 TMP = 0x3a185cff;
+    static const Uint32 TMP = 0x331552ff;
     return TMP;
 }
 
 const SDL_Color StandardUnit::SDL_BLACK()
 {
     //FIX to match art
-    static const SDL_Color TMP = { 0x3a, 0x18, 0x5c, 0xff};
+    static const SDL_Color TMP = { 0x33, 0x15, 0x52, 0xff};
     return TMP;
 }
 
