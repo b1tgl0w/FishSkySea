@@ -1155,7 +1155,6 @@ boost::shared_ptr<boost::signals2::connection> CreditFish::subscribe(const
 {
     boost::shared_ptr<boost::signals2::connection> con;
 
-
     if( name == this->name )
     {
         boost::shared_ptr<boost::signals2::connection> tmp(new 

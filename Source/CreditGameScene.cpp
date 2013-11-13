@@ -160,7 +160,9 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
         "John Miner", "Designer Coder Writer", renderer)),
     connections(),
     kathyBio(new Biography("../Media/KathyBioPicture.png", "A mom and grandma with a great love of family, Kathy took up the hobby of drawing later in life, drawing portraits and flowers. She also enjoys to knit, fold origami, and walk her puppy.", 
-        "Kathy Miner", "Artist", renderer))
+        "Kathy Miner", "Artist", renderer)),
+    kevinBio(new Biography("../Media/BlackTransition.png", "A fantastic musician with diverse taste who contributed amazing songs: Acid Trumpet, Easy Jam, Funk Game Loop, Overcast.",
+        "Kevin MacLeod", "Composer", renderer))
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
@@ -198,7 +200,8 @@ CreditGameScene::CreditGameScene(const CreditGameScene &rhs) : renderer(rhs.rend
     superTitleCoordinateLayout(rhs.superTitleCoordinateLayout),
     bioCoordinateLayout(rhs.bioCoordinateLayout), superBioCoordinateLayout(
     rhs.superBioCoordinateLayout), johnBio(rhs.johnBio),
-    connections(rhs.connections), kathyBio(rhs.kathyBio)
+    connections(rhs.connections), kathyBio(rhs.kathyBio), kevinBio(
+        rhs.kevinBio)
 { }
 
 CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
@@ -256,6 +259,7 @@ CreditGameScene &CreditGameScene::operator=(const CreditGameScene &rhs)
     johnBio = rhs.johnBio;
     connections = rhs.connections;
     kathyBio = rhs.kathyBio;
+    kevinBio = rhs.kevinBio;
 
     return *this;
 }
@@ -294,9 +298,11 @@ void CreditGameScene::enter()
 
     johnBio->loadImage(*renderer);
     kathyBio->loadImage(*renderer);
+    kevinBio->loadImage(*renderer);
 
     biographies.push_back(johnBio);
     biographies.push_back(kathyBio);
+    biographies.push_back(kevinBio);
     
     boost::shared_ptr<Layout> tmpJohnNameLayout(johnBio->layoutToAttachName());
     boost::shared_ptr<Layout> tmpJohnTitleLayout(johnBio->layoutToAttachTitle());
@@ -304,6 +310,9 @@ void CreditGameScene::enter()
     boost::shared_ptr<Layout> tmpKathyNameLayout(kathyBio->layoutToAttachName());
     boost::shared_ptr<Layout> tmpKathyTitleLayout(kathyBio->layoutToAttachTitle());
     boost::shared_ptr<Layout> tmpKathyBioLayout(kathyBio->layoutToAttachBio());
+    boost::shared_ptr<Layout> tmpKevinNameLayout(kevinBio->layoutToAttachName());
+    boost::shared_ptr<Layout> tmpKevinTitleLayout(kevinBio->layoutToAttachTitle());
+    boost::shared_ptr<Layout> tmpKevinBioLayout(kevinBio->layoutToAttachBio());
     Point origin(0.0, 0.0);
     nameCoordinateLayout->addLayout(tmpJohnNameLayout, origin);
     titleCoordinateLayout->addLayout(tmpJohnTitleLayout, origin);
@@ -311,6 +320,9 @@ void CreditGameScene::enter()
     nameCoordinateLayout->addLayout(tmpKathyNameLayout, origin);
     titleCoordinateLayout->addLayout(tmpKathyTitleLayout, origin);
     bioCoordinateLayout->addLayout(tmpKathyBioLayout, origin);
+    nameCoordinateLayout->addLayout(tmpKevinNameLayout, origin);
+    titleCoordinateLayout->addLayout(tmpKevinTitleLayout, origin);
+    bioCoordinateLayout->addLayout(tmpKevinBioLayout, origin);
 
     bioBorderLayout->addLayout(superNameCoordinateLayout, BorderCell::Top());
     bioBorderLayout->addLayout(superPictureCenterLayout, BorderCell::Center());
@@ -324,8 +336,11 @@ void CreditGameScene::enter()
         boost::bind(&CreditGameScene::showBio, this, _1)));
     connections.push_back(ocean->subscribeToCreditFish("Kathy Miner aka Mom", 
         boost::bind(&CreditGameScene::showBio, this, _1)));
+    connections.push_back(ocean->subscribeToCreditFish("Kevin MacLeod", 
+        boost::bind(&CreditGameScene::showBio, this, _1)));
     connections.push_back(johnBio->subscribe(boost::bind(&HumanPlayer::cast, player1.get(), true)));
     connections.push_back(kathyBio->subscribe(boost::bind(&HumanPlayer::cast, player1.get(), true)));
+    connections.push_back(kevinBio->subscribe(boost::bind(&HumanPlayer::cast, player1.get(), true)));
 
     //end bios
 
@@ -505,10 +520,13 @@ void CreditGameScene::showBio(const std::string &name)
     player1->cast(false);
     boost::shared_ptr<KeyboardSubscriber> johnKs(johnBio);
     boost::shared_ptr<KeyboardSubscriber> kathyKs(kathyBio);
+    boost::shared_ptr<KeyboardSubscriber> kevinKs(kevinBio);
     keyboardPublisher->unsubscribe(johnKs);
     keyboardPublisher->unsubscribe(kathyKs);
+    keyboardPublisher->unsubscribe(kevinKs);
     johnBio->show(false);
     kathyBio->show(false);
+    kevinBio->show(false);
 
 
     if( name == "John Miner" )
@@ -520,6 +538,11 @@ void CreditGameScene::showBio(const std::string &name)
     {
         kathyBio->show(true);
         keyboardPublisher->subscribe(kathyKs);
+    }
+    else if( name == "Kevin MacLeod" )
+    {
+        kevinBio->show(true);
+        keyboardPublisher->subscribe(kevinKs);
     }
 }
 

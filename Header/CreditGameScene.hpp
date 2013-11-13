@@ -145,6 +145,7 @@ private:
     boost::shared_ptr<Biography> johnBio;
     std::vector<boost::shared_ptr<boost::signals2::connection> > connections;
     boost::shared_ptr<Biography> kathyBio;
+    boost::shared_ptr<Biography> kevinBio;
 };
 
 #endif
