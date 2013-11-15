@@ -48,6 +48,8 @@ class MasterInputPublisher;
 class KeyboardSubscriber;
 class MasterInputSubscriber;
 class Renderer;
+class Jukebox;
+class MasterClockSubscriber;
 
 class TitleScene : public Scene, public Graphic, public KeyboardSubscriber,
     public boost::enable_shared_from_this<TitleScene>
@@ -95,6 +97,8 @@ private:
     boost::shared_ptr<Renderer> renderer;
     ImageRendererElement titleBackground;
     bool quit;
+    Jukebox *jukebox;
+    boost::shared_ptr<MasterClockSubscriber> jukeboxSubscriber;
 };
 
 #endif

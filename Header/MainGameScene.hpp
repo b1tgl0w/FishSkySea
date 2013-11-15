@@ -59,6 +59,7 @@ class BorderLayout;
 class GridLayout;
 class TextRendererElement;
 class MessageRouter;
+class Jukebox;
 
 class MainGameScene : public Scene, public TimerAction, public 
     KeyboardSubscriber, public boost::enable_shared_from_this<MainGameScene>
@@ -140,6 +141,7 @@ private:
     boost::shared_ptr<Timer<MainGameScene> > goTimer;
     boost::shared_ptr<Game> game;
     boost::weak_ptr<Scene> titleScene;
+    Jukebox *jukebox;
 };
 
 #endif

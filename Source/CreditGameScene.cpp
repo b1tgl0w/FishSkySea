@@ -334,7 +334,7 @@ void CreditGameScene::enter()
     bioGridLayout->addLayout(superBioBorderLayout, cell);
     connections.push_back(ocean->subscribeToCreditFish("John Miner", 
         boost::bind(&CreditGameScene::showBio, this, _1)));
-    connections.push_back(ocean->subscribeToCreditFish("Kathy Miner aka Mom", 
+    connections.push_back(ocean->subscribeToCreditFish("Kathy Miner", 
         boost::bind(&CreditGameScene::showBio, this, _1)));
     connections.push_back(ocean->subscribeToCreditFish("Kevin MacLeod", 
         boost::bind(&CreditGameScene::showBio, this, _1)));
@@ -534,7 +534,7 @@ void CreditGameScene::showBio(const std::string &name)
         johnBio->show(true);
         keyboardPublisher->subscribe(johnKs);
     }
-    else if( name == "Kathy Miner aka Mom" )
+    else if( name == "Kathy Miner" )
     {
         kathyBio->show(true);
         keyboardPublisher->subscribe(kathyKs);

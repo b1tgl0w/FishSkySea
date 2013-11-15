@@ -286,7 +286,7 @@ void Ocean::initializeSharedFromThis()
     boost::shared_ptr<CreditFish> tmpCreditFish(new CreditFish("John Miner",
         "Programmer", fishStartingPoint, sharedThis, renderer));
     fishStartingPoint.y = getRandomDepthY();
-    boost::shared_ptr<CreditFish> tmpCreditFish2(new CreditFish("Kathy Miner aka Mom",
+    boost::shared_ptr<CreditFish> tmpCreditFish2(new CreditFish("Kathy Miner",
         "Artist", fishStartingPoint, sharedThis, renderer));
     fishStartingPoint.y = getRandomDepthY();
     boost::shared_ptr<CreditFish> tmpCreditFish3(new CreditFish("Kevin MacLeod",

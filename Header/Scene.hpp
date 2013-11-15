@@ -30,10 +30,11 @@ SUCH DAMAGES.
 #define SCENE_HPP_
 
 #include "boost/shared_ptr.hpp"
+#include "SongScene.hpp"
 
 class Scene;
 
-class Scene
+class Scene : public SongScene
 {
 public:
     virtual void enter() = 0;

@@ -49,8 +49,8 @@ int CreditFish::nextFreeId = 0;
 const Dimension &CreditFish::SIZE()
 {
     //Make sure to update if image changes size
-    static const Dimension TMP_SIZE(StandardUnit::DIMENSION() * 16, 
-        StandardUnit::DIMENSION() * 2);
+    static const Dimension TMP_SIZE(StandardUnit::DIMENSION() * 20, 
+        StandardUnit::DIMENSION() * 3);
     return TMP_SIZE;
 }
 
@@ -102,7 +102,7 @@ CreditFish::CreditFish(const std::string &name, const std::string &title,
     name(name), title(title), hookOriginalDirection(Direction::LEFT()),
     id(CreditFish::nextFreeId++), layer(associateLayer()),
     messageBox(new MessageBox(name, *size, StandardUnit::BLACK(),
-        false, layer, renderer, FontSize::Small(), 1)), nibbleLine(),
+        false, layer, renderer, FontSize::Medium(), 1)), nibbleLine(),
     nibbling(false), onCatch(new OnCatch)
 {
     positionFromSide();

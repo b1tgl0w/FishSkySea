@@ -43,6 +43,8 @@ SUCH DAMAGES.
 #include "../Header/Layout.hpp"
 #include "../Header/MasterInputSubscriber.hpp"
 #include "../Header/Renderer.hpp"
+#include "../Header/Jukebox.hpp"
+#include "../Header/MasterClockSubscriber.hpp"
 
 const Point &TitleScene::BACKGROUND_POSITION()
 {
@@ -70,7 +72,8 @@ TitleScene::TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     masterClockPublisher, MasterClockPublisher::customDeleter), MiSubscriber(
     keyboardPublisher), renderer(renderer), titleBackground(
     "../Media/TitleBackground.png", 0, BACKGROUND_POSITION(), screenSize),
-    quit(false)
+    quit(false), jukebox(Jukebox::getInstance()), jukeboxSubscriber(
+    jukebox, Jukebox::customDeleter)
 {
 }
 
@@ -86,7 +89,7 @@ TitleScene::TitleScene(const TitleScene &rhs) : currentScene(rhs.currentScene),
     masterClockPublisher),
     clockSubscriber(rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), 
     renderer(rhs.renderer), titleBackground(rhs.titleBackground),
-    quit(rhs.quit)
+    quit(rhs.quit), jukebox(rhs.jukebox), jukeboxSubscriber(rhs.jukeboxSubscriber)
 {
 }
 
@@ -117,6 +120,8 @@ TitleScene &TitleScene::operator=(const TitleScene &rhs)
     renderer = rhs.renderer;
     titleBackground = rhs.titleBackground;
     quit = rhs.quit;
+    jukebox = rhs.jukebox;
+    jukeboxSubscriber = rhs.jukeboxSubscriber;
 
     return *this;
 }
@@ -142,6 +147,12 @@ void TitleScene::enter()
     boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
         shared_from_this());
     keyboardPublisher->subscribe(sharedThisSubscriber);
+    masterClockPublisher->subscribe(jukeboxSubscriber);
+    boost::shared_ptr<SongScene> sharedThis(shared_from_this());
+    //Be sure to deregister song below
+    jukebox->registerSong(sharedThis, "../Music/Funk Game Loop.mp3");
+    jukebox->changeScene(sharedThis);
+    jukebox->play();
 }
 
 void TitleScene::run()
@@ -177,6 +188,7 @@ void TitleScene::exit()
     boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
         shared_from_this());
     keyboardPublisher->unsubscribe(sharedThisSubscriber);
+    masterClockPublisher->unsubscribe(jukeboxSubscriber);
     quit = false;
 }
 
