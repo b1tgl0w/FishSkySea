@@ -12,25 +12,25 @@ ALL_OBJ += $(SHARED_OBJ_FILES)
 LD_LIBS := -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 all : CC_FLAGS += -Wall -Wextra -O2 -Wno-unused-variable
-all : Object/SeaBassShowdown
+all : Object/FishSkySea
 
 debug: CC_FLAGS += -DDEBUG -ggdb
-debug: Object/SeaBassShowdown
+debug: Object/FishSkySea
 
 profile: CC_FLAGS += -pg
-profile: Object/SeaBassShowdown
+profile: Object/FishSkySea
 
 warnings: CC_FLAGS += -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default -Wundef -Wno-unused -Wmaybe-uninitialized -Wuninitialized
-warnings : Object/SeaBassShowdown
+warnings : Object/FishSkySea
 
 uninit : CC_FLAGS += -Wuninitialized -Wmaybe-uninitialized -O3
-uninit : Object/SeaBassShowdown
+uninit : Object/FishSkySea
 
 clean : 
-	rm Object/*.o Object/SeaBassShowdown
+	rm Object/*.o Object/FishSkySea
 
-Object/SeaBassShowdown : $(ALL_OBJ)
-	$(CC) $(CC_FLAGS) -o Object/SeaBassShowdown $(ALL_OBJ) $(LD_LIBS)
+Object/FishSkySea : $(ALL_OBJ)
+	$(CC) $(CC_FLAGS) -o Object/FishSkySea $(ALL_OBJ) $(LD_LIBS)
 
 Object/NotShared%.o : Source/%.cpp
 	$(CC) $(CC_FLAGS) -c -o $@ $< 

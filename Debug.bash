@@ -16,7 +16,7 @@ fi
 
 if make debug 2> BuildLogUUID1122; then
     cd Object
-    gdb SeaBassShowdown -ex=run
+    gdb FishSkySea -ex=run
     cd ..
 else
     vim BuildLogUUID1122

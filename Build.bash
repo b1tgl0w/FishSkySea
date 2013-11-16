@@ -16,7 +16,7 @@ fi
 
 if make 2> BuildLogUUID1122; then
     cd Object
-    ./SeaBassShowdown
+    ./FishSkySea
     cd ..
 else
     vim BuildLogUUID1122
