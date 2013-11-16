@@ -142,6 +142,7 @@ private:
     boost::shared_ptr<Game> game;
     boost::weak_ptr<Scene> titleScene;
     Jukebox *jukebox;
+    boost::shared_ptr<MasterClockSubscriber> jukeboxSubscriber;
 };
 
 #endif

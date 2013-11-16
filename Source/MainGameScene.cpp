@@ -181,7 +181,8 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     GridLayout(1, 3)), superGridLayout(gridLayout), superLayeredLayout(
     layeredLayout), currentScene(currentScene), transition(false), toScene(),
     statusElement(), readyTimer(), goTimer(), game(new Game(score1, score2)),
-    titleScene(), jukebox(Jukebox::getInstance())
+    titleScene(), jukebox(Jukebox::getInstance()), jukeboxSubscriber(
+        jukebox, Jukebox::customDeleter)
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
@@ -214,7 +215,7 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     currentScene(rhs.currentScene), transition(rhs.transition),
     toScene(rhs.toScene), statusElement(rhs.statusElement), readyTimer(
     rhs.readyTimer), goTimer(rhs.goTimer), game(rhs.game), titleScene(rhs.
-    titleScene), jukebox(rhs.jukebox)
+    titleScene), jukebox(rhs.jukebox), jukeboxSubscriber(rhs.jukeboxSubscriber)
 {
 }
 
@@ -267,6 +268,7 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     game = rhs.game;
     titleScene = rhs.titleScene;
     jukebox = rhs.jukebox;
+    jukeboxSubscriber = rhs.jukeboxSubscriber;
 
     return *this;
 }
@@ -316,6 +318,7 @@ void MainGameScene::enter()
         shared_from_this());
     keyboardPublisher->subscribe(sharedThisSubscriber);
     boost::shared_ptr<SongScene> sharedThis(shared_from_this());
+    masterClockPublisher->subscribe(jukeboxSubscriber);
     jukebox->registerSong(sharedThis, "../Music/Overcast.mp3");
     jukebox->registerSong(sharedThis, "../Music/Acid Trumpet.mp3");
     jukebox->registerSong(sharedThis, "../Music/Easy Jam.mp3");
@@ -383,6 +386,7 @@ void MainGameScene::exit()
     boost::shared_ptr<KeyboardSubscriber> sharedThisSubscriber(
         shared_from_this());
     keyboardPublisher->unsubscribe(sharedThisSubscriber);
+    masterClockPublisher->unsubscribe(jukeboxSubscriber);
 }
 
 void MainGameScene::transitionTo(boost::shared_ptr<Scene> &scene)

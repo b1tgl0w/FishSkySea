@@ -161,7 +161,7 @@ CreditGameScene::CreditGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     connections(),
     kathyBio(new Biography("../Media/KathyBioPicture.png", "A mom and grandma with a great love of family, Kathy took up the hobby of drawing later in life, drawing portraits and flowers. She also enjoys to knit, fold origami, and walk her puppy.", 
         "Kathy Miner", "Artist", renderer)),
-    kevinBio(new Biography("../Media/BlackTransition.png", "A fantastic musician with diverse taste who contributed amazing songs: Acid Trumpet, Easy Jam, Funk Game Loop, Overcast.",
+    kevinBio(new Biography("../Media/BlackTransition.png", "A fantastic musician with a diverse taste who contributed the following amazing songs: Acid Trumpet, Easy Jam, Funk Game Loop, and Overcast.",
         "Kevin MacLeod", "Composer", renderer))
 {
     ocean->initializeStates();
