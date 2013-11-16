@@ -80,7 +80,7 @@ int main(int argc, char **argv)
     boost::shared_ptr<FrameCleanupPublisher> frameCleanupPublisher(new
         FrameCleanupPublisher);
     boost::shared_ptr<Renderer> renderer(
-        new Renderer(screenResolution, "Sea Bass Showdown", SDL_WINDOW_OPENGL,
+        new Renderer(screenResolution, "Fish Sky Sea", SDL_WINDOW_OPENGL,
         "../Media/Fonts/gentium/Gentium-R.ttf", frameCleanupPublisher)); 
     boost::shared_ptr<KeyboardPublisher> keyboardPublisher(new
         KeyboardPublisher);

@@ -156,7 +156,7 @@ void TitleMenu::loadImage(Renderer &renderer)
     const Point POSITION(0.0, 0.0);
     const Dimension SIZE(StandardUnit::DIMENSION() * 30.0, StandardUnit::
         DIMENSION() * 10.0);
-    const SDL_Color COLOR = StandardUnit::SDL_BLACK();
+    const SDL_Color COLOR = { 0xc2, 0xde, 0xa7, 0x00 };
     const int BORDER_SIZE = 0;
     std::string menuText; 
 

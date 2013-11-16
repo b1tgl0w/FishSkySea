@@ -71,7 +71,7 @@ TitleScene::TitleScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     masterClockPublisher(MasterClockPublisher::getInstance()), clockSubscriber(
     masterClockPublisher, MasterClockPublisher::customDeleter), MiSubscriber(
     keyboardPublisher), renderer(renderer), titleBackground(
-    "../Media/TitleBackground.png", 0, BACKGROUND_POSITION(), screenSize),
+    "../Media/TitleCombined.png", 0, BACKGROUND_POSITION(), screenSize),
     quit(false), jukebox(Jukebox::getInstance()), jukeboxSubscriber(
     jukebox, Jukebox::customDeleter)
 {
@@ -205,7 +205,7 @@ void TitleScene::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 
 void TitleScene::loadImage(Renderer &renderer)
 {
-    renderer.loadImage("../Media/TitleBackground.png");
+    renderer.loadImage("../Media/TitleCombined.png");
 }
 
 bool TitleScene::shouldExit()

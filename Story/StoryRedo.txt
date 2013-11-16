@@ -19,7 +19,7 @@ somehow)
 Outline:
 - Describe sunrise. Then say, "An older man is fishing at the pier as usual."
 - Wes fishes alone. Describe more of the scene. There's a sadness to him.
-- That evening Wes asked Rad to join him fishing, (maybe) saying he bought a hat 
+(Don't like this) - That evening Wes asked Rad to join him fishing, (maybe) saying he bought a hat 
 so he won't get sunburned, but Rad declines. (The narrator could tell this part.)
 (The hat part is justification for the graphics)
 - Wes says that he's asked Rad to fish for years, but he always says no.
@@ -27,13 +27,13 @@ so he won't get sunburned, but Rad declines. (The narrator could tell this part.
 - Wes: "You came." (Fade into scene)
 - It's Rad's first time fishing with his dad.
 - Talk about them fishing and what they catch (beautiful)
-- Wes: "I've wanted to take you fishing all these years... so to spend time with 
+- Wes: "I've wanted to take you fishing all these years... to spend time with 
 you and tell you the ocean reminds me of your mother.
 - Rad, "How... does the ocean remind you of mom?"
 - Wes: "Her blue eyes."
 - Wes: "... And you remind me of her too."
-- Rad: "You're right. The ocean does remind me of Mom."
-- Wes: "I'll always remember and miss my sweet love Wendy."
+- Rad: "The ocean _does_ remind me of Mom."
+- Wes: "I'll always remember and miss my sweet love, Wendy."
 - They fish more, to fill to the brim their coolers that hold the fish.
 - A huge wave crashes against the pier, hiding the fishermen in its mist. Then
 they emerge, shouting over the loud sounds of the ocean, and Rad exlaims, "What a
@@ -41,11 +41,6 @@ great time I'm having!"
 - From then on, the two fishermen cast their lines every Saturday morning, 
 sometimes hearing whale songs and seeing pods of dolphins, always gazing 
 toward the far off horizon.
-- The story spans the actual game. That is, the gameplay happens within 
-the story. At the end of the story, write something like: A spectator to this
-scene captured the day on video. The video has been recored and uploaded to
-this game. Just press, "play" on the title menu.
-
 
 Words and phrases to use
 - Long Shadows
