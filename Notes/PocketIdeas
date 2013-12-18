@@ -6,6 +6,10 @@ Priority Improvements
 - Redo Story so it's both friendly and interesting.
 
 Unorganized Improvements (May or may not be moved to priority)
+- Sea Snail ALWAYS glows, but hides in shell after being touched
+- Glimmer (timed release of 'e'), causes fish to swim to hook and nibble (
+without turning back around until they do), it causes shark to pause,
+sea horse to about face, and (maybe) sea snail to come out of shell
 - Fish swap depths. Also, size them according to weight (it will cause the 
 player to take the whole screen into account) (NOT SURE ABOUT THIS ONE, might
 make things too hard)
