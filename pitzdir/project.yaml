@@ -1,6 +1,0 @@
-classname: Project
-module: pitz.project
-order_method_name: by_milestone_status_pscore_created_time
-title: FishSkySea
-uuid: !!python/object:uuid.UUID
-  int: 217767096301878840780336294544522554772
