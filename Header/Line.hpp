@@ -53,6 +53,7 @@ class Dimension;
 class Seahorse;
 class CreditFish;
 class MessageRouter;
+class Glimmer;
 
 class Line : public Graphic, public Collidable,
     public MasterClockSubscriber,
@@ -305,6 +306,8 @@ private:
     Direction isTight();
     double calculateMaxLineLength();
     void cast();
+    void glimmer();
+    void cleanupGlimmers();
     static int &highestIdNumberGiven();
     static const std::string &HOOK_PATH();
     static const Dimension &HOOK_GRAPHIC_SIZE();
@@ -342,7 +345,7 @@ private:
     bool live;
     bool fishIsNibbling;
     bool creditFishIsNibbling;
-    Uint32 setHookTime;
+    int setHookTime;
     boost::shared_ptr<Animation> rippleAnimation;
     boost::shared_ptr<Animation> rippleAnimationNotHooked;
     boost::shared_ptr<Animation> rippleAnimationHooked;
@@ -351,6 +354,7 @@ private:
     bool setHookReleased;
     boost::shared_ptr<MessageRouter> messageRouter;
     boost::uuids::uuid uuid;
+    std::vector<boost::shared_ptr<Glimmer> > glimmers;
 };
 
 #endif

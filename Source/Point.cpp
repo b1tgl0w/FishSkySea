@@ -27,6 +27,7 @@ SUCH DAMAGES.
 */
 
 #include "../Header/Point.hpp"
+#include "../Header/Dimension.hpp"
 
 Point::Point() : x(0.0), y(0.0)
 { }
@@ -63,5 +64,12 @@ bool Point::sortByYAscending(const Point &first, const Point &second)
         return true;
     
     return false;
+}
+
+Point Point::operator+(const Dimension &rhs)
+{
+    double tmpX = x + rhs.width;
+    double tmpY = y + rhs.height;
+    return Point(tmpX, tmpY);
 }
 

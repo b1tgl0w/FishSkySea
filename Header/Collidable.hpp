@@ -50,39 +50,39 @@ public:
     //Note: Going to start using virtual, not pure virtual so objects that
     //do not collide with each other need not override
     virtual void collidesWith(boost::shared_ptr<Collidable> &otherObject,
-        const BoundingBox &otherBox) = 0;
+        const BoundingBox &otherBox);
     virtual void collidesWithHook(boost::shared_ptr<Line> &hook,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox);
     virtual void collidesWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
-        const BoundingBox &yourBox, const Direction &direction) = 0;
+        const BoundingBox &yourBox, const Direction &direction);
     virtual void collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox);
     virtual void collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox);
     virtual void collidesWithShark(boost::shared_ptr<Shark> &shark,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox);
     virtual void collidesWithSharkVision(boost::shared_ptr<Shark> &shark,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox);
     virtual void collidesWithFish(boost::shared_ptr<Fish> &fish,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox);
     virtual void collidesWithFishMouth(boost::shared_ptr<Fish> &fish,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox);
     virtual void collidesWithSeaSnail(boost::shared_ptr<SeaSnail> &seaSnail,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox);
     virtual void collidesWithPoleAreaEdge(boost::shared_ptr<Player> &
-        player, const BoundingBox &yourBox, const Direction &direction) = 0;
+        player, const BoundingBox &yourBox, const Direction &direction);
     virtual void collidesWithCreditFish(boost::shared_ptr<CreditFish>
-        &creditFish, const BoundingBox &yourBox) = 0;
+        &creditFish, const BoundingBox &yourBox);
     virtual void collidesWithSeahorseLeft(boost::shared_ptr<Seahorse> &seahorse,
-        const BoundingBox &yourBox, const Direction &seahorseFacing) = 0;
+        const BoundingBox &yourBox, const Direction &seahorseFacing);
     virtual void collidesWithSeahorseRight(boost::shared_ptr<Seahorse> &seahorse,
-        const BoundingBox &yourBox, const Direction &seahorseFacing) = 0;
+        const BoundingBox &yourBox, const Direction &seahorseFacing);
     virtual void collidesWithSeahorse(boost::shared_ptr<Seahorse> &seahorse,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox);
     virtual void collidesSharkBack(boost::shared_ptr<Shark> &shark,
-        const BoundingBox & yourBox) = 0;
+        const BoundingBox & yourBox);
     virtual void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
-        const BoundingBox &yourBox) = 0;
+        const BoundingBox &yourBox);
     virtual void doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
 };

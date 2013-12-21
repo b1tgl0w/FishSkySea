@@ -54,6 +54,7 @@ SUCH DAMAGES.
 #include "../Header/Bool.hpp"
 #include "../Header/Double.hpp"
 #include "../Header/StandardUnit.hpp"
+#include "../Header/Glimmer.hpp"
 
 //Private static variable initialization
 int &Line::highestIdNumberGiven()
@@ -250,7 +251,7 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     RIPPLE_INITIAL_SIZE(), Layer::RIPPLE_LAYER1())),
     foremostNibbleLayer(-9999), normalSpeedThreshold(0),
     setHookReleased(true), messageRouter(messageRouter), uuid(
-    boost::uuids::random_generator()())
+    boost::uuids::random_generator()()), glimmers()
 {
     boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
 
@@ -333,7 +334,7 @@ Line::Line(const Line &rhs) : state(rhs.state), notHookedState(
     rippleAnimationHooked(rhs.rippleAnimationHooked), foremostNibbleLayer(
     rhs.foremostNibbleLayer), normalSpeedThreshold(rhs.normalSpeedThreshold),
     setHookReleased(rhs.setHookReleased), messageRouter(rhs.messageRouter),
-    uuid(rhs.uuid)
+    uuid(rhs.uuid), glimmers(rhs.glimmers)
 { }
 
 Line &Line::operator=(const Line &rhs)
@@ -381,6 +382,7 @@ Line &Line::operator=(const Line &rhs)
     setHookReleased = rhs.setHookReleased;
     messageRouter = rhs.messageRouter;
     uuid = rhs.uuid;
+    glimmers = rhs.glimmers;
 
     return *this;
 }
@@ -524,12 +526,48 @@ void Line::shortenPole(bool on)
         TypeHint::Bool, messageOn);
 }
 
+void Line::glimmer()
+{
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+
+    if( !sharedOcean )
+        return;
+
+    Dimension halfHook(hookSize->width / 2.0, hookSize->height / 2.0 );
+    boost::shared_ptr<Glimmer> lGlimmer(new Glimmer(*hookPoint + halfHook,
+        sharedOcean, Direction::LEFT(), messageRouter));
+    boost::shared_ptr<Glimmer> rGlimmer(new Glimmer(*hookPoint + halfHook, 
+        sharedOcean, Direction::RIGHT(), messageRouter));
+    boost::shared_ptr<Collidable> lGlimmerCollidable(lGlimmer);
+    boost::shared_ptr<Collidable> rGlimmerCollidable(rGlimmer);
+    sharedOcean->addCollidable(lGlimmerCollidable);
+    sharedOcean->addCollidable(rGlimmerCollidable);
+    MasterClockPublisher *mcp = MasterClockPublisher::getInstance();
+    boost::shared_ptr<MasterClockSubscriber> lGlimmerSubscriber(lGlimmer);
+    boost::shared_ptr<MasterClockSubscriber> rGlimmerSubscriber(rGlimmer);
+    mcp->subscribe(lGlimmerSubscriber);
+    mcp->subscribe(rGlimmerSubscriber);
+    glimmers.push_back(lGlimmer);
+    glimmers.push_back(rGlimmer);
+}
+
 void Line::setHook(bool on)
 {
     if( !setHookReleased )
     {
         if( on == false )
+        {
             setHookReleased = true;
+
+            const int GLIMMER_THRESHOLD = StandardUnit::DURATION() * 3;
+
+            if( setHookTime < GLIMMER_THRESHOLD && setHookTime >
+                -GLIMMER_THRESHOLD )
+            {
+                if( state == notHookedState )
+                    glimmer();
+            }
+        }
 
         return;
     }
@@ -571,7 +609,7 @@ void Line::setHook(bool on)
         messageRouter->sendMessage(uuid, MessageEnum::SET_HOOK,
             TypeHint::Bool, messageOn);
 
-        setHookTime = SET_HOOK_RECOVER_TIME();
+        setHookTime = int(SET_HOOK_RECOVER_TIME());
         boost::shared_ptr<Fish> sharedHookedFish = hookedFish.lock();
 
         if( sharedHookedFish )
@@ -800,6 +838,11 @@ void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)
 
     if( state != hookedState )
         layout->drawWhenReady(re5);
+
+    std::vector<boost::shared_ptr<Glimmer> > glimmersCopy = glimmers;
+    for( std::vector<boost::shared_ptr<Glimmer> >::iterator it = glimmersCopy.begin();
+        it != glimmersCopy.end(); ++it)
+        (*it)->draw(layout, renderer);
 }
 
 void Line::changeState(boost::shared_ptr<LineState> &newState)
@@ -967,6 +1010,38 @@ void Line::collidesSharkBack(boost::shared_ptr<Shark> &shark,
 void Line::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) {}
 
+void Line::cleanupGlimmers()
+{
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+
+    if( !sharedOcean )
+        return;
+
+    MasterClockPublisher *mcp = MasterClockPublisher::getInstance();
+
+    std::vector<boost::shared_ptr<Glimmer> > glimmersCopy = glimmers;
+    for( std::vector<boost::shared_ptr<Glimmer> >::iterator it =
+        glimmersCopy.begin(); it != glimmersCopy.end(); ++it )
+    {
+        if( (*it)->isDone() )
+        {
+            boost::shared_ptr<MasterClockSubscriber> glimmerSubscriber(*it);
+            boost::shared_ptr<Collidable> glimmerCollidable(*it);
+            mcp->unsubscribe(glimmerSubscriber);
+            sharedOcean->removeCollidable(glimmerCollidable);
+        }
+    }
+
+    for( std::vector<boost::shared_ptr<Glimmer> >::iterator it = glimmers.begin();
+        it != glimmers.end(); )
+    {
+        if( (*it)->isDone() )
+            it = glimmers.erase(it);
+        else
+            ++it;
+    }
+}
+
 //MasterClockSubscriber
 void Line::clockTick(Uint32 elapsedTime)
 {
@@ -974,6 +1049,14 @@ void Line::clockTick(Uint32 elapsedTime)
         return;
 
     state->clockTick(elapsedTime);
+
+    //Keep counting down timer for glimmer so there's a threshold before
+    // and after the set hook is restored
+    if( setHookTime > std::numeric_limits<int>::min() +
+        int(elapsedTime) )
+        setHookTime -= int(elapsedTime);
+
+    cleanupGlimmers();
 }
 
 Line::NotHookedState::NotHookedState(boost::weak_ptr<Line> owner) : lineOwner(
@@ -1142,14 +1225,12 @@ void Line::NotHookedState::restoreFromSetHook(Uint32 elapsedTime)
     if( !sharedLineOwner )
         return;
 
-    sharedLineOwner->hookPoint->y += (elapsedTime < sharedLineOwner->setHookTime 
+    sharedLineOwner->hookPoint->y += (int(elapsedTime) < sharedLineOwner->setHookTime 
         ? (double) elapsedTime : sharedLineOwner->setHookTime) / (double) 
         sharedLineOwner->SET_HOOK_RECOVER_TIME() * 
         sharedLineOwner->SET_HOOK_PIXELS();
 
-    if( sharedLineOwner->setHookTime > elapsedTime )
-        sharedLineOwner->setHookTime -= elapsedTime;
-    else
+    if( sharedLineOwner->setHookTime < int(elapsedTime) )
     {
         sharedLineOwner->setHookOn = false;
 
@@ -1288,7 +1369,6 @@ void Line::NotHookedState::collidesWithOceanSurface(boost::shared_ptr<Ocean>
     if( &yourBox == &(sharedLineOwner->hookBox) )
     {
         ocean->alignWithSurface(sharedLineOwner->hookPoint->y, 1.0);
-        sharedLineOwner->setHookTime = 0;
         sharedLineOwner->setHookOn = false;
 
         boost::shared_ptr<MessageData> messageOn(new Bool(sharedLineOwner->setHookOn));
@@ -1492,9 +1572,7 @@ void Line::HookedState::restoreFromSetHook(Uint32 elapsedTime)
     if( !sharedLineOwner )
         return;
 
-    if( sharedLineOwner->setHookTime > elapsedTime )
-        sharedLineOwner->setHookTime -= elapsedTime;
-    else
+    if( sharedLineOwner->setHookTime < int(elapsedTime) )
     {
         sharedLineOwner->setHookOn = false;
 

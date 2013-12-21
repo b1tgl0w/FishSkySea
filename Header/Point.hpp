@@ -31,6 +31,8 @@ SUCH DAMAGES.
 
 #include "MessageData.hpp"
 
+class Dimension;
+
 class Point : public MessageData
 {
 public:
@@ -38,6 +40,7 @@ public:
     Point(double x, double y);
     Point(const Point &rhs);
     Point &operator=(const Point &rhs);
+    Point operator+(const Dimension &rhs);
     ~Point() { };
     static bool sortByXAscending(const Point &first, const Point &second);
     static bool sortByYAscending(const Point &first, const Point &second);

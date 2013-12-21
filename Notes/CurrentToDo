@@ -3,11 +3,15 @@
 //Created:  02/10/12
 //Purpose: Specifications for your current task
 
-Left off on: Test funness of fish on sine wave. Then brainstorm.
+Left off on: 
 
 General Task: Making game more fun before moving on to AI
 
 Specific Steps:
     Done - Make fish move on a sine wave
+    - Hook glimmer when player releases e on time.
+    - Fish react to hook glimmer
+    - Shark react to hook glimmer
+    - Seahorse react to hook glimmer
     - Brainstorm other ways to make game more fun
 

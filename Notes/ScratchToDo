@@ -2,3 +2,14 @@
 //This file complements CurrentToDo. 
 //CurrentToDo is specifications of current task, this is implementation of task
 
+- Hook spawns a glimmer
+    //don - Make sure to cleanup done glimmers
+- Glimmer moves outward
+    //done - Id
+    //done - Include
+    //done - Die (restore id)
+    //done - Correct ctors
+    - Glimmer shrink (do later)
+- Hook shines
+- Glimmer collision
+
