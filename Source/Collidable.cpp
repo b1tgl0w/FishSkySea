@@ -64,4 +64,6 @@ void Collidable::collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) { }
 void Collidable::doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox) { }
+void Collidable::collidesWithGlimmer(boost::shared_ptr<Glimmer> &glimmer,
+    const BoundingBox &yourBox) { }
 

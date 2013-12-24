@@ -559,7 +559,7 @@ void Line::setHook(bool on)
         {
             setHookReleased = true;
 
-            const int GLIMMER_THRESHOLD = StandardUnit::DURATION() * 3;
+            const int GLIMMER_THRESHOLD = StandardUnit::DURATION() * 5;
 
             if( setHookTime < GLIMMER_THRESHOLD && setHookTime >
                 -GLIMMER_THRESHOLD )

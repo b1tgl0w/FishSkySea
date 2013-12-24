@@ -38,21 +38,28 @@ SUCH DAMAGES.
 #include "../Header/DirectGraphicStrategy.hpp"
 #include "../Header/DirectLineGraphic.hpp"
 #include "../Header/DirectRendererElement.hpp"
+#include "../Header/Fish.hpp"
 
 Glimmer::Glimmer(const Point &initialPosition, boost::shared_ptr<Ocean> &ocean,
     const Direction &facing, 
     boost::shared_ptr<MessageRouter> messageRouter) : position(
     new Point(initialPosition)), size(new Dimension(4.0, 1.0)), ocean(ocean),
-    glimmerBox(new BoundingBox(position, size)), facing(facing),
+    glimmerBox(position, size), facing(facing),
     endPosition(position->x + 300.0 * (facing == Direction::LEFT() ?
-        -1.0 : 1.0), position->y), done(false), uuid(boost::uuids::random_generator()()),
-        identifier(boost::uuids::to_string(uuid)), messageRouter(messageRouter)
+    -1.0 : 1.0), position->y), done(false), uuid(boost::uuids::random_generator()()),
+    identifier(boost::uuids::to_string(uuid)), messageRouter(messageRouter),
+    startPosition(initialPosition), reflectOnce(false)
 {
 }
 
 bool Glimmer::isDone()
 {
     return done;
+}
+
+void Glimmer::kill()
+{
+    done = true;
 }
 
 void Glimmer::clockTick(Uint32 elapsedTime)
@@ -104,4 +111,47 @@ void Glimmer::move(Uint32 elapsedTime)
             done = true;
 }
 
+Point Glimmer::sourceLocation()
+{
+    return startPosition;
+}
+
+void Glimmer::reflect()
+{
+    if( reflectOnce )
+        return;
+
+    endPosition = startPosition;
+
+    if( facing == Direction::LEFT() )
+        facing = Direction::RIGHT();
+    else
+        facing = Direction::LEFT();
+
+    reflectOnce = true;
+} 
+
+void Glimmer::collidesWith(boost::shared_ptr<Collidable> &collidable, const
+    BoundingBox &otherBox)
+{
+    boost::shared_ptr<Glimmer> sharedThis = shared_from_this();
+
+    if( !sharedThis )
+        return;
+
+    if( glimmerBox.isCollision(otherBox) )
+        collidable->collidesWithGlimmer(sharedThis, otherBox);
+}
+
+void Glimmer::collidesWithFish(boost::shared_ptr<Fish> &fish, const BoundingBox &
+    yourBox)
+{
+    if( &yourBox == &glimmerBox )
+    {
+        if( fish->enchant(startPosition) )
+            reflect();
+        else
+            done = true;
+    }
+}
 

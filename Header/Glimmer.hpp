@@ -31,20 +31,22 @@ SUCH DAMAGES.
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/uuid/uuid.hpp"
+#include "boost/enable_shared_from_this.hpp"
 #include <string>
 #include "../Header/Collidable.hpp"
 #include "../Header/MasterClockSubscriber.hpp"
 #include "../Header/Graphic.hpp"
 #include "../Header/Point.hpp"
 #include "../Header/Direction.hpp"
+#include "../Header/BoundingBox.hpp"
 
-class BoundingBox;
+class Fish;
 class Dimension;
 class MessageRouter;
 class Ocean;
 
 class Glimmer : public Collidable, public MasterClockSubscriber, public
-    Graphic
+    Graphic, public boost::enable_shared_from_this<Glimmer>
 {
 public:
     Glimmer(const Point &initialPosition, boost::shared_ptr<Ocean> &ocean,
@@ -55,18 +57,27 @@ public:
     void clockTick(Uint32 elapsedTime);
     void loadImage(Renderer &renderer);
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
+    Point sourceLocation();
+    void reflect();
+    void collidesWith(boost::shared_ptr<Collidable> &collidable, const BoundingBox
+        &otherBox);
+    void collidesWithFish(boost::shared_ptr<Fish> &fish, const BoundingBox &
+        yourBox);
+    void kill();
 private:
     void move(Uint32 elapsedTime);
     boost::shared_ptr<Point> position;
     boost::shared_ptr<Dimension> size;
     boost::weak_ptr<Ocean> ocean;
-    boost::shared_ptr<BoundingBox> glimmerBox;
+    BoundingBox glimmerBox;
     Direction facing;
     Point endPosition;
     bool done;
     boost::uuids::uuid uuid;
     std::string identifier;
     boost::shared_ptr<MessageRouter> messageRouter;
+    Point startPosition;
+    bool reflectOnce;
 
     //Class-wide constants
 };

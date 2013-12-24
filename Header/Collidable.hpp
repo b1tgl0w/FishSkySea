@@ -43,6 +43,7 @@ class Direction;
 class SeaSnail;
 class Player;
 class Seahorse;
+class Glimmer;
 
 class Collidable
 {
@@ -84,6 +85,8 @@ public:
     virtual void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
     virtual void doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
+    virtual void collidesWithGlimmer(boost::shared_ptr<Glimmer> &glimmer,
         const BoundingBox &yourBox);
 };
 

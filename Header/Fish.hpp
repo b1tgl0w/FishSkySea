@@ -49,6 +49,7 @@ SUCH DAMAGES.
 #include "MasterClockSubscriber.hpp"
 #include "Wave.hpp"
 
+class Glimmer;
 class Renderer;
 class Ocean;
 class Line;
@@ -171,6 +172,7 @@ public:
     void yank();
     void nibble(boost::shared_ptr<Line> &line);
     void doNibble();
+    bool enchant(const Point &enchantPosition);
     //!Adds fish graphic to layout to be drawn next frame.
     /*!
         \param layout the segment of the screen to draw the fish to.
@@ -233,6 +235,8 @@ public:
     void collidesWithOceanFloor(boost::shared_ptr<Ocean> &ocean,
         const BoundingBox &yourBox);
     void doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
+        const BoundingBox &yourBox);
+    void collidesWithGlimmer(boost::shared_ptr<Glimmer> &glimmer,
         const BoundingBox &yourBox);
 //MasterClockSubscriber
     void clockTick(Uint32 elapsedTime);
@@ -399,6 +403,8 @@ private:
             const BoundingBox &yourBox);
         void doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
             const BoundingBox &yourBox);
+        void collidesWithGlimmer(boost::shared_ptr<Glimmer> &glimmer,
+            const BoundingBox &yourBox);
     protected:
         void initialize(boost::weak_ptr<Fish> fishOwner);
         void dispose();
@@ -434,6 +440,7 @@ private:
     void swim(double pixels);
     Point calculateLoopPosition();
     void loopAround();
+    void endEnchant();
     boost::shared_ptr<FishState> state;
     boost::shared_ptr<HookedState> hookedState;
     boost::shared_ptr<FreeState> freeState;
@@ -465,6 +472,9 @@ private:
     bool loopScreen;
     Wave wave;
     Point initialPosition;
+    bool enchanted;
+    Point enchantPosition;
+    Direction enchantFacing;
 
     //Class-wide constants
     static const std::string &IMAGE_PATH();

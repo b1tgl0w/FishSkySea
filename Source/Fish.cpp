@@ -47,6 +47,7 @@ SUCH DAMAGES.
 #include "../Header/Double.hpp"
 #include "../Header/StandardUnit.hpp"
 #include "../Header/QueueWrapper.hpp"
+#include "../Header/Glimmer.hpp"
 
 //Class-wide constants
 const std::string &Fish::IMAGE_PATH()
@@ -142,7 +143,8 @@ Fish::Fish(const Point &initialPosition,
     shouldResetTimes(false), glowing(false), live(false), behindSeahorse(false),
     collidedWithSeahorse(false), nibbling(false), justFinishedNibbling(false),
     glowAlpha(0), messageRouter(messageRouter), uuid(boost::uuids::random_generator()()),
-    loopScreen(false), wave(wave), initialPosition(initialPosition)
+    loopScreen(false), wave(wave), initialPosition(initialPosition),
+    enchanted(false), enchantPosition(0.0, 0.0), enchantFacing(Direction::LEFT())
 {
     boost::shared_ptr<MessageData> messageSize(fishSize);
     messageRouter->sendMessage(uuid, MessageEnum::FISH_SIZE,
@@ -175,7 +177,8 @@ Fish::Fish(const Fish &rhs) : state(rhs.state), hookedState(rhs.hookedState),
     rhs.collidedWithSeahorse), nibbling(rhs.nibbling), justFinishedNibbling(
     rhs.justFinishedNibbling), glowAlpha(rhs.glowAlpha), messageRouter(
     rhs.messageRouter), uuid(rhs.uuid), loopScreen(rhs.loopScreen), wave(
-    rhs.wave), initialPosition(rhs.initialPosition)
+    rhs.wave), initialPosition(rhs.initialPosition), enchanted(rhs.enchanted),
+    enchantPosition(rhs.enchantPosition), enchantFacing(rhs.enchantFacing)
 { 
     positionFromSide();
     updateMouthPosition();
@@ -217,6 +220,9 @@ Fish &Fish::operator=(const Fish &rhs)
     loopScreen = rhs.loopScreen;
     wave = rhs.wave;
     initialPosition = rhs.initialPosition;
+    enchanted = rhs.enchanted;
+    enchantPosition = rhs.enchantPosition;
+    enchantFacing = rhs.enchantFacing;
 
     positionFromSide();
     updateMouthPosition();
@@ -300,12 +306,15 @@ void Fish::randomAboutFace(Uint32 &timeSinceRandomAboutFace, boost::shared_ptr<
         Uint32 popped = randomAboutFaceQueue->actualQueue.front();
         randomAboutFaceQueue->actualQueue.pop();
         randomAboutFaceQueue->actualQueue.push(popped);
-        aboutFace();
+        if( !enchanted )
+        {
+            aboutFace();
 
-        boost::shared_ptr<MessageData> messageQueue(randomAboutFaceQueue);
+            boost::shared_ptr<MessageData> messageQueue(randomAboutFaceQueue);
 
-        messageRouter->sendMessage(uuid, MessageEnum::FISH_RANDOM_ABOUT_FACE_QUEUE,
-            TypeHint::QueueWrapperUint32, messageQueue);
+            messageRouter->sendMessage(uuid, MessageEnum::FISH_RANDOM_ABOUT_FACE_QUEUE,
+                TypeHint::QueueWrapperUint32, messageQueue);
+        }
     }
 }
 
@@ -754,11 +763,37 @@ void Fish::doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean,
 {
     state->doesntCollideWithOceanEdge(ocean, yourBox);
 }
+void Fish::collidesWithGlimmer(boost::shared_ptr<Glimmer> &glimmer,
+    const BoundingBox &yourBox)
+{
+    state->collidesWithGlimmer(glimmer, yourBox);
+}
+
+void Fish::endEnchant()
+{
+    if( enchanted)
+    {
+        //!!!!!!SENT MESSAGE ROUTER A MESSAGE HERE!!!!!!
+        if( enchantFacing == Direction::LEFT() )
+        {
+            if( position->x <= enchantPosition.x )
+                enchanted = false;
+        }
+        else
+        {
+            if( position->x >= enchantPosition.x )
+                enchanted = false;
+        }
+    }
+
+}
 
 void Fish::clockTick(Uint32 elapsedTime)
 {
     if( !live )
         return;
+    
+    endEnchant();
 
     if( nibbling && state == freeState)
         doNibble();
@@ -809,6 +844,26 @@ void Fish::doNibble()
 
         return;
     }
+}
+
+bool Fish::enchant(const Point &p)
+{
+    if( state == hookedState || ( behindSeahorse || stayBehindSeahorse ||
+        collidedWithSeahorse) || enchanted )
+        return false;
+
+    enchanted = true;
+    enchantPosition = p;
+
+    if( p.x < position->x )
+        enchantFacing = Direction::LEFT();
+    else
+        enchantFacing = Direction::RIGHT();
+    
+    if( facing != enchantFacing )
+        aboutFace();
+
+    return true;
 }
 
 void Fish::populateRandomAboutFace(boost::shared_ptr<QueueWrapper<Uint32> >
@@ -1237,6 +1292,21 @@ void Fish::FreeState::doesntCollideWithOceanEdge(boost::shared_ptr<Ocean> &ocean
     {
         if( &yourBox == &(sharedOwner->fishBox) )
             sharedOwner->loopScreen = true;
+    }
+}
+
+void Fish::FreeState::collidesWithGlimmer(boost::shared_ptr<Glimmer> &
+    glimmer, const BoundingBox &yourBox)
+{
+    boost::shared_ptr<Fish> sharedFishOwner = fishOwner.lock();
+    
+    if( !sharedFishOwner )
+        return;
+
+    if( &yourBox == &(sharedFishOwner->fishBox) )
+    {
+        if( sharedFishOwner->enchant(glimmer->sourceLocation()) )
+            glimmer->reflect();
     }
 }
 
