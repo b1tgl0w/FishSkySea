@@ -852,7 +852,9 @@ bool Fish::enchant(const Point &p)
         collidedWithSeahorse) || enchanted )
         return false;
 
-    enchanted = true;
+    //Enchant is too powerful. Let the fish about face before reaching the
+    // hook. Commenting out the following line allows this behavior.
+    //enchanted = true;
     enchantPosition = p;
 
     if( p.x < position->x )

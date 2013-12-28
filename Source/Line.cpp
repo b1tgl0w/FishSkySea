@@ -738,6 +738,7 @@ void Line::cast()
     polePoint->y = initialPolePoint.y;
     hookPoint->x = initialHookPoint.x;
     hookPoint->y = initialHookPoint.y;
+    setHookReleased = true;
 }
 
 bool Line::canHookFish()

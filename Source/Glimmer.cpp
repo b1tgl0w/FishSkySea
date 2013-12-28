@@ -45,7 +45,7 @@ Glimmer::Glimmer(const Point &initialPosition, boost::shared_ptr<Ocean> &ocean,
     boost::shared_ptr<MessageRouter> messageRouter) : position(
     new Point(initialPosition)), size(new Dimension(4.0, 1.0)), ocean(ocean),
     glimmerBox(position, size), facing(facing),
-    endPosition(position->x + 300.0 * (facing == Direction::LEFT() ?
+    endPosition(position->x + 200.0 * (facing == Direction::LEFT() ?
     -1.0 : 1.0), position->y), done(false), uuid(boost::uuids::random_generator()()),
     identifier(boost::uuids::to_string(uuid)), messageRouter(messageRouter),
     startPosition(initialPosition), reflectOnce(false)
