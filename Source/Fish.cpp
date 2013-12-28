@@ -854,7 +854,7 @@ bool Fish::enchant(const Point &p)
 
     //Enchant is too powerful. Let the fish about face before reaching the
     // hook. Commenting out the following line allows this behavior.
-    //enchanted = true;
+    enchanted = true;
     enchantPosition = p;
 
     if( p.x < position->x )

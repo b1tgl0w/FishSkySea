@@ -553,6 +553,9 @@ void Line::glimmer()
 
 void Line::setHook(bool on)
 {
+    if( live == false )
+        return;
+
     if( !setHookReleased )
     {
         if( on == false )
@@ -567,14 +570,14 @@ void Line::setHook(bool on)
                 if( state == notHookedState )
                     glimmer();
             }
-        }
 
-        return;
+            //return; //Don't uncomment, will cause hook to sometimes not set
+        }
     }
-    else
+    else if( !setHookOn )
         setHookReleased = false;
 
-    if( live && on && !setHookOn && fishIsNibbling )
+    if( on && !setHookOn && fishIsNibbling )
     {
         boost::shared_ptr<Fish> sharedNibbleFish = nibbleFish.lock();
         boost::shared_ptr<Line> sharedThis(shared_from_this());
@@ -585,7 +588,7 @@ void Line::setHook(bool on)
         sharedNibbleFish->hookedBy(sharedThis, owner);
         hooked(sharedNibbleFish);
     }
-    else if( live && on && !setHookOn && creditFishIsNibbling )
+    else if( on && !setHookOn && creditFishIsNibbling )
     {
         boost::shared_ptr<CreditFish> sharedNibbleCreditFish = nibbleCreditFishObj.lock();
         boost::shared_ptr<Line> sharedThis(shared_from_this());
@@ -596,11 +599,11 @@ void Line::setHook(bool on)
         sharedNibbleCreditFish->hookedBy(sharedThis, owner);
         hookedCreditFish(sharedNibbleCreditFish);
     }
-    else if( live && on && !setHookOn )
+    else if( on && !setHookOn )
     {
         hookPoint->y -= SET_HOOK_PIXELS();
     }
-    if( live && on && !setHookOn )
+    if( on && !setHookOn )
     {
         setHookOn = true;
 
@@ -739,6 +742,7 @@ void Line::cast()
     hookPoint->x = initialHookPoint.x;
     hookPoint->y = initialHookPoint.y;
     setHookReleased = true;
+    setHookOn = false;
 }
 
 bool Line::canHookFish()
