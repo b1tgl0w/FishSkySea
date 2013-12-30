@@ -562,7 +562,7 @@ void Line::setHook(bool on)
         {
             setHookReleased = true;
 
-            const int GLIMMER_THRESHOLD = StandardUnit::DURATION() * 5;
+            const int GLIMMER_THRESHOLD = int(StandardUnit::DURATION() * 5);
 
             if( setHookTime < GLIMMER_THRESHOLD && setHookTime >
                 -GLIMMER_THRESHOLD )
@@ -571,10 +571,11 @@ void Line::setHook(bool on)
                     glimmer();
             }
 
-            //return; //Don't uncomment, will cause hook to sometimes not set
         }
+
+        return; //Without this holding down e keeps setting hook
     }
-    else if( !setHookOn )
+    else 
         setHookReleased = false;
 
     if( on && !setHookOn && fishIsNibbling )
@@ -741,8 +742,16 @@ void Line::cast()
     polePoint->y = initialPolePoint.y;
     hookPoint->x = initialHookPoint.x;
     hookPoint->y = initialHookPoint.y;
-    setHookReleased = true;
-    setHookOn = false;
+
+    //Keep these commented. Reason below
+    //setHookReleased = true; //Sometimes causes set hook not to work once
+    //setHookOn = false; //Sometimes causes set hook not to work once
+
+    //Fix autoglimmer
+    // An apparent autoglimmer still happens if e pressed after cast and released 
+    // as normal, but this is a valid e-release.
+    // Not enough testing has been done to see if all autoglimmers fixed
+    setHookTime = std::numeric_limits<int>::min();
 }
 
 bool Line::canHookFish()
