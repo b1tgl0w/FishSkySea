@@ -55,6 +55,7 @@ SUCH DAMAGES.
 #include "../Header/Double.hpp"
 #include "../Header/StandardUnit.hpp"
 #include "../Header/Glimmer.hpp"
+#include "../Header/UuidWrapper.hpp"
 
 //Private static variable initialization
 int &Line::highestIdNumberGiven()
@@ -313,6 +314,16 @@ Line::Line(boost::shared_ptr<Player> &initialPlayer,
     
     messageRouter->sendMessage(uuid, MessageEnum::HOOK_SIZE,
         TypeHint::Dimension, messageHookSize);
+
+    boost::shared_ptr<MessageData> messagePolePosition(polePoint);
+
+    messageRouter->sendMessage(uuid, 
+        MessageEnum::POLE_MOVE, TypeHint::Point, messagePolePosition);
+
+    boost::shared_ptr<MessageData> messageHookPosition(hookPoint);
+
+    messageRouter->sendMessage(uuid, 
+        MessageEnum::HOOK_MOVE, TypeHint::Point, messageHookPosition);
 }
 
 Line::Line(const Line &rhs) : state(rhs.state), notHookedState(
@@ -790,6 +801,14 @@ void Line::stopNibble()
 {
     fishIsNibbling = false;
     creditFishIsNibbling = false;
+}
+
+void Line::linkPlayerOwnerUuid(boost::uuids::uuid &ownerUuid)
+{
+    boost::shared_ptr<MessageData> messageOwnerUuid(new UuidWrapper(ownerUuid));
+    
+    messageRouter->sendMessage(uuid, MessageEnum::PLAYER_LINE_UUID,
+        TypeHint::Uuid, messageOwnerUuid);
 }
 
 void Line::draw(boost::shared_ptr<Layout> &layout, Renderer &renderer)

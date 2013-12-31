@@ -79,16 +79,16 @@ ControlMapping AiSeekFishAction::mapControls()
     //Magic 100 is cushion time
     if( timeToIntercept < aiDataCruncher->timeToMovePole(aiUuid) + 100 )
     {
-        ControlMapping controlMapping;
-        controlMapping.makeSeekMapping(positionToIntercept, 
-            ControlMapping::NO_TIME_CUSHION);
+        ControlMapping controlMapping();
+        controlMapping.makeSeekMapping(aiDataCruncher->playerPosition(aiUuid), 
+            positionToIntercept, ControlMapping::NO_TIME_CUSHION);
 
         return controlMapping;
     }
 
-    ControlMapping controlMapping;
-    controlMapping.makeSeekMapping(positionToIntercept, 
-        ControlMapping::TIME_CUSHION);
+    ControlMapping controlMapping(aiDataCruncher, aiUuid);
+    controlMapping.makeSeekMapping(aiDataCruncher->playerPosition(aiUuid),
+        positionToIntercept, ControlMapping::TIME_CUSHION);
 
     return controlMapping;
 }

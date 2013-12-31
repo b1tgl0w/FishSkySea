@@ -60,6 +60,8 @@ class GridLayout;
 class TextRendererElement;
 class MessageRouter;
 class Jukebox;
+class AiPlayer;
+class AiDataCruncher;
 
 class MainGameScene : public Scene, public TimerAction, public 
     KeyboardSubscriber, public boost::enable_shared_from_this<MainGameScene>
@@ -68,7 +70,8 @@ public:
     MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> > &currentScene,
         boost::shared_ptr<Renderer> &renderer, boost::shared_ptr<
         KeyboardPublisher> &keyboardPublisher, const Dimension 
-        &screenResolution, boost::shared_ptr<MessageRouter> &messageRouter);
+        &screenResolution, boost::shared_ptr<MessageRouter> &messageRouter,
+        boost::shared_ptr<AiDataCruncher> &aiDataCruncher);
     MainGameScene(const MainGameScene &rhs);
     MainGameScene &operator=(const MainGameScene &rhs);
     void enter();
@@ -108,7 +111,8 @@ private:
     boost::shared_ptr<Score> score1;
     boost::shared_ptr<Score> score2;
     boost::shared_ptr<HumanPlayer> player1;
-    boost::shared_ptr<HumanPlayer> player2;
+    boost::shared_ptr<AiDataCruncher> aiDataCruncher;
+    boost::shared_ptr<AiPlayer> player2;
     ImageRendererElement background;
     ImageRendererElement dockSupports;
     ImageRendererElement elderFisher;
@@ -126,7 +130,6 @@ private:
     boost::shared_ptr<KeyboardSubscriber> clockSubscriber;
     boost::shared_ptr<MasterInputSubscriber> MiSubscriber;
     boost::shared_ptr<KeyboardSubscriber> playerSubscriber;
-    boost::shared_ptr<KeyboardSubscriber> playerSubscriber2;
     boost::shared_ptr<LayeredLayout> layeredLayout;
     boost::shared_ptr<BorderLayout> borderLayout;
     boost::shared_ptr<Layout> superBorderLayout;
@@ -143,6 +146,7 @@ private:
     boost::weak_ptr<Scene> titleScene;
     Jukebox *jukebox;
     boost::shared_ptr<MasterClockSubscriber> jukeboxSubscriber;
+    boost::shared_ptr<MasterClockSubscriber> aiSubscriber;
 };
 
 #endif

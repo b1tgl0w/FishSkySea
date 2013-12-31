@@ -1,8 +1,7 @@
-//File: AiComponent.hpp
+//File: UuidWrapper.cpp
 //Author:   John Miner
-//Created:  09/20/13
-//Purpose:  Iface. Determine weight of action and coordinate to create mapping
-//          of action to controls.
+//Created:  12/30/13
+//Purpose: UuidWrapper 
 //Copyright 2013 John Miner
 //This program is distributed under the terms of the GNU General Public License
 /*
@@ -26,17 +25,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
-#ifndef AI_COMPONENT_HPP_
-#define AI_COMPONENT_HPP_
+#include "../Header/UuidWrapper.hpp"
 
-class AiComponent
-{
-public:
-    virtual AiWeight determineWeight() = 0;
-    virutal ControlMapping mapControls(const boost::shared_ptr<AiPlayer> 
-        &aiPlayer) = 0;
-    virtual ~AiComponent();
-};
-
-#endif
+UuidWrapper::UuidWrapper(boost::uuids::uuid &uuid) : actualUuid(uuid) { }
 

@@ -89,6 +89,7 @@ public:
     bool nibbleCreditFish(boost::shared_ptr<CreditFish> &creditFish, const int
         layer);
     void stopNibble();
+    void linkPlayerOwnerUuid(boost::uuids::uuid &ownerUuid);
     virtual ~Line();
 //Collidable
     void collidesWith(boost::shared_ptr<Collidable> &otherObject,

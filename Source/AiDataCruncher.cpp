@@ -38,6 +38,7 @@ SUCH DAMAGES.
 #include "../Header/Direction.hpp"
 #include "../Header/Depth.hpp"
 #include "../Header/QueueWrapper.hpp"
+#include "../Header/UuidWrapper.hpp"
 
 AiDataCruncher::AiDataCruncher(boost::shared_ptr<MessageRouter> &messageRouter)
     : messageRouter(messageRouter), fishPosition(), fishMouthPosition(),
@@ -50,7 +51,7 @@ AiDataCruncher::AiDataCruncher(boost::shared_ptr<MessageRouter> &messageRouter)
     poleAreaSize(), playerCatch(), playerTotalScore(), polePosition(),
     poleXSpeed(), lineYSpeed(), hookPosition(), hookXSettleSpeed(),
     hookSize(), poleShorten(), poleLengthen(), poleReelIn(), poleGiveLine(),
-    setHook()
+    setHook(), lineUuid()
 {
 }
 
@@ -104,6 +105,7 @@ void AiDataCruncher::subscribeToAll()
     messageRouter->subscribeToMessage(MessageEnum::POLE_REEL_IN, sharedThis);
     messageRouter->subscribeToMessage(MessageEnum::POLE_GIVE_LINE, sharedThis);
     messageRouter->subscribeToMessage(MessageEnum::SET_HOOK, sharedThis);
+    messageRouter->subscribeToMessage(MessageEnum::PLAYER_LINE_UUID, sharedThis);
 }
 
 void AiDataCruncher::sendMessage(const boost::uuids::uuid &senderId, const MessageEnum &message,
@@ -1009,6 +1011,30 @@ void AiDataCruncher::sendMessage(const boost::uuids::uuid &senderId, const Messa
                 setHook[senderId] = castedData;
         }
     }
+    /****************** SPECIAL CASE *******************/
+    //!! The line sends its uuid as well as the player's uuid. Store it in the
+    // map with player uuid as key and line uuid as value. (this is reverse 
+    // of the convention)
+    else if( message == MessageEnum::PLAYER_LINE_UUID )
+    {
+        if( typeHint == TypeHint::Uuid )
+        {
+            boost::shared_ptr<UuidWrapper> castedData = boost::dynamic_pointer_cast<UuidWrapper>(
+                data);
+
+            if( !castedData )
+            {
+                std::cout << "Error: Bad message." << std::endl;
+
+                return;
+            }
+
+            if( lineUuid.count(castedData->actualUuid) == 0 )
+                lineUuid.insert(std::make_pair(castedData->actualUuid, senderId));
+            else
+                lineUuid[castedData->actualUuid] = senderId;
+        }
+    }
 }
 
 boost::shared_ptr<Bool> AiDataCruncher::snailActive()
@@ -1056,5 +1082,30 @@ bool AiDataCruncher::getSeaSnailUuid(boost::uuids::uuid &ssUuid)
     }
 
     return false;
+}
+
+Point AiDataCruncher::playerPredictedHookPosition(boost::uuids::uuid &
+    playerUuid)
+{
+    if( lineUuid.count(playerUuid) == 0 )
+    {
+        Point error(0.0, 0.0);
+        return error;
+    }
+
+    Point hybridPosition(polePosition[lineUuid[playerUuid]]->x, 
+        hookPosition[lineUuid[playerUuid]]->y);
+    return hybridPosition;
+}
+
+Point AiDataCruncher::playerActualHookPosition(boost::uuids::uuid &playerUuid)
+{
+    if( lineUuid.count(playerUuid) == 0 )
+    {
+        Point error(0.0, 0.0);
+        return error;
+    }
+
+    return *hookPosition[lineUuid[playerUuid]];
 }
 

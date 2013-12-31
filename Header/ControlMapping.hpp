@@ -1,8 +1,7 @@
-//File: AiComponent.hpp
+//File: ControlMapping.hpp
 //Author:   John Miner
-//Created:  09/20/13
-//Purpose:  Iface. Determine weight of action and coordinate to create mapping
-//          of action to controls.
+//Created:  12/29/13
+//Purpose:  Provide controls for actions to fullfill AI goals
 //Copyright 2013 John Miner
 //This program is distributed under the terms of the GNU General Public License
 /*
@@ -26,16 +25,43 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
-#ifndef AI_COMPONENT_HPP_
-#define AI_COMPONENT_HPP_
+#ifndef CONTROL_MAPPING_HPP_
+#define CONTROL_MAPPING_HPP_
 
-class AiComponent
+#include "Point.hpp"
+#include <vector>
+#include <map> //pair
+#include "boost/shared_ptr.hpp"
+#include "boost/uuid/uuid.hpp"
+
+class AiDataCruncher;
+class PlayerAction;
+class Player;
+
+class ControlMapping 
 {
 public:
-    virtual AiWeight determineWeight() = 0;
-    virutal ControlMapping mapControls(const boost::shared_ptr<AiPlayer> 
-        &aiPlayer) = 0;
-    virtual ~AiComponent();
+    ControlMapping(boost::shared_ptr<Player> &player, boost::shared_ptr<AiDataCruncher>
+        &aiDataCruncher, boost::uuids::uuid &aiUuid);
+    std::vector<std::pair<boost::shared_ptr<PlayerAction>, bool> > 
+        tellCurrentActions();
+    void makeSeekMapping(const Point &seekTo, 
+        bool timeCushion);
+private:
+    ControlMapping();
+    std::vector<std::pair<boost::shared_ptr<PlayerAction>, bool> > 
+        tellSeekCurrentActions();
+    enum controlTypes { CONTROL_TYPE_NONE, CONTROL_TYPE_SEEK, 
+        CONTROL_TYPE_ENUM_SIZE };
+    int controlType;
+    Point currentPosition;
+    Point seekFrom;
+    Point seekTo;
+    bool seekHorizDone;
+    bool seekVertDone;
+    boost::shared_ptr<Player> player;
+    boost::shared_ptr<AiDataCruncher> aiDataCruncher;
+    boost::uuids::uuid aiUuid;
 };
 
 #endif

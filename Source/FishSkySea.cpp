@@ -70,6 +70,7 @@ SUCH DAMAGES.
 #include "../Header/TitleScene.hpp"
 #include "../Header/StoryScene.hpp"
 #include "../Header/MessageRouter.hpp"
+#include "../Header/AiDataCruncher.hpp"
 
 void handleQuit( bool &quit );
 
@@ -87,9 +88,12 @@ int main(int argc, char **argv)
     boost::shared_ptr<boost::shared_ptr<Scene> > currentScene(
         new boost::shared_ptr<Scene>);
     boost::shared_ptr<MessageRouter> messageRouter(new MessageRouter);
+    boost::shared_ptr<AiDataCruncher> aiDataCruncher(new AiDataCruncher(
+        messageRouter));
+    aiDataCruncher->subscribeToAll();
     boost::shared_ptr<MainGameScene> mainGameScene(new MainGameScene(
         currentScene, renderer, keyboardPublisher, screenResolution,
-        messageRouter));
+        messageRouter, aiDataCruncher));
     boost::shared_ptr<CreditGameScene> creditGameScene(new CreditGameScene(
         currentScene, renderer, keyboardPublisher, screenResolution,
         messageRouter));

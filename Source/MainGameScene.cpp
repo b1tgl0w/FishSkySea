@@ -53,6 +53,8 @@ SUCH DAMAGES.
 #include "../Header/MessageRouter.hpp"
 #include "../Header/StandardUnit.hpp"
 #include "../Header/Jukebox.hpp"
+#include "../Header/AiPlayer.hpp"
+#include "../Header/AiDataCruncher.hpp"
 
 const Point &MainGameScene::POLE_POINT()
 {
@@ -148,7 +150,7 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     boost::shared_ptr<Renderer> &renderer, 
     boost::shared_ptr<KeyboardPublisher> &keyboardPublisher,
     const Dimension &screenResolution, boost::shared_ptr<MessageRouter>
-        &messageRouter) : 
+        &messageRouter, boost::shared_ptr<AiDataCruncher> &aiDataCruncher) : 
     renderer(renderer), keyboardPublisher(keyboardPublisher),
     screenResolution(screenResolution), 
     masterInputPublisher(MasterInputPublisher::getInstance()),
@@ -158,8 +160,9 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     score1(new Score(0)), score2(new Score(0)),
     player1(new HumanPlayer(POLE_POINT(), HOOK_POINT(), ocean, score1,
         HumanPlayer::PLAYER_ONE(), HumanPlayer::MAIN_GAME(), messageRouter)), 
-    player2(new HumanPlayer(POLE_POINT2(), HOOK_POINT2(), ocean, score2,
-        HumanPlayer::PLAYER_TWO(), HumanPlayer::MAIN_GAME(), messageRouter)), 
+    aiDataCruncher(aiDataCruncher),
+    player2(new AiPlayer(POLE_POINT2(), HOOK_POINT2(), ocean, score2,
+        HumanPlayer::PLAYER_TWO(), messageRouter, aiDataCruncher)), 
     background(BACKGROUND_PATH(), Layer::BACKGROUND1().integer(), 
         BACKGROUND_POINT(), screenResolution), 
     dockSupports(DOCK_SUPPORTS_PATH(), Layer::DOCK_SUPPORTS().integer(),
@@ -175,21 +178,20 @@ MainGameScene::MainGameScene(boost::shared_ptr<boost::shared_ptr<Scene> >
     superScore1Layout(score1CenterLayout), superScore2Layout(score2CenterLayout),
     superStatusLayout(statusLayout), clockSubscriber(masterClockPublisher,
     MasterClockPublisher::customDeleter), MiSubscriber(keyboardPublisher),
-    playerSubscriber(player1), playerSubscriber2(player2),
+    playerSubscriber(player1), 
     layeredLayout(new LayeredLayout(2, clipFit)), borderLayout(new BorderLayout(
     BorderSize::Thick())), superBorderLayout(borderLayout), gridLayout(new
     GridLayout(1, 3)), superGridLayout(gridLayout), superLayeredLayout(
     layeredLayout), currentScene(currentScene), transition(false), toScene(),
     statusElement(), readyTimer(), goTimer(), game(new Game(score1, score2)),
     titleScene(), jukebox(Jukebox::getInstance()), jukeboxSubscriber(
-        jukebox, Jukebox::customDeleter)
+        jukebox, Jukebox::customDeleter), aiSubscriber(player2)
 {
     ocean->initializeStates();
     ocean->initializeSharedFromThis();
     player1->initializeLine();
     player1->initializePlayerKeyTranslater();
     player2->initializeLine();
-    player2->initializePlayerKeyTranslater();
 }
 
 MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
@@ -198,7 +200,7 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     rhs.masterInputPublisher), masterClockPublisher(rhs.masterClockPublisher),
     messageRouter(rhs.messageRouter),
     ocean(rhs.ocean), score1(rhs.score1), score2(rhs.score2),
-    player1(rhs.player1), player2(rhs.player2),
+    player1(rhs.player1), aiDataCruncher(rhs.aiDataCruncher), player2(rhs.player2),
     background(rhs.background), dockSupports(rhs.dockSupports), 
     elderFisher(rhs.elderFisher), mowhawkFisher(rhs.mowhawkFisher), clipFit(rhs.clipFit), 
     quit(rhs.quit), oceanLayout(rhs.oceanLayout), score1CenterLayout(rhs.score1CenterLayout), 
@@ -208,14 +210,16 @@ MainGameScene::MainGameScene(const MainGameScene &rhs) : renderer(rhs.renderer),
     superScore2Layout(rhs.superScore2Layout), 
     superStatusLayout(rhs.superStatusLayout), clockSubscriber(
     rhs.clockSubscriber), MiSubscriber(rhs.MiSubscriber), playerSubscriber(
-    rhs.playerSubscriber), playerSubscriber2(rhs.playerSubscriber2), layeredLayout(
+    rhs.playerSubscriber), layeredLayout(
     rhs.layeredLayout), borderLayout(rhs.borderLayout), superBorderLayout(
     rhs.superBorderLayout), gridLayout(rhs.gridLayout), superGridLayout(
     rhs.superGridLayout), superLayeredLayout(rhs.superLayeredLayout),
     currentScene(rhs.currentScene), transition(rhs.transition),
     toScene(rhs.toScene), statusElement(rhs.statusElement), readyTimer(
     rhs.readyTimer), goTimer(rhs.goTimer), game(rhs.game), titleScene(rhs.
-    titleScene), jukebox(rhs.jukebox), jukeboxSubscriber(rhs.jukeboxSubscriber)
+    titleScene), jukebox(rhs.jukebox), jukeboxSubscriber(rhs.jukeboxSubscriber),
+    aiSubscriber(rhs.aiSubscriber)
+
 {
 }
 
@@ -234,6 +238,7 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     score1 = rhs.score1;
     score2 = rhs.score2;
     player1 = rhs.player1;
+    aiDataCruncher = rhs.aiDataCruncher;
     player2 = rhs.player2;
     background = rhs.background;
     dockSupports = rhs.dockSupports;
@@ -252,7 +257,6 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     clockSubscriber = rhs.clockSubscriber;
     MiSubscriber = rhs.MiSubscriber;
     playerSubscriber = rhs.playerSubscriber;
-    playerSubscriber2 = rhs.playerSubscriber2;
     layeredLayout = rhs.layeredLayout;
     borderLayout = rhs.borderLayout;
     superBorderLayout = rhs.superBorderLayout;
@@ -269,6 +273,7 @@ MainGameScene &MainGameScene::operator=(const MainGameScene &rhs)
     titleScene = rhs.titleScene;
     jukebox = rhs.jukebox;
     jukeboxSubscriber = rhs.jukeboxSubscriber;
+    aiSubscriber = rhs.aiSubscriber;
 
     return *this;
 }
@@ -303,7 +308,6 @@ void MainGameScene::enter()
     keyboardPublisher->subscribe(clockSubscriber);
     masterInputPublisher->subscribe(MiSubscriber);
     keyboardPublisher->subscribe(playerSubscriber);
-    keyboardPublisher->subscribe(playerSubscriber2);
     layeredLayout->addLayout(superOceanLayout, 0);
     layeredLayout->addLayout(superBorderLayout, 1);
     borderLayout->addLayout(superGridLayout, BorderCell::Top());
@@ -319,6 +323,7 @@ void MainGameScene::enter()
     keyboardPublisher->subscribe(sharedThisSubscriber);
     boost::shared_ptr<SongScene> sharedThis(shared_from_this());
     masterClockPublisher->subscribe(jukeboxSubscriber);
+    masterClockPublisher->subscribe(aiSubscriber);
     jukebox->registerSong(sharedThis, "../Music/Overcast.mp3");
     jukebox->registerSong(sharedThis, "../Music/Acid Trumpet.mp3");
     jukebox->registerSong(sharedThis, "../Music/Easy Jam.mp3");
@@ -372,7 +377,6 @@ void MainGameScene::exit()
     keyboardPublisher->unsubscribe(clockSubscriber);
     masterInputPublisher->unsubscribe(MiSubscriber);
     keyboardPublisher->subscribe(playerSubscriber);
-    keyboardPublisher->subscribe(playerSubscriber2);
     layeredLayout->removeLayout(superOceanLayout, 0);
     layeredLayout->removeLayout(superBorderLayout, 1);
     borderLayout->removeLayout(superGridLayout, BorderCell::Top());
@@ -387,6 +391,7 @@ void MainGameScene::exit()
         shared_from_this());
     keyboardPublisher->unsubscribe(sharedThisSubscriber);
     masterClockPublisher->unsubscribe(jukeboxSubscriber);
+    masterClockPublisher->unsubscribe(aiSubscriber);
 }
 
 void MainGameScene::transitionTo(boost::shared_ptr<Scene> &scene)

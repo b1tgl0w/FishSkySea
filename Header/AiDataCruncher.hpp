@@ -62,6 +62,9 @@ public:
     void subscribeToAll();
     //Data crunch methods   
     boost::shared_ptr<Bool> snailActive();
+    Point playerPredictedHookPosition(boost::uuids::uuid &
+        playerUuid);
+    Point playerActualHookPosition(boost::uuids::uuid &playerUuid);
 private:
     bool getSeaSnailUuid(boost::uuids::uuid &ssUuid);
     boost::shared_ptr<MessageRouter> messageRouter;
@@ -106,6 +109,11 @@ private:
     std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > poleReelIn;
     std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > poleGiveLine;
     std::map<boost::uuids::uuid, boost::shared_ptr<Bool> > setHook;
+    /****************** SPECIAL CASE *******************/
+    //!! The line sends its uuid as well as the player's uuid. Store it in the
+    // map with player uuid as key and line uuid as value. (this is reverse 
+    // of the convention)
+    std::map<boost::uuids::uuid, boost::uuids::uuid> lineUuid;
 };
 
 #endif

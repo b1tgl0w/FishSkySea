@@ -47,9 +47,9 @@ enum class MessageEnum : int { FISH_MOVE, FISH_MOUTH_MOVE, FISH_VELOCITY,
     SEAHORSE_OFF_SCREEN, POLE_AREA_POSITION, POLE_AREA_DIMENSION, PLAYER_CATCH,
     PLAYER_TOTAL_SCORE, POLE_MOVE, POLE_X_SPEED, LINE_Y_SPEED,
     HOOK_MOVE, HOOK_X_SETTLE_SPEED, HOOK_SIZE, POLE_SHORTEN, POLE_LENGTHEN,
-    POLE_REEL_IN, POLE_GIVE_LINE, SET_HOOK };
+    POLE_REEL_IN, POLE_GIVE_LINE, SET_HOOK, PLAYER_LINE_UUID };
 enum class TypeHint : int { Int, Double, Uint, Bool, Point, Dimension, 
-    Depth, Score, Direction, QueueWrapperUint32 };
+    Depth, Score, Direction, QueueWrapperUint32, Uuid };
 
 class MessageRouter
 {
