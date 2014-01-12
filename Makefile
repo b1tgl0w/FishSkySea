@@ -12,6 +12,7 @@ ALL_OBJ += $(SHARED_OBJ_FILES)
 LD_LIBS := -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 all : CC_FLAGS += -Wall -Wextra -O2 -Wno-unused-variable
+all : mkdir -p Object
 all : Object/FishSkySea
 
 debug: CC_FLAGS += -DDEBUG -ggdb
