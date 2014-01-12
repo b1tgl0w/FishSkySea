@@ -150,11 +150,13 @@ void AiPlayer::initializeLine()
     masterClockPublisher->subscribe(lineSubscriber);
     line->linkPlayerOwnerUuid(uuid);
     /***************TEST CODE***************/
+    /********************
     boost::shared_ptr<ControlMapping> tmpTESTMapping(new ControlMapping(sharedThis,
         aiDataCruncher, uuid));
     TESTMapping = tmpTESTMapping;
     Point TESTSeekTo(550, 367);
     TESTMapping->makeSeekMapping(TESTSeekTo, false);
+    *********************/
     /***************END TEST CODE***************/
 
 }
@@ -284,12 +286,14 @@ void AiPlayer::cast(bool shouldCast)
 void AiPlayer::clockTick(Uint32 elapsedTime)
 {
     /***************TEST CODE***************/
+    /***********************
     std::vector<std::pair<boost::shared_ptr<PlayerAction>, bool> > actions
         = TESTMapping->tellCurrentActions();
 
     for( std::vector<std::pair<boost::shared_ptr<PlayerAction>, bool> >::iterator
         it = actions.begin(); it != actions.end(); ++it )
         it->first->act(it->second);
+    ***********************/
     /*************END TEST CODE*************/
 }
 

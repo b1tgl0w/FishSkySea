@@ -65,11 +65,13 @@ public:
     Point playerPredictedHookPosition(boost::uuids::uuid &
         playerUuid);
     Point playerActualHookPosition(boost::uuids::uuid &playerUuid);
+    bool existFishStayWithinPoleArea(boost::uuids::uuid &aiUuid);
 private:
     bool getSeaSnailUuid(boost::uuids::uuid &ssUuid);
     boost::shared_ptr<MessageRouter> messageRouter;
     std::map<boost::uuids::uuid, boost::shared_ptr<Point> > fishPosition;
     std::map<boost::uuids::uuid, boost::shared_ptr<Point> > fishMouthPosition;
+    //This is average fish velocity
     std::map<boost::uuids::uuid, boost::shared_ptr<Double> > fishVelocity;
     std::map<boost::uuids::uuid, boost::shared_ptr<Dimension> > fishSize;
     std::map<boost::uuids::uuid, boost::shared_ptr<Dimension> > fishMouthSize;

@@ -26,7 +26,7 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 */
 
-/*
+/*******************************************************************************
 AiSeekFishAction::AiSeekFishAction(const Depth &desiredDepth, 
     boost::shared_ptr<AiDataCruncher> &aiDataCruncher, const boost::uuids::uuid
     &aiUuid) :
@@ -47,6 +47,8 @@ AiWeight AiSeekFishAction::determineWeight()
                 break;
         }
     }
+    //These are seperated because a fish that WILL be in the pole area might
+    // be stolen before it gets there. It has less priority
     else
     {
         if( aiDataCruncher->existFishWillBeWithinPoleArea(aiUuid) )
@@ -92,4 +94,4 @@ ControlMapping AiSeekFishAction::mapControls()
 
     return controlMapping;
 }
-*/
+*******************************************************************************/

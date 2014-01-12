@@ -35,6 +35,7 @@ SUCH DAMAGES.
 #include "../Header/Player.hpp"
 #include "../Header/AiDataCruncher.hpp"
 
+/********************
 ControlMapping::ControlMapping(boost::shared_ptr<Player> &player,
     boost::shared_ptr<AiDataCruncher> &aiDataCruncher, boost::uuids::uuid &
     aiUuid) : 
@@ -146,4 +147,4 @@ void ControlMapping::makeSeekMapping(const Point &seekTo,
     seekHorizDone = false;
     seekVertDone = false;
 }
-
+***************************/

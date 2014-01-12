@@ -1037,6 +1037,7 @@ void AiDataCruncher::sendMessage(const boost::uuids::uuid &senderId, const Messa
     }
 }
 
+/***************
 boost::shared_ptr<Bool> AiDataCruncher::snailActive()
 {
     boost::shared_ptr<Bool> ret;
@@ -1109,3 +1110,10 @@ Point AiDataCruncher::playerActualHookPosition(boost::uuids::uuid &playerUuid)
     return *hookPosition[lineUuid[playerUuid]];
 }
 
+Uint32 AiDataCruncher::timeToInterceptFish(const boost::uuids::uuid &uuid,
+    const Depth &depth)
+{
+    
+}
+
+******************/
