@@ -12,8 +12,6 @@ ALL_OBJ += $(SHARED_OBJ_FILES)
 LD_LIBS := -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 all : CC_FLAGS += -Wall -Wextra -O2 -Wno-unused-variable
-all : 
-	mkdir -p Object
 all : Object/FishSkySea
 
 debug: CC_FLAGS += -DDEBUG -ggdb
@@ -32,14 +30,18 @@ clean :
 	rm Object/*.o Object/FishSkySea
 
 Object/FishSkySea : $(ALL_OBJ)
+	mkdir -p Object
 	$(CC) $(CC_FLAGS) -o Object/FishSkySea $(ALL_OBJ) $(LD_LIBS)
 
 Object/NotShared%.o : Source/%.cpp
+	mkdir -p Object
 	$(CC) $(CC_FLAGS) -c -o $@ $< 
 
 Object/Shared%.o : SharedSource/PaletteHarmony/%.cpp
+	mkdir -p Object
 	$(CC) $(CC_FLAGS) -c -o $@ $< 
 
 Object/SDL2%.o : Library/SDL2/Source/%.cpp
+	mkdir -p Object
 	$(CC) $(CC_FLAGS) -c -o $@ $< 
 
