@@ -502,9 +502,11 @@ void Seahorse::notifySeaSnailRetreat()
         return;
 
     ++seaSnailRetreatCount;
-    seaSnailRetreatCount = Math::cycle(seaSnailRetreatCount, 0, 1);
+    seaSnailRetreatCount = Math::cycle(seaSnailRetreatCount, 0, 0);
 
-    if( seaSnailRetreatCount == 1 )
+    //This used to be 1, so that every other time
+    // but I want it more often
+    if( seaSnailRetreatCount == 0 )
     {
         boost::shared_ptr<Seahorse> sharedThis(shared_from_this());
         sharedOcean->addSeahorse(sharedThis, depth);

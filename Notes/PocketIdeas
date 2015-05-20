@@ -6,23 +6,27 @@ Priority Improvements
 - Redo Story so it's both friendly and interesting.
 
 Unorganized Improvements (May or may not be moved to priority)
+- Pixel perfect collision detection.
+- Fish points not by depth, but by fish size. (Also, because limited
+screen realestate make beefier fish graphics or elongate fish).
+- Make the hook radius bigger.
+- Very rare fish with coin in mouth worth lots of points but hard to notice
+- Sea horse comes more often
 - Sea Snail ALWAYS glows, but hides in shell after being touched
-- Glimmer (timed release of 'e'), causes fish to swim to hook and nibble (
-without turning back around until they do), it causes shark to pause,
+- Glimmer (timed release of 'e'), causes fish to swim to hook and nibble (without turning back around until they do), it causes shark to pause,
 sea horse to about face, and (maybe) sea snail to come out of shell
 - Fish swap depths. Also, size them according to weight (it will cause the 
-player to take the whole screen into account) (NOT SURE ABOUT THIS ONE, might
-make things too hard)
+player to take the whole screen into account) (NOT SURE ABOUT THIS ONE, might make things too hard)
 - Title screen shown before title menu. Menu shown at button press
 - Fix fish graphic mouth
-- If you put the hook in front of the fish for too long, the fish goes
+No - If you put the hook in front of the fish for too long, the fish goes
 up to it, doesn't nibble, and runs away because of suspicion. If fisherman
 jiggles line, don't run.
-- Fisherman has to jiggle line for fish to nibble?
--
+No - Fisherman has to jiggle line for fish to nibble?
 - Work on colors
-- Don't allow the player to keep the fish on the line too long. Either use
-and eel to eat the fish or have the line break. Either way, make sure there
+No - Don't allow the player to keep the fish on the line too long. Either 
+use and eel to eat the fish or have the line break. Either way, make sure
+there
 is a visible cue to warn the player
 (Save until near end of project) - Dust motes in water
 - Sound effects
@@ -38,8 +42,8 @@ to catch a fish
 the name of the move.
 - "Particle effects" such as splashing water, aura on glowing fish, snail trail,
 bubble, add more
-- Menu is in this order: How to Play | Play | 2 Play | ... , the initial
-highlighted item, however, is Play.
+- Menu is in this order: How to Play | 1 Play | 2 Play | ... , the initial
+highlighted item, however, is 1 Play.
 - Poems (unlockable?)
 - 3 Song soundtrack + tite screen + possibly story screen
 - Animated yarn, worm, or lure on hook?
