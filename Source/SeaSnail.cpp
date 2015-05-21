@@ -109,27 +109,27 @@ const Uint32 &SeaSnail::RETREAT_PROBABILITY()
 
 SeaSnail::SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
     &ocean, boost::weak_ptr<Seahorse> &seahorse, boost::shared_ptr<MessageRouter>
-    &messageRouter) : position(new Point(initialPosition)), 
+    &messageRouter, const Dimension &screenDimension) : position(new Point(initialPosition)), 
     size(new Dimension(SIZE())), seaSnailBox(position, size), facing(Direction::LEFT()),
     ocean(ocean), glowing(false), 
     live(false), 
     seahorse(seahorse), glowAlpha(0), messageRouter(messageRouter), uuid(
     boost::uuids::random_generator()()), state(), proceedState(),
-    waitState(), onScreen(false)
+    waitState(), onScreen(false), screenDimension(screenDimension)
 {
     glow();
-    positionFromSide();
+    positionFromPlop();
     aboutFace();
 }
 
-SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position), size(
-    rhs.size), seaSnailBox(rhs.seaSnailBox), facing(rhs.facing), 
-    ocean(rhs.ocean), 
-    glowing(rhs.glowing), 
+SeaSnail::SeaSnail(const SeaSnail &rhs) : position(rhs.position), plopX(
+    rhs.plopX), size(rhs.size), seaSnailBox(rhs.seaSnailBox), 
+    facing(rhs.facing), ocean(rhs.ocean), glowing(rhs.glowing), 
     live(rhs.live), seahorse(rhs.seahorse),
     glowAlpha(rhs.glowAlpha), messageRouter(rhs.messageRouter),
     uuid(rhs.uuid), state(rhs.state), proceedState(rhs.proceedState),
-    waitState(rhs.waitState), onScreen(rhs.onScreen)
+    waitState(rhs.waitState), onScreen(rhs.onScreen), screenDimension(
+    rhs.screenDimension)
 {
 }
 
@@ -139,6 +139,7 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
         return *this;
 
     position = rhs.position;
+    plopX = rhs.plopX;
     size = rhs.size;
     seaSnailBox = rhs.seaSnailBox;
     facing = rhs.facing;
@@ -153,6 +154,7 @@ SeaSnail &SeaSnail::operator=(const SeaSnail &rhs)
     proceedState = rhs.proceedState;
     waitState = rhs.waitState;
     onScreen = rhs.onScreen;
+    screenDimension = rhs.screenDimension;
     
     return *this;
 }
@@ -177,6 +179,17 @@ void SeaSnail::changeState(boost::shared_ptr<SeaSnailState> &newState)
     state->exit();
     state = newState;
     state->enter();
+}
+
+void SeaSnail::flipPlopX()
+{
+    double dir = 1.0;
+    if(position->x > screenDimension.width / 2.0)
+        dir = -1.0;
+        
+    plopX = screenDimension.width / 2.0 + (screenDimension.width / 4.0) 
+            * dir + ((dir < 0) ? 
+           (size->width / 2.0) * dir : (size->width / 2.0) * -dir);
 }
 
 void SeaSnail::swim(Uint32 elapsedTime)
@@ -207,6 +220,8 @@ void SeaSnail::swim(Uint32 elapsedTime)
         TypeHint::Point, messageMove);
 }
 
+//This is the old way of introducing the sea snail, but 
+//  doesn't work with plop, which is current functionality
 void SeaSnail::positionFromSide()
 {
     boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
@@ -217,6 +232,22 @@ void SeaSnail::positionFromSide()
     faceRandomDirection();
     sharedOcean->alignWithBoundary(position->x, facing,
         facing == Direction::LEFT() ? -SIZE().width + 1 : 1 );
+    plopX = position->x;
+    flipPlopX();
+}
+
+void SeaSnail::positionFromPlop()
+{
+    boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
+
+    if( !sharedOcean )
+        return;
+    double dir = (facing == Direction::LEFT()) ? -1.0 : 1.0;
+    plopX = screenDimension.width / 2.0 + (screenDimension.width / 4.0) 
+            * dir + ((facing == Direction::LEFT()) ? 
+           (size->width / 2.0) * dir : (size->width / 2.0) * -dir);
+    position->x = plopX;
+    flipPlopX();
 }
 
 void SeaSnail::loadImage(Renderer &renderer)
@@ -300,7 +331,6 @@ void SeaSnail::collidesWithOceanSurface(boost::shared_ptr<Ocean> &ocean,
 void SeaSnail::collidesWithInnerOcean(boost::shared_ptr<Ocean> &ocean,
     const BoundingBox &yourBox)
 {
-    onScreen = true;
 }
 
 void SeaSnail::collidesWithShark(boost::shared_ptr<Shark> &shark,
@@ -368,8 +398,6 @@ void SeaSnail::clockTick(Uint32 elapsedTime)
     boost::shared_ptr<Ocean> sharedOcean = ocean.lock();
     if( sharedOcean )
     {
-        onScreen = false;
-
         boost::shared_ptr<Collidable> collidable(shared_from_this());
         sharedOcean->checkCollisions(collidable, seaSnailBox);
 
@@ -479,6 +507,15 @@ void SeaSnail::ProceedState::swim(Uint32 elapsedTime)
         sharedOwner->moveForward(pixelsThisIteration);
         pixelsLeft -= pixelsThisIteration;
         sharedOcean->checkCollisions(collidable, sharedOwner->seaSnailBox);
+        if( (sharedOwner->facing == Direction::LEFT() && 
+            sharedOwner->position->x < sharedOwner->plopX - 1)
+            || (sharedOwner->facing == Direction::RIGHT() && 
+            sharedOwner->position->x > sharedOwner->plopX + 1) )
+        {
+            sharedOwner->position->x = sharedOwner->plopX;
+            sharedOwner->flipPlopX();
+            sharedOwner->onScreen = false;
+        }
     }
 
     boost::shared_ptr<MessageData> messageMove(sharedOwner->position);
@@ -507,7 +544,7 @@ void SeaSnail::WaitState::enter()
         return;
 
     sharedOwner->glowing = false;
-    sharedOwner->positionFromSide();
+    sharedOwner->positionFromPlop();
     sharedOwner->aboutFace();
 
     boost::shared_ptr<MessageData> messageRetreat(new Bool(true));
@@ -538,6 +575,7 @@ void SeaSnail::WaitState::clockTick(Uint32 elapsedTime)
         if( !sharedOwner )
             return;
 
+        sharedOwner->onScreen = true;
         sharedOwner->changeState(sharedOwner->proceedState);
         return;
     }

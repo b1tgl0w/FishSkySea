@@ -103,6 +103,7 @@ public:
     Uint32 makeColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha) const;
     void sizeText(const std::string &str, int &width, int &height,
         const FontSize &fontSize) const;
+    Dimension getScreenDimension();
 protected:
     Renderer();
     //Must be called by derived classes
@@ -142,6 +143,7 @@ private:
     TTF_Font *fontBig;
     TTF_Font *fontMedium;
     TTF_Font *fontSmall;
+    Dimension screenDimension;
     //Constants
     static const std::string &TRANSFORMATION_KEY();
     static const std::string &WIDTH_KEY();

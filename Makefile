@@ -31,17 +31,17 @@ clean :
 
 Object/FishSkySea : $(ALL_OBJ)
 	mkdir -p Object
-	$(CC) $(CC_FLAGS) -o Object/FishSkySea $(ALL_OBJ) $(LD_LIBS)
+	$(CC) $(CC_FLAGS) -o Object/FishSkySea $(ALL_OBJ) $(LD_LIBS) 2>&1 | ./gccs.pl
 
 Object/NotShared%.o : Source/%.cpp
 	mkdir -p Object
-	$(CC) $(CC_FLAGS) -c -o $@ $< 
+	$(CC) $(CC_FLAGS) -c -o $@ $< 2>&1 | ./gccs.pl
 
 Object/Shared%.o : SharedSource/PaletteHarmony/%.cpp
 	mkdir -p Object
-	$(CC) $(CC_FLAGS) -c -o $@ $< 
+	$(CC) $(CC_FLAGS) -c -o $@ $< 2>&1 | ./gccs.pl
 
 Object/SDL2%.o : Library/SDL2/Source/%.cpp
 	mkdir -p Object
-	$(CC) $(CC_FLAGS) -c -o $@ $< 
+	$(CC) $(CC_FLAGS) -c -o $@ $< 2>&1 | ./gccs.pl
 

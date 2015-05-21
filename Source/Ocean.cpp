@@ -121,6 +121,7 @@ Ocean::Ocean(const Dimension &screenSize, boost::shared_ptr<Renderer> &renderer,
     oceanFloorBox(oceanFloorPosition, oceanFloorSize), clouds(), renderer(
     renderer), messageRouter(messageRouter)
 {
+    screenDimension = renderer->getScreenDimension();
     const double DEPTH_DISTANCE = 34;
     double currentDepthCoordinate = 336.0;
     depthCoordinates[Depth::ROW1()] = currentDepthCoordinate;
@@ -145,7 +146,8 @@ Ocean::Ocean(const Ocean &rhs) : collidables(rhs.collidables),
     oceanEdgeSize(rhs.oceanEdgeSize), oceanFloorPosition(rhs.oceanFloorPosition),
     oceanFloorSize(rhs.oceanFloorSize), oceanBox(rhs.oceanBox), oceanSurfaceBox(
     rhs.oceanSurfaceBox), oceanFloorBox(rhs.oceanFloorBox), clouds(rhs.clouds),
-    renderer(rhs.renderer), messageRouter(rhs.messageRouter)
+    renderer(rhs.renderer), messageRouter(rhs.messageRouter),
+    screenDimension(rhs.screenDimension)
 { }
 
 Ocean &Ocean::operator=(const Ocean &rhs)
@@ -176,6 +178,7 @@ Ocean &Ocean::operator=(const Ocean &rhs)
     clouds = rhs.clouds;
     renderer = rhs.renderer;
     messageRouter = rhs.messageRouter;
+    screenDimension = rhs.screenDimension;
 
     return *this;
 }
@@ -229,7 +232,7 @@ void Ocean::initializeSharedFromThis()
         sharedThis, messageRouter));
     boost::weak_ptr<Seahorse> weakSeahorse(tmpSeahorse);
     boost::shared_ptr<SeaSnail> tmpSeaSnail(new SeaSnail(SEA_SNAIL_POSITION(),
-        sharedThis, weakSeahorse, messageRouter));
+        sharedThis, weakSeahorse, messageRouter, screenDimension));
     boost::shared_ptr<Shark> tmpShark(new Shark(sharedThis, SHARK_POSITION(),
         messageRouter));
     boost::shared_ptr<Clouds> tmpClouds(new Clouds);

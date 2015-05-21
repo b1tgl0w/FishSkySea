@@ -60,7 +60,7 @@ friend class WaitState;
 public:
     explicit SeaSnail(const Point &initialPosition, boost::shared_ptr<Ocean>
         &ocean, boost::weak_ptr<Seahorse> &seahorse, boost::shared_ptr<
-        MessageRouter> &messageRouter);
+        MessageRouter> &messageRouter, const Dimension &screenDimension);
     SeaSnail(const SeaSnail &rhs);
     SeaSnail &operator=(const SeaSnail &rhs);
     ~SeaSnail();
@@ -68,6 +68,7 @@ public:
     void initializeStates();
     void swim(Uint32 elapsedTime);
     void positionFromSide();
+    void positionFromPlop();
     void loadImage(Renderer &renderer);
     void glow();
     void draw(boost::shared_ptr<Layout> &layout, Renderer &renderer);
@@ -154,7 +155,9 @@ private:
     double calculatePixelsLeft(Uint32 elapsedTime);
     void faceRandomDirection();
     void changeState(boost::shared_ptr<SeaSnailState> &newState);
+    void flipPlopX();
     boost::shared_ptr<Point> position;
+    double plopX;
     boost::shared_ptr<Dimension> size;
     BoundingBox seaSnailBox;
     Direction facing;
@@ -169,6 +172,7 @@ private:
     boost::shared_ptr<SeaSnailState> proceedState;
     boost::shared_ptr<SeaSnailState> waitState;
     bool onScreen;
+    Dimension screenDimension;
 
     static const std::string &IMAGE_PATH();
     static const std::string &GLOW_IMAGE_PATH();

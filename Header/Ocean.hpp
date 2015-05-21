@@ -217,6 +217,7 @@ private:
     boost::shared_ptr<Clouds> clouds;
     boost::shared_ptr<Renderer> renderer;
     boost::shared_ptr<MessageRouter> messageRouter;
+    Dimension screenDimension;
 };
 
 #endif

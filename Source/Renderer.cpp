@@ -72,7 +72,8 @@ Renderer::Renderer(const Dimension &screenResolution, const std::string &title,
     layouts(), /*screen intentionally uninitialied*/
     sdlWindow(NULL), sdlRenderer(NULL), frameCleanupPublisher(
     frameCleanupPublisher), 
-    fontPath(fontPath) /*fonts intentionally uninitialized*/
+    fontPath(fontPath) /*fonts intentionally uninitialized*/,
+    screenDimension(screenResolution)
 {
     //Update Font size as big as height of largest text surface (manual update)
     const int FONT_SIZE_HUGE = 100; //Text surfaces will be scaled
@@ -139,7 +140,8 @@ Renderer::Renderer(const Renderer &rhs) : images(rhs.images), toDraw(rhs.toDraw)
     sdlWindow(rhs.sdlWindow), sdlRenderer(rhs.sdlRenderer),
     frameCleanupPublisher(rhs.frameCleanupPublisher),
     fontPath(rhs.fontPath), fontHuge(rhs.fontHuge), fontBig(rhs.fontBig),
-    fontMedium(rhs.fontMedium), fontSmall(rhs.fontSmall)
+    fontMedium(rhs.fontMedium), fontSmall(rhs.fontSmall),
+    screenDimension(rhs.screenDimension)
 { }
 
 Renderer &Renderer::operator=(const Renderer &rhs)
@@ -164,6 +166,7 @@ Renderer &Renderer::operator=(const Renderer &rhs)
     fontBig = rhs.fontBig;
     fontMedium = rhs.fontMedium;
     fontSmall = rhs.fontSmall;
+    screenDimension = rhs.screenDimension;
 
     return *this;
 }
@@ -491,6 +494,11 @@ void Renderer::sizeText(const std::string &str,  int &width, int &height,
     else
         TTF_SizeText(fontSmall, str.c_str(), &width, &height);
 
+}
+
+Dimension Renderer::getScreenDimension()
+{
+    return screenDimension;
 }
 
 std::string Renderer::makeKey(const std::string &path, const Transformation
