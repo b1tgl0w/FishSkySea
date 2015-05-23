@@ -26,8 +26,8 @@ SUCH DAMAGES.
 */
 
 #include <fstream>
-#include "boost/spirit/home/phoenix/core.hpp"
-#include "boost/spirit/home/phoenix/function.hpp"
+//#include "boost/spirit/home/phoenix/core.hpp"
+//#include "boost/spirit/home/phoenix/function.hpp"
 #include "../Header/Story.hpp"
 #include "../Header/File.hpp"
 #include "../Header/Layout.hpp"

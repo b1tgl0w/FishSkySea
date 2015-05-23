@@ -28,6 +28,7 @@ SUCH DAMAGES.
 
 #include "../Header/FillClipFit.hpp"
 #include "../Header/Math.hpp"
+#include <iostream>
 
 FillClipFit::FillClipFit()
 {
