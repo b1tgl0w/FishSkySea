@@ -212,15 +212,13 @@ double Math::distance(const Point &point1, const Point &point2)
 
 int Math::cycle(int number, int low, int high)
 {
-    int rangeLength = high - low + 1;
+    int rangeLength = high - low;
 
-    while( number < low )
-        number += rangeLength;
+    if(rangeLength==0)
+        return high;
 
-    while( number > high )
-        number -= rangeLength;
-
-    return number;
+    return (number-low<0)?high-(-(number-low)%rangeLength):
+        (number-low)%rangeLength+low;
 }
 
 //Method:   Math::random

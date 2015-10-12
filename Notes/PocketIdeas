@@ -6,6 +6,9 @@ Priority Improvements
 - Redo Story so it's both friendly and interesting.
 
 Unorganized Improvements (May or may not be moved to priority)
+- Bezier curve pole.
+- Shark lurch forward
+- Narrow shark vision area to nose?
 - Pixel perfect collision detection.
 - Fish points not by depth, but by fish size. (Also, because limited
 screen realestate make beefier fish graphics or elongate fish).
@@ -53,6 +56,8 @@ by pressing a key, they get a special animation, e.g. b1tgl0w games starts glowi
 briefly then advances. Otherwise does not glow
 - Wes uses worm, Rad uses lure
 - Make player cast after catching fish
+- Fix 0 width fishing pole by shortening the doc and putting a minimum size
+on the pole
 
 Done
 //Done - Press a button to set hook, otherwise fish just nibbles. Note that there
