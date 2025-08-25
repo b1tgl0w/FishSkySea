@@ -1,6 +1,0 @@
-- DO NOT greatly modify files here. Modify original palette harmony files.
-- Update this if you want features from newer versions.
-- SVN Externals doesn't work when you have a remote repository and want to
-include an external file from a local repository. That is why you are doing it
-this way.
-

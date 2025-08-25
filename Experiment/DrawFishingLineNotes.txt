@@ -1,7 +1,0 @@
-- In handleInput(...), SDL_GetMouseState gets the mouse coordinates in INTEGERS.
-This does not seem to affect my line drawing algorithm.
-- As of now, the lines only draw correctly in the Quadrant IV at 0 deg from horiz
-right, 270 deg from horiz right, and 315 deg horiz right. All other angles are
-slightly off
-- 
-

@@ -1,4 +1,0 @@
-- Use SDL_ConvertSurface in renderer optimize image?
-- Fix renderer::makeColor (and DirectLine and DirectFill)
-- Eventually look into keycodes and scancodes for different keyboard formats
-
