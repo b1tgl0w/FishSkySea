@@ -23,8 +23,8 @@ D lengthen pole
 E set hook on a nibbling fish / pole action  
 Q special move (when available)
 
-You can also send out a glimmer to attract fish with a timed release of <E>  
-You can reel in faster by repeatedly tapping <E> while holding <W>
+You can also send out a glimmer to attract fish with a timed release of E   
+You can reel in faster by repeatedly tapping E while holding W  
 
 ### Modes
 
