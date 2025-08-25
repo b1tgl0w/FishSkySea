@@ -6,19 +6,16 @@ A retro-style fishing game.
 ![2025-08-24 21 47 34](https://github.com/user-attachments/assets/8db3ba43-d17d-471f-8418-be5ec208baa5)
 Solitaire Mode
 
-Platforms
-=========
+### Platforms
 
 Linux and macOS
 
-Building
-========
+### Building
 
 Install SDL2, SDL2_image, SDL2_mixer, SDL2_net  
 Run make
 
-Controls
-========
+### Controls
 W reel in  
 S let out line  
 A shorten pole  
@@ -29,8 +26,7 @@ Q special move (when available)
 You can also send out a glimmer to attract fish with a timed release of <E> 
 You can reel in faster by repeatedly tapping <E> while holding <W>
 
-Modes
-=====
+### Modes
 
 Solitaire  
 AI  
@@ -39,15 +35,13 @@ AI
 
 See config.txt
 
-Config.txt
-==========
+### Config.txt
 
 Configure window/fullscreen, gpu/software rendering, modes, LAN, gameplay
 
 If no config.txt is present than the game will produce its backup/default in the working directory.
 
-Resources
-=========
+### Resources
 
 FYI The art and music are in the source code. The art is XPM data as C89 cstrings. The music is binary data. All in the bss.
 
