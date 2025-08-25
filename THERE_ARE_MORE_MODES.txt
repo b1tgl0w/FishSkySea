@@ -1,0 +1,3 @@
+The default mode, solitaire, is one player while you learn the controls, but
+there are more modes: ai-easy, ai-normal, ai-hard, keyboard multiplayer,
+and LAN multiplayer. 
