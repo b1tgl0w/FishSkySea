@@ -46,4 +46,4 @@ If no config.txt is present than the game will produce its backup/default in the
 FYI The art and music are in the source code. The art is XPM data as C89 cstrings. The music is binary data. All in the bss.
 
 
-The upside is that if you choose to build statically there is only two build artifacts, config.txt and the binary!
+The upside is that if you choose to build statically there are only two build artifacts, config.txt and the binary!
