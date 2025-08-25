@@ -1,6 +1,8 @@
-FishSkySea
+Fish Sky Sea
 ==========
 
 A retro-style fishing game.
 
-<img width="714" height="1009" alt="fishskysea-manual" src="https://github.com/user-attachments/assets/39bcdf0a-d44a-40a0-84ac-353d3c385146" />
+
+![2025-08-24 21 47 34](https://github.com/user-attachments/assets/8db3ba43-d17d-471f-8418-be5ec208baa5)
+Solitaire Mode
