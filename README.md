@@ -1,4 +1,4 @@
-FishSkySea
+Fish Sky Sea
 ==========
 
 A retro-style fishing game.
