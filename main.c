@@ -3335,11 +3335,11 @@ void render(void) {
     SDL_RenderCopy(renderer, rippleTexture5, NULL, &rippleDstRect3);
   if (rippleFrame3 == 2)
     SDL_RenderCopy(renderer, rippleTexture6, NULL, &rippleDstRect3);
-  if (rippleFrame4 == 0)
+  if (rippleFrame4 == 0 && mode != 0)
     SDL_RenderCopy(renderer, rippleTexture4, NULL, &rippleDstRect4);
-  if (rippleFrame4 == 1)
+  if (rippleFrame4 == 1 && mode != 0)
     SDL_RenderCopy(renderer, rippleTexture5, NULL, &rippleDstRect4);
-  if (rippleFrame4 == 2)
+  if (rippleFrame4 == 2 && mode != 0)
     SDL_RenderCopy(renderer, rippleTexture6, NULL, &rippleDstRect4);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
   if (player1FishOn > -1 && fishY[player1FishOn] <= 245) {
