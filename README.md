@@ -23,10 +23,10 @@ D lengthen pole
 E set hook on a nibbling fish / pole action  
 Q special move (when available)
 
-You can shimmer the hook to attract fish with a timed release of E   
-You can reel in faster with pole action by repeatedly tapping E while holding W  
+You can shimmer the hook to attract fish with a timed release of E.    
+You can reel in faster with pole action by repeatedly tapping E while holding W.   
 
-### Modes
+### Modes. 
 
 Solitaire  
 AI  
