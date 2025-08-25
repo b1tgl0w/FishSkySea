@@ -26,7 +26,7 @@ Q special move (when available)
 You can shimmer the hook to attract fish with a timed release of E.    
 You can reel in faster with pole action by repeatedly tapping E while holding W.   
 
-### Modes. 
+### Modes  
 
 Solitaire  
 AI  
