@@ -45,6 +45,7 @@ FYI The art and music are in the source code. The art is XPM data as C89 cstring
 
 The upside is that if you choose to build statically, there are only two game files, config.txt and fishskysea.
 
+<pre>
 "                                .                                      ",  
 "                            .  .  .  .  ......                         ",  
 "                           .  .  .  .  .++++++..                       ",  
@@ -70,4 +71,5 @@ The upside is that if you choose to build statically, there are only two game fi
 "              .......@@@@@@@@@@@@@@@@@@@....+@@@@.                   . ",  
 "                 .+++.................   .++++++@.                     ",  
 "                 .+++.                    .+++++.                      ",  
-"                  ...                      .....                       "};
+"                  ...                      .....                       "};  
+</pre>
