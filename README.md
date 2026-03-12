@@ -41,9 +41,9 @@ If no config.txt is present then the game will produce its backup/default in the
 
 ### Art
 
-FYI The art and music are in the source code. The art is XPM data as C89 cstrings. The music is binary data.
+FYI The art and music are in source. The art is XPM data as C89 cstrings. The music is binary data in arrays.
 
-The upside is that if you choose to build statically, there are only two game files, config.txt and fishskysea, the former need not strictly be present.  
+I made this choice so static builds have only two game files, config.txt and fishskysea, the former need not strictly be present.  
 
 <pre>
 "                                .                                      ",  
