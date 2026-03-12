@@ -39,7 +39,7 @@ Configure window/fullscreen, gpu/software rendering, modes, LAN, and gameplay.
 
 If no config.txt is present then the game will produce its backup/default in the working directory.
 
-### Resources
+### Art
 
 FYI The art and music are in the source code. The art is XPM data as C89 cstrings. The music is binary data.
 
