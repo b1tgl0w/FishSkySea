@@ -20,11 +20,12 @@ W reel in
 S let out line  
 A shorten pole  
 D lengthen pole  
-E set hook on a nibbling fish / pole action  
+E with a nibbling fish, set hook
+E with a hooked fish, pole action  
 Q special move (when available)
 
 You can shimmer the hook to attract fish with a timed release of E.    
-You can reel in faster with pole action by repeatedly tapping E while holding W.   
+You can reel in a fish faster with pole action by repeatedly tapping E.
 
 ### Modes  
 
@@ -35,15 +36,15 @@ AI
 
 ### Config.txt
 
-Configure window/fullscreen, gpu/software rendering, modes, LAN, and gameplay.  
+Configure window or fullscreen, gpu rendering or software rendering, modes, LAN, and gameplay.  
 
-If no config.txt is present then the game will produce its backup/default in the working directory.
+If no config.txt is present then the game will produce its default in the working directory.
 
 ### Art
 
 The art and music are in source. The art is XPM data as C89 cstrings. The music is binary data in arrays.
 
-I made this choice so static builds have only two game files, config.txt and fishskysea.
+I made this choice for static builds to have only two game files, config.txt and fishskysea.
 
 <pre>
 "                                .                                      ",  
