@@ -12,7 +12,7 @@ Linux and macOS
 
 ### Building
 
-Install SDL2, SDL2_image, SDL2_mixer, and SDL2_net with your package manager.  
+Install SDL2, SDL2_image, SDL2_mixer, and SDL2_net development and runtime libraries with your package manager.  
 Run make in the project directory.
 
 ### Controls
